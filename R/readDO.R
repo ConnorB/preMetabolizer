@@ -9,7 +9,9 @@
 #'
 readDO <- function(path, type = c("PME", "YSI", "AIMS")) {
   tempFiles <- Sys.glob(paste0(path, "/*.TXT"))
-  if(type == "PME"){
+  if(missing(type)){
+    stop("Please enter logger type: 'PME' (miniDOT), 'YSI' (EXO), or 'AIMS' (QA/QC Pipeline)")
+  } else if(type == "PME"){
     tempLog <- sapply(tempFiles, fread, skip = 7, check.names = TRUE,
                       na.strings = c("(Second)", "(none)", "(Volt)", "(deg C)","(mg/l)", "(%)"),
                       simplify = FALSE)
@@ -19,9 +21,9 @@ readDO <- function(path, type = c("PME", "YSI", "AIMS")) {
     oldCol <- c("Unix.Timestamp", "UTC_Date_._Time", "Central.Standard.Time", "Battery", "Temperature", "Dissolved.Oxygen", "Q")
     setnames(tempLog, oldCol, newCol)
   } else if(type == "YSI"){
-      stop("Still in development")
+    stop("Still in development")
   } else if(type == "AIMS"){
-      stop("Still in development")
+    stop("Still in development")
   } else if(!(type %in% c("PME", "YSI", "AIMS")))
-      stop("Currently only supports files from PME miniDOTs, YSI EXOs, or AIMS")
+    stop("Currently only supports files from PME miniDOTs, YSI EXOs, or AIMS")
 }
