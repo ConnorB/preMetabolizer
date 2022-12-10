@@ -23,7 +23,10 @@ readDO <- function(path, type = c("PME", "YSI", "AIMS")) {
   } else if(type == "YSI"){
     stop("Still in development")
   } else if(type == "AIMS"){
-    stop("Still in development")
+    tempLog <- rbindlist(sapply(tempLog, fread, simplify = F), idcol = "exportFile")
+    qcKMZ$exportFile <- basename(tempLog$exportFile)
+    tempLog <- tempLog[!is.na(tempLog$value)]
+    tempLog <- dcast(tempLog, timestamp ~ parameterName, value.var="value")
   } else if(!(type %in% c("PME", "YSI", "AIMS")))
     stop("Currently only supports files from PME miniDOTs, YSI EXOs, or AIMS")
 }
