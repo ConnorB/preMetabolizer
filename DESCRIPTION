@@ -2,9 +2,9 @@ Package: preMetabolizer
 Title: A Utility Package for the streamMetabolizer Package
 Version: 0.0.0.9000
 Authors@R: 
-    person("Connor", "Brown", , "connorbrown1996@gmail.com", role = c("aut", "cre"),
+    person("Connor", "Brown", , "connor.brown@ku.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9680-8930"))
-Description: What the package does (one paragraph).
+Description: This package provides tools for wrangling data needed for streamMetabolizer
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -26,4 +26,5 @@ Depends:
   nasapower,
   dplyr,
   lubridate
-  
+URL: https://github.com/ConnorB/preMetabolizer
+BugReports: https://github.com/ConnorB/preMetabolizer/issues
