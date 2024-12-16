@@ -1,27 +1,3 @@
-#' Check and ensure required packages are installed
-#' @keywords internal
-#' @noRd
-check_packages <- function() {
-  required_packages <- c(
-    "purrr",
-    "dplyr",
-    "tidyr",
-    "lubridate",
-    "stringr",
-    "streamMetabolizer"
-  )
-
-  missing_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]
-
-  if (length(missing_packages) > 0) {
-    stop(
-      "Missing required packages: ",
-      paste(missing_packages, collapse = ", "),
-      ". Install using install.packages()"
-    )
-  }
-}
-
 #' Validate input data structure
 #' @param df Input dataframe
 #' @param metadata Metadata dataframe

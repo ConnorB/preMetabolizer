@@ -71,19 +71,8 @@ calc_water_height <- function(sensor_kPa, atmo_kPa = NULL, tempC, type = "vented
     stop("Inputs 'sensor_kPa' and 'tempC' must have the same length.")
   }
 
-  # Constants for water density calculation (Kell, 1975)
-  a <- 999.83952
-  b <- 16.945176
-  c <- -7.9870401e-3
-  d <- -46.170461e-6
-  e <- 105.56302e-9
-  f <- -280.54253e-12
-  g <- 16.87985e-3
-  gravity <- 9.80665 # Gravity in m/s^2
-
-  # Calculate water density (kg/m^3)
-  waterDensity <- (a + (b * tempC) + (c * tempC^2) + (d * tempC^3) +
-                     (e * tempC^4) + (f * tempC^5)) / (1 + (g * tempC))
+  # Calculate water density
+  waterDensity <- calc_water_density(tempC)
 
   # Calculate pressure difference in Pascals
   if (type == "vented") {
@@ -91,7 +80,7 @@ calc_water_height <- function(sensor_kPa, atmo_kPa = NULL, tempC, type = "vented
   } else if (type == "unvented") {
     delta_Pa <- (sensor_kPa - atmo_kPa) * 1000 # Subtract atmospheric pressure
   }
-
+  gravity <- 9.80665 # Gravity in m/s^2
   # Calculate water height in meters
   waterHeight_m <- delta_Pa / (waterDensity * gravity)
 

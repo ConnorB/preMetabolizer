@@ -17,7 +17,6 @@
 #' data <- getNASA(metadata)
 #' }
 get_nasa_data <- function(metadata) {
-  check_packages()
   metadata |>
     download_site_data() |>
     process_nasa_data()
