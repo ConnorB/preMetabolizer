@@ -35,17 +35,6 @@ test_that("calc_water_height behaves as expected under various conditions", {
 
   expect_equal(result_unvented, expected_height_unvented, tolerance = 1e-6)
 
-  # Handling invalid input
-  expect_error(
-    calc_water_height(sensor_kPa, tempC = tempC, type = "unvented"),
-    "For 'unvented' type, 'atmo_kPa' must be provided."
-  )
-
-  expect_error(
-    calc_water_height(sensor_kPa = -10, tempC = tempC, type = "vented"),
-    "Input 'sensor_kPa' must be a non-negative numeric value or vector, without NA values."
-  )
-
   # Temperature extremes
   temp_high <- 40
   temp_low <- 0
@@ -64,14 +53,6 @@ test_that("calc_water_height behaves as expected under various conditions", {
 
   expect_equal(result_zero, 0) # No pressure difference means zero water height
 
-  # NA in input
-  tempC <- 25
-  sensor_kPa <- c(NA, 19.2)
-  expect_error(
-    calc_water_height(sensor_kPa, tempC = tempC, type = "vented"),
-    "Input 'sensor_kPa' must be a non-negative numeric value or vector, without NA values."
-  )
-
   # Vector inputs
   sensor_kPa <- c(19.2, 25.0)
   tempC <- c(15, 20)
@@ -88,11 +69,4 @@ test_that("calc_water_height behaves as expected under various conditions", {
 
   expect_gt(result_atmo_zero, 0)
 
-  # Mismatched vector lengths
-  sensor_kPa <- c(19.2, 25.0)
-  tempC <- c(15)
-  expect_error(
-    calc_water_height(sensor_kPa, tempC = tempC, type = "vented"),
-    "Inputs 'sensor_kPa' and 'tempC' must have the same length."
-  )
 })

@@ -50,23 +50,6 @@ calc_water_height <- function(sensor_kPa, atmo_kPa = NULL, tempC, type = "vented
   # Input validation
   type <- match.arg(type, choices = c("vented", "unvented"))
 
-  if (!is.numeric(sensor_kPa) || any(is.na(sensor_kPa)) || any(sensor_kPa < 0)) {
-    stop("Input 'sensor_kPa' must be a non-negative numeric value or vector, without NA values.")
-  }
-  if (!is.numeric(tempC) || any(is.na(tempC))) {
-    stop("Input 'tempC' must be a numeric value or vector, without NA values.")
-  }
-  if (type == "unvented") {
-    if (is.null(atmo_kPa)) {
-      stop("For 'unvented' type, 'atmo_kPa' must be provided.")
-    }
-    if (!is.numeric(atmo_kPa) || any(is.na(atmo_kPa)) || any(atmo_kPa < 0)) {
-      stop("Input 'atmo_kPa' must be a non-negative numeric value or vector, without NA values.")
-    }
-    if (length(atmo_kPa) != length(sensor_kPa)) {
-      stop("Inputs 'sensor_kPa' and 'atmo_kPa' must have the same length when 'type' is 'unvented'.")
-    }
-  }
   if (length(sensor_kPa) != length(tempC)) {
     stop("Inputs 'sensor_kPa' and 'tempC' must have the same length.")
   }

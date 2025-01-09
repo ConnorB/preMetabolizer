@@ -24,8 +24,8 @@
 #' @export
 calc_water_density <- function(tempC) {
   # Input validation
-  if (!is.numeric(tempC) || any(is.na(tempC))) {
-    stop("Input 'tempC' must be a numeric value or vector, without NA values.")
+  if (!is.numeric(tempC)) {
+    stop("Input 'tempC' must be a numeric value or vector.")
   }
 
   # Constants for water density calculation (Kell, 1975)
