@@ -24,14 +24,11 @@ correct_bp <- function(station_kPa, air_temp, station_elev, site_elev) {
   # Convert station bp from kPa to Pa
   station_Pa <- station_kPa * 1000
 
-  # Calculate air density using Ideal Gas Law: density = P / (R * T)
-  air_density <- station_Pa / (R / air_molar_mass * temp_K)
-
   # Calculate the elevation difference
   delta_h <- site_elev - station_elev
 
-  # Adjust pressure based on the elevation difference
-  site_Pa <- station_Pa * exp(-air_density * g * delta_h / station_Pa)
+  # Adjust pressure based on the elevation difference using the barometric formula
+  site_Pa <- station_Pa * exp(- (g * air_molar_mass * delta_h) / (R * temp_K))
 
   # Convert Pa back to kPa for output
   site_kPa <- site_Pa / 1000

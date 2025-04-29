@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_nasa_data.R
 \name{get_nasa_data}
 \alias{get_nasa_data}
-\title{Download and process NASA POWER data for multiple sites}
+\title{Download and process NASA POWER data for multiple sites in parallel}
 \usage{
 get_nasa_data(metadata)
 }
@@ -14,7 +14,7 @@ Site, Long, Lat, StartDate, EndDate, Elev_m}
 A tibble with columns: Site, dateTime, bp_mbar, PAR.obs
 }
 \description{
-Download and process NASA POWER data for multiple sites
+Download and process NASA POWER data for multiple sites in parallel
 }
 \examples{
 \dontrun{
@@ -26,6 +26,6 @@ metadata <- data.frame(
   EndDate = as.Date(c("2023-12-31", "2023-12-31")),
   Elev_m = c(1000, 1100)
 )
-data <- getNASA(metadata)
+data <- get_nasa_data(metadata)
 }
 }

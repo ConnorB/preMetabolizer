@@ -1,4 +1,4 @@
-#' Download and process NASA POWER data for multiple sites
+#' Download and process NASA POWER data for multiple sites in parallel
 #'
 #' @param metadata A dataframe containing site information with columns:
 #'   Site, Long, Lat, StartDate, EndDate, Elev_m
@@ -14,11 +14,11 @@
 #'   EndDate = as.Date(c("2023-12-31", "2023-12-31")),
 #'   Elev_m = c(1000, 1100)
 #' )
-#' data <- getNASA(metadata)
+#' data <- get_nasa_data(metadata)
 #' }
 get_nasa_data <- function(metadata) {
   metadata |>
-    download_site_data() |>
+    download_site_data_parallel() |>
     process_nasa_data()
 }
 
@@ -49,14 +49,14 @@ fetch_single_site <- function(site, long, lat, start, end, elev) {
   data
 }
 
-#' Download data for all sites in metadata
+#' Download data for all sites in metadata using parallelization
 #' @param metadata Dataframe with site information
 #' @return Combined dataframe with all sites' data
 #' @keywords internal
-#' @importFrom purrr pmap
+#' @importFrom furrr future_pmap
 #' @importFrom dplyr bind_rows
 #' @importFrom rlang .data
-download_site_data <- function(metadata) {
+download_site_data_parallel <- function(metadata) {
   # Validate required columns
   required_columns <- c("Site", "Long", "Lat", "StartDate", "EndDate", "Elev_m")
   missing_columns <- setdiff(required_columns, colnames(metadata))
@@ -68,8 +68,8 @@ download_site_data <- function(metadata) {
     )
   }
 
-  # Process data for all sites
-  purrr::pmap(
+  # Use future_pmap for parallelized fetching
+  furrr::future_pmap(
     list(
       site = metadata$Site,
       long = metadata$Long,
@@ -78,11 +78,11 @@ download_site_data <- function(metadata) {
       end = metadata$EndDate,
       elev = metadata$Elev_m
     ),
-    fetch_single_site
+    fetch_single_site,
+    .options = furrr::furrr_options(seed = T)
   ) |>
     dplyr::bind_rows()
 }
-
 
 #' Process NASA POWER data
 #' @param raw_data Combined raw data from all sites

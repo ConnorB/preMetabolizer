@@ -5,7 +5,7 @@
 #' @return Imputed vector
 #' @keywords internal
 #' @import imputeTS
-apply_imputation_method <- function(x, method, maxgap) {
+apply_imputation_method <- function(x, method, maxgap = Inf) {
   suppressMessages(
     suppressWarnings(
       switch(method,

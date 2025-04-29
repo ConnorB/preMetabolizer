@@ -2,7 +2,7 @@
 % Please edit documentation in R/gap_fill_data.R
 \name{gap_fill_data}
 \alias{gap_fill_data}
-\title{Impute missing values in stream metabolism data}
+\title{Gap fill missing values in stream metabolism data}
 \usage{
 gap_fill_data(df, metadata, method = "kalman", maxgap = Inf, progress = TRUE)
 }
@@ -21,5 +21,5 @@ gap_fill_data(df, metadata, method = "kalman", maxgap = Inf, progress = TRUE)
 A dataframe with imputed values
 }
 \description{
-Impute missing values in stream metabolism data
+Gap fill missing values in stream metabolism data
 }

@@ -4,7 +4,7 @@
 \alias{apply_imputation_method}
 \title{Apply imputation method to a numeric vector}
 \usage{
-apply_imputation_method(x, method, maxgap)
+apply_imputation_method(x, method, maxgap = Inf)
 }
 \arguments{
 \item{x}{Numeric vector}

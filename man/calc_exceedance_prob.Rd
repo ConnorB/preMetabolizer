@@ -4,16 +4,16 @@
 \alias{calc_exceedance_prob}
 \title{Calculate Flow Exceedence Probabilities}
 \usage{
-calc_exceedance_prob(flow, rm.Zero = FALSE)
+calc_exceedance_prob(flow, rm.zero = FALSE)
 }
 \arguments{
 \item{flow}{A numeric vector of flow (discharge) values.}
 
-\item{rm.Zero}{Logical. If \code{TRUE}, zero values are removed from the calculation, and
+\item{rm.zero}{Logical. If \code{TRUE}, zero values are removed from the calculation, and
 positions corresponding to zeros are filled with \code{NA} in the output.}
 }
 \value{
-A numeric vector of exceedance probabilities. If \code{rm.Zero = TRUE}, the returned vector
+A numeric vector of exceedance probabilities. If \code{rm.zero = TRUE}, the returned vector
 will have the same length as the input with \code{NA} at positions of zero values.
 }
 \description{
@@ -27,8 +27,8 @@ where \code{rank} is the rank of the flow value (in descending order), and \code
 number of observations.
 }
 \examples{
-flow_data <- c(10, 5, 0, 15, 8, 0, 20)
+flow_data <- c(10, 5, 0, 15, 8, NA, 0, 20)
 exceedance_probs <- calc_exceedance_prob(flow_data)
-exceedance_probs_no_zeros <- calc_exceedance_prob(flow_data, rm.Zero = TRUE)
+exceedance_probs_no_zeros <- calc_exceedance_prob(flow_data, rm.zero = TRUE)
 
 }

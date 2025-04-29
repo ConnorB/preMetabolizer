@@ -135,123 +135,63 @@ get_site_metadata <- function(site_name, metadata) {
 }
 
 
-#' Impute values for a single site
-#' @param site_df Single site dataframe
-#' @param metadata Site metadata
-#' @param method Imputation method
-#' @param maxgap Maximum gap size to fill
-#' @return Imputed dataframe for single site
+#' Convert Barometric Pressure to Atmospheres
+#'
+#' This helper function converts barometric pressure from various units
+#' to atmospheres (\[atm\]). It is intended for internal use within the package.
+#'
+#' @param pressure Numeric. Barometric pressure value(s) to be converted.
+#' @param units Character. Units of the input barometric pressure. Accepted values are
+#'   `"atm"`, `"hPa"`, `"mbar"`, `"kPa"`, `"Torr"`, `"psi"`, and `"bar"`.
+#'
+#' @return Numeric. Barometric pressure in atmospheres (\[atm\]).
+#'
 #' @keywords internal
-impute_single_site <- function(site_df, metadata, method, maxgap) {
-  site_name <- unique(site_df$Site)
-  site_meta <- get_site_metadata(site_name, metadata)
-
-  message(sprintf("\nSite %s:", site_name))
-
-  # Impute numeric columns
-  site_df <- impute_numeric_columns(site_df, method, maxgap)
-
-  # Handle PAR data if present
-  if ("PAR.obs" %in% colnames(site_df)) {
-    site_df <- gap_fill_par(site_df, site_meta)
+#' @export
+convert_pressure_to_atm <- function(pressure, units) {
+  if (units == "atm") {
+    pressure_atm <- pressure
+  } else if (units == "hPa" || units == "mbar") {
+    pressure_atm <- pressure * 0.00098692316931427
+  } else if (units == "kPa") {
+    pressure_atm <- pressure * 0.0098692316931427
+  } else if (units == "Torr") {
+    pressure_atm <- pressure / 760
+  } else if (units == "psi") {
+    pressure_atm <- pressure * 0.0680459639
+  } else if (units == "bar") {
+    pressure_atm <- pressure * 0.98692316931427
+  } else {
+    stop("Please report barometric pressure in units of `atm`, `hPa`, `mbar`, `kPa`, `Torr`, `psi`, or `bar`.")
   }
 
-  site_df
+  return(pressure_atm)
 }
 
-#' Impute numeric columns using specified method
-#' @param df Dataframe containing numeric columns
-#' @param method Imputation method
-#' @param maxgap Maximum gap size to fill
-#' @return Dataframe with imputed numeric columns
+
+#' Get the Last Modified Time of a Remote File (Internal)
+#'
+#' This internal function retrieves the "Last-Modified" timestamp of a remote file by sending an HTTP HEAD request to the given URL. The result is memoised to cache results for repeated calls with the same URL.
+#'
+#' @param url A character string specifying the URL of the remote file.
+#'
+#' @return A POSIXlt object representing the last modified timestamp of the remote file, or \code{NULL} if the information is unavailable or an error occurs.
+#'
+#' @details The function sends an HTTP HEAD request to the specified URL using the \pkg{httr} package. If the server responds with a 200 status code and includes a "Last-Modified" header, the timestamp is parsed and returned. If the request fails or the "Last-Modified" header is missing, \code{NULL} is returned.
+#'
+#' @note The function uses \pkg{memoise} to cache results, so repeated calls with the same URL will not trigger additional HTTP requests.
+#'
+#' @import httr
+#' @importFrom memoise memoise
 #' @keywords internal
-impute_numeric_columns <- function(df, method, maxgap) {
-  numeric_cols <- setdiff(names(df)[sapply(df, is.numeric)], "PAR.obs")
-
-  for (col in numeric_cols) {
-    df <- impute_numeric_column(df, col, method, maxgap)
-  }
-
-  df
-}
-
-#' Impute a single numeric column
-#' @param df Dataframe containing the column
-#' @param col Column name
-#' @param method Imputation method
-#' @param maxgap Maximum gap size to fill
-#' @return Dataframe with imputed column
-#' @keywords internal
-impute_numeric_column <- function(df, col, method, maxgap) {
-  na_count <- sum(is.na(df[[col]]))
-  message(sprintf("  %s: %d gaps (filling with %s)", col, na_count, method))
-
-  tryCatch(
-    {
-      df[[col]] <- apply_imputation_method(df[[col]], method, maxgap)
-    },
-    error = function(e) {
-      message(sprintf("  Error processing %s: %s", col, e$message))
+get_remote_mtime <- memoise::memoise(function(url) {
+  tryCatch({
+    headers <- httr::HEAD(url)
+    if (httr::status_code(headers) == 200) {
+      file_date <- httr::headers(headers)[["last-modified"]]
+      file_date <- strptime(file_date, "%a, %d %b %Y %H:%M:%S", tz = "GMT")
+      return(file_date)
     }
-  )
-
-  df
-}
-
-#' Gap Fill PAR (light) data
-#' @param df Dataframe containing PAR data
-#' @param site_meta Site metadata
-#' @return Dataframe with gaps in PAR values filled with calc_light() from streamMetabolizer
-#' @keywords internal
-gap_fill_par <- function(df, site_meta) {
-  tryCatch(
-    {
-      na_count <- sum(is.na(df$PAR.obs))
-      message(sprintf("  PAR.obs: %d gaps (filling with modeled light)", na_count))
-
-      df <- calculate_par(df, site_meta)
-      df <- clean_par(df)
-    },
-    error = function(e) {
-      message(sprintf("  Error processing PAR.obs: %s", e$message))
-    }
-  )
-
-  df
-}
-#' Calculate PAR with streamMetabolizer
-#' @param df Dataframe containing datetime data
-#' @param site_meta Site metadata
-#' @return Dataframe with calculated solar metrics
-#' @keywords internal
-#' @importFrom streamMetabolizer convert_UTC_to_solartime calc_light
-calculate_par <- function(df, site_meta) {
-  df$solar.time <- streamMetabolizer::convert_UTC_to_solartime(df$dateTime,
-    longitude = site_meta$Long,
-    time.type = "mean solar"
-  )
-
-  maxLight <- max(df$PAR.obs, na.rm = TRUE)
-
-  df$CalcLight <- streamMetabolizer::calc_light(
-    df$solar.time,
-    latitude = site_meta$Lat,
-    longitude = site_meta$Long,
-    max.PAR = maxLight
-  )
-
-  df
-}
-
-#' Clean and merge PAR values
-#' @param df Dataframe containing PAR data
-#' @return Cleaned dataframe
-#' @keywords internal
-#' @importFrom dplyr coalesce
-clean_par <- function(df) {
-  df$PAR.obs[df$PAR.obs < 0.01] <- 0
-  df$PAR.obs <- dplyr::coalesce(df$PAR.obs, df$CalcLight)
-  df$CalcLight <- NULL
-  df$solar.time <- NULL
-  df
-}
+    NULL
+  }, error = function(e) NULL)
+})

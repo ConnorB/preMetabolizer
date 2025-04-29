@@ -4,18 +4,18 @@
 \alias{calc_O2sat}
 \title{Calculate Dissolved Oxygen Saturation}
 \usage{
-calc_O2sat(tempC, atmo_pres, units = "atm", salinity = 0)
+calc_O2sat(temp_water, atmo_press, units = "atm", salinity = 0)
 }
 \arguments{
-\item{tempC}{Numeric. Water temperature in degrees Celsius.}
+\item{temp_water}{Numeric. Water temperature in degrees Celsius.}
 
-\item{atmo_pres}{Numeric. Barometric pressure values.}
+\item{atmo_press}{Numeric. Barometric pressure values.}
 
 \item{units}{Character. Units of barometric pressure. Accepted values are
 \code{"atm"}, \code{"hPa"}, \code{"mbar"}, and \code{"kPa"}.
 Default is \code{"atm"}.}
 
-\item{salinity}{Numeric. Salinity in parts per thousand (ppt). Default is \code{0}.}
+\item{salinity}{Numeric. salinity in parts per thousand (ppt). Default is \code{0}.}
 }
 \value{
 Numeric. Dissolved oxygen saturation ([DO]) in mg/L.
@@ -39,11 +39,11 @@ and Gordon (1992) model. It includes corrections for:
 # Example with mbar
 temp <- 25  # Water temperature in °C
 atmo_mbar <- c(1013, 1015, 1012)  # Barometric pressure in mbar
-calc_O2sat(tempC = temp, atmo_pres = atmo_mbar, units = "mbar")
+calc_O2sat(temp_water = temp, atmo_press = atmo_mbar, units = "mbar")
 
 # Example with kPa
 temp <- 20
 atmo_kPa <- c(101.3, 101.5, 101.2)  # Barometric pressure in kPa
-calc_O2sat(tempC = temp, atmo_pres = atmo_kPa, units = "kPa")
+calc_O2sat(temp_water = temp, atmo_press = atmo_kPa, units = "kPa")
 
 }
