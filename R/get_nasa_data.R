@@ -91,6 +91,7 @@ download_site_data_parallel <- function(metadata) {
 #' @importFrom stringr str_detect
 #' @importFrom tibble as_tibble
 #' @importFrom rlang .data
+#' @importFrom LakeMetabolizer sw.to.par.base
 process_nasa_data <- function(raw_data) {
   required_columns <- c("HR", "YYYYMMDD", "PSC", "ALLSKY_SFC_SW_DWN", "Site")
 
@@ -106,7 +107,8 @@ process_nasa_data <- function(raw_data) {
       Hour = stringr::str_pad(.data$HR, 2, side = "left", pad = "0"),
       dateTime = lubridate::ymd_hms(paste0(.data$YYYYMMDD, .data$Hour, ":00:00")),
       bp_mbar = .data$PSC * 10, # Convert kilopascals to millibar
-      PAR.obs = streamMetabolizer::convert_SW_to_PAR(.data$ALLSKY_SFC_SW_DWN)
+      #coef Numerical coefficient to convert SW (W/m^2) to PAR  (umol/m^2/sec). Defaults to value from Britton and Dodd (1976).
+      PAR.obs = LakeMetabolizer::sw.to.par.base(sw = .data$ALLSKY_SFC_SW_DWN, coef = 2.114)
     ) |>
     dplyr::select(
       .data$Site,

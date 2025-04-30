@@ -81,14 +81,14 @@ gap_fill_data <- function(df, metadata,
               {
                 message(sprintf("  PAR.obs: %d gaps (filling with modeled light)", na_count))
 
-                site_df$solar.time <- streamMetabolizer::convert_UTC_to_solartime(site_df$dateTime,
+                site_df$solar.time <- convert_UTC_to_solartime(site_df$dateTime,
                                                                                   longitude = site_meta$Long,
                                                                                   time.type = "mean solar"
                 )
 
                 maxLight <- max(site_df$PAR.obs, na.rm = TRUE)
 
-                site_df$CalcLight <- streamMetabolizer::calc_light(
+                site_df$CalcLight <- calc_light(
                   site_df$solar.time,
                   latitude = site_meta$Lat,
                   longitude = site_meta$Long,

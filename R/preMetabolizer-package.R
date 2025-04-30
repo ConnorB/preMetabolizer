@@ -17,6 +17,7 @@
 #' @importFrom dplyr mutate
 #' @importFrom dplyr relocate
 #' @importFrom dplyr select
+#' @importFrom LakeMetabolizer sw.to.par.base
 #' @importFrom methods as
 #' @importFrom rlang .data
 #' @importFrom sf st_read
