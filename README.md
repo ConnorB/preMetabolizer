@@ -1,0 +1,46 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# preMetabolizer
+
+<!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![License: GPL (\>=
+3)](https://img.shields.io/badge/license-GPL%20(%3E%3D%203)-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<!-- badges: end -->
+
+`preMetabolizer` is a utility R package that provides tools for
+wrangling the input data required by
+[`streamMetabolizer`](https://github.com/ConnorB/streamMetabolizer).
+
+## Installation
+
+`preMetabolizer` is not on CRAN. Install the development version from
+GitHub:
+
+``` r
+# install.packages("pak")
+pak::pak("ConnorB/preMetabolizer")
+```
+
+Or with `remotes`:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("ConnorB/preMetabolizer")
+```
+
+The package requires R (\>= 4.1.0). A companion fork of
+`streamMetabolizer` is listed under `Remotes:` and will be installed
+automatically.
+
+## License
+
+GPL (\>= 3). See [LICENSE.md](LICENSE.md).
+
+## Issues
+
+Bug reports and feature requests are welcome at
+<https://github.com/ConnorB/preMetabolizer/issues>.

@@ -5,3 +5,4 @@
 ^dev$
 ^\.positai$
 ^\.claude$
+^README\.Rmd$
