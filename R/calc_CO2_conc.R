@@ -76,7 +76,7 @@ calc_CO2_mgL <- function(CO2_ppm, temp_water, waterDepth_m, atmo_press, press_un
   CO2_molKg <- (pCO2_atm * (total_pressure) * K0)
 
   # Water density
-  density_kgL <- calc_water_density(tempC = temp_water)/1e3 #kg/m^3 to kg/L
+  density_kgL <- calc_water_density(water_temp = temp_water)/1e3 #kg/m^3 to kg/L
 
   # Convert CO2 concentration from mol/kg to mg/L
   CO2_mgL <- CO2_molKg * molar_mass_CO2 * density_kgL

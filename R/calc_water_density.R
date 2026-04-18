@@ -3,9 +3,10 @@
 #' This function calculates the density of water (kg/m^3) based on the temperature in degrees Celsius.
 #' The equation is based on the formulation by Kell (1975) for pure water.
 #'
-#' @param tempC Numeric value representing the water temperature in degrees Celsius.
+#' @param water_temp Numeric value representing the water temperature in degrees Celsius.
+#' @param .drop_units Logical. If `TRUE`, returns a numeric value instead of a `units` object.
 #'
-#' @return A numeric value or vector representing the density of water in kg/m^3.
+#' @return A `units` object or numeric vector representing the density of water in kg/m^3.
 #'
 #' @details
 #' This function uses the polynomial approximation provided by Kell (1975) for the density of water
@@ -18,17 +19,17 @@
 #' \doi{10.1021/je60064a005}
 #'
 #' @examples
-#' # Example usage:
-#' calc_water_density(tempC = 15)
+#' calc_water_density(water_temp = 15)
+#' calc_water_density(water_temp = 15, .drop_units = TRUE)
 #'
 #' @export
-calc_water_density <- function(tempC) {
-  # Input validation
-  if (!is.numeric(tempC)) {
-    stop("Input 'tempC' must be a numeric value or vector.")
+#' @importFrom units set_units drop_units
+calc_water_density <- function(water_temp, .drop_units = TRUE) {
+  if (!is.numeric(water_temp)) {
+    stop("Input 'water_temp' must be a numeric value or vector.")
   }
 
-  # Constants for water density calculation (Kell, 1975)
+  # Constants from Kell (1975)
   a <- 999.83952
   b <- 16.945176
   c <- -7.9870401e-3
@@ -37,9 +38,11 @@ calc_water_density <- function(tempC) {
   f <- -280.54253e-12
   g <- 16.87985e-3
 
-  # Calculate water density (kg/m^3)
-  waterDensity <- (a + (b * tempC) + (c * tempC^2) + (d * tempC^3) +
-                     (e * tempC^4) + (f * tempC^5)) / (1 + (g * tempC))
+  # Compute density
+  rho <- (a + (b * water_temp) + (c * water_temp^2) + (d * water_temp^3) +
+            (e * water_temp^4) + (f * water_temp^5)) / (1 + (g * water_temp))
 
-  return(waterDensity)
+  result <- set_units(rho, "kg/m^3")
+
+  if (.drop_units) drop_units(result) else result
 }

@@ -4,13 +4,15 @@
 \alias{calc_water_density}
 \title{Calculate Water Density}
 \usage{
-calc_water_density(tempC)
+calc_water_density(water_temp, .drop_units = TRUE)
 }
 \arguments{
-\item{tempC}{Numeric value representing the water temperature in degrees Celsius.}
+\item{water_temp}{Numeric value representing the water temperature in degrees Celsius.}
+
+\item{.drop_units}{Logical. If \code{TRUE}, returns a numeric value instead of a \code{units} object.}
 }
 \value{
-A numeric value or vector representing the density of water in kg/m^3.
+A \code{units} object or numeric vector representing the density of water in kg/m^3.
 }
 \description{
 This function calculates the density of water (kg/m^3) based on the temperature in degrees Celsius.
@@ -21,8 +23,8 @@ This function uses the polynomial approximation provided by Kell (1975) for the 
 as a function of temperature. This approximation is valid for temperatures between 0°C and 150°C.
 }
 \examples{
-# Example usage:
-calc_water_density(tempC = 15)
+calc_water_density(water_temp = 15)
+calc_water_density(water_temp = 15, .drop_units = TRUE)
 
 }
 \references{

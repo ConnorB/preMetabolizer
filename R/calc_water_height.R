@@ -8,7 +8,7 @@
 #'   - For \code{type = "unvented"}, this is the absolute pressure measured by the sensor.
 #' @param atmo_kPa Numeric value representing the atmospheric pressure in kilopascals.
 #'   Required when \code{type = "unvented"}.
-#' @param tempC Numeric value representing the water temperature in degrees Celsius.
+#' @param water_temp Numeric value representing the water temperature in degrees Celsius.
 #' @param type Character string specifying the sensor type: \code{"vented"} or \code{"unvented"}.
 #'   Defaults to \code{"vented"}.
 #'
@@ -34,7 +34,7 @@
 #' # Example usage with a vented sensor:
 #' sensor_pressure <- 19.2 # kPa (pressure due to water column)
 #' temperature <- 15 # degrees Celsius
-#' calc_water_height(sensor_pressure, tempC = temperature, type = "vented")
+#' calc_water_height(sensor_pressure, water_temp = temperature, type = "vented")
 #'
 #' # Example usage with an unvented sensor:
 #' sensor_pressure <- 120.5 # kPa (absolute pressure)
@@ -42,20 +42,20 @@
 #' temperature <- 15 # degrees Celsius
 #' calc_water_height(sensor_pressure,
 #'   atmo_kPa = atmospheric_pressure,
-#'   tempC = temperature, type = "unvented"
+#'   water_temp = temperature, type = "unvented"
 #' )
 #'
 #' @export
-calc_water_height <- function(sensor_kPa, atmo_kPa = NULL, tempC, type = "vented") {
+calc_water_height <- function(sensor_kPa, atmo_kPa = NULL, water_temp, type = "vented") {
   # Input validation
   type <- match.arg(type, choices = c("vented", "unvented"))
 
-  if (length(sensor_kPa) != length(tempC)) {
-    stop("Inputs 'sensor_kPa' and 'tempC' must have the same length.")
+  if (length(sensor_kPa) != length(water_temp)) {
+    stop("Inputs 'sensor_kPa' and 'water_temp' must have the same length.")
   }
 
   # Calculate water density
-  waterDensity <- calc_water_density(tempC)
+  waterDensity <- calc_water_density(water_temp, .drop_units = TRUE)
 
   # Calculate pressure difference in Pascals
   if (type == "vented") {

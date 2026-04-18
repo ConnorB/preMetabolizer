@@ -19,9 +19,11 @@
 #' @importFrom dplyr select
 #' @importFrom LakeMetabolizer sw.to.par.base
 #' @importFrom methods as
+#' @importFrom Rcpp sourceCpp
 #' @importFrom rlang .data
 #' @importFrom sf st_read
 #' @importFrom stats sd
 #' @importFrom utils globalVariables
+#' @useDynLib preMetabolizer, .registration = TRUE
 ## usethis namespace: end
 NULL

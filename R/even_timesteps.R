@@ -103,17 +103,3 @@ even_timesteps <- function(loggerData, datetime_col = "DateTime_UTC", site_col =
   result[, col_order[col_order %in% names(result)]]
 }
 
-#' Find the mode (most frequent value) in a vector
-#' @param x A vector of values
-#' @return The most frequent value(s) in the vector
-#' @keywords internal
-find_mode <- function(x) {
-  if (length(x) == 0) {
-    return(numeric(0))
-  }
-
-  # Handle ties by returning all modes
-  ux <- unique(x)
-  tab <- tabulate(match(x, ux))
-  ux[tab == max(tab)]
-}

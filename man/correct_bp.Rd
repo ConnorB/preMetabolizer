@@ -4,24 +4,42 @@
 \alias{correct_bp}
 \title{Correct Barometric Pressure for Elevation Change}
 \usage{
-correct_bp(station_kPa, air_temp, station_elev, site_elev)
+correct_bp(
+  station_bp,
+  air_temp,
+  station_elev,
+  site_elev,
+  from_units = "kPa",
+  to_units = "kPa",
+  drop_units = FALSE
+)
 }
 \arguments{
-\item{station_kPa}{A vector of station barometric pressures in kPa.}
+\item{station_bp}{A numeric vector of barometric pressures. Units assumed to be kPa unless specified via \code{from_units}.}
 
-\item{air_temp}{A vector of air temperatures at the station in degrees Celsius.}
+\item{air_temp}{A numeric vector of air temperatures at the station in degrees Celsius.}
 
 \item{station_elev}{Elevation of the initial site in meters.}
 
 \item{site_elev}{Elevation of the target site in meters.}
+
+\item{from_units}{Character. Units of \code{station_bp}. Defaults to kPa.}
+
+\item{to_units}{Character. Desired output units. Must be one of the same supported units.}
+
+\item{drop_units}{Logical. If \code{TRUE}, returns a numeric vector instead of a \code{units} object.}
 }
 \value{
-A vector of corrected barometric pressures at the new elevation in kPa.
+A vector of corrected barometric pressures at the new elevation in the specified units.
 }
 \description{
-This function adjusts barometric pressure from one elevation to another based on the barometric formula.
+This function adjusts barometric pressure from one elevation to another using the barometric formula.
+Input and output pressure units are flexible and handled via \code{\link{convert_pressure}}.
 }
 \examples{
-correct_bp(station_kPa = c(101.3, 100.5), air_temp = c(15, 10), station_elev = 300, site_elev = 500)
-
+correct_bp(station_bp = c(101.3, 100.5), air_temp = c(15, 10),
+           station_elev = 300, site_elev = 500)
+}
+\seealso{
+\code{\link{convert_pressure}} for supported pressure units and unit conversion.
 }

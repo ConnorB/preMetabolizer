@@ -1,3 +1,50 @@
+#' Check if an object has units
+#'
+#' This function determines whether an object has units attached to it,
+#' typically from the \code{units} package. It provides a safe way to test
+#' for the presence of units before performing unit-specific operations.
+#'
+#' @param x An object to test for units. Can be any R object, but typically
+#'   a numeric vector, matrix, or array.
+#'
+#' @return A logical value: \code{TRUE} if the object has units attached,
+#'   \code{FALSE} otherwise.
+#'
+#' @details
+#' This function uses \code{\link[base]{inherits}} to check if the object
+#' inherits from the "units" class. This is safer than checking the class
+#' attribute directly, as it handles inheritance properly and avoids issues
+#' with objects that have \code{NULL} class attributes.
+#'
+#' @examples
+#' # Regular numeric vector (no units)
+#' x <- c(1, 2, 3)
+#' has_units(x)  # FALSE
+#'
+#' # With units (requires units package)
+#' \dontrun{
+#' library(units)
+#' y <- set_units(c(1, 2, 3), "m")
+#' has_units(y)  # TRUE
+#'
+#' z <- set_units(5, "kg")
+#' has_units(z)  # TRUE
+#' }
+#'
+#' # Other object types
+#' has_units("text")     # FALSE
+#' has_units(NULL)       # FALSE
+#' has_units(list(1,2))  # FALSE
+#'
+#' @seealso
+#' \code{\link[units]{set_units}}, \code{\link[units]{drop_units}},
+#' \code{\link[base]{inherits}}
+#'
+#' @keywords internal
+#' @export
+has_units <- function(x) {
+  inherits(x, "units")
+}
 #' Validate input data structure
 #' @param df Input dataframe
 #' @param metadata Metadata dataframe

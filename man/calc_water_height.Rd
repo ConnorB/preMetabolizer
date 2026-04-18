@@ -4,7 +4,7 @@
 \alias{calc_water_height}
 \title{Calculate Water Height from Sensor and Atmospheric Pressure}
 \usage{
-calc_water_height(sensor_kPa, atmo_kPa = NULL, tempC, type = "vented")
+calc_water_height(sensor_kPa, atmo_kPa = NULL, water_temp, type = "vented")
 }
 \arguments{
 \item{sensor_kPa}{Numeric value representing the sensor pressure in kilopascals.
@@ -16,7 +16,7 @@ calc_water_height(sensor_kPa, atmo_kPa = NULL, tempC, type = "vented")
 \item{atmo_kPa}{Numeric value representing the atmospheric pressure in kilopascals.
 Required when \code{type = "unvented"}.}
 
-\item{tempC}{Numeric value representing the water temperature in degrees Celsius.}
+\item{water_temp}{Numeric value representing the water temperature in degrees Celsius.}
 
 \item{type}{Character string specifying the sensor type: \code{"vented"} or \code{"unvented"}.
 Defaults to \code{"vented"}.}
@@ -43,7 +43,7 @@ so atmospheric pressure (\code{atmo_kPa}) must be provided to calculate the pres
 # Example usage with a vented sensor:
 sensor_pressure <- 19.2 # kPa (pressure due to water column)
 temperature <- 15 # degrees Celsius
-calc_water_height(sensor_pressure, tempC = temperature, type = "vented")
+calc_water_height(sensor_pressure, water_temp = temperature, type = "vented")
 
 # Example usage with an unvented sensor:
 sensor_pressure <- 120.5 # kPa (absolute pressure)
@@ -51,7 +51,7 @@ atmospheric_pressure <- 101.3 # kPa
 temperature <- 15 # degrees Celsius
 calc_water_height(sensor_pressure,
   atmo_kPa = atmospheric_pressure,
-  tempC = temperature, type = "unvented"
+  water_temp = temperature, type = "unvented"
 )
 
 }

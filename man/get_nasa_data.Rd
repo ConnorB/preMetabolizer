@@ -2,30 +2,40 @@
 % Please edit documentation in R/get_nasa_data.R
 \name{get_nasa_data}
 \alias{get_nasa_data}
-\title{Download and process NASA POWER data for multiple sites in parallel}
+\title{Download NASA POWER Hourly Data}
 \usage{
-get_nasa_data(metadata)
+get_nasa_data(
+  site_meta,
+  params = c("PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", "T2M"),
+  max_attempts = 5
+)
 }
 \arguments{
-\item{metadata}{A dataframe containing site information with columns:
-Site, Long, Lat, StartDate, EndDate, Elev_m}
+\item{site_meta}{A data frame containing metadata for each site. Required columns:
+\itemize{
+\item \code{Site}: site name (character)
+\item \code{lat}: latitude (numeric)
+\item \code{lon}: longitude (numeric)
+\item \code{elev_m}: elevation in meters (numeric)
+\item \code{start_date}, \code{end_date}: date range (can be \code{Date} or character)
+}}
+
+\item{params}{Case-insensitive character vector of solar, meteorological or climatology parameters to download. Defaults to "PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", and "T2M". See \link[nasapower]{get_power} for more information.}
+
+\item{max_attempts}{Number of retry attempts for failed API calls. Default is 5.}
 }
 \value{
-A tibble with columns: Site, dateTime, bp_mbar, PAR.obs
+A tibble with columns:
+\describe{
+\item{Site}{Site name}
+\item{dateTime}{timestamp in UTC}
+\item{PSC}{Elevation-corrected barometric pressure (kPa)}
+\item{ALLSKY_SFC_SW_DWN}{All Sky Surface Shortwave Downward Irradiance (W/m²)}
+\item{T2M}{Average air temperature at 2 m above the surface (°C)}
+\item{PRECTOTCORR}{MERRA-2 bias corrected total precipitation(mm/hr)}
+}
 }
 \description{
-Download and process NASA POWER data for multiple sites in parallel
-}
-\examples{
-\dontrun{
-metadata <- data.frame(
-  Site = c("Site1", "Site2"),
-  Long = c(-100, -101),
-  Lat = c(40, 41),
-  StartDate = as.Date(c("2023-01-01", "2023-01-01")),
-  EndDate = as.Date(c("2023-12-31", "2023-12-31")),
-  Elev_m = c(1000, 1100)
-)
-data <- get_nasa_data(metadata)
-}
+Downloads hourly meteorological data from the NASA POWER project for a set of sites
+over specified time periods.
 }

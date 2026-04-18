@@ -1,120 +1,138 @@
-#' Download and process NASA POWER data for multiple sites in parallel
+#' Download NASA POWER Hourly Data
 #'
-#' @param metadata A dataframe containing site information with columns:
-#'   Site, Long, Lat, StartDate, EndDate, Elev_m
-#' @return A tibble with columns: Site, dateTime, bp_mbar, PAR.obs
-#' @export
-#' @examples
-#' \dontrun{
-#' metadata <- data.frame(
-#'   Site = c("Site1", "Site2"),
-#'   Long = c(-100, -101),
-#'   Lat = c(40, 41),
-#'   StartDate = as.Date(c("2023-01-01", "2023-01-01")),
-#'   EndDate = as.Date(c("2023-12-31", "2023-12-31")),
-#'   Elev_m = c(1000, 1100)
-#' )
-#' data <- get_nasa_data(metadata)
-#' }
-get_nasa_data <- function(metadata) {
-  metadata |>
-    download_site_data_parallel() |>
-    process_nasa_data()
-}
-
-#' Download NASA POWER data for a single site
-#' @param site Site identifier
-#' @param long Longitude
-#' @param lat Latitude
-#' @param start Start date
-#' @param end End date
-#' @param elev Elevation in meters
-#' @return A dataframe with NASA POWER data
-#' @keywords internal
+#' Downloads hourly meteorological data from the NASA POWER project for a set of sites
+#' over specified time periods.
+#'
+#' @param site_meta A data frame containing metadata for each site. Required columns:
+#'   \itemize{
+#'     \item \code{Site}: site name (character)
+#'     \item \code{lat}: latitude (numeric)
+#'     \item \code{lon}: longitude (numeric)
+#'     \item \code{elev_m}: elevation in meters (numeric)
+#'     \item \code{start_date}, \code{end_date}: date range (can be `Date` or character)
+#'   }
+#'
+#' @param params Case-insensitive character vector of solar, meteorological or climatology parameters to download. Defaults to "PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", and "T2M". See \link[nasapower]{get_power} for more information.
+#' @param max_attempts Number of retry attempts for failed API calls. Default is 5.
+#'
+#' @return A tibble with columns:
+#'   \describe{
+#'     \item{Site}{Site name}
+#'     \item{dateTime}{timestamp in UTC}
+#'     \item{PSC}{Elevation-corrected barometric pressure (kPa)}
+#'     \item{ALLSKY_SFC_SW_DWN}{All Sky Surface Shortwave Downward Irradiance (W/m²)}
+#'     \item{T2M}{Average air temperature at 2 m above the surface (°C)}
+#'     \item{PRECTOTCORR}{MERRA-2 bias corrected total precipitation(mm/hr)}
+#'   }
+#'
 #' @importFrom nasapower get_power
-fetch_single_site <- function(site, long, lat, start, end, elev) {
-  message(sprintf("Downloading data for %s", site))
-
-  data <- nasapower::get_power(
-    community = "sb",
-    pars = c("PSC", "ALLSKY_SFC_SW_DWN"),
-    temporal_api = "hourly",
-    lonlat = c(long, lat),
-    dates = c(start, end),
-    site_elevation = elev,
-    time_standard = "UTC"
-  )
-
-  data$Site <- site
-  data
-}
-
-#' Download data for all sites in metadata using parallelization
-#' @param metadata Dataframe with site information
-#' @return Combined dataframe with all sites' data
-#' @keywords internal
-#' @importFrom furrr future_pmap
-#' @importFrom dplyr bind_rows
-#' @importFrom rlang .data
-download_site_data_parallel <- function(metadata) {
-  # Validate required columns
-  required_columns <- c("Site", "Long", "Lat", "StartDate", "EndDate", "Elev_m")
-  missing_columns <- setdiff(required_columns, colnames(metadata))
-
-  if (length(missing_columns) > 0) {
-    stop(
-      "Missing required columns in metadata: ",
-      paste(missing_columns, collapse = ", ")
-    )
-  }
-
-  # Use future_pmap for parallelized fetching
-  furrr::future_pmap(
-    list(
-      site = metadata$Site,
-      long = metadata$Long,
-      lat = metadata$Lat,
-      start = metadata$StartDate,
-      end = metadata$EndDate,
-      elev = metadata$Elev_m
-    ),
-    fetch_single_site,
-    .options = furrr::furrr_options(seed = T)
-  ) |>
-    dplyr::bind_rows()
-}
-
-#' Process NASA POWER data
-#' @param raw_data Combined raw data from all sites
-#' @return Processed tibble with required columns
-#' @keywords internal
-#' @importFrom stringr str_detect
+#' @importFrom cli cli_h1 cli_h2 cli_alert_info cli_alert_success cli_alert_warning cli_alert_danger
+#' @importFrom lubridate as_date ymd year ymd_hms
+#' @importFrom dplyr bind_rows mutate select
 #' @importFrom tibble as_tibble
-#' @importFrom rlang .data
-#' @importFrom LakeMetabolizer sw.to.par.base
-process_nasa_data <- function(raw_data) {
-  required_columns <- c("HR", "YYYYMMDD", "PSC", "ALLSKY_SFC_SW_DWN", "Site")
+#' @importFrom stringr str_pad
+#' @importFrom stats runif
+#' @export
+get_nasa_data <- function(
+  site_meta,
+  params = c("PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", "T2M"),
+  max_attempts = 5
+) {
+  cli::cli_h1("Downloading NASA POWER data")
 
-  if (!all(required_columns %in% colnames(raw_data))) {
-    stop(
-      "Missing required columns in raw_data: ",
-      paste(setdiff(required_columns, colnames(raw_data)), collapse = ", ")
+  retry_get_power <- function(..., max_attempts = 5) {
+    attempt <- 1
+    while (attempt <= max_attempts) {
+      result <- tryCatch(
+        {
+          return(get_power(...))
+        },
+        error = function(e) {
+          if (attempt < max_attempts) {
+            wait <- runif(1, min = 1, max = 2) * 2^(attempt - 1)
+            cli::cli_alert_warning("    Attempt {attempt} failed: {e$message}")
+            cli::cli_alert_info("    Retrying in {round(wait, 2)} seconds...")
+            Sys.sleep(wait)
+            NULL
+          } else {
+            cli::cli_alert_danger(
+              "    Failed after {max_attempts} attempts: {e$message}"
+            )
+            stop(e)
+          }
+        }
+      )
+      if (!is.null(result)) {
+        break
+      }
+      attempt <- attempt + 1
+    }
+    result
+  }
+
+  all_data <- list()
+
+  for (i in seq_len(nrow(site_meta))) {
+    site <- site_meta[i, ]
+
+    site_name <- site$Site
+    lat <- site$lat
+    lon <- site$lon
+    elev_m <- site$elev_m
+    raw_sDate <- lubridate::as_date(site$start_date)
+    eDate <- lubridate::as_date(site$end_date)
+
+    # Ensure start date is not before 2001-01-01
+    sDate <- max(raw_sDate, lubridate::ymd("2001-01-01"))
+
+    years <- seq(lubridate::year(sDate), lubridate::year(eDate))
+
+    cli::cli_h2("Site: {.strong {site_name}}")
+
+    for (yr in years) {
+      start <- max(sDate, lubridate::ymd(paste0(yr, "-01-01")))
+      end <- min(eDate, lubridate::ymd(paste0(yr, "-12-31")))
+
+      cli::cli_alert_info("  Retrieving data: {start} to {end}")
+
+      dat <- retry_get_power(
+        community = "sb",
+        pars = params,
+        temporal_api = "hourly",
+        lonlat = c(lon, lat),
+        dates = c(start, end),
+        site_elev = elev_m,
+        time_standard = "UTC",
+        max_attempts = max_attempts
+      )
+
+      dat$Site <- site_name
+      all_data[[paste0(site_name, "_", yr)]] <- dat
+
+      Sys.sleep(1)
+    }
+
+    cli::cli_alert_success(
+      "Finished downloading data for {.strong {site_name}}"
     )
   }
 
-  raw_data |>
+  all_data |>
+    dplyr::bind_rows() |>
+    tibble::as_tibble() |>
     dplyr::mutate(
-      Hour = stringr::str_pad(.data$HR, 2, side = "left", pad = "0"),
-      dateTime = lubridate::ymd_hms(paste0(.data$YYYYMMDD, .data$Hour, ":00:00")),
-      bp_mbar = .data$PSC * 10, # Convert kilopascals to millibar
-      #coef Numerical coefficient to convert SW (W/m^2) to PAR  (umol/m^2/sec). Defaults to value from Britton and Dodd (1976).
-      PAR.obs = LakeMetabolizer::sw.to.par.base(sw = .data$ALLSKY_SFC_SW_DWN, coef = 2.114)
+      HR = paste0(
+        stringr::str_pad(.data$HR, 2, side = "left", pad = "0"),
+        ":00:00"
+      ),
+      dateTime = lubridate::ymd_hms(
+        paste(.data$YYYYMMDD, .data$HR, " "),
+        tz = "UTC"
+      )
     ) |>
-    dplyr::select(
-      .data$Site,
-      dateTime = .data$dateTime,
-      bp_mbar = .data$bp_mbar,
-      PAR.obs = .data$PAR.obs
-    ) |>
-    tibble::as_tibble()
+    dplyr::select(-dplyr::any_of(c("HR", "YYYYMMDD", "LON", "LAT", "YEAR")))
+  # dplyr::select(
+  #   .data$Site, .data$dateTime, .data$PSC,
+  #   .data$PRECTOTCORR, .data$ALLSKY_SFC_SW_DWN, .data$T2M
+  # )
 }
