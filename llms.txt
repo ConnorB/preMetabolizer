@@ -1,0 +1,227 @@
+# preMetabolizer
+
+`preMetabolizer` is a utility R package that provides tools for
+wrangling the input data required by
+[`streamMetabolizer`](https://github.com/ConnorB/streamMetabolizer).
+
+## Installation
+
+`preMetabolizer` is not on CRAN. Install the development version from
+GitHub:
+
+``` r
+
+# install.packages("pak")
+pak::pak("ConnorB/preMetabolizer")
+```
+
+Or with `remotes`:
+
+``` r
+
+# install.packages("remotes")
+remotes::install_github("ConnorB/preMetabolizer")
+```
+
+The package requires R (\>= 4.1.0). A companion fork of
+`streamMetabolizer` is listed under `Remotes:` and will be installed
+automatically.
+
+## Usage
+
+### Physical and chemical calculations
+
+``` r
+
+library(preMetabolizer)
+
+# Dissolved oxygen saturation at 15°C, standard atmosphere, freshwater
+calc_O2sat(temp_water = 15, atmo_press = 1, units = "atm")
+#> [1] 10.07807
+
+# Water density (kg/m³) at several temperatures
+calc_water_density(water_temp = c(0, 10, 20, 30))
+#> [1] 999.8395 999.6996 998.2041 995.6473
+
+# Barometric pressure correction from a station at 300 m to a site at 500 m
+correct_bp(station_bp = 101.3, air_temp = 15, station_elev = 300, site_elev = 500)
+#> [1] 98.92626
+```
+
+### Unit conversion
+
+``` r
+
+# Stream discharge: cfs → cms
+convert_flow(14.32, from = "cfs", to = "cms")
+#> [1] 0.4054972
+
+# Barometric pressure: kPa → atm
+convert_pressure(101.325, from = "kPa", to = "atm")
+#> [1] 1
+```
+
+### Solar radiation and light
+
+``` r
+
+# Convert a UTC timestamp to mean solar time at a site in Kansas
+utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
+solar <- convert_UTC_to_solartime(utc, longitude = -96.6, time.type = "mean solar")
+
+# Model PAR at solar noon on the summer solstice
+noon_solar <- convert_UTC_to_solartime(
+  as.POSIXct("2024-06-21 12:00:00", tz = "UTC"),
+  longitude = -96.6
+)
+calc_light(noon_solar, latitude = 39.1, longitude = -96.6)
+#> [1] 390.264
+```
+
+### Time series utilities
+
+``` r
+
+# Flag outliers with a moving-window robust Z-score
+x <- c(1.0, 1.2, 1.1, 1.3, 50.0, 1.1, 1.2, 1.0)
+flag_z(x, width = 5, threshold = 3)
+#> [1] NA  NA  NA  NA  "Z" NA  NA  NA
+
+# Determine meteorological season from a date
+get_season(c("2024-01-15", "2024-04-15", "2024-07-04", "2024-10-15"))
+#> [1] "Winter" "Spring" "Summer" "Fall"
+```
+
+## License
+
+GPL (\>= 3). See
+[LICENSE.md](https://connorb.github.io/preMetabolizer/LICENSE.md).
+
+## Issues
+
+Bug reports and feature requests are welcome at
+<https://github.com/ConnorB/preMetabolizer/issues>.
+
+# Package index
+
+## Data access
+
+Download and read meteorological and hydrological data from external
+sources.
+
+- [`download_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/download_ghcnh.md)
+  : Download GHCNh Parquet Files
+- [`read_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/read_ghcnh.md)
+  : Read GHCNh Parquet Files
+- [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
+  : Download NASA POWER hourly data
+- [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
+  : Get elevation from the USGS Elevation Point Query Service
+- [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
+  : Get NOAA Station Information
+- [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
+  : Find NOAA Stations Within Specified Radius
+- [`get_ks_meso()`](https://connorb.github.io/preMetabolizer/reference/get_ks_meso.md)
+  : Fetch Data from Kansas Mesonet
+- [`read_ks_meso()`](https://connorb.github.io/preMetabolizer/reference/read_ks_meso.md)
+  : Read Cached Kansas Mesonet Data
+- [`ks_meso_stations()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_stations.md)
+  : Get Kansas Mesonet Station Information
+- [`ks_meso_station_activity()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_station_activity.md)
+  : Get Kansas Mesonet Station Activity
+- [`read_shp()`](https://connorb.github.io/preMetabolizer/reference/read_shp.md)
+  : Read Shapefile or Zipped Shapefile
+
+## Chemistry calculations
+
+Calculate dissolved gas concentrations, solubility constants, and
+related thermodynamic quantities.
+
+- [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
+  : Calculate Dissolved Oxygen Saturation
+- [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
+  : Calculate CO2 Concentration from Sensor Data
+- [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)
+  : Calculate CO2 Concentration from Sensor Data
+- [`calc_K0()`](https://connorb.github.io/preMetabolizer/reference/calc_K0.md)
+  : Calculate Solubility Constant (K0) for CO2 in Water
+- [`calc_vapor_press()`](https://connorb.github.io/preMetabolizer/reference/calc_vapor_press.md)
+  : Calculate the vapor pressure of water at the supplied conditions
+- [`xCO2_to_pCO2()`](https://connorb.github.io/preMetabolizer/reference/xCO2_to_pCO2.md)
+  : Convert Mole Fraction of CO2 (xCO2) to Partial Pressure (pCO2)
+- [`pCO2_to_xCO2()`](https://connorb.github.io/preMetabolizer/reference/pCO2_to_xCO2.md)
+  : Convert p(CO2) to x(CO2)
+
+## Physical property calculations
+
+Calculate water density, depth from pressure, and solar radiation.
+
+- [`calc_water_density()`](https://connorb.github.io/preMetabolizer/reference/calc_water_density.md)
+  : Calculate Water Density
+- [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md)
+  : Calculate Water Height from Sensor and Atmospheric Pressure
+- [`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md)
+  : Calculate modeled light from solar.time
+- [`calc_solar_insolation()`](https://connorb.github.io/preMetabolizer/reference/calc_solar_insolation.md)
+  : Model solar insolation on a horizontal surface (W/m2 == J/s/m2) as
+  in
+  http://education.gsfc.nasa.gov/experimental/July61999siteupdate/inv99Project.Site/Pages/solar.insolation.html
+
+## Statistical utilities
+
+Descriptive statistics and outlier detection for time series data.
+
+- [`calc_bin_width()`](https://connorb.github.io/preMetabolizer/reference/calc_bin_width.md)
+  : Calculate histogram bin width
+- [`calc_cv()`](https://connorb.github.io/preMetabolizer/reference/calc_cv.md)
+  : Calculate Coefficient of Variation
+- [`calc_mode()`](https://connorb.github.io/preMetabolizer/reference/calc_mode.md)
+  : Calculate the Mode(s) of a Vector
+- [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
+  : Calculate Flow Exceedence Probabilities
+- [`flag_z()`](https://connorb.github.io/preMetabolizer/reference/flag_z.md)
+  : Flag Outliers Using Robust Z-Scores
+
+## Unit conversion
+
+Convert between common units used in hydrology and atmospheric science.
+
+- [`convert_flow()`](https://connorb.github.io/preMetabolizer/reference/convert_flow.md)
+  : Convert Stream Discharge Between Units
+- [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
+  : Convert Barometric Pressure Between Units
+- [`convert_pressure_to_atm()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure_to_atm.md)
+  : Convert Barometric Pressure to Atmospheres
+- [`correct_bp()`](https://connorb.github.io/preMetabolizer/reference/correct_bp.md)
+  : Correct Barometric Pressure for Elevation Change
+
+## Time utilities
+
+Work with meteorological seasons and solar time.
+
+- [`get_season()`](https://connorb.github.io/preMetabolizer/reference/get_season.md)
+  : Determine the Season from a Date
+- [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
+  : Get evenly spaced time steps for logger data
+- [`convert_UTC_to_solartime()`](https://connorb.github.io/preMetabolizer/reference/convert_UTC_to_solartime.md)
+  : Convert UTC Time to Mean or Apparent Solar Time
+- [`convert_solartime_to_UTC()`](https://connorb.github.io/preMetabolizer/reference/convert_solartime_to_UTC.md)
+  : Convert DateTime from Local Solar Time to UTC
+
+## Data
+
+Built-in reference datasets.
+
+- [`ks_mesonet_vars`](https://connorb.github.io/preMetabolizer/reference/ks_mesonet_vars.md)
+  : Kansas Mesonet Variables
+- [`french_creek`](https://connorb.github.io/preMetabolizer/reference/french_creek.md)
+  : French Creek Stream Metabolism Data
+
+# Articles
+
+### Workflows
+
+End-to-end examples preparing data for streamMetabolizer.
+
+- [Preparing French Creek Data for Stream Metabolism
+  Modeling](https://connorb.github.io/preMetabolizer/articles/french-creek.md):
