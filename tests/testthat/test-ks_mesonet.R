@@ -6,6 +6,19 @@ mesonet_csv_response <- function(body) {
   )
 }
 
+mesonet_vars_response <- function() {
+  httr2::response(
+    200,
+    headers = list(`Content-Type` = "text/html"),
+    body = charToRaw(paste(
+      "<script> jsonSchema = [",
+      '{"TEMP2MAVG": { "var" : "AirTemperature.avg", "units": "°C", "desc": "Average air temperature at 2m" } },',
+      '{"PRECIP": { "var": "Precipitation", "units": "mm", "desc": "Precipitation" } }',
+      "];</script>"
+    ))
+  )
+}
+
 test_that("read_ks_meso reads cached CSV data", {
   output_dir <- tempfile()
   dir.create(output_dir)
@@ -108,6 +121,10 @@ test_that("get_ks_meso can request stations or networks", {
       ))
     }
 
+    if (grepl("variables", parsed$path)) {
+      return(mesonet_vars_response())
+    }
+
     queries[[length(queries) + 1]] <<- parsed$query
     mesonet_csv_response(
       paste(
@@ -163,6 +180,10 @@ test_that("Mesonet timestamps are parsed as fixed Central Standard Time", {
           sep = "\n"
         )
       ))
+    }
+
+    if (grepl("variables", parsed$path)) {
+      return(mesonet_vars_response())
     }
 
     mesonet_csv_response(

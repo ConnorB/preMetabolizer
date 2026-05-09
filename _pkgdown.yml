@@ -20,6 +20,7 @@ reference:
       - get_usgs_elev
       - get_noaa_stations
       - closest_noaa_stations
+      - ks_meso_vars
       - get_ks_meso
       - read_ks_meso
       - ks_meso_stations
@@ -77,11 +78,13 @@ reference:
   - title: Data
     desc: Built-in reference datasets.
     contents:
-      - ks_mesonet_vars
       - french_creek
+      - kings_discharge
 
 articles:
   - title: Workflows
     desc: End-to-end examples preparing data for streamMetabolizer.
     contents:
       - french-creek
+      - kings-creek
+      - ks-mesonet
