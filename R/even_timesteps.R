@@ -11,9 +11,6 @@
 #'
 #' @return A data frame or tibble with evenly spaced time steps for each site, including
 #'   all original data points plus NAs for missing intervals. The class matches the input.
-#' @import lubridate
-#' @importFrom dplyr group_by ungroup do bind_rows
-#' @importFrom tibble as_tibble is_tibble
 #' @export
 #'
 #' @examples
@@ -69,8 +66,14 @@ even_timesteps <- function(
     interval_seconds <- as.numeric(time_diffs, unit = "secs")
 
     # Create sequence of evenly spaced timestamps
-    start_time <- ceiling_date(min(site_data[[datetime_col]]), unit = "mins")
-    end_time <- floor_date(max(site_data[[datetime_col]]), unit = "mins")
+    start_time <- lubridate::ceiling_date(
+      min(site_data[[datetime_col]]),
+      unit = "mins"
+    )
+    end_time <- lubridate::floor_date(
+      max(site_data[[datetime_col]]),
+      unit = "mins"
+    )
 
     # Generate even time sequence
     even_times <- seq(start_time, end_time, by = interval_seconds)

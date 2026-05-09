@@ -266,34 +266,37 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
         "GHCNH_ID"
       )
 
-      dt <- data.table::as.data.table(df)
-
-      dt <- dt[BEGIN_DATE == "00010101", BEGIN_DATE := NA_character_][
-        END_DATE == "99991231",
-        END_DATE := format(Sys.Date(), "%Y%m%d")
-      ][,
-        c("BEGIN_DATE", "END_DATE") := list(
-          as.Date(BEGIN_DATE, format = "%Y%m%d"),
-          as.Date(END_DATE, format = "%Y%m%d")
+      noaa_data <- df |>
+        dplyr::mutate(
+          BEGIN_DATE = dplyr::if_else(
+            .data$BEGIN_DATE == "00010101",
+            NA_character_,
+            .data$BEGIN_DATE
+          ),
+          END_DATE = dplyr::if_else(
+            .data$END_DATE == "99991231",
+            format(Sys.Date(), "%Y%m%d"),
+            .data$END_DATE
+          ),
+          BEGIN_DATE = as.Date(.data$BEGIN_DATE, format = "%Y%m%d"),
+          END_DATE = as.Date(.data$END_DATE, format = "%Y%m%d"),
+          LAT_DEC = as.numeric(gsub("[^0-9.-]", "", .data$LAT_DEC)),
+          LON_DEC = as.numeric(gsub("[^0-9.-]", "", .data$LON_DEC))
+        ) |>
+        dplyr::filter(
+          !is.na(.data$LAT_DEC),
+          !is.na(.data$LON_DEC),
+          abs(.data$LAT_DEC) >= 0.1,
+          abs(.data$LAT_DEC) <= 90,
+          abs(.data$LON_DEC) >= 0.1,
+          abs(.data$LON_DEC) <= 180,
+          .data$PLATFORM != "UPPERAIR,BALLOON"
         )
-      ][,
-        c("LAT_DEC", "LON_DEC") := list(
-          as.numeric(gsub("[^0-9.-]", "", LAT_DEC)),
-          as.numeric(gsub("[^0-9.-]", "", LON_DEC))
-        )
-      ][
-        !is.na(LAT_DEC) &
-          !is.na(LON_DEC) &
-          abs(LAT_DEC) >= 0.1 &
-          abs(LAT_DEC) <= 90 &
-          abs(LON_DEC) >= 0.1 &
-          abs(LON_DEC) <= 180 &
-          PLATFORM != "UPPERAIR,BALLOON"
-      ]
 
       if (!is.null(state)) {
-        dt <- dt[toupper(trimws(STATE_PROV)) == state]
-        if (nrow(dt) == 0) {
+        noaa_data <- noaa_data |>
+          dplyr::filter(toupper(trimws(.data$STATE_PROV)) == state)
+        if (nrow(noaa_data) == 0) {
           warning(sprintf("No stations found for state code '%s'", state))
         }
       }
@@ -302,33 +305,28 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
       special_cols <- c("BEGIN_DATE", "END_DATE")
       other_cols <- setdiff(cols_to_keep, c(id_cols, special_cols))
 
-      result <- dt[
-        order(GHCND_ID),
-        {
-          c(
-            lapply(.SD[1], identity),
-            list(
-              BEGIN_DATE = if (all(is.na(BEGIN_DATE))) {
-                NA_real_
-              } else {
-                min(BEGIN_DATE, na.rm = TRUE)
-              },
-              END_DATE = if (all(is.na(END_DATE))) {
-                NA_real_
-              } else {
-                max(END_DATE, na.rm = TRUE)
-              }
-            )
-          )
-        },
-        by = id_cols,
-        .SDcols = other_cols
-      ]
+      result <- noaa_data |>
+        dplyr::arrange(.data$GHCND_ID) |>
+        dplyr::group_by(.data$GHCND_ID) |>
+        dplyr::summarise(
+          dplyr::across(dplyr::all_of(other_cols), dplyr::first),
+          BEGIN_DATE = if (all(is.na(.data$BEGIN_DATE))) {
+            as.Date(NA)
+          } else {
+            min(.data$BEGIN_DATE, na.rm = TRUE)
+          },
+          END_DATE = if (all(is.na(.data$END_DATE))) {
+            as.Date(NA)
+          } else {
+            max(.data$END_DATE, na.rm = TRUE)
+          },
+          .groups = "drop"
+        ) |>
+        dplyr::select(dplyr::all_of(cols_to_keep))
 
-      result <- result[, ..cols_to_keep]
-      result <- result[, colSums(!is.na(result)) > 0, with = FALSE]
-
-      as.data.frame(result)
+      result |>
+        dplyr::select(dplyr::where(\(x) !all(is.na(x)))) |>
+        as.data.frame()
     },
     cache = memoise::cache_filesystem(getOption("preMetabolizer.noaa_cache"))
   )

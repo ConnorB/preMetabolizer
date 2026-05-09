@@ -48,9 +48,6 @@
 #'   \item An unrecognised `method` string is supplied.
 #' }
 #'
-#' @importFrom cli cli_abort
-#' @importFrom stats IQR sd
-#'
 #' @examples
 #' # Continuous data — Freedman-Diaconis
 #' calc_bin_width(rnorm(200), "fd")
@@ -125,7 +122,7 @@ calc_bin_width <- function(x, method = "auto") {
   }
 
   sturges_width <- rng / (log2(n) + 1)
-  fd_raw <- 2 * IQR(x) * n^(-1 / 3)
+  fd_raw <- 2 * stats::IQR(x) * n^(-1 / 3)
   fd_width <- if (fd_raw == 0) sturges_width else fd_raw
 
   switch(
@@ -135,9 +132,9 @@ calc_bin_width <- function(x, method = "auto") {
     fd = fd_width,
     sqrt = rng / sqrt(n),
     rice = rng / (2 * n^(1 / 3)),
-    scott = 3.49 * sd(x) * n^(-1 / 3),
+    scott = 3.49 * stats::sd(x) * n^(-1 / 3),
     doane = {
-      g1 <- mean((x - mean(x))^3) / sd(x)^3
+      g1 <- mean((x - mean(x))^3) / stats::sd(x)^3
       sg1 <- sqrt(6 * (n - 2) / ((n + 1) * (n + 3)))
       rng / (1 + log2(n) + log2(1 + abs(g1) / sg1))
     },

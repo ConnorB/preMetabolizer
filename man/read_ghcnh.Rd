@@ -2,14 +2,16 @@
 % Please edit documentation in R/download_ghcnh.R
 \name{read_ghcnh}
 \alias{read_ghcnh}
-\title{Read GHCNh Parquet Files}
+\title{Read GHCNh CSV Files}
 \usage{
 read_ghcnh(files = NULL, directory = NULL, combine = TRUE)
 }
 \arguments{
-\item{files}{Optional. Character vector specifying the paths to parquet files. Defaults to \code{NULL}.}
+\item{files}{Optional. Character vector specifying the paths to CSV files.
+Defaults to \code{NULL}.}
 
-\item{directory}{Optional. Character string specifying the directory containing parquet files. Defaults to \code{NULL}.}
+\item{directory}{Optional. Character string specifying the directory
+containing CSV files. Defaults to \code{NULL}.}
 
 \item{combine}{Logical. If \code{TRUE}, combines all successfully read files into a single dataframe. Defaults to \code{TRUE}.}
 }
@@ -25,7 +27,8 @@ If \code{combine} is \code{TRUE}, returns a list with:
 If \code{combine} is \code{FALSE}, returns a list of individual dataframes and read results.
 }
 \description{
-Reads GHCNh parquet files from specified files or directory and optionally combines them into a single dataframe.
+Reads GHCNh CSV files from specified files or directory and optionally
+combines them into a single dataframe.
 }
 \examples{
 \dontrun{
@@ -33,8 +36,8 @@ Reads GHCNh parquet files from specified files or directory and optionally combi
   data <- read_ghcnh(directory = "data/ghcnh")
 
   # Read specific files
-  files <- c("data/ghcnh/GHCNh_USW00023183_2022.parquet",
-             "data/ghcnh/GHCNh_USW00023183_2023.parquet")
+  files <- c("data/ghcnh/GHCNh_USW00023183_2022.csv.gz",
+             "data/ghcnh/GHCNh_USW00023183_2023.csv.gz")
   data <- read_ghcnh(files = files)
 }
 

@@ -68,16 +68,7 @@
 #' get_nasa_data(site_data, site_col = "site")
 #' }
 #'
-#' @importFrom nasapower get_power
-#' @importFrom cli cli_abort cli_h1 cli_h2
-#' @importFrom cli cli_alert_info cli_alert_success
-#' @importFrom cli cli_alert_warning cli_alert_danger
-#' @importFrom lubridate as_date ymd year ymd_hms
-#' @importFrom dplyr any_of bind_rows mutate select
 #' @importFrom rlang .data
-#' @importFrom tibble as_tibble
-#' @importFrom stringr str_pad
-#' @importFrom stats runif
 #' @export
 get_nasa_data <- function(
   data,
@@ -403,7 +394,7 @@ get_nasa_data <- function(
         },
         error = function(e) {
           if (attempt < max_attempts) {
-            wait <- runif(1, min = 1, max = 2) * 2^(attempt - 1)
+            wait <- stats::runif(1, min = 1, max = 2) * 2^(attempt - 1)
             cli::cli_alert_warning("    Attempt {attempt} failed: {e$message}")
             cli::cli_alert_info("    Retrying in {round(wait, 2)} seconds...")
             Sys.sleep(wait)
@@ -575,4 +566,8 @@ get_nasa_data <- function(
   }
 
   interpolate_nasa_data(nasa_data)
+}
+
+get_power <- function(...) {
+  nasapower::get_power(...)
 }

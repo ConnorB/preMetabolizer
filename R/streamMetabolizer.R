@@ -19,7 +19,6 @@
 #' @param max.PAR numeric: the PAR (umol m^-2 s^-1) that each
 #'   day should reach at peak light
 #' @inheritParams calc_solar_insolation
-#' @import dplyr
 #' @examples
 #' solar.time <- lubridate::force_tz(as.POSIXct('2016-09-27 12:00'), 'UTC')
 #' calc_light(solar.time, 40, -120)

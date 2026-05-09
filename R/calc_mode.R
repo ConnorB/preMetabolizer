@@ -85,7 +85,7 @@ calc_mode <- function(x, na.rm = TRUE, multi = "first") {
   if (is.factor(x)) {
     modes <- factor(modes, levels = levels(x))
   } else {
-    modes <- suppressWarnings(as(modes, class(x)))
+    modes <- suppressWarnings(methods::as(modes, class(x)))
   }
 
   modes

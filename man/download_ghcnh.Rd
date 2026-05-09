@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_ghcnh.R
 \name{download_ghcnh}
 \alias{download_ghcnh}
-\title{Download GHCNh Parquet Files}
+\title{Download GHCNh CSV Files}
 \usage{
 download_ghcnh(station_id, years, output_dir = NULL, quiet = FALSE)
 }
@@ -24,7 +24,8 @@ A list summarizing the download process:
 \item{total_successful}{Total number of successful downloads.}
 }
 \description{
-Downloads GHCNh parquet files for specified stations and years, saving them to an output directory.
+Downloads GHCNh CSV files for specified stations and years, saving them to an
+output directory.
 }
 \examples{
 \dontrun{

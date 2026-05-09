@@ -12,9 +12,6 @@
 #'
 #' @return A list with details about successful and failed downloads, output directory, and data chunks.
 #'
-#' @importFrom arrow write_parquet
-#' @importFrom utils read.csv
-#' @importFrom utils URLencode
 #' @importFrom rlang .data
 #'
 #' @export
@@ -130,7 +127,7 @@ get_ks_meso <- function(
         output_file <- file.path(
           output_dir,
           sprintf(
-            "Mesonet_%s_%s_%s_to_%s.parquet",
+            "Mesonet_%s_%s_%s_to_%s.csv",
             station,
             interval,
             start_date,
@@ -166,7 +163,7 @@ get_ks_meso <- function(
 
           api_url <- sprintf(
             "http://mesonet.k-state.edu/rest/stationdata/?stn=%s&int=%s&t_start=%s&t_end=%s&vars=%s",
-            URLencode(station, reserved = TRUE),
+            utils::URLencode(station, reserved = TRUE),
             interval,
             time_start,
             time_end,
@@ -209,16 +206,11 @@ get_ks_meso <- function(
           if (!is.null(response)) {
             tryCatch(
               {
-                # Read data and convert timestamp
-                temp_data <- data.table::fread(
-                  text = httr2::resp_body_string(response),
-                  na.strings = c("", "NA", "M"),
-                  tz = "",
-                  data.table = FALSE
-                )
-
-                # Convert to tibble and use .data$ pronoun for timestamp conversion
-                temp_data <- dplyr::as_tibble(temp_data) |>
+                temp_data <- readr::read_csv(
+                  I(httr2::resp_body_string(response)),
+                  na = c("", "NA", "M"),
+                  show_col_types = FALSE
+                ) |>
                   dplyr::mutate(
                     TIMESTAMP = as.POSIXct(.data$TIMESTAMP, tz = "Etc/GMT-6")
                   )
@@ -249,17 +241,10 @@ get_ks_meso <- function(
         # Remove failed chunks
         chunk_data <- chunk_data[chunk_success]
 
-        # Combine chunks and write to Parquet
+        # Combine chunks and write to CSV
         if (length(chunk_data) > 0 && any(sapply(chunk_data, nrow) > 0)) {
-          # Use dplyr's bind_rows instead of data.table::rbindlist
           combined_data <- dplyr::bind_rows(chunk_data)
-
-          # Write to Parquet with compression
-          arrow::write_parquet(
-            combined_data,
-            output_file,
-            compression = "snappy"
-          )
+          readr::write_csv(combined_data, output_file)
 
           results$success <- c(results$success, station)
 
@@ -298,7 +283,6 @@ get_ks_meso <- function(
 #'
 #' @return A data frame containing the requested Mesonet data.
 #'
-#' @importFrom arrow read_parquet
 #' @export
 read_ks_meso <- function(
   station,
@@ -314,8 +298,8 @@ read_ks_meso <- function(
   if (
     missing(start_date) ||
       missing(end_date) ||
-      !is.Date(ymd(start_date)) ||
-      !is.Date(ymd(end_date))
+      !inherits(lubridate::ymd(start_date), "Date") ||
+      !inherits(lubridate::ymd(end_date), "Date")
   ) {
     stop(
       "start_date and end_date must be provided as valid date strings (YYYY-MM-DD)"
@@ -334,7 +318,7 @@ read_ks_meso <- function(
   output_file <- file.path(
     output_dir,
     sprintf(
-      "Mesonet_%s_%s_%s_to_%s.parquet",
+      "Mesonet_%s_%s_%s_to_%s.csv",
       station,
       interval,
       start_date,
@@ -352,9 +336,7 @@ read_ks_meso <- function(
     ))
   }
 
-  # Read and return the cached Parquet data
-  data <- arrow::read_parquet(output_file)
-  return(data)
+  readr::read_csv(output_file, show_col_types = FALSE)
 }
 
 #' Get Kansas Mesonet Station Information
@@ -363,7 +345,6 @@ read_ks_meso <- function(
 #'
 #' @return A data frame containing station metadata.
 #'
-#' @importFrom utils read.csv
 #' @export
 ks_meso_stations <- function() {
   url <- "http://mesonet.k-state.edu/rest/stationnames/"
@@ -382,7 +363,7 @@ ks_meso_stations <- function() {
     {
       response <- httr2::request(url) |> httr2::req_perform()
       content <- httr2::resp_body_string(response)
-      station_names <- read.csv(
+      station_names <- utils::read.csv(
         text = content,
         header = T,
         col.names = col_names
@@ -415,72 +396,41 @@ ks_meso_station_activity <- function() {
         httr2::req_perform()
       content <- httr2::resp_body_string(response)
 
-      # Parse the CSV data using data.table - note that headers are present
-      station_activity <- data.table::fread(
-        text = content,
-        header = TRUE,
-        data.table = FALSE,
-        stringsAsFactors = FALSE
-      )
-
-      # Convert interval seconds to more readable format
       interval_map <- c(
         "300" = "5min",
         "3600" = "hour",
         "86400" = "day"
       )
 
-      station_activity$interval <- interval_map[as.character(
-        station_activity$OBS_INTERVAL
-      )]
-
-      # Convert timestamps - they're already in the correct format
-      station_activity$START <- as.POSIXct(
-        station_activity$START,
-        tz = "America/Chicago"
-      )
-      station_activity$END <- as.POSIXct(
-        station_activity$END,
-        tz = "America/Chicago"
-      )
-
-      # Add additional computed columns
-      station_activity$data_span_days <- as.numeric(
-        difftime(station_activity$END, station_activity$START, units = "days")
-      )
-
-      station_activity$is_current <- as.numeric(
-        difftime(Sys.time(), station_activity$END, units = "hours")
-      ) <
-        24 # Consider current if updated in last 24 hours
-
-      # Rename and reorder columns for consistency
-      names(station_activity)[names(station_activity) == "STATION"] <- "station"
-      names(station_activity)[
-        names(station_activity) == "OBS_INTERVAL"
-      ] <- "interval_seconds"
-      names(station_activity)[
-        names(station_activity) == "START"
-      ] <- "first_observation"
-      names(station_activity)[
-        names(station_activity) == "END"
-      ] <- "last_observation"
-
-      # Reorder columns
-      station_activity <- station_activity[, c(
-        "station",
-        "interval",
-        "interval_seconds",
-        "first_observation",
-        "last_observation",
-        "data_span_days",
-        "is_current"
-      )]
-
-      # Sort by station name and interval
-      station_activity <- station_activity[
-        order(station_activity$station, station_activity$interval_seconds),
-      ]
+      station_activity <- readr::read_csv(
+        I(content),
+        show_col_types = FALSE
+      ) |>
+        dplyr::transmute(
+          station = .data$STATION,
+          interval = interval_map[as.character(.data$OBS_INTERVAL)],
+          interval_seconds = .data$OBS_INTERVAL,
+          first_observation = as.POSIXct(
+            .data$START,
+            tz = "America/Chicago"
+          ),
+          last_observation = as.POSIXct(
+            .data$END,
+            tz = "America/Chicago"
+          ),
+          data_span_days = as.numeric(
+            difftime(
+              .data$last_observation,
+              .data$first_observation,
+              units = "days"
+            )
+          ),
+          is_current = as.numeric(
+            difftime(Sys.time(), .data$last_observation, units = "hours")
+          ) <
+            24
+        ) |>
+        dplyr::arrange(.data$station, .data$interval_seconds)
 
       # Add class for potential method dispatch
       class(station_activity) <- c("ks_meso_station_activity", "data.frame")

@@ -9,7 +9,6 @@
 #'
 #' @keywords internal
 #' @noRd
-#' @importFrom tools R_user_dir
 NULL # This documents all internal functions
 "_PACKAGE"
 

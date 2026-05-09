@@ -1,6 +1,7 @@
-#' Download GHCNh Parquet Files
+#' Download GHCNh CSV Files
 #'
-#' Downloads GHCNh parquet files for specified stations and years, saving them to an output directory.
+#' Downloads GHCNh CSV files for specified stations and years, saving them to an
+#' output directory.
 #'
 #' @param station_id Character string specifying the station ID for which data is to be downloaded.
 #' @param years Numeric vector specifying the years for which data is to be downloaded.
@@ -20,7 +21,6 @@
 #' }
 #'
 #' @export
-#' @importFrom utils download.file
 download_ghcnh <- function(
   station_id,
   years,
@@ -59,7 +59,7 @@ download_ghcnh <- function(
   for (year in years) {
     # Construct URL and filename
     url <- sprintf(
-      "%s/%d/parquet/GHCNh_%s_%d.parquet",
+      "%s/%d/csv/GHCNh_%s_%d.csv.gz",
       base_url,
       year,
       station_id,
@@ -67,7 +67,7 @@ download_ghcnh <- function(
     )
     output_file <- file.path(
       output_dir,
-      sprintf("GHCNh_%s_%d.parquet", station_id, year)
+      sprintf("GHCNh_%s_%d.csv.gz", station_id, year)
     )
 
     if (file.exists(output_file)) {
@@ -94,7 +94,7 @@ download_ghcnh <- function(
             year
           ))
         }
-        download.file(url, output_file, mode = "auto", quiet = T)
+        utils::download.file(url, output_file, mode = "auto", quiet = T)
         results$success <- c(
           results$success,
           sprintf("%s_%d", station_id, year)
@@ -129,12 +129,15 @@ download_ghcnh <- function(
   return(summary)
 }
 
-#' Read GHCNh Parquet Files
+#' Read GHCNh CSV Files
 #'
-#' Reads GHCNh parquet files from specified files or directory and optionally combines them into a single dataframe.
+#' Reads GHCNh CSV files from specified files or directory and optionally
+#' combines them into a single dataframe.
 #'
-#' @param files Optional. Character vector specifying the paths to parquet files. Defaults to `NULL`.
-#' @param directory Optional. Character string specifying the directory containing parquet files. Defaults to `NULL`.
+#' @param files Optional. Character vector specifying the paths to CSV files.
+#'   Defaults to `NULL`.
+#' @param directory Optional. Character string specifying the directory
+#'   containing CSV files. Defaults to `NULL`.
 #' @param combine Logical. If `TRUE`, combines all successfully read files into a single dataframe. Defaults to `TRUE`.
 #'
 #' @return If `combine` is `TRUE`, returns a list with:
@@ -153,13 +156,11 @@ download_ghcnh <- function(
 #'   data <- read_ghcnh(directory = "data/ghcnh")
 #'
 #'   # Read specific files
-#'   files <- c("data/ghcnh/GHCNh_USW00023183_2022.parquet",
-#'              "data/ghcnh/GHCNh_USW00023183_2023.parquet")
+#'   files <- c("data/ghcnh/GHCNh_USW00023183_2022.csv.gz",
+#'              "data/ghcnh/GHCNh_USW00023183_2023.csv.gz")
 #'   data <- read_ghcnh(files = files)
 #' }
 #'
-#' @importFrom dplyr mutate select relocate any_of bind_rows
-#' @importFrom arrow read_parquet
 #' @importFrom rlang .data
 read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
   # Initialize variables to avoid R CMD check notes
@@ -171,15 +172,15 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
     message("Loading files from cache")
   }
 
-  # Find parquet files
+  # Find CSV files
   if (!is.null(directory)) {
     files <- list.files(
       path = directory,
-      pattern = "^GHCNh.*\\.parquet$",
+      pattern = "^GHCNh.*\\.csv(\\.gz)?$",
       full.names = TRUE
     )
     if (length(files) == 0) {
-      stop("No GHCNh parquet files found in directory")
+      stop("No GHCNh CSV files found in directory")
     }
   }
 
@@ -243,33 +244,40 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
       }
     }
 
-    # DateTime handling with .data
-    df <- df |>
-      dplyr::mutate(
-        DateTime = if ("DATE" %in% names(.data)) {
-          as.POSIXct(.data$DATE, tz = "UTC", format = "%Y-%m-%dT%H:%M:%S")
-        } else if (
-          all(c("Year", "Month", "Day", "Hour", "Minute") %in% names(.data))
-        ) {
-          as.POSIXct(
-            sprintf(
-              "%04d-%02d-%02d %02d:%02d:00",
-              .data$Year,
-              .data$Month,
-              .data$Day,
-              .data$Hour,
-              .data$Minute
-            ),
-            tz = "UTC"
-          )
-        } else {
-          NA_real_
+    parse_ghcnh_datetime <- function(df) {
+      if ("DATE" %in% names(df)) {
+        date <- df[["DATE"]]
+        if (inherits(date, "POSIXt")) {
+          return(as.POSIXct(date, tz = "UTC"))
         }
-      ) |>
+        return(as.POSIXct(date, tz = "UTC", format = "%Y-%m-%dT%H:%M:%S"))
+      }
+
+      if (all(c("Year", "Month", "Day", "Hour", "Minute") %in% names(df))) {
+        return(as.POSIXct(
+          sprintf(
+            "%04d-%02d-%02d %02d:%02d:00",
+            df[["Year"]],
+            df[["Month"]],
+            df[["Day"]],
+            df[["Hour"]],
+            df[["Minute"]]
+          ),
+          tz = "UTC"
+        ))
+      }
+
+      rep(as.POSIXct(NA, tz = "UTC"), nrow(df))
+    }
+
+    datetime <- parse_ghcnh_datetime(df)
+
+    df <- df |>
+      dplyr::mutate(DateTime = datetime) |>
       dplyr::select(
         -dplyr::any_of(c("DATE", "Year", "Month", "Day", "Hour", "Minute"))
       ) |>
-      dplyr::relocate(DateTime, .after = .data$Station_name)
+      dplyr::relocate(DateTime, .after = "Station_name")
 
     return(df)
   }
@@ -279,7 +287,7 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
     tryCatch(
       {
         file_info <- basename(file)
-        df <- arrow::read_parquet(file) |>
+        df <- readr::read_csv(file, show_col_types = FALSE) |>
           standardize_df()
         results$data[[file_info]] <- df
         results$success <- c(results$success, file_info)

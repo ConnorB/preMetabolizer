@@ -42,9 +42,6 @@
 #' )
 #' }
 #'
-#' @importFrom geosphere distGeo
-#' @importFrom stats complete.cases
-#' @importFrom cli cli_abort
 #' @export
 closest_noaa_stations <- function(
   latitude,

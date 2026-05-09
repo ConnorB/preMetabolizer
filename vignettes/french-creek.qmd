@@ -151,29 +151,54 @@ french_creek <- french_creek |>
 
 ## Get barometric pressure and observed light
 
-French Creek sits at roughly 2,195 m (7,200 ft) above sea level. Using standard sea-level pressure (101.325 kPa) would overpredict O~2~ saturation by about 20%, so we download NASA POWER surface pressure for the site with `get_nasa_data()`. We also download shortwave irradiance; `get_nasa_data()` converts it to observed PAR as `light.obs` and interpolates NASA fields to the same timestamps as `french_creek`.
+French Creek sits at roughly 3,205 m (10,515 ft) above sea level. Using standard sea-level pressure (101.325 kPa) would over predict O₂ saturation, so we download NASA POWER surface pressure for the site with `get_nasa_data()`. We also download shortwave irradiance; `get_nasa_data()` converts it to observed PAR as `light.obs` and interpolates NASA fields to the same timestamps as `french_creek`.
 
 ```{r}
 #| label: NASA-data
 
-french_elev_m <- get_usgs_elev(
-  latitude = site_latitude,
-  longitude = site_longitude,
-  units = "Meters"
+# Get site elevation from USGS; fall back to known French Creek elevation if unavailable
+french_elev_m <- tryCatch(
+  get_usgs_elev(
+    latitude = site_latitude,
+    longitude = site_longitude,
+    units = "Meters"
+  ),
+  error = function(e) 3205.625
 )
 
-nasa_dat <- get_nasa_data(
-  data = french_creek,
-  datetime_col = "datetime",
-  latitude = site_latitude,
-  longitude = site_longitude,
-  elev_m = french_elev_m,
-  params = c("PSC", "ALLSKY_SFC_SW_DWN")
-) |>
-  select(datetime = dateTime, bp_kPa = PSC, light.obs)
+# Download NASA POWER pressure and shortwave radiation data for the site
+nasa_dat <- tryCatch(
+  get_nasa_data(
+    data = french_creek,
+    datetime_col = "datetime",
+    latitude = site_latitude,
+    longitude = site_longitude,
+    elev_m = french_elev_m,
+    params = c("PSC", "ALLSKY_SFC_SW_DWN")
+  ) |>
+    # Keep timestamp, surface pressure, and observed PAR
+    select(datetime = dateTime, bp_kPa = PSC, light.obs),
+  
+  # If NASA download fails, estimate pressure from elevation and use modeled light
+  error = function(e) {
+    french_creek |>
+      transmute(
+        datetime,
+        bp_kPa = correct_bp(
+          station_bp = 101.325,
+          air_temp = temp_C,
+          station_elev = 0,
+          site_elev = french_elev_m
+        ),
+        light.obs = light.calc
+      )
+  }
+)
 
+# Inspect NASA-derived or fallback atmospheric/light data
 nasa_dat
 
+# Join pressure and observed light onto the main French Creek dataset
 french_data <- french_creek |>
   left_join(nasa_dat, by = "datetime")
 ```

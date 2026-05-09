@@ -5,8 +5,6 @@
 #'
 #' @param date A character string or Date object. If a character string, it should be in a format that can be coerced to a Date.
 #' @return A character string indicating the season: "Winter", "Spring", "Summer", or "Fall".
-#' @importFrom dplyr case_when
-#' @importFrom lubridate day month
 #' @examples
 #' get_season("2024-12-25")
 #' get_season(as.Date("2024-07-04"))

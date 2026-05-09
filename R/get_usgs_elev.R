@@ -18,7 +18,6 @@
 #' }
 #'
 #' @export
-#' @importFrom cli cli_abort
 get_usgs_elev <- function(latitude, longitude, units = c("Meters", "Feet")) {
   units <- rlang::arg_match(units)
 

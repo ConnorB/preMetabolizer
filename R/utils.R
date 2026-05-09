@@ -51,8 +51,6 @@ convert_pressure_to_atm <- function(pressure, units) {
 #' @note The function uses \pkg{memoise} to cache results, so repeated calls
 #'   with the same URL will not trigger additional HTTP requests.
 #'
-#' @import httr2
-#' @importFrom memoise memoise
 #' @keywords internal
 get_remote_mtime <- memoise::memoise(function(url) {
   tryCatch(
