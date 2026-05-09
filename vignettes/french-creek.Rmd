@@ -255,6 +255,14 @@ sm_input |>
     scales = "free_y",
     labeller = ggplot2::as_labeller(labels, label_parsed)
   ) +
+  scale_color_manual(
+    values = c(
+      depth      = "#333333",
+      temp.water = "#e8000d",
+      light.obs  = "#f2a900",
+      light.calc = "#f5c542"
+    )
+  ) +
   labs(x = "Solar time", y = NULL, color = "Variable") +
   theme_bw()
 ```
