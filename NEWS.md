@@ -12,6 +12,7 @@
 * `convert_pressure()` now requires an explicit `from` argument; it always returns a plain numeric vector. Unit-bearing objects are no longer accepted as input (#TBD).
 * `correct_bp()` no longer accepts a `drop_units` argument; it always returns a plain numeric vector. Elevation inputs must be plain numeric (meters) (#TBD).
 * `even_timesteps()` no longer errors on single-column data frames due to `drop = TRUE` subsetting.
+* `get_ks_meso()` now supports Kansas Mesonet network requests with `network = "KSRE"`, `"BBW"`, or `"EBW"`, accepts `"all"` as a station selector, and correctly reports invalid variable names in the error message (previously reported them as "Invalid stations:" instead of "Invalid variables:").
 * `get_nasa_data()` now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site `latitude` and `longitude` arguments or per-site `latitude`, `longitude`, and `elev_m` columns, interpolates NASA values to the input timestamps, and returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with `streamMetabolizer::convert_SW_to_PAR()`. The old `lat` and `lon` aliases are deprecated (#TBD).
 * `get_usgs_elev()` can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (#TBD).
 * `has_units()` has been removed. The `units` package is no longer a dependency (#TBD).
