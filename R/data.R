@@ -39,15 +39,35 @@
 #' - **Latitude**: 41.33 N
 #' - **Longitude**: -106.3 W
 #' - **Stream depth**: 0.16 m
-#' - **Elevation**: approximately 2,195 m (7,200 ft)
+#' - **Elevation**: approximately 3,115 m (10220 ft)
 #' - **Location**: French Creek, Laramie, Wyoming, USA
 #'
 #' The two `sonde` values indicate a mid-study sensor swap on
 #' September 1, 2012. For most analyses, filter to a single sonde or
 #' treat the transition as a potential data break.
 #'
-#' @source Hall, R. O., Jr., Tank, J. L., Baker, M. A., Rosi-Marshall,
-#'   E. J., & Hotchkiss, E. R. (2016). Metabolism, gas exchange, and
-#'   carbon spiraling in rivers. *Ecosystems*, 19(1), 73--86.
+#' @source Hotchkiss, E. R., & Hall, R. O., Jr. (2015). Whole-stream
+#'   13C tracer addition reveals distinct fates of newly fixed carbon.
+#'   *Ecology*, 96, 403--416.
 #'   \doi{10.1890/14-0631.1}
 "french_creek"
+#' Kings Creek daily water data
+#'
+#' Daily USGS water data for Kings Creek at monitoring location
+#' `USGS-06879650`.
+#'
+#' The dataset includes daily observations for water year 2025,
+#' from 2024-10-01 through 2025-09-30.
+#'
+#' @format A tibble with 716 rows and 5 variables:
+#' \describe{
+#'   \item{monitoring_location_id}{USGS monitoring location ID.}
+#'   \item{time}{Date of observation.}
+#'   \item{value}{Observed value. Units depend on `parameter_code`.}
+#'   \item{parameter_code}{USGS parameter code: `00060` = discharge, `00065` = gage height, `00010` = water temperature.}
+#'   \item{qualifier}{USGS data qualifier.}
+#' }
+#'
+#' @source USGS Water Data API, retrieved with `dataRetrieval::read_waterdata_daily()`.
+#'
+"kings_discharge"

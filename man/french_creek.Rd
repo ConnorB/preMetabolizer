@@ -20,9 +20,9 @@ not been filtered.}
 }
 }
 \source{
-Hall, R. O., Jr., Tank, J. L., Baker, M. A., Rosi-Marshall,
-E. J., & Hotchkiss, E. R. (2016). Metabolism, gas exchange, and
-carbon spiraling in rivers. \emph{Ecosystems}, 19(1), 73--86.
+Hotchkiss, E. R., & Hall, R. O., Jr. (2015). Whole-stream
+13C tracer addition reveals distinct fates of newly fixed carbon.
+\emph{Ecology}, 96, 403--416.
 \doi{10.1890/14-0631.1}
 }
 \usage{
@@ -39,7 +39,7 @@ were collected as part of a stream metabolism study.
 \item \strong{Latitude}: 41.33 N
 \item \strong{Longitude}: -106.3 W
 \item \strong{Stream depth}: 0.16 m
-\item \strong{Elevation}: approximately 2,195 m (7,200 ft)
+\item \strong{Elevation}: approximately 3,115 m (10220 ft)
 \item \strong{Location}: French Creek, Laramie, Wyoming, USA
 }
 

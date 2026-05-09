@@ -1,10 +1,9 @@
 ## data-raw/french_creek.R
 ## Produces data/french_creek.rda
 ##
-## Source: Hall, R. O., Jr., Tank, J. L., Baker, M. A., Rosi-Marshall,
-##   E. J., & Hotchkiss, E. R. (2016). Metabolism, gas exchange, and
-##   carbon spiraling in rivers. Ecosystems, 19(1), 73-86.
-##   doi: 10.1890/14-0631.1
+## Source: Hotchkiss, E. R., & Hall, R. O., Jr. (2015). Whole-stream
+##   13C tracer addition reveals distinct fates of newly fixed carbon.
+##   Ecology, 96, 403-416. https://doi.org/10.1890/14-0631.1
 ##
 ## Data courtesy of Bob Hall.
 ## Raw file: data-raw/french.csv (not committed; raw data from published paper)
