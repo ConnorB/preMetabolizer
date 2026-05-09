@@ -5,23 +5,30 @@
 \title{Fetch Data from Kansas Mesonet}
 \usage{
 get_ks_meso(
-  stations,
+  stations = NULL,
+  network = NULL,
   start_date,
   end_date,
   interval,
   vars = NULL,
   output_dir = NULL,
-  debug = T
+  debug = TRUE
 )
 }
 \arguments{
-\item{stations}{Character vector of station names to retrieve data for.}
+\item{stations}{Character vector of station names to retrieve data for. Use
+\code{"all"} to retrieve data for all stations. Must be \code{NULL} when \code{network}
+is supplied.}
+
+\item{network}{Network name to retrieve data for, one of \code{"KSRE"}, \code{"BBW"},
+or \code{"EBW"}. This is an alternative to \code{stations}.}
 
 \item{start_date}{Start date for the data retrieval in \code{YYYY-MM-DD} format.}
 
 \item{end_date}{End date for the data retrieval in \code{YYYY-MM-DD} format.}
 
-\item{interval}{Data interval. Must be one of \code{'hour'}, \code{'5min'}, or \code{'day'}.}
+\item{interval}{Data interval. Must be one of \code{"hour"}, \code{"5min"}, or
+\code{"day"}.}
 
 \item{vars}{Character vector of variables to retrieve. Defaults to common variables.}
 

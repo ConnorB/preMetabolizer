@@ -10,5 +10,6 @@ ks_meso_stations()
 A data frame containing station metadata.
 }
 \description{
-Fetches metadata about Kansas Mesonet stations, including location and operator details.
+Fetches metadata about Kansas Mesonet stations, including location and
+network details.
 }

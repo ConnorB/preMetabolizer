@@ -1,5 +1,6 @@
 ---
 title: "Preparing French Creek Data for Stream Metabolism Modeling"
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{Preparing French Creek Data for Stream Metabolism Modeling}
   %\VignetteEngine{quarto::html}
@@ -30,7 +31,7 @@ Stream metabolism models estimate gross primary production and ecosystem respira
 | `temp.water` | Water temperature (°C)                          |
 | `light`      | Photosynthetically active radiation (µmol/m²/s) |
 
-This vignette walks through computing each of those inputs from the `french_creek` dataset using preMetabolizer. The data come from a field study on French Creek near Laramie, Wyoming, USA (Hall et al. 2016, <https://doi.org/10.1890/14-0631.1>). Below we keep NASA-derived PAR as `light.obs` and modeled PAR from `calc_light()` as `light.calc` so the two light series can be compared.
+This vignette walks through computing each of those inputs from the `french_creek` dataset using preMetabolizer. The data come from a field study on French Creek near Laramie, Wyoming, USA [@hotchkiss2015whole]. Below we keep NASA-derived PAR as `light.obs` and modeled PAR from `calc_light()` as `light.calc` so the two light series can be compared.
 
 ```{r}
 #| label: libraries
@@ -117,8 +118,8 @@ streamMetabolizer works in mean solar time, which shifts UTC by the longitude-ba
 ```{r}
 #| label: solar-time
 
-site_latitude <- 41.33
-site_longitude <- -106.3
+site_latitude <- 41.329678
+site_longitude <- -106.359058
 
 french_creek <- french_creek |>
   mutate(
@@ -307,5 +308,3 @@ sm_input |>
 To fit a model with `streamMetabolizer::metab()`, choose either `light.obs` or `light.calc` and rename that column to `light`. See the [streamMetabolizer documentation](https://github.com/ConnorB/streamMetabolizer) for details on model fitting and interpreting metabolism estimates.
 
 ## References
-
-Hall, R. O., Jr., Tank, J. L., Baker, M. A., Rosi-Marshall, E. J., & Hotchkiss, E. R. (2016). Metabolism, gas exchange, and carbon spiraling in rivers. *Ecosystems*, 19(1), 73--86. <https://doi.org/10.1890/14-0631.1>

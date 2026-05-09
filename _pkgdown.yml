@@ -24,6 +24,8 @@ reference:
       - read_ks_meso
       - ks_meso_stations
       - ks_meso_station_activity
+      - ks_meso_most_recent
+      - ks_meso_fw13
       - read_shp
 
   - title: Chemistry calculations
