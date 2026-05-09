@@ -13,6 +13,7 @@ reference:
       - download_ghcnh
       - read_ghcnh
       - get_nasa_data
+      - get_usgs_elev
       - get_noaa_stations
       - closest_noaa_stations
       - get_ks_meso
@@ -78,4 +79,3 @@ articles:
     desc: End-to-end examples preparing data for streamMetabolizer.
     contents:
       - french-creek
-

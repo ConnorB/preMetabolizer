@@ -16,9 +16,14 @@ A POSIXlt object representing the last modified timestamp of the remote file, or
 This internal function retrieves the "Last-Modified" timestamp of a remote file by sending an HTTP HEAD request to the given URL. The result is memoised to cache results for repeated calls with the same URL.
 }
 \details{
-The function sends an HTTP HEAD request to the specified URL using the \pkg{httr} package. If the server responds with a 200 status code and includes a "Last-Modified" header, the timestamp is parsed and returned. If the request fails or the "Last-Modified" header is missing, \code{NULL} is returned.
+The function sends an HTTP HEAD request to the specified URL using
+the \pkg{httr2} package. If the server responds with a 200 status code and
+includes a "Last-Modified" header, the timestamp is parsed and returned. If
+the request fails or the "Last-Modified" header is missing, \code{NULL} is
+returned.
 }
 \note{
-The function uses \pkg{memoise} to cache results, so repeated calls with the same URL will not trigger additional HTTP requests.
+The function uses \pkg{memoise} to cache results, so repeated calls
+with the same URL will not trigger additional HTTP requests.
 }
 \keyword{internal}

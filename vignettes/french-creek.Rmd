@@ -40,6 +40,8 @@ This vignette walks through computing each of those inputs from the
 `french_creek` dataset using preMetabolizer. The data come from a field study
 on French Creek near Laramie, Wyoming, USA (Hall et al. 2016,
 <https://doi.org/10.1890/14-0631.1>).
+Below we keep NASA-derived PAR as `light.obs` and modeled PAR from
+`calc_light()` as `light.calc` so the two light series can be compared.
 
 ## The `french_creek` dataset
 
@@ -137,35 +139,40 @@ on the solar geometry at the site. It takes mean solar time as input.
 
 ```{r light}
 french_creek <- french_creek |>
-  mutate(light = calc_light(solar.time, latitude = lat, longitude = lon))
+  mutate(light.calc = calc_light(solar.time, latitude = lat, longitude = lon))
 ```
 
-## Adjust barometric pressure for elevation
+## Get barometric pressure and observed light
 
 French Creek sits at roughly 2,195 m (7,200 ft) above sea level. Using
-standard sea-level pressure (101.325 kPa) would overpredict O~2~ saturation
-by about 20%, so we correct it down to site elevation using `correct_bp()`.
+standard sea-level pressure (101.325 kPa) would overpredict O~2~ saturation by
+about 20%, so we download NASA POWER surface pressure for the site with
+`get_nasa_data()`. We also download shortwave irradiance; `get_nasa_data()`
+converts it to observed PAR as `light.obs` and interpolates NASA fields to the
+same timestamps as `french_creek`.
 
 ```{r bp}
-site_bp_kPa <- correct_bp(
-  station_bp   = 101.325,
-  air_temp     = 10,
-  station_elev = 0,
-  site_elev    = 2195,
-  from_units   = "kPa",
-  to_units     = "kPa"
+french_elev_m <- get_usgs_elev(
+  latitude = lat,
+  longitude = lon,
+  units = "Meters"
 )
 
-site_bp_kPa
+nasa_dat <- get_nasa_data(
+  data = french_creek,
+  datetime_col = "datetime",
+  lat = lat,
+  lon = lon,
+  elev_m = french_elev_m,
+  params = c("PSC", "ALLSKY_SFC_SW_DWN")
+) |>
+  select(datetime = dateTime, bp_kPa = PSC, light.obs)
 
-#streamMetab calc
-#site_bp_kPa <- convert_pressure(pressure = 523 * 1.33322368,from = "mbar", to = "kPa")# 523 mmHg * 1.33322368 mb mmHg^-1 -> 697.27 mb, applicable at ~10000 ft
+nasa_dat
 
-#site_bp_kPa
+french_data <- french_creek |>
+  left_join(nasa_dat, by = "datetime")
 ```
-
-In a real study, replace the scalar 101.325 kPa with a time series of observed
-barometric pressure from a nearby weather station or on-site logger.
 
 ## Calculate O~2~ saturation
 
@@ -173,32 +180,33 @@ With site-adjusted pressure and water temperature, `calc_O2sat()` returns the
 DO saturation concentration in mg/L.
 
 ```{r o2sat}
-french_creek <- french_creek |>
+french_data <- french_data |>
   mutate(
     DO.sat = calc_O2sat(
       temp_water = temp_C,
-      atmo_press = site_bp_kPa,
+      atmo_press = bp_kPa,
       units      = "kPa"
     )
   )
 
-summary(french_creek$DO.sat)
+summary(french_data$DO.sat)
 ```
 
-## Assemble the streamMetabolizer input
+## Assemble the final tibble
 
-The final step restructures the data into the columns streamMetabolizer
-expects.
+The final step restructures the data and retains both observed and calculated
+light.
 
 ```{r sm-input}
-sm_input <- french_creek |>
+sm_input <- french_data |>
   transmute(
     solar.time = solar.time,
     DO.obs     = DO_mgL,
     DO.sat     = DO.sat,
     depth      = 0.16,
     temp.water = temp_C,
-    light      = light
+    light.obs  = light.obs,
+    light.calc = light.calc
   )
 
 head(sm_input)
@@ -220,21 +228,25 @@ sm_input |>
   theme_bw()
 ```
 
-```{r plot-sm-input-other, fig.width = 7, fig.height = 6, fig.alt = "Time series of depth, water temperature, and PAR at French Creek."}
+```{r plot-sm-input-other, fig.width = 7, fig.height = 6, fig.alt = "Time series of depth, water temperature, observed PAR, and calculated PAR at French Creek."}
 labels <- c(
   depth      = "depth~(m)",
   temp.water = "water~temp~(degree*C)",
-  light      = "PAR~(mu*mol~m^{-2}~s^{-1})"
+  light.obs  = "atop(observed~PAR, (mu*mol~m^{-2}~s^{-1}))",
+  light.calc = "atop(calculated~PAR, (mu*mol~m^{-2}~s^{-1}))"
 )
 
 sm_input |>
   tidyr::pivot_longer(
-    c(depth, temp.water, light),
+    c(depth, temp.water, light.obs, light.calc),
     names_to = "variable",
     values_to = "value"
   ) |>
   mutate(
-    variable = ordered(variable, levels = c("depth", "temp.water", "light"))
+    variable = ordered(
+      variable,
+      levels = c("depth", "temp.water", "light.obs", "light.calc")
+    )
   ) |>
   ggplot(aes(solar.time, value, color = variable)) +
   geom_line(linewidth = 0.3) +
@@ -247,7 +259,8 @@ sm_input |>
   theme_bw()
 ```
 
-This tibble is ready to pass to `streamMetabolizer::metab()`. See the
+To fit a model with `streamMetabolizer::metab()`, choose either `light.obs` or
+`light.calc` and rename that column to `light`. See the
 [streamMetabolizer documentation](https://github.com/ConnorB/streamMetabolizer)
 for details on model fitting and interpreting metabolism estimates.
 

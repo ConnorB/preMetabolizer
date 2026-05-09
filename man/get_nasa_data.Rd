@@ -2,40 +2,58 @@
 % Please edit documentation in R/get_nasa_data.R
 \name{get_nasa_data}
 \alias{get_nasa_data}
-\title{Download NASA POWER Hourly Data}
+\title{Download NASA POWER hourly data}
 \usage{
 get_nasa_data(
-  site_meta,
+  data,
+  datetime_col = "dateTime",
+  site_col = NULL,
+  lat = NULL,
+  lon = NULL,
+  elev_m = NULL,
   params = c("PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", "T2M"),
   max_attempts = 5
 )
 }
 \arguments{
-\item{site_meta}{A data frame containing metadata for each site. Required columns:
-\itemize{
-\item \code{Site}: site name (character)
-\item \code{lat}: latitude (numeric)
-\item \code{lon}: longitude (numeric)
-\item \code{elev_m}: elevation in meters (numeric)
-\item \code{start_date}, \code{end_date}: date range (can be \code{Date} or character)
-}}
+\item{data}{A data frame or tibble containing time-series data.}
 
-\item{params}{Case-insensitive character vector of solar, meteorological or climatology parameters to download. Defaults to "PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", and "T2M". See \link[nasapower:get_power]{get_power} for more information.}
+\item{datetime_col}{Character string specifying the date-time column in
+\code{data}. Defaults to \code{"dateTime"}.}
 
-\item{max_attempts}{Number of retry attempts for failed API calls. Default is 5.}
+\item{site_col}{Optional character string specifying the site column in
+\code{data}. If \code{NULL}, \code{data} is treated as a single site.}
+
+\item{lat, lon, elev_m}{Single numeric values used for single-site data. If
+omitted, \code{data} may instead contain single-valued \code{lat}, \code{lon}, and
+\code{elev_m} columns. When \code{data} contains multiple sites, these values must
+be supplied as per-site columns in \code{data}.}
+
+\item{params}{Case-insensitive character vector of solar, meteorological, or
+climatology parameters to download. Defaults to \code{"PSC"},
+\code{"ALLSKY_SFC_SW_DWN"}, \code{"PRECTOTCORR"}, and \code{"T2M"}. See
+\link[nasapower:get_power]{get_power} for more information.}
+
+\item{max_attempts}{Number of retry attempts for failed API calls. Default
+is 5.}
 }
 \value{
-A tibble with columns:
+A tibble interpolated to the non-missing timestamps in \code{data}, with
+columns:
 \describe{
-\item{Site}{Site name}
-\item{dateTime}{timestamp in UTC}
+\item{Site column}{Site names in the column named by \code{site_col}, when
+supplied}
+\item{dateTime}{timestamps from \code{data} in UTC}
 \item{PSC}{Elevation-corrected barometric pressure (kPa)}
-\item{ALLSKY_SFC_SW_DWN}{All Sky Surface Shortwave Downward Irradiance (W/m²)}
+\item{ALLSKY_SFC_SW_DWN}{All Sky Surface Shortwave Downward Irradiance
+(W/m²), when requested}
+\item{light.obs}{Observed photosynthetically active radiation
+(µmol/m²/s), converted from \code{ALLSKY_SFC_SW_DWN} when requested}
 \item{T2M}{Average air temperature at 2 m above the surface (°C)}
-\item{PRECTOTCORR}{MERRA-2 bias corrected total precipitation(mm/hr)}
+\item{PRECTOTCORR}{MERRA-2 bias corrected total precipitation (mm/hr)}
 }
 }
 \description{
-Downloads hourly meteorological data from the NASA POWER project for a set of sites
-over specified time periods.
+Downloads hourly meteorological data from the NASA POWER project for the
+date range covered by a time-series data frame.
 }

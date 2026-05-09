@@ -8,6 +8,8 @@
 * `calc_water_height()` now gives a clear error when `type = "unvented"` is used without providing `atmo_kPa`, rather than silently returning `NA`.
 * `even_timesteps()` no longer errors on single-column data frames due to `drop = TRUE` subsetting.
 * `get_ks_meso()` now correctly reports invalid variable names in the error message (previously reported them as "Invalid stations:" instead of "Invalid variables:").
+* `get_nasa_data()` now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site coordinate arguments or per-site `lat`, `lon`, and `elev_m` columns, interpolates NASA values to the input timestamps, and returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with `streamMetabolizer::convert_SW_to_PAR()` (#TBD).
+* `get_usgs_elev()` can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (#TBD).
 * `calc_water_density()` no longer accepts a `.drop_units` argument; it always returns a plain numeric vector (#TBD).
 * `convert_flow()` now requires an explicit `from` argument specifying the input unit; it always returns a plain numeric vector instead of a `units` object (#TBD).
 * `convert_pressure()` now requires an explicit `from` argument; it always returns a plain numeric vector. Unit-bearing objects are no longer accepted as input (#TBD).

@@ -185,9 +185,9 @@ get_ks_meso <- function(
           # Try to download with automatic retry and error handling
           response <- tryCatch(
             {
-              resp <- httr::RETRY("GET", api_url, times = 3)
-              httr::stop_for_status(resp)
-              resp
+              httr2::request(api_url) |>
+                httr2::req_retry(max_tries = 3) |>
+                httr2::req_perform()
             },
             error = function(e) {
               if (debug) {
@@ -211,7 +211,7 @@ get_ks_meso <- function(
               {
                 # Read data and convert timestamp
                 temp_data <- data.table::fread(
-                  text = httr::content(response, "text", encoding = "UTF-8"),
+                  text = httr2::resp_body_string(response),
                   na.strings = c("", "NA", "M"),
                   tz = "",
                   data.table = FALSE
@@ -380,11 +380,8 @@ ks_meso_stations <- function() {
   )
   tryCatch(
     {
-      response <- httr::GET(url)
-      if (httr::status_code(response) != 200) {
-        stop("Failed to fetch station names")
-      }
-      content <- httr::content(response, as = "text")
+      response <- httr2::request(url) |> httr2::req_perform()
+      content <- httr2::resp_body_string(response)
       station_names <- read.csv(
         text = content,
         header = T,
@@ -413,15 +410,10 @@ ks_meso_station_activity <- function() {
   tryCatch(
     {
       # Fetch data with retry capability
-      response <- httr::RETRY(
-        "GET",
-        url,
-        times = 3,
-        quiet = TRUE
-      )
-
-      httr::stop_for_status(response)
-      content <- httr::content(response, as = "text", encoding = "UTF-8")
+      response <- httr2::request(url) |>
+        httr2::req_retry(max_tries = 3) |>
+        httr2::req_perform()
+      content <- httr2::resp_body_string(response)
 
       # Parse the CSV data using data.table - note that headers are present
       station_activity <- data.table::fread(
