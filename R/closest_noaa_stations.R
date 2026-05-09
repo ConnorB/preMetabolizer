@@ -1,61 +1,143 @@
-#' Find NOAA Stations Within Specified Radius
+#' Find NOAA stations near a location
 #'
 #' @description
-#' Identifies NOAA weather stations within a specified radius of a given location
-#' using geodesic distance calculations. Returns station metadata including
-#' distance from the target location.
+#' Identifies NOAA weather stations within a specified radius of a target
+#' location using geodesic distance calculations.
 #'
-#' @param lat Numeric latitude of the target location in decimal degrees
-#' @param long Numeric longitude of the target location in decimal degrees
-#' @param dist_km Numeric search radius in kilometers
-#' @param state Optional two-letter state code to filter stations
-#' @param clean Logical indicating whether to return cleaned data (default: TRUE)
+#' @param latitude,longitude Numeric. Target coordinates in decimal degrees.
+#'   Latitude must be between -90 and 90; longitude must be between -180 and
+#'   180. Western longitudes are negative.
+#' @param dist_km Numeric. Search radius in kilometers.
+#' @param state Optional two-letter state code used to filter stations before
+#'   calculating distances.
+#' @param clean Logical. If `TRUE`, return cleaned station metadata from
+#'   [get_noaa_stations()] and drop empty columns from the result.
+#' @param lat,long,lon `r lifecycle::badge("deprecated")` Use `latitude` and
+#'   `longitude` instead.
 #'
-#' @return A data frame of NOAA stations within the specified radius, including:
-#' \itemize{
-#'   \item Station identifiers (GHCND_ID, WBAN_ID, etc.)
-#'   \item Station names and locations
-#'   \item Elevation data
-#'   \item Operational dates
-#'   \item Distance from target location (in km)
-#' }
-#' Returns NULL if no stations are found within the radius.
+#' @return A data frame of NOAA stations within `dist_km`, sorted by distance.
+#'   The first column is `distance_km`. Returns `NULL` when no stations are
+#'   found in the requested radius or when available station metadata does not
+#'   contain usable coordinates.
 #'
 #' @details
-#' Distance calculations use [geosphere::distGeo()] for highly accurate
-#' geodesic distance calculations. See the function documentation for details
-#' about the ellipsoid model and algorithm used.
+#' Distances are calculated with [geosphere::distGeo()] using its default WGS84
+#' ellipsoid.
 #'
 #' @examples
 #' \dontrun{
 #' # Find stations within 50 km of Konza Prairie Biological Station
-#' kbps_stations <- closest_noaa_stations(39.1068806,-96.6117151, 50)
+#' closest_noaa_stations(
+#'   latitude = 39.1068806,
+#'   longitude = -96.6117151,
+#'   dist_km = 50
+#' )
 #'
 #' # Find stations within 100 km of Lawrence, Kansas only
-#' lfw_stations <- closest_noaa_stations(38.9717, -95.2353, 100, state = "KS")
-#' #' }
+#' closest_noaa_stations(
+#'   latitude = 38.9717,
+#'   longitude = -95.2353,
+#'   dist_km = 100,
+#'   state = "KS"
+#' )
+#' }
 #'
 #' @importFrom geosphere distGeo
 #' @importFrom stats complete.cases
+#' @importFrom cli cli_abort
 #' @export
 closest_noaa_stations <- function(
-  lat,
-  long,
+  latitude,
+  longitude,
   dist_km,
   state = NULL,
-  clean = TRUE
+  clean = TRUE,
+  lat = lifecycle::deprecated(),
+  long = lifecycle::deprecated(),
+  lon = lifecycle::deprecated()
 ) {
-  # Validate coordinates
-  if (!is.numeric(lat) || !is.numeric(long) || !is.numeric(dist_km)) {
-    stop("Latitude, longitude, and distance must be numeric values")
-  }
-  if (abs(lat) > 90 || abs(long) > 180) {
-    stop(
-      "Invalid coordinates: latitude must be [-90,90] and longitude [-180,180]"
+  if (lifecycle::is_present(lat)) {
+    lifecycle::deprecate_warn(
+      "0.1.0",
+      "closest_noaa_stations(lat)",
+      "closest_noaa_stations(latitude)"
     )
+    if (!missing(latitude)) {
+      cli::cli_abort(
+        "Use only one of {.arg latitude} and deprecated {.arg lat}."
+      )
+    }
+    latitude <- lat
+  }
+  if (lifecycle::is_present(long)) {
+    lifecycle::deprecate_warn(
+      "0.1.0",
+      "closest_noaa_stations(long)",
+      "closest_noaa_stations(longitude)"
+    )
+    if (!missing(longitude)) {
+      cli::cli_abort(
+        "Use only one of {.arg longitude} and deprecated {.arg long}."
+      )
+    }
+    longitude <- long
+  }
+  if (lifecycle::is_present(lon)) {
+    lifecycle::deprecate_warn(
+      "0.1.0",
+      "closest_noaa_stations(lon)",
+      "closest_noaa_stations(longitude)"
+    )
+    if (!missing(longitude)) {
+      cli::cli_abort(
+        "Use only one of {.arg longitude} and deprecated {.arg lon}."
+      )
+    }
+    longitude <- lon
+  }
+
+  if (missing(latitude)) {
+    cli::cli_abort("{.arg latitude} is required.")
+  }
+  if (missing(longitude)) {
+    cli::cli_abort("{.arg longitude} is required.")
+  }
+  if (missing(dist_km)) {
+    cli::cli_abort("{.arg dist_km} is required.")
+  }
+
+  if (
+    !is.numeric(latitude) ||
+      length(latitude) != 1 ||
+      is.na(latitude) ||
+      !is.finite(latitude)
+  ) {
+    cli::cli_abort("{.arg latitude} must be a single finite number.")
+  }
+  if (
+    !is.numeric(longitude) ||
+      length(longitude) != 1 ||
+      is.na(longitude) ||
+      !is.finite(longitude)
+  ) {
+    cli::cli_abort("{.arg longitude} must be a single finite number.")
+  }
+  if (
+    !is.numeric(dist_km) ||
+      length(dist_km) != 1 ||
+      is.na(dist_km) ||
+      !is.finite(dist_km)
+  ) {
+    cli::cli_abort("{.arg dist_km} must be a single finite number.")
+  }
+  if (abs(latitude) > 90) {
+    cli::cli_abort("{.arg latitude} must be between -90 and 90.")
+  }
+  if (abs(longitude) > 180) {
+    cli::cli_abort("{.arg longitude} must be between -180 and 180.")
   }
   if (dist_km <= 0) {
-    stop("Search distance must be positive")
+    cli::cli_abort("{.arg dist_km} must be greater than 0.")
   }
 
   # Load station data
@@ -74,7 +156,7 @@ closest_noaa_stations <- function(
 
   # Calculate distances using distGeo (WGS84 by default)
   distances <- geosphere::distGeo(
-    p1 = matrix(c(long, lat), ncol = 2),
+    p1 = matrix(c(longitude, latitude), ncol = 2),
     p2 = matrix(c(stations$LON_DEC, stations$LAT_DEC), ncol = 2)
   )
 

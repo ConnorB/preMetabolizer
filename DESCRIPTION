@@ -4,8 +4,11 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Connor", "Brown", , "ConnorBrown1996@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9680-8930"))
-Description: This package provides tools for wrangling data needed for
-    streamMetabolizer.
+Description: Tools for preparing environmental time series before fitting
+    stream metabolism models. The package includes helpers for downloading
+    meteorological and elevation data, aligning irregular observations,
+    converting units, and calculating light, pressure, dissolved gas, and water
+    property inputs for streamMetabolizer.
 License: GPL (>= 3)
 URL: https://connorb.github.io/preMetabolizer/, https://github.com/ConnorB/preMetabolizer
 BugReports: https://github.com/ConnorB/preMetabolizer/issues
@@ -37,10 +40,10 @@ Imports:
 Suggests:
     ggplot2,
     knitr,
-    rmarkdown,
+    quarto,
     testthat (>= 3.0.0),
     tidyr
-VignetteBuilder: knitr
+VignetteBuilder: quarto
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true

@@ -4,18 +4,39 @@
 \name{preMetabolizer-package}
 \alias{preMetabolizer}
 \alias{preMetabolizer-package}
-\title{preMetabolizer: A Utility Package for the streamMetabolizer Package}
+\title{preMetabolizer: Prepare data for stream metabolism modeling}
 \description{
-This package provides tools for wrangling data needed for streamMetabolizer.
+preMetabolizer provides helpers for building the environmental time series
+commonly needed before fitting stream metabolism models. It includes tools
+to download external meteorological and elevation data, align irregular time
+series, convert units, calculate water and gas chemistry quantities, and
+assemble light and pressure inputs for streamMetabolizer.
 }
-\seealso{
-Useful links:
-\itemize{
-  \item \url{https://connorb.github.io/preMetabolizer/}
-  \item \url{https://github.com/ConnorB/preMetabolizer}
-  \item Report bugs at \url{https://github.com/ConnorB/preMetabolizer/issues}
+\section{Coordinates}{
+
+Functions that require locations use \code{latitude} and \code{longitude} in decimal
+degrees. Latitude ranges from -90 to 90, longitude ranges from -180 to 180,
+and western longitudes are negative.
 }
 
+\section{Main workflows}{
+
+\itemize{
+\item Download site-level environmental data with \code{\link[=get_nasa_data]{get_nasa_data()}},
+\code{\link[=get_usgs_elev]{get_usgs_elev()}}, \code{\link[=get_noaa_stations]{get_noaa_stations()}}, and \code{\link[=get_ks_meso]{get_ks_meso()}}.
+\item Prepare regularly spaced time series with \code{\link[=even_timesteps]{even_timesteps()}} and
+\code{\link[=get_season]{get_season()}}.
+\item Calculate light, barometric pressure, dissolved oxygen saturation,
+water density, stream depth, and dissolved carbon dioxide inputs.
+\item Convert common hydrology and atmospheric units with
+\code{\link[=convert_flow]{convert_flow()}} and \code{\link[=convert_pressure]{convert_pressure()}}.
+}
+}
+
+\seealso{
+\code{\link[streamMetabolizer:metab]{streamMetabolizer::metab()}},
+\url{https://connorb.github.io/preMetabolizer/}, and
+\url{https://github.com/ConnorB/preMetabolizer/issues}.
 }
 \author{
 \strong{Maintainer}: Connor Brown \email{ConnorBrown1996@gmail.com} (\href{https://orcid.org/0000-0002-9680-8930}{ORCID})
@@ -26,4 +47,3 @@ Authors:
 }
 
 }
-\keyword{internal}

@@ -7,6 +7,10 @@ template:
   light-switch: true
 
 reference:
+  - title: Package overview
+    contents:
+      - preMetabolizer-package
+
   - title: Data access
     desc: Download and read meteorological and hydrological data from external sources.
     contents:

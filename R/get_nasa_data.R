@@ -1,23 +1,30 @@
 #' Download NASA POWER hourly data
 #'
 #' Downloads hourly meteorological data from the NASA POWER project for the
-#' date range covered by a time-series data frame.
+#' date range covered by a time-series data frame and interpolates the result
+#' to the input timestamps.
 #'
 #' @param data A data frame or tibble containing time-series data.
 #' @param datetime_col Character string specifying the date-time column in
 #'   `data`. Defaults to `"dateTime"`.
 #' @param site_col Optional character string specifying the site column in
 #'   `data`. If `NULL`, `data` is treated as a single site.
-#' @param lat,lon,elev_m Single numeric values used for single-site data. If
-#'   omitted, `data` may instead contain single-valued `lat`, `lon`, and
-#'   `elev_m` columns. When `data` contains multiple sites, these values must
+#' @param latitude,longitude Single numeric values used for single-site data.
+#'   If omitted, `data` may instead contain single-valued `latitude` and
+#'   `longitude` columns. When `data` contains multiple sites, coordinates must
 #'   be supplied as per-site columns in `data`.
+#' @param elev_m Single numeric site elevation in meters. If omitted, `data`
+#'   may instead contain a single-valued `elev_m` column. When `data` contains
+#'   multiple sites, elevation must be supplied as a per-site column in `data`.
 #' @param params Case-insensitive character vector of solar, meteorological, or
 #'   climatology parameters to download. Defaults to `"PSC"`,
 #'   `"ALLSKY_SFC_SW_DWN"`, `"PRECTOTCORR"`, and `"T2M"`. See
 #'   [get_power][nasapower::get_power] for more information.
 #' @param max_attempts Number of retry attempts for failed API calls. Default
 #'   is 5.
+#' @param lat,lon `r lifecycle::badge("deprecated")` Use `latitude` and
+#'   `longitude` instead. Data columns named `lat` and `lon` are also
+#'   deprecated; use `latitude` and `longitude` columns instead.
 #'
 #' @return A tibble interpolated to the non-missing timestamps in `data`, with
 #'   columns:
@@ -34,6 +41,33 @@
 #'     \item{PRECTOTCORR}{MERRA-2 bias corrected total precipitation (mm/hr)}
 #'   }
 #'
+#' @examples
+#' \dontrun{
+#' stream_data <- data.frame(
+#'   dateTime = as.POSIXct("2024-06-01 12:00:00", tz = "UTC")
+#' )
+#'
+#' get_nasa_data(
+#'   stream_data,
+#'   latitude = 39.1,
+#'   longitude = -96.6,
+#'   elev_m = 320
+#' )
+#'
+#' site_data <- data.frame(
+#'   site = c("a", "b"),
+#'   dateTime = as.POSIXct(c(
+#'     "2024-06-01 12:00:00",
+#'     "2024-06-01 12:00:00"
+#'   ), tz = "UTC"),
+#'   latitude = c(39.1, 40.0),
+#'   longitude = c(-96.6, -97.2),
+#'   elev_m = c(320, 340)
+#' )
+#'
+#' get_nasa_data(site_data, site_col = "site")
+#' }
+#'
 #' @importFrom nasapower get_power
 #' @importFrom cli cli_abort cli_h1 cli_h2
 #' @importFrom cli cli_alert_info cli_alert_success
@@ -49,12 +83,41 @@ get_nasa_data <- function(
   data,
   datetime_col = "dateTime",
   site_col = NULL,
-  lat = NULL,
-  lon = NULL,
+  latitude = NULL,
+  longitude = NULL,
   elev_m = NULL,
   params = c("PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", "T2M"),
-  max_attempts = 5
+  max_attempts = 5,
+  lat = lifecycle::deprecated(),
+  lon = lifecycle::deprecated()
 ) {
+  if (lifecycle::is_present(lat)) {
+    lifecycle::deprecate_warn(
+      "0.1.0",
+      "get_nasa_data(lat)",
+      "get_nasa_data(latitude)"
+    )
+    if (!is.null(latitude)) {
+      cli::cli_abort(
+        "Use only one of {.arg latitude} and deprecated {.arg lat}."
+      )
+    }
+    latitude <- lat
+  }
+  if (lifecycle::is_present(lon)) {
+    lifecycle::deprecate_warn(
+      "0.1.0",
+      "get_nasa_data(lon)",
+      "get_nasa_data(longitude)"
+    )
+    if (!is.null(longitude)) {
+      cli::cli_abort(
+        "Use only one of {.arg longitude} and deprecated {.arg lon}."
+      )
+    }
+    longitude <- lon
+  }
+
   if (!is.data.frame(data)) {
     cli::cli_abort("{.arg data} must be a data frame or tibble.")
   }
@@ -150,16 +213,48 @@ get_nasa_data <- function(
     values
   }
 
+  find_coordinate_column <- function(
+    column,
+    deprecated_column = NULL,
+    call = rlang::caller_env()
+  ) {
+    if (column %in% names(data)) {
+      return(column)
+    }
+    if (!is.null(deprecated_column) && deprecated_column %in% names(data)) {
+      cli::cli_warn(
+        c(
+          "The {.field {deprecated_column}} column in {.arg data} is deprecated as of preMetabolizer 0.1.0.",
+          "i" = "Use {.field {column}} instead."
+        ),
+        call = call
+      )
+      return(deprecated_column)
+    }
+
+    NULL
+  }
+
   get_single_site_coordinate <- function(
     value,
     column,
+    deprecated_column = NULL,
     call = rlang::caller_env()
   ) {
     if (!is.null(value)) {
       return(get_single_number(value, column, call = call))
     }
-    if (column %in% names(data)) {
-      return(get_single_column_number(data[[column]], column, call = call))
+    actual_column <- find_coordinate_column(
+      column,
+      deprecated_column,
+      call = call
+    )
+    if (!is.null(actual_column)) {
+      return(get_single_column_number(
+        data[[actual_column]],
+        column,
+        call = call
+      ))
     }
 
     cli::cli_abort(
@@ -192,8 +287,8 @@ get_nasa_data <- function(
     site_requests <- list(list(
       name = NULL,
       label = "single site",
-      lat = get_single_site_coordinate(lat, "lat"),
-      lon = get_single_site_coordinate(lon, "lon"),
+      latitude = get_single_site_coordinate(latitude, "latitude", "lat"),
+      longitude = get_single_site_coordinate(longitude, "longitude", "lon"),
       elev_m = get_single_site_coordinate(elev_m, "elev_m"),
       start_date = site_range$start_date,
       end_date = site_range$end_date
@@ -205,11 +300,24 @@ get_nasa_data <- function(
 
     sites <- unique(data[[site_col]])
     single_site <- length(sites) == 1
-    required_cols <- c("lat", "lon", "elev_m")
-    missing_cols <- setdiff(required_cols, names(data))
+    latitude_col <- if (single_site && !is.null(latitude)) {
+      NULL
+    } else {
+      find_coordinate_column("latitude", "lat")
+    }
+    longitude_col <- if (single_site && !is.null(longitude)) {
+      NULL
+    } else {
+      find_coordinate_column("longitude", "lon")
+    }
+    missing_cols <- c(
+      if (is.null(latitude_col)) "latitude",
+      if (is.null(longitude_col)) "longitude",
+      if (!"elev_m" %in% names(data)) "elev_m"
+    )
     if (!single_site && length(missing_cols) > 0) {
       cli::cli_abort(c(
-        "{.arg data} must contain {.field lat}, {.field lon}, and {.field elev_m} columns when {.arg site_col} contains multiple sites.",
+        "{.arg data} must contain {.field latitude}, {.field longitude}, and {.field elev_m} columns when {.arg site_col} contains multiple sites.",
         "x" = "Missing column{?s}: {.field {missing_cols}}."
       ))
     }
@@ -217,6 +325,7 @@ get_nasa_data <- function(
     get_site_coordinate <- function(
       value,
       column,
+      actual_column,
       site_rows,
       site_label,
       call = rlang::caller_env()
@@ -224,21 +333,24 @@ get_nasa_data <- function(
       if (single_site && !is.null(value)) {
         return(get_single_number(value, column, call = call))
       }
-      if (column %in% names(data)) {
+      if (!is.null(actual_column)) {
         return(get_single_column_number(
-          data[[column]][site_rows],
+          data[[actual_column]][site_rows],
           column,
           site_label,
           call = call
         ))
       }
       if (single_site) {
-        return(get_single_number(value, column, call = call))
+        cli::cli_abort(
+          "For single-site data, provide {.arg {column}} or include a single-valued {.field {column}} column in {.arg data}.",
+          call = call
+        )
       }
 
       cli::cli_abort(
         c(
-          "{.arg data} must contain {.field lat}, {.field lon}, and {.field elev_m} columns when {.arg site_col} contains multiple sites.",
+          "{.arg data} must contain {.field latitude}, {.field longitude}, and {.field elev_m} columns when {.arg site_col} contains multiple sites.",
           "x" = "Missing column: {.field {column}}."
         ),
         call = call
@@ -255,10 +367,23 @@ get_nasa_data <- function(
       site_requests[[i]] <- list(
         name = site_name,
         label = site_label,
-        lat = get_site_coordinate(lat, "lat", site_rows, site_label),
-        lon = get_site_coordinate(lon, "lon", site_rows, site_label),
+        latitude = get_site_coordinate(
+          latitude,
+          "latitude",
+          latitude_col,
+          site_rows,
+          site_label
+        ),
+        longitude = get_site_coordinate(
+          longitude,
+          "longitude",
+          longitude_col,
+          site_rows,
+          site_label
+        ),
         elev_m = get_site_coordinate(
           elev_m,
+          "elev_m",
           "elev_m",
           site_rows,
           site_label
@@ -404,7 +529,7 @@ get_nasa_data <- function(
         community = "sb",
         pars = params,
         temporal_api = "hourly",
-        lonlat = c(site$lon, site$lat),
+        lonlat = c(site$longitude, site$latitude),
         dates = c(start, end),
         site_elev = site$elev_m,
         time_standard = "UTC",

@@ -8,11 +8,13 @@ get_nasa_data(
   data,
   datetime_col = "dateTime",
   site_col = NULL,
-  lat = NULL,
-  lon = NULL,
+  latitude = NULL,
+  longitude = NULL,
   elev_m = NULL,
   params = c("PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", "T2M"),
-  max_attempts = 5
+  max_attempts = 5,
+  lat = lifecycle::deprecated(),
+  lon = lifecycle::deprecated()
 )
 }
 \arguments{
@@ -24,10 +26,14 @@ get_nasa_data(
 \item{site_col}{Optional character string specifying the site column in
 \code{data}. If \code{NULL}, \code{data} is treated as a single site.}
 
-\item{lat, lon, elev_m}{Single numeric values used for single-site data. If
-omitted, \code{data} may instead contain single-valued \code{lat}, \code{lon}, and
-\code{elev_m} columns. When \code{data} contains multiple sites, these values must
+\item{latitude, longitude}{Single numeric values used for single-site data.
+If omitted, \code{data} may instead contain single-valued \code{latitude} and
+\code{longitude} columns. When \code{data} contains multiple sites, coordinates must
 be supplied as per-site columns in \code{data}.}
+
+\item{elev_m}{Single numeric site elevation in meters. If omitted, \code{data}
+may instead contain a single-valued \code{elev_m} column. When \code{data} contains
+multiple sites, elevation must be supplied as a per-site column in \code{data}.}
 
 \item{params}{Case-insensitive character vector of solar, meteorological, or
 climatology parameters to download. Defaults to \code{"PSC"},
@@ -36,6 +42,10 @@ climatology parameters to download. Defaults to \code{"PSC"},
 
 \item{max_attempts}{Number of retry attempts for failed API calls. Default
 is 5.}
+
+\item{lat, lon}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{latitude} and
+\code{longitude} instead. Data columns named \code{lat} and \code{lon} are also
+deprecated; use \code{latitude} and \code{longitude} columns instead.}
 }
 \value{
 A tibble interpolated to the non-missing timestamps in \code{data}, with
@@ -55,5 +65,34 @@ supplied}
 }
 \description{
 Downloads hourly meteorological data from the NASA POWER project for the
-date range covered by a time-series data frame.
+date range covered by a time-series data frame and interpolates the result
+to the input timestamps.
+}
+\examples{
+\dontrun{
+stream_data <- data.frame(
+  dateTime = as.POSIXct("2024-06-01 12:00:00", tz = "UTC")
+)
+
+get_nasa_data(
+  stream_data,
+  latitude = 39.1,
+  longitude = -96.6,
+  elev_m = 320
+)
+
+site_data <- data.frame(
+  site = c("a", "b"),
+  dateTime = as.POSIXct(c(
+    "2024-06-01 12:00:00",
+    "2024-06-01 12:00:00"
+  ), tz = "UTC"),
+  latitude = c(39.1, 40.0),
+  longitude = c(-96.6, -97.2),
+  elev_m = c(320, 340)
+)
+
+get_nasa_data(site_data, site_col = "site")
+}
+
 }

@@ -39,13 +39,16 @@ test_that("get_nasa_data uses single-site coordinates and inferred dates", {
   result <- get_nasa_data(
     timeseries,
     datetime_col = "time",
-    lat = 39,
-    lon = -96,
+    latitude = 39,
+    longitude = -96,
     elev_m = 300
   )
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(intersect(names(result), c("lat", "lon", "elev_m")), character())
+  expect_equal(
+    intersect(names(result), c("latitude", "longitude", "elev_m")),
+    character()
+  )
   expect_equal(calls[[1]]$lonlat, c(-96, 39))
   expect_equal(calls[[1]]$dates, as.Date(c("2024-01-02", "2024-01-04")))
   expect_equal(calls[[1]]$site_elev, 300)
@@ -72,8 +75,8 @@ test_that("get_nasa_data uses per-site coordinates and inferred dates", {
       ),
       tz = "UTC"
     ),
-    lat = c(39, 39, 40, 40),
-    lon = c(-96, -96, -97, -97),
+    latitude = c(39, 39, 40, 40),
+    longitude = c(-96, -96, -97, -97),
     elev_m = c(300, 300, 350, 350)
   )
   calls <- list()
@@ -101,8 +104,8 @@ test_that("get_nasa_data uses per-site coordinates and inferred dates", {
 test_that("get_nasa_data can read single-site coordinates from data", {
   timeseries <- data.frame(
     dateTime = as.Date(c("2024-01-01", "2024-01-02")),
-    lat = c(39, 39),
-    lon = c(-96, -96),
+    latitude = c(39, 39),
+    longitude = c(-96, -96),
     elev_m = c(300, 300)
   )
   calls <- list()
@@ -139,8 +142,8 @@ test_that("get_nasa_data can use scalar coordinates with a single site column", 
   result <- get_nasa_data(
     timeseries,
     site_col = "station_id",
-    lat = 39,
-    lon = -96,
+    latitude = 39,
+    longitude = -96,
     elev_m = 300
   )
 
@@ -168,8 +171,8 @@ test_that("get_nasa_data interpolates to input timestamps and converts shortwave
   result <- get_nasa_data(
     timeseries,
     datetime_col = "time",
-    lat = 39,
-    lon = -96,
+    latitude = 39,
+    longitude = -96,
     elev_m = 300,
     params = c("PSC", "ALLSKY_SFC_SW_DWN")
   )
@@ -189,7 +192,7 @@ test_that("get_nasa_data requires coordinates for single-site data", {
   )
 
   expect_snapshot(error = TRUE, {
-    get_nasa_data(timeseries, lon = -96, elev_m = 300)
+    get_nasa_data(timeseries, longitude = -96, elev_m = 300)
   })
 })
 
@@ -197,11 +200,52 @@ test_that("get_nasa_data requires coordinates for multi-site data", {
   timeseries <- data.frame(
     station_id = c("a", "b"),
     dateTime = as.Date(c("2024-01-01", "2024-01-01")),
-    lon = c(-96, -97),
+    longitude = c(-96, -97),
     elev_m = c(300, 350)
   )
 
   expect_snapshot(error = TRUE, {
     get_nasa_data(timeseries, site_col = "station_id")
   })
+})
+
+test_that("get_nasa_data warns about deprecated coordinate arguments", {
+  old_options <- options(lifecycle_verbosity = "warning")
+  on.exit(options(old_options), add = TRUE)
+
+  timeseries <- data.frame(
+    dateTime = as.Date("2024-01-01")
+  )
+
+  local_mocked_bindings(
+    get_power = function(...) fake_nasa_power(list(...))
+  )
+
+  expect_snapshot({
+    result <- suppressMessages(get_nasa_data(
+      timeseries,
+      lat = 39,
+      lon = -96,
+      elev_m = 300
+    ))
+  })
+  expect_equal(result$dateTime, lubridate::as_datetime(timeseries$dateTime))
+})
+
+test_that("get_nasa_data warns about deprecated coordinate columns", {
+  timeseries <- data.frame(
+    dateTime = as.Date("2024-01-01"),
+    lat = 39,
+    lon = -96,
+    elev_m = 300
+  )
+
+  local_mocked_bindings(
+    get_power = function(...) fake_nasa_power(list(...))
+  )
+
+  expect_snapshot({
+    result <- suppressMessages(get_nasa_data(timeseries))
+  })
+  expect_equal(result$dateTime, lubridate::as_datetime(timeseries$dateTime))
 })

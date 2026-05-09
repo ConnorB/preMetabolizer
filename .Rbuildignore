@@ -11,6 +11,8 @@
 ^\.github$
 ^[.]?air[.]toml$
 ^\.vscode$
+^\.quarto$
+^vignettes/\.quarto$
 ^doc$
 ^Meta$
 ^\.agents$

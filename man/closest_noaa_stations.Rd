@@ -2,49 +2,65 @@
 % Please edit documentation in R/closest_noaa_stations.R
 \name{closest_noaa_stations}
 \alias{closest_noaa_stations}
-\title{Find NOAA Stations Within Specified Radius}
+\title{Find NOAA stations near a location}
 \usage{
-closest_noaa_stations(lat, long, dist_km, state = NULL, clean = TRUE)
+closest_noaa_stations(
+  latitude,
+  longitude,
+  dist_km,
+  state = NULL,
+  clean = TRUE,
+  lat = lifecycle::deprecated(),
+  long = lifecycle::deprecated(),
+  lon = lifecycle::deprecated()
+)
 }
 \arguments{
-\item{lat}{Numeric latitude of the target location in decimal degrees}
+\item{latitude, longitude}{Numeric. Target coordinates in decimal degrees.
+Latitude must be between -90 and 90; longitude must be between -180 and
+180. Western longitudes are negative.}
 
-\item{long}{Numeric longitude of the target location in decimal degrees}
+\item{dist_km}{Numeric. Search radius in kilometers.}
 
-\item{dist_km}{Numeric search radius in kilometers}
+\item{state}{Optional two-letter state code used to filter stations before
+calculating distances.}
 
-\item{state}{Optional two-letter state code to filter stations}
+\item{clean}{Logical. If \code{TRUE}, return cleaned station metadata from
+\code{\link[=get_noaa_stations]{get_noaa_stations()}} and drop empty columns from the result.}
 
-\item{clean}{Logical indicating whether to return cleaned data (default: TRUE)}
+\item{lat, long, lon}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{latitude} and
+\code{longitude} instead.}
 }
 \value{
-A data frame of NOAA stations within the specified radius, including:
-\itemize{
-\item Station identifiers (GHCND_ID, WBAN_ID, etc.)
-\item Station names and locations
-\item Elevation data
-\item Operational dates
-\item Distance from target location (in km)
-}
-Returns NULL if no stations are found within the radius.
+A data frame of NOAA stations within \code{dist_km}, sorted by distance.
+The first column is \code{distance_km}. Returns \code{NULL} when no stations are
+found in the requested radius or when available station metadata does not
+contain usable coordinates.
 }
 \description{
-Identifies NOAA weather stations within a specified radius of a given location
-using geodesic distance calculations. Returns station metadata including
-distance from the target location.
+Identifies NOAA weather stations within a specified radius of a target
+location using geodesic distance calculations.
 }
 \details{
-Distance calculations use \code{\link[geosphere:distGeo]{geosphere::distGeo()}} for highly accurate
-geodesic distance calculations. See the function documentation for details
-about the ellipsoid model and algorithm used.
+Distances are calculated with \code{\link[geosphere:distGeo]{geosphere::distGeo()}} using its default WGS84
+ellipsoid.
 }
 \examples{
 \dontrun{
 # Find stations within 50 km of Konza Prairie Biological Station
-kbps_stations <- closest_noaa_stations(39.1068806,-96.6117151, 50)
+closest_noaa_stations(
+  latitude = 39.1068806,
+  longitude = -96.6117151,
+  dist_km = 50
+)
 
 # Find stations within 100 km of Lawrence, Kansas only
-lfw_stations <- closest_noaa_stations(38.9717, -95.2353, 100, state = "KS")
-#' }
+closest_noaa_stations(
+  latitude = 38.9717,
+  longitude = -95.2353,
+  dist_km = 100,
+  state = "KS"
+)
+}
 
 }
