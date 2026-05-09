@@ -55,7 +55,10 @@ calc_cv <- function(x, na.rm = TRUE, as_percent = TRUE, robust = FALSE) {
   }
 
   if (abs(center) < .Machine$double.eps^0.5) {
-    warning(if (robust) "Median is zero" else "Mean is zero", ", CV cannot be calculated")
+    warning(
+      if (robust) "Median is zero" else "Mean is zero",
+      ", CV cannot be calculated"
+    )
     return(NA_real_)
   }
 

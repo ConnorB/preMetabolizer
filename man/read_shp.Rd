@@ -20,7 +20,7 @@ An sf object containing the spatial data from the shapefile.
 \description{
 Reads a shapefile or shapefile contained in a zip archive, automatically handling
 path specifications and layer detection. This is a convenience wrapper around
-\code{\link[sf]{st_read}} that simplifies reading common shapefile formats.
+\code{\link[sf:st_read]{sf::st_read()}} that simplifies reading common shapefile formats.
 }
 \details{
 The function handles several input types:
@@ -30,7 +30,7 @@ The function handles several input types:
 \item Zip files containing shapefiles (uses GDAL's virtual file system)
 }
 
-When reading from zip files, the function uses GDAL's \code{/vsizip/} virtual file
+When reading from zip files, the function uses GDAL's \verb{/vsizip/} virtual file
 system prefix.
 }
 \examples{
@@ -50,6 +50,6 @@ shp_data <- read_shp("path/to/multi_layer.zip", layer = "specific_layer")
 
 }
 \seealso{
-\code{\link[sf]{st_read}} for the underlying reading function,
-\code{\link[sf]{st_layers}} for layer detection
+\code{\link[sf:st_read]{sf::st_read()}} for the underlying reading function,
+\code{\link[sf:st_layers]{sf::st_layers()}} for layer detection
 }

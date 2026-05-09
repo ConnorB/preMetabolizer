@@ -14,7 +14,12 @@
 #' a non-ideal gas. Marine Chemistry, 2, 203-215.
 #' @keywords internal
 #' @export
-calc_K0 <- function(temp_water, waterDepth_m = 0, atmo_press = 1, salinity = 0) {
+calc_K0 <- function(
+  temp_water,
+  waterDepth_m = 0,
+  atmo_press = 1,
+  salinity = 0
+) {
   atmo_press_atm <- atmo_press
 
   # Convert water temperature to Kelvin
@@ -48,7 +53,8 @@ calc_K0 <- function(temp_water, waterDepth_m = 0, atmo_press = 1, salinity = 0) 
   pMolalVol_CO2 <- 32.3 # Partial molal volume of CO2 (cm^3/mol) from Weiss (1974, Appendix, paragraph 3)
 
   # Apply pressure correction to K0
-  K0_corrected <- K0 * exp(((1 - total_pressure) * pMolalVol_CO2) / (R * abs_temp))
+  K0_corrected <- K0 *
+    exp(((1 - total_pressure) * pMolalVol_CO2) / (R * abs_temp))
 
   return(K0_corrected) # mol/(kg·atm)
 }

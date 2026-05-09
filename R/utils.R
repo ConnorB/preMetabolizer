@@ -1,50 +1,3 @@
-#' Check if an object has units
-#'
-#' This function determines whether an object has units attached to it,
-#' typically from the \code{units} package. It provides a safe way to test
-#' for the presence of units before performing unit-specific operations.
-#'
-#' @param x An object to test for units. Can be any R object, but typically
-#'   a numeric vector, matrix, or array.
-#'
-#' @return A logical value: \code{TRUE} if the object has units attached,
-#'   \code{FALSE} otherwise.
-#'
-#' @details
-#' This function uses \code{\link[base]{inherits}} to check if the object
-#' inherits from the "units" class. This is safer than checking the class
-#' attribute directly, as it handles inheritance properly and avoids issues
-#' with objects that have \code{NULL} class attributes.
-#'
-#' @examples
-#' # Regular numeric vector (no units)
-#' x <- c(1, 2, 3)
-#' has_units(x)  # FALSE
-#'
-#' # With units (requires units package)
-#' \dontrun{
-#' library(units)
-#' y <- set_units(c(1, 2, 3), "m")
-#' has_units(y)  # TRUE
-#'
-#' z <- set_units(5, "kg")
-#' has_units(z)  # TRUE
-#' }
-#'
-#' # Other object types
-#' has_units("text")     # FALSE
-#' has_units(NULL)       # FALSE
-#' has_units(list(1,2))  # FALSE
-#'
-#' @seealso
-#' \code{\link[units]{set_units}}, \code{\link[units]{drop_units}},
-#' \code{\link[base]{inherits}}
-#'
-#' @keywords internal
-#' @export
-has_units <- function(x) {
-  inherits(x, "units")
-}
 #' Validate input data structure
 #' @param df Input dataframe
 #' @param metadata Metadata dataframe
@@ -158,9 +111,13 @@ get_site_metadata <- function(site_name, metadata) {
   if (!all(required_columns %in% colnames(metadata))) {
     stop(
       "Missing required columns in metadata: ",
-      paste(setdiff(
-        required_columns, colnames(metadata)
-      ), collapse = ", ")
+      paste(
+        setdiff(
+          required_columns,
+          colnames(metadata)
+        ),
+        collapse = ", "
+      )
     )
   }
 
@@ -209,7 +166,9 @@ convert_pressure_to_atm <- function(pressure, units) {
   } else if (units == "bar") {
     pressure_atm <- pressure * 0.98692316931427
   } else {
-    stop("Please report barometric pressure in units of `atm`, `hPa`, `mbar`, `kPa`, `Torr`, `psi`, or `bar`.")
+    stop(
+      "Please report barometric pressure in units of `atm`, `hPa`, `mbar`, `kPa`, `Torr`, `psi`, or `bar`."
+    )
   }
 
   return(pressure_atm)
@@ -222,9 +181,9 @@ convert_pressure_to_atm <- function(pressure, units) {
 #'
 #' @param url A character string specifying the URL of the remote file.
 #'
-#' @return A POSIXlt object representing the last modified timestamp of the remote file, or \code{NULL} if the information is unavailable or an error occurs.
+#' @return A POSIXlt object representing the last modified timestamp of the remote file, or `NULL` if the information is unavailable or an error occurs.
 #'
-#' @details The function sends an HTTP HEAD request to the specified URL using the \pkg{httr} package. If the server responds with a 200 status code and includes a "Last-Modified" header, the timestamp is parsed and returned. If the request fails or the "Last-Modified" header is missing, \code{NULL} is returned.
+#' @details The function sends an HTTP HEAD request to the specified URL using the \pkg{httr} package. If the server responds with a 200 status code and includes a "Last-Modified" header, the timestamp is parsed and returned. If the request fails or the "Last-Modified" header is missing, `NULL` is returned.
 #'
 #' @note The function uses \pkg{memoise} to cache results, so repeated calls with the same URL will not trigger additional HTTP requests.
 #'
@@ -232,13 +191,16 @@ convert_pressure_to_atm <- function(pressure, units) {
 #' @importFrom memoise memoise
 #' @keywords internal
 get_remote_mtime <- memoise::memoise(function(url) {
-  tryCatch({
-    headers <- httr::HEAD(url)
-    if (httr::status_code(headers) == 200) {
-      file_date <- httr::headers(headers)[["last-modified"]]
-      file_date <- strptime(file_date, "%a, %d %b %Y %H:%M:%S", tz = "GMT")
-      return(file_date)
-    }
-    NULL
-  }, error = function(e) NULL)
+  tryCatch(
+    {
+      headers <- httr::HEAD(url)
+      if (httr::status_code(headers) == 200) {
+        file_date <- httr::headers(headers)[["last-modified"]]
+        file_date <- strptime(file_date, "%a, %d %b %Y %H:%M:%S", tz = "GMT")
+        return(file_date)
+      }
+      NULL
+    },
+    error = function(e) NULL
+  )
 })

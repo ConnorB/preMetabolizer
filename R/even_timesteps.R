@@ -9,10 +9,11 @@
 #' @param site_col Character string specifying the site column name. If NULL (default),
 #'   treats all data as a single site.
 #'
-#' @return A data frame with evenly spaced time steps for each site, including all original data
-#'   points plus NAs for missing intervals
+#' @return A data frame or tibble with evenly spaced time steps for each site, including
+#'   all original data points plus NAs for missing intervals. The class matches the input.
 #' @import lubridate
 #' @importFrom dplyr group_by ungroup do bind_rows
+#' @importFrom tibble as_tibble is_tibble
 #' @export
 #'
 #' @examples
@@ -33,7 +34,11 @@
 #' )
 #' even_timesteps(df_multi, site_col = "Site")
 #' }
-even_timesteps <- function(loggerData, datetime_col = "DateTime_UTC", site_col = NULL) {
+even_timesteps <- function(
+  loggerData,
+  datetime_col = "DateTime_UTC",
+  site_col = NULL
+) {
   # Input validation
   if (!is.data.frame(loggerData)) {
     stop("Input must be a data frame")
@@ -80,10 +85,15 @@ even_timesteps <- function(loggerData, datetime_col = "DateTime_UTC", site_col =
     }
 
     # Merge while preserving all timestamps
-    result <- merge(site_data, template, by = c(datetime_col, site_col), all = TRUE)
+    result <- merge(
+      site_data,
+      template,
+      by = c(datetime_col, site_col),
+      all = TRUE
+    )
 
     # Sort by timestamp
-    result[order(result[[datetime_col]]), ]
+    result[order(result[[datetime_col]]), , drop = FALSE]
   }
 
   if (is.null(site_col)) {
@@ -92,14 +102,25 @@ even_timesteps <- function(loggerData, datetime_col = "DateTime_UTC", site_col =
   } else {
     # Split by site, process each separately, and recombine
     sites <- unique(loggerData[[site_col]])
-    result <- do.call(rbind, lapply(sites, function(s) {
-      site_data <- loggerData[loggerData[[site_col]] == s, ]
-      process_site(site_data)
-    }))
+    result <- do.call(
+      rbind,
+      lapply(sites, function(s) {
+        site_data <- loggerData[loggerData[[site_col]] == s, ]
+        process_site(site_data)
+      })
+    )
   }
 
-  # Preserve original column order while ensuring datetime and site columns come first
+  # Reorder columns (datetime and site first)
   col_order <- unique(c(datetime_col, site_col, names(loggerData)))
-  result[, col_order[col_order %in% names(result)]]
-}
+  result <- result[, col_order[col_order %in% names(result)], drop = FALSE]
 
+  # Return the same class as the input: tibble or data frame
+  if (tibble::is_tibble(loggerData)) {
+    result <- tibble::as_tibble(result)
+  } else {
+    result <- as.data.frame(result, stringsAsFactors = FALSE)
+  }
+
+  result
+}

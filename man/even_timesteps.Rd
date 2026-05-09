@@ -16,8 +16,8 @@ Defaults to "DateTime_UTC"}
 treats all data as a single site.}
 }
 \value{
-A data frame with evenly spaced time steps for each site, including all original data
-points plus NAs for missing intervals
+A data frame or tibble with evenly spaced time steps for each site, including
+all original data points plus NAs for missing intervals. The class matches the input.
 }
 \description{
 Creates a dataframe with evenly spaced time steps by merging original

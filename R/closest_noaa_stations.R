@@ -22,7 +22,7 @@
 #' Returns NULL if no stations are found within the radius.
 #'
 #' @details
-#' Distance calculations use \code{\link[geosphere]{distGeo}} for highly accurate
+#' Distance calculations use [geosphere::distGeo()] for highly accurate
 #' geodesic distance calculations. See the function documentation for details
 #' about the ellipsoid model and algorithm used.
 #'
@@ -38,20 +38,28 @@
 #' @importFrom geosphere distGeo
 #' @importFrom stats complete.cases
 #' @export
-closest_noaa_stations <- function(lat, long, dist_km, state = NULL, clean = TRUE) {
+closest_noaa_stations <- function(
+  lat,
+  long,
+  dist_km,
+  state = NULL,
+  clean = TRUE
+) {
   # Validate coordinates
   if (!is.numeric(lat) || !is.numeric(long) || !is.numeric(dist_km)) {
     stop("Latitude, longitude, and distance must be numeric values")
   }
   if (abs(lat) > 90 || abs(long) > 180) {
-    stop("Invalid coordinates: latitude must be [-90,90] and longitude [-180,180]")
+    stop(
+      "Invalid coordinates: latitude must be [-90,90] and longitude [-180,180]"
+    )
   }
   if (dist_km <= 0) {
     stop("Search distance must be positive")
   }
 
   # Load station data
-  stations <- get_noaa_stations(state = state, clean = clean, debug = debug)
+  stations <- get_noaa_stations(state = state, clean = clean)
 
   # Check for stations with valid coordinates
   valid_coords <- stats::complete.cases(stations[, c("LAT_DEC", "LON_DEC")])

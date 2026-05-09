@@ -23,16 +23,17 @@ Numeric. Dissolved oxygen saturation ([DO]) in mg/L.
 \description{
 This function calculates dissolved oxygen saturation ([DO]) in water,
 accounting for temperature, barometric pressure, and salinity.
-It uses the Garcia and Gordon (1992) equations and corrects for vapor
-pressure and water density.
+It uses the Benson and Krause \eqn{\mu}mol/kg coefficients reported by
+Garcia and Gordon (1992) and corrects for vapor pressure and water density.
 }
 \details{
-The function calculates the dissolved oxygen saturation based on the Garcia
-and Gordon (1992) model. It includes corrections for:
+The function calculates dissolved oxygen saturation from the Benson and
+Krause \eqn{\mu}mol/kg fit reported in Garcia and Gordon (1992). It includes
+corrections for:
 \itemize{
 \item Barometric pressure, converted from the specified units to atm.
 \item Vapor pressure of water, using the Antoine equation.
-\item Water density, dynamically calculated based on temperature.
+\item Water density, dynamically calculated based on temperature and salinity.
 }
 }
 \examples{

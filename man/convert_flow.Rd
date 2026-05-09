@@ -2,29 +2,31 @@
 % Please edit documentation in R/convert_flow.R
 \name{convert_flow}
 \alias{convert_flow}
-\title{Convert Stream Discharge to Various Units}
+\title{Convert Stream Discharge Between Units}
 \usage{
-convert_flow(flow, to = "cms")
+convert_flow(flow, from, to = "cms")
 }
 \arguments{
-\item{flow}{A numeric vector or a \code{units} object of stream discharge. If numeric,
-it is assumed to be in cubic feet per second.}
+\item{flow}{Numeric. Stream discharge value(s) to be converted.}
 
-\item{to}{A character string specifying the target unit. Acceptable values are
-"cfs" (cubic feet per second), "cms" (cubic meters per second), or "lps" (liters per second).
-Default is "cms".}
+\item{from}{Character. Units of the input discharge. Accepted values are
+\code{"cfs"} (cubic feet per second), \code{"cms"} (cubic meters per second), and
+\code{"lps"} (liters per second).}
+
+\item{to}{Character. Target unit. Same accepted values as \code{from}. Defaults
+to \code{"cms"}.}
 }
 \value{
-A \code{units} object of stream discharge in the specified unit.
+Numeric vector of stream discharge in the requested unit.
 }
 \description{
-This function converts stream discharge measurements between cubic feet per second (cfs),
-cubic meters per second (cms), and liters per second (lps). If the input does not have
-units, it is assumed to be in cubic feet per second.
+Converts stream discharge measurements between cubic feet per second (cfs),
+cubic meters per second (cms), and liters per second (lps). Always returns
+a plain numeric vector.
 }
 \examples{
-convert_flow(flow = 14.32, to = "cms")  # Converts 14.32 cfs to cms
-convert_flow(flow = 14.32, to = "lps")  # Converts 14.32 cfs to lps
-convert_flow(flow = units::set_units(14.32, "ft^3/s"), to = "cms")  # With explicit units
-convert_flow(flow = c(10, 20, 30), to = "cms")  # Converts multiple values from assumed cfs
+convert_flow(14.32, from = "cfs", to = "cms")
+convert_flow(14.32, from = "cfs", to = "lps")
+convert_flow(c(10, 20, 30), from = "cfs", to = "cms")
+
 }

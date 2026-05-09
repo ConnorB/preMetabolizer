@@ -5,7 +5,7 @@
 #' @param station_id Character string specifying the station ID for which data is to be downloaded.
 #' @param years Numeric vector specifying the years for which data is to be downloaded.
 #' @param output_dir Optional. Character string specifying the output directory. Defaults to NOAA cache directory.
-#' @param quiet Logical. If \code{TRUE}, suppresses messages. Defaults to \code{FALSE}.
+#' @param quiet Logical. If `TRUE`, suppresses messages. Defaults to `FALSE`.
 #'
 #' @return A list summarizing the download process:
 #'   \item{output_directory}{The directory where files were saved.}
@@ -21,7 +21,12 @@
 #'
 #' @export
 #' @importFrom utils download.file
-download_ghcnh <- function(station_id, years, output_dir = NULL, quiet = FALSE) {
+download_ghcnh <- function(
+  station_id,
+  years,
+  output_dir = NULL,
+  quiet = FALSE
+) {
   # Input validation
   if (missing(station_id) || !is.character(station_id)) {
     stop("station_id must be provided as a character string")
@@ -53,25 +58,63 @@ download_ghcnh <- function(station_id, years, output_dir = NULL, quiet = FALSE) 
   # Download files for each year
   for (year in years) {
     # Construct URL and filename
-    url <- sprintf("%s/%d/parquet/GHCNh_%s_%d.parquet", base_url, year, station_id, year)
-    output_file <- file.path(output_dir, sprintf("GHCNh_%s_%d.parquet", station_id, year))
+    url <- sprintf(
+      "%s/%d/parquet/GHCNh_%s_%d.parquet",
+      base_url,
+      year,
+      station_id,
+      year
+    )
+    output_file <- file.path(
+      output_dir,
+      sprintf("GHCNh_%s_%d.parquet", station_id, year)
+    )
 
     if (file.exists(output_file)) {
-      if(!quiet) message(paste0(sprintf("Cache file exist for station %s and year %d", station_id, year), ", skipping download"))
+      if (!quiet) {
+        message(paste0(
+          sprintf(
+            "Cache file exist for station %s and year %d",
+            station_id,
+            year
+          ),
+          ", skipping download"
+        ))
+      }
       next
     }
 
-    tryCatch({
-      # Attempt download
-      if(!quiet) message(sprintf("Downloading data for station %s, year %d", station_id, year))
-      download.file(url, output_file, mode = "auto", quiet = T)
-      results$success <- c(results$success, sprintf("%s_%d", station_id, year))
-      message(sprintf("Successfully downloaded data for station %s, year %d", station_id, year))
-    }, error = function(e) {
-      results$failed <- c(results$failed, sprintf("%s_%d", station_id, year))
-      warning(sprintf("Failed to download data for station %s, year %d: %s",
-                      station_id, year, e$message))
-    })
+    tryCatch(
+      {
+        # Attempt download
+        if (!quiet) {
+          message(sprintf(
+            "Downloading data for station %s, year %d",
+            station_id,
+            year
+          ))
+        }
+        download.file(url, output_file, mode = "auto", quiet = T)
+        results$success <- c(
+          results$success,
+          sprintf("%s_%d", station_id, year)
+        )
+        message(sprintf(
+          "Successfully downloaded data for station %s, year %d",
+          station_id,
+          year
+        ))
+      },
+      error = function(e) {
+        results$failed <- c(results$failed, sprintf("%s_%d", station_id, year))
+        warning(sprintf(
+          "Failed to download data for station %s, year %d: %s",
+          station_id,
+          year,
+          e$message
+        ))
+      }
+    )
   }
 
   # Return results summary
@@ -90,11 +133,11 @@ download_ghcnh <- function(station_id, years, output_dir = NULL, quiet = FALSE) 
 #'
 #' Reads GHCNh parquet files from specified files or directory and optionally combines them into a single dataframe.
 #'
-#' @param files Optional. Character vector specifying the paths to parquet files. Defaults to \code{NULL}.
-#' @param directory Optional. Character string specifying the directory containing parquet files. Defaults to \code{NULL}.
-#' @param combine Logical. If \code{TRUE}, combines all successfully read files into a single dataframe. Defaults to \code{TRUE}.
+#' @param files Optional. Character vector specifying the paths to parquet files. Defaults to `NULL`.
+#' @param directory Optional. Character string specifying the directory containing parquet files. Defaults to `NULL`.
+#' @param combine Logical. If `TRUE`, combines all successfully read files into a single dataframe. Defaults to `TRUE`.
 #'
-#' @return If \code{combine} is \code{TRUE}, returns a list with:
+#' @return If `combine` is `TRUE`, returns a list with:
 #'   \item{data}{Combined dataframe of all successfully read files.}
 #'   \item{files_read}{Character vector of successfully read files.}
 #'   \item{files_failed}{Character vector of failed reads.}
@@ -102,7 +145,7 @@ download_ghcnh <- function(station_id, years, output_dir = NULL, quiet = FALSE) 
 #'   \item{date_range}{Date range of the combined data.}
 #'   \item{stations}{Unique stations in the combined data.}
 #'   \item{removed_cols}{List of columns removed due to all NA values.}
-#' If \code{combine} is \code{FALSE}, returns a list of individual dataframes and read results.
+#' If `combine` is `FALSE`, returns a list of individual dataframes and read results.
 #'
 #' @examples
 #' \dontrun{
@@ -161,25 +204,41 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
     }
 
     # Convert code columns
-    code_cols <- grep("(_Measurement_Code|_Report_Type|_Source_Code|_Source_Station_ID)$",
-                      names(df), value = TRUE)
+    code_cols <- grep(
+      "(_Measurement_Code|_Report_Type|_Source_Code|_Source_Station_ID)$",
+      names(df),
+      value = TRUE
+    )
     for (col in code_cols) {
       df[[col]] <- as.character(df[[col]])
     }
 
     # Numeric conversion with .data
     numeric_vars <- c(
-      "temperature", "dew_point_temperature", "station_level_pressure",
-      "sea_level_pressure", "wind_direction", "wind_speed", "wind_gust",
-      "precipitation", "relative_humidity", "wet_bulb_temperature",
-      "snow_depth", "visibility", "altimeter", "pressure_3hr_change",
-      paste0("precipitation_", c(3,6,9,12,15,18,21,24), "_hour")
+      "temperature",
+      "dew_point_temperature",
+      "station_level_pressure",
+      "sea_level_pressure",
+      "wind_direction",
+      "wind_speed",
+      "wind_gust",
+      "precipitation",
+      "relative_humidity",
+      "wet_bulb_temperature",
+      "snow_depth",
+      "visibility",
+      "altimeter",
+      "pressure_3hr_change",
+      paste0("precipitation_", c(3, 6, 9, 12, 15, 18, 21, 24), "_hour")
     )
 
     for (var in numeric_vars[numeric_vars %in% names(df)]) {
       df[[var]] <- suppressWarnings(as.numeric(df[[var]]))
       df[[var]] <- ifelse(df[[var]] == -9999, NA_real_, df[[var]])
-      if (var %in% c("temperature", "dew_point_temperature", "wet_bulb_temperature")) {
+      if (
+        var %in%
+          c("temperature", "dew_point_temperature", "wet_bulb_temperature")
+      ) {
         df[[var]] <- df[[var]] / 10
       }
     }
@@ -189,17 +248,27 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
       dplyr::mutate(
         DateTime = if ("DATE" %in% names(.data)) {
           as.POSIXct(.data$DATE, tz = "UTC", format = "%Y-%m-%dT%H:%M:%S")
-        } else if (all(c("Year", "Month", "Day", "Hour", "Minute") %in% names(.data))) {
+        } else if (
+          all(c("Year", "Month", "Day", "Hour", "Minute") %in% names(.data))
+        ) {
           as.POSIXct(
-            sprintf("%04d-%02d-%02d %02d:%02d:00",
-                    .data$Year, .data$Month, .data$Day, .data$Hour, .data$Minute),
+            sprintf(
+              "%04d-%02d-%02d %02d:%02d:00",
+              .data$Year,
+              .data$Month,
+              .data$Day,
+              .data$Hour,
+              .data$Minute
+            ),
             tz = "UTC"
           )
         } else {
           NA_real_
         }
       ) |>
-      dplyr::select(-dplyr::any_of(c("DATE", "Year", "Month", "Day", "Hour", "Minute"))) |>
+      dplyr::select(
+        -dplyr::any_of(c("DATE", "Year", "Month", "Day", "Hour", "Minute"))
+      ) |>
       dplyr::relocate(DateTime, .after = .data$Station_name)
 
     return(df)
@@ -207,17 +276,20 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
 
   # Process files
   for (file in files) {
-    tryCatch({
-      file_info <- basename(file)
-      df <- arrow::read_parquet(file) |>
-        standardize_df()
-      results$data[[file_info]] <- df
-      results$success <- c(results$success, file_info)
-      message("Successfully read: ", file_info)
-    }, error = function(e) {
-      results$failed <- c(results$failed, basename(file))
-      warning("Failed to read ", basename(file), ": ", e$message)
-    })
+    tryCatch(
+      {
+        file_info <- basename(file)
+        df <- arrow::read_parquet(file) |>
+          standardize_df()
+        results$data[[file_info]] <- df
+        results$success <- c(results$success, file_info)
+        message("Successfully read: ", file_info)
+      },
+      error = function(e) {
+        results$failed <- c(results$failed, basename(file))
+        warning("Failed to read ", basename(file), ": ", e$message)
+      }
+    )
   }
 
   # Return combined or individual results

@@ -11,13 +11,19 @@ This package provides tools for wrangling data needed for streamMetabolizer.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://connorb.github.io/preMetabolizer/}
   \item \url{https://github.com/ConnorB/preMetabolizer}
   \item Report bugs at \url{https://github.com/ConnorB/preMetabolizer/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Connor Brown \email{connor.brown@ku.edu} (\href{https://orcid.org/0000-0002-9680-8930}{ORCID})
+\strong{Maintainer}: Connor Brown \email{ConnorBrown1996@gmail.com} (\href{https://orcid.org/0000-0002-9680-8930}{ORCID})
+
+Authors:
+\itemize{
+  \item Connor Brown \email{ConnorBrown1996@gmail.com} (\href{https://orcid.org/0000-0002-9680-8930}{ORCID})
+}
 
 }
 \keyword{internal}

@@ -2,7 +2,7 @@
 #'
 #' Reads a shapefile or shapefile contained in a zip archive, automatically handling
 #' path specifications and layer detection. This is a convenience wrapper around
-#' \code{\link[sf]{st_read}} that simplifies reading common shapefile formats.
+#' [sf::st_read()] that simplifies reading common shapefile formats.
 #'
 #' @param path Path to the shapefile (.shp), directory containing shapefile components,
 #'   or zip file containing a shapefile. Tilde expansion is performed.
@@ -20,7 +20,7 @@
 #'   \item Zip files containing shapefiles (uses GDAL's virtual file system)
 #' }
 #'
-#' When reading from zip files, the function uses GDAL's \code{/vsizip/} virtual file
+#' When reading from zip files, the function uses GDAL's `/vsizip/` virtual file
 #' system prefix.
 #'
 #' @examples
@@ -38,16 +38,16 @@
 #' shp_data <- read_shp("path/to/multi_layer.zip", layer = "specific_layer")
 #' }
 #'
-#' @seealso \code{\link[sf]{st_read}} for the underlying reading function,
-#'   \code{\link[sf]{st_layers}} for layer detection
+#' @seealso [sf::st_read()] for the underlying reading function,
+#'   [sf::st_layers()] for layer detection
 #' @export
 read_shp <- function(path, layer = NULL) {
   # Normalize path to expand ~ and get absolute path
   path <- normalizePath(path, mustWork = FALSE)
-  
+
   # Check if path is a zip file
   is_zip <- grepl("\\.zip$", path, ignore.case = TRUE)
-  
+
   if (is_zip) {
     dsn <- paste0("/vsizip/", path)
   } else {
@@ -62,7 +62,7 @@ read_shp <- function(path, layer = NULL) {
       dsn <- path
     }
   }
-  
+
   # Auto-detect layer if not specified
   if (is.null(layer)) {
     layers <- sf::st_layers(dsn)$name
@@ -73,6 +73,6 @@ read_shp <- function(path, layer = NULL) {
     }
     layer <- layers[1]
   }
-  
+
   sf::st_read(dsn = dsn, layer = layer, quiet = TRUE)
 }

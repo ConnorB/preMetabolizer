@@ -5,14 +5,14 @@
 #'
 #' @param site_meta A data frame containing metadata for each site. Required columns:
 #'   \itemize{
-#'     \item \code{Site}: site name (character)
-#'     \item \code{lat}: latitude (numeric)
-#'     \item \code{lon}: longitude (numeric)
-#'     \item \code{elev_m}: elevation in meters (numeric)
-#'     \item \code{start_date}, \code{end_date}: date range (can be `Date` or character)
+#'     \item `Site`: site name (character)
+#'     \item `lat`: latitude (numeric)
+#'     \item `lon`: longitude (numeric)
+#'     \item `elev_m`: elevation in meters (numeric)
+#'     \item `start_date`, `end_date`: date range (can be `Date` or character)
 #'   }
 #'
-#' @param params Case-insensitive character vector of solar, meteorological or climatology parameters to download. Defaults to "PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", and "T2M". See \link[nasapower]{get_power} for more information.
+#' @param params Case-insensitive character vector of solar, meteorological or climatology parameters to download. Defaults to "PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", and "T2M". See [get_power][nasapower::get_power] for more information.
 #' @param max_attempts Number of retry attempts for failed API calls. Default is 5.
 #'
 #' @return A tibble with columns:

@@ -1,45 +1,44 @@
-#' Convert Barometric Pressure to Atmospheres
+#' Convert Barometric Pressure Between Units
 #'
-#' Converts barometric pressure from various units to a target unit
-#' using the `units` package.
+#' Converts barometric pressure from one unit to another using exact
+#' conversion factors. Always returns a plain numeric vector.
 #'
-#' @param pressure Numeric or `units` object. Barometric pressure value(s) to be converted.
-#' @param from Character. Units of the input barometric pressure. Accepted values are
-#'   "atm", "hPa", "mbar", "kPa", "Pa", "Torr", "psi", and "bar". Ignored if `pressure` has units.
-#' @param to Character. Target unit (default "atm").
-#' @param .drop_units Logical. If `TRUE`, returns a numeric value instead of a `units` object.
+#' @param pressure Numeric. Barometric pressure value(s) to be converted.
+#' @param from Character. Units of the input barometric pressure. Accepted
+#'   values are `"atm"`, `"hPa"`, `"mbar"`, `"kPa"`, `"Pa"`, `"Torr"`,
+#'   `"psi"`, and `"bar"`.
+#' @param to Character. Target unit. Same accepted values as `from`.
+#'   Defaults to `"atm"`.
 #'
-#' @return A `units` object or numeric, depending on `.drop_units`.
+#' @return Numeric vector of barometric pressure in the requested unit.
+#'
+#' @examples
+#' convert_pressure(101.3, from = "kPa", to = "atm")
+#' convert_pressure(1013.25, from = "hPa", to = "Pa")
 #'
 #' @export
-#' @importFrom units set_units as_units drop_units
-convert_pressure <- function(pressure, from = NULL, to = "atm", .drop_units = FALSE) {
-  unit_map <- c(
-    atm = "atm",
-    hpa = "hPa",
-    mbar = "mbar",
-    kpa = "kPa",
-    pa = "Pa",
-    torr = "torr",
-    psi = "psi",
-    bar = "bar"
+convert_pressure <- function(pressure, from, to = "atm") {
+  to_pa <- c(
+    atm = 101325,
+    hpa = 100,
+    mbar = 100,
+    kpa = 1000,
+    pa = 1,
+    torr = 133.322387415,
+    psi = 6894.757293168,
+    bar = 100000
   )
 
   from_lc <- tolower(from)
   to_lc <- tolower(to)
 
-  if (!inherits(pressure, "units")) {
-    if (is.null(from_lc) || !from_lc %in% names(unit_map)) {
-      stop("If pressure is not a 'units' object, `from` must be one of: atm, hPa, mbar, kPa, Pa, Torr, psi, bar.")
-    }
-    pressure <- as_units(pressure, unit_map[[from_lc]])
+  valid <- names(to_pa)
+  if (!from_lc %in% valid) {
+    stop("`from` must be one of: atm, hPa, mbar, kPa, Pa, Torr, psi, bar.")
+  }
+  if (!to_lc %in% valid) {
+    stop("`to` must be one of: atm, hPa, mbar, kPa, Pa, Torr, psi, bar.")
   }
 
-  if (!to_lc %in% names(unit_map)) {
-    stop("Target unit must be one of: atm, hPa, mbar, kPa, Pa, Torr, psi, bar.")
-  }
-
-  result <- set_units(pressure, unit_map[[to_lc]], mode = "standard")
-
-  if (.drop_units) drop_units(result) else result
+  pressure * to_pa[[from_lc]] / to_pa[[to_lc]]
 }

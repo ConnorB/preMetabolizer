@@ -2,12 +2,12 @@ Package: preMetabolizer
 Title: A Utility Package for the streamMetabolizer Package
 Version: 0.0.0.9000
 Authors@R: 
-    person("Connor", "Brown", , "connor.brown@ku.edu", role = c("aut", "cre"),
+    person("Connor", "Brown", , "ConnorBrown1996@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9680-8930"))
 Description: This package provides tools for wrangling data needed for
     streamMetabolizer.
 License: GPL (>= 3)
-URL: https://github.com/ConnorB/preMetabolizer
+URL: https://connorb.github.io/preMetabolizer/, https://github.com/ConnorB/preMetabolizer
 BugReports: https://github.com/ConnorB/preMetabolizer/issues
 Depends:
     R (>= 4.1.0)
@@ -29,13 +29,18 @@ Imports:
     stringr,
     tibble,
     tools,
-    units,
     utils,
     cli,
-    Rcpp
-Suggests: 
-    testthat (>= 3.0.0),
+    Rcpp,
+    lifecycle,
     streamMetabolizer
+Suggests:
+    ggplot2,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    tidyr
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
@@ -44,4 +49,5 @@ Remotes:
     ConnorB/streamMetabolizer
 LinkingTo: 
     Rcpp
-RoxygenNote: 7.3.3.9000
+Config/roxygen2/version: 8.0.0.9000
+RoxygenNote: 8.0.0.9000

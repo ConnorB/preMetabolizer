@@ -49,5 +49,5 @@ flag_z(x, return_z = TRUE)
 
 }
 \seealso{
-\code{\link[stats]{mad}}, \code{\link[stats]{median}}
+\code{\link[stats:mad]{stats::mad()}}, \code{\link[stats:median]{stats::median()}}
 }

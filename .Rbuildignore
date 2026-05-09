@@ -5,4 +5,13 @@
 ^dev$
 ^\.positai$
 ^\.claude$
-^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
+^[.]?air[.]toml$
+^\.vscode$
+^doc$
+^Meta$
+^\.agents$
+^AGENTS\.md$

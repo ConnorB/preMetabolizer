@@ -18,6 +18,7 @@
 #' @importFrom dplyr relocate
 #' @importFrom dplyr select
 #' @importFrom LakeMetabolizer sw.to.par.base
+#' @importFrom lifecycle deprecated
 #' @importFrom methods as
 #' @importFrom Rcpp sourceCpp
 #' @importFrom rlang .data

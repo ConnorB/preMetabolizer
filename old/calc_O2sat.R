@@ -38,7 +38,8 @@ calc_O2sat <- function(temp_water, atmo_press, units = "atm", salinity = 0) {
   pressure_atm <- convert_pressure_to_atm(atmo_press, units)
 
   # Vapor pressure correction (Antoine equation)
-  P_H2O_atm <- (exp(4.6543 - (1435.264 / ((temp_water + 273.15) + -64.848)))) * 0.98692  # Convert from bar to atm
+  P_H2O_atm <- (exp(4.6543 - (1435.264 / ((temp_water + 273.15) + -64.848)))) *
+    0.98692 # Convert from bar to atm
 
   # Pressure correction [atm]
   press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
@@ -60,8 +61,14 @@ calc_O2sat <- function(temp_water, atmo_press, units = "atm", salinity = 0) {
   TS <- log((298.15 - temp_water) / (273.15 + temp_water))
 
   # salinity correction
-  lnO2.sat <- A0 + A1 * TS + A2 * TS^2 + A3 * TS^3 + A4 * TS^4 + A5 * TS^5 +
-    salinity * (B0 + B1 * TS + B2 * TS^2 + B3 * TS^3) + C0 * salinity^2
+  lnO2.sat <- A0 +
+    A1 * TS +
+    A2 * TS^2 +
+    A3 * TS^3 +
+    A4 * TS^4 +
+    A5 * TS^5 +
+    salinity * (B0 + B1 * TS + B2 * TS^2 + B3 * TS^3) +
+    C0 * salinity^2
 
   # O2 saturation [umol/kg]
   DOsat_uMol.kg <- exp(lnO2.sat) * press_corr
@@ -70,7 +77,7 @@ calc_O2sat <- function(temp_water, atmo_press, units = "atm", salinity = 0) {
   water_density <- calc_water_density(temp_water)
 
   # Convert from umol/kg to mg/L
-  DOsat_mgL <- DOsat_uMol.kg * (10^(-6)) * 32 * water_density  # Molecular weight of O2 = 32 g/mol
+  DOsat_mgL <- DOsat_uMol.kg * (10^(-6)) * 32 * water_density # Molecular weight of O2 = 32 g/mol
 
   return(DOsat_mgL)
 }

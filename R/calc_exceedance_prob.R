@@ -22,7 +22,6 @@
 #'
 #' @export
 calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
-
   # Input type and validity checks
   if (!is.numeric(flow)) {
     stop("'flow' must be a numeric vector.")
@@ -53,7 +52,9 @@ calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
     # Remove zeros
     flow_no_na <- flow_no_na[flow_no_na > 0]
     if (length(flow_no_na) == 0) {
-      warning("All non-NA values in 'flow' were zero. Returning a vector of NAs with the original length.")
+      warning(
+        "All non-NA values in 'flow' were zero. Returning a vector of NAs with the original length."
+      )
       return(rep(NA, original_length))
     }
   }

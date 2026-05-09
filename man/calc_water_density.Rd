@@ -4,32 +4,28 @@
 \alias{calc_water_density}
 \title{Calculate Water Density}
 \usage{
-calc_water_density(water_temp, .drop_units = TRUE)
+calc_water_density(water_temp)
 }
 \arguments{
-\item{water_temp}{Numeric value representing the water temperature in degrees Celsius.}
-
-\item{.drop_units}{Logical. If \code{TRUE}, returns a numeric value instead of a \code{units} object.}
+\item{water_temp}{Numeric vector. Water temperature in degrees Celsius.}
 }
 \value{
-A \code{units} object or numeric vector representing the density of water in kg/m^3.
+Numeric vector of water density in kg/m^3.
 }
 \description{
-This function calculates the density of water (kg/m^3) based on the temperature in degrees Celsius.
-The equation is based on the formulation by Kell (1975) for pure water.
-}
-\details{
-This function uses the polynomial approximation provided by Kell (1975) for the density of water
-as a function of temperature. This approximation is valid for temperatures between 0°C and 150°C.
+Calculates the density of pure water (kg/m^3) from temperature in
+degrees Celsius using the polynomial approximation of Kell (1975).
+Valid for temperatures between 0°C and 150°C at atmospheric pressure.
 }
 \examples{
-calc_water_density(water_temp = 15)
-calc_water_density(water_temp = 15, .drop_units = TRUE)
+calc_water_density(15)
+calc_water_density(c(0, 10, 20, 30))
 
 }
 \references{
-Kell, G. S. (1975). Density, thermal expansivity, and compressibility of liquid water from 0° to 150°C:
-Correlations and tables for atmospheric pressure and saturation reviewed and expressed on 1968 temperature scale.
+Kell, G. S. (1975). Density, thermal expansivity, and compressibility of
+liquid water from 0° to 150°C: Correlations and tables for atmospheric
+pressure and saturation reviewed and expressed on 1968 temperature scale.
 \emph{Journal of Chemical and Engineering Data}, 20(1), 97–105.
 \doi{10.1021/je60064a005}
 }

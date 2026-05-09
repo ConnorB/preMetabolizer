@@ -55,10 +55,16 @@
 #' @export
 #' @seealso [table()] for frequency tables, [which.max()] for single maximum values
 calc_mode <- function(x, na.rm = TRUE, multi = "first") {
-  if (!is.atomic(x)) stop("Input must be an atomic vector")
+  if (!is.atomic(x)) {
+    stop("Input must be an atomic vector")
+  }
 
-  if (na.rm) x <- x[!is.na(x)]
-  if (length(x) == 0) return(NA)
+  if (na.rm) {
+    x <- x[!is.na(x)]
+  }
+  if (length(x) == 0) {
+    return(NA)
+  }
 
   freq_table <- table(x)
   max_freq <- max(freq_table)
@@ -66,11 +72,13 @@ calc_mode <- function(x, na.rm = TRUE, multi = "first") {
 
   # Handle multiple modes
   if (length(modes) > 1) {
-    modes <- switch(multi,
-                    "first" = modes[1],
-                    "last" = modes[length(modes)],
-                    "sample" = sample(modes, 1),
-                    modes)  # default returns all
+    modes <- switch(
+      multi,
+      "first" = modes[1],
+      "last" = modes[length(modes)],
+      "sample" = sample(modes, 1),
+      modes
+    ) # default returns all
   }
 
   # Convert back to original type

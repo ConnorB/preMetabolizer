@@ -10,36 +10,38 @@ correct_bp(
   station_elev,
   site_elev,
   from_units = "kPa",
-  to_units = "kPa",
-  drop_units = FALSE
+  to_units = "kPa"
 )
 }
 \arguments{
-\item{station_bp}{A numeric vector of barometric pressures. Units assumed to be kPa unless specified via \code{from_units}.}
+\item{station_bp}{Numeric. Barometric pressure at the station.}
 
-\item{air_temp}{A numeric vector of air temperatures at the station in degrees Celsius.}
+\item{air_temp}{Numeric. Air temperature at the station in degrees Celsius.}
 
-\item{station_elev}{Elevation of the initial site in meters.}
+\item{station_elev}{Numeric. Elevation of the station in meters.}
 
-\item{site_elev}{Elevation of the target site in meters.}
+\item{site_elev}{Numeric. Elevation of the target site in meters.}
 
-\item{from_units}{Character. Units of \code{station_bp}. Defaults to kPa.}
+\item{from_units}{Character. Units of \code{station_bp}. Defaults to \code{"kPa"}.
+See \code{\link[=convert_pressure]{convert_pressure()}} for accepted values.}
 
-\item{to_units}{Character. Desired output units. Must be one of the same supported units.}
-
-\item{drop_units}{Logical. If \code{TRUE}, returns a numeric vector instead of a \code{units} object.}
+\item{to_units}{Character. Desired output units. Defaults to \code{"kPa"}.
+See \code{\link[=convert_pressure]{convert_pressure()}} for accepted values.}
 }
 \value{
-A vector of corrected barometric pressures at the new elevation in the specified units.
+Numeric vector of corrected barometric pressure in \code{to_units}.
 }
 \description{
-This function adjusts barometric pressure from one elevation to another using the barometric formula.
-Input and output pressure units are flexible and handled via \code{\link{convert_pressure}}.
+Adjusts barometric pressure from one elevation to another using the
+barometric formula. Always returns a plain numeric vector.
 }
 \examples{
-correct_bp(station_bp = c(101.3, 100.5), air_temp = c(15, 10),
-           station_elev = 300, site_elev = 500)
+correct_bp(
+  station_bp = c(101.3, 100.5), air_temp = c(15, 10),
+  station_elev = 300, site_elev = 500
+)
+
 }
 \seealso{
-\code{\link{convert_pressure}} for supported pressure units and unit conversion.
+\code{\link[=convert_pressure]{convert_pressure()}} for supported pressure units.
 }

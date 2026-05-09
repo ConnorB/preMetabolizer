@@ -2,24 +2,29 @@
 % Please edit documentation in R/convert_pressure.R
 \name{convert_pressure}
 \alias{convert_pressure}
-\title{Convert Barometric Pressure to Atmospheres}
+\title{Convert Barometric Pressure Between Units}
 \usage{
-convert_pressure(pressure, from = NULL, to = "atm", .drop_units = FALSE)
+convert_pressure(pressure, from, to = "atm")
 }
 \arguments{
-\item{pressure}{Numeric or \code{units} object. Barometric pressure value(s) to be converted.}
+\item{pressure}{Numeric. Barometric pressure value(s) to be converted.}
 
-\item{from}{Character. Units of the input barometric pressure. Accepted values are
-"atm", "hPa", "mbar", "kPa", "Pa", "Torr", "psi", and "bar". Ignored if \code{pressure} has units.}
+\item{from}{Character. Units of the input barometric pressure. Accepted
+values are \code{"atm"}, \code{"hPa"}, \code{"mbar"}, \code{"kPa"}, \code{"Pa"}, \code{"Torr"},
+\code{"psi"}, and \code{"bar"}.}
 
-\item{to}{Character. Target unit (default "atm").}
-
-\item{.drop_units}{Logical. If \code{TRUE}, returns a numeric value instead of a \code{units} object.}
+\item{to}{Character. Target unit. Same accepted values as \code{from}.
+Defaults to \code{"atm"}.}
 }
 \value{
-A \code{units} object or numeric, depending on \code{.drop_units}.
+Numeric vector of barometric pressure in the requested unit.
 }
 \description{
-Converts barometric pressure from various units to a target unit
-using the \code{units} package.
+Converts barometric pressure from one unit to another using exact
+conversion factors. Always returns a plain numeric vector.
+}
+\examples{
+convert_pressure(101.3, from = "kPa", to = "atm")
+convert_pressure(1013.25, from = "hPa", to = "Pa")
+
 }

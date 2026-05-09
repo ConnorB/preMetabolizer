@@ -4,7 +4,11 @@ test_that("calc_water_height behaves as expected under various conditions", {
   # Vented sensors
   sensor_kPa <- 19.2
   water_temp <- 15
-  result_vented <- calc_water_height(sensor_kPa, water_temp = water_temp, type = "vented")
+  result_vented <- calc_water_height(
+    sensor_kPa,
+    water_temp = water_temp,
+    type = "vented"
+  )
 
   # Basic validations
   expect_true(is.numeric(result_vented))
@@ -12,9 +16,13 @@ test_that("calc_water_height behaves as expected under various conditions", {
 
   # Manual calculation for vented sensors
   gravity <- 9.80665
-  water_density <- (999.83952 + 16.945176 * water_temp + (-7.9870401e-3) * water_temp^2 +
-                      (-46.170461e-6) * water_temp^3 + 105.56302e-9 * water_temp^4 +
-                      (-280.54253e-12) * water_temp^5) / (1 + 16.87985e-3 * water_temp)
+  water_density <- (999.83952 +
+    16.945176 * water_temp +
+    (-7.9870401e-3) * water_temp^2 +
+    (-46.170461e-6) * water_temp^3 +
+    105.56302e-9 * water_temp^4 +
+    (-280.54253e-12) * water_temp^5) /
+    (1 + 16.87985e-3 * water_temp)
   delta_Pa <- sensor_kPa * 1000
   expected_height_vented <- delta_Pa / (water_density * gravity)
 
@@ -23,7 +31,12 @@ test_that("calc_water_height behaves as expected under various conditions", {
   # Unvented sensors
   sensor_kPa <- 120.5
   atmo_kPa <- 101.3
-  result_unvented <- calc_water_height(sensor_kPa, atmo_kPa = atmo_kPa, water_temp = water_temp, type = "unvented")
+  result_unvented <- calc_water_height(
+    sensor_kPa,
+    atmo_kPa = atmo_kPa,
+    water_temp = water_temp,
+    type = "unvented"
+  )
 
   # Basic validations
   expect_true(is.numeric(result_unvented))
@@ -39,8 +52,16 @@ test_that("calc_water_height behaves as expected under various conditions", {
   temp_high <- 40
   temp_low <- 0
 
-  result_high <- calc_water_height(sensor_kPa, water_temp = temp_high, type = "vented")
-  result_low <- calc_water_height(sensor_kPa, water_temp = temp_low, type = "vented")
+  result_high <- calc_water_height(
+    sensor_kPa,
+    water_temp = temp_high,
+    type = "vented"
+  )
+  result_low <- calc_water_height(
+    sensor_kPa,
+    water_temp = temp_low,
+    type = "vented"
+  )
 
   expect_true(is.numeric(result_high) && is.numeric(result_low))
   expect_gt(result_high, 0)
@@ -49,14 +70,22 @@ test_that("calc_water_height behaves as expected under various conditions", {
   # Zero pressure
   water_temp <- 25
   sensor_kPa <- 0
-  result_zero <- calc_water_height(sensor_kPa, water_temp = water_temp, type = "vented")
+  result_zero <- calc_water_height(
+    sensor_kPa,
+    water_temp = water_temp,
+    type = "vented"
+  )
 
   expect_equal(result_zero, 0) # No pressure difference means zero water height
 
   # Vector inputs
   sensor_kPa <- c(19.2, 25.0)
   water_temp <- c(15, 20)
-  result_vector <- calc_water_height(sensor_kPa, water_temp = water_temp, type = "vented")
+  result_vector <- calc_water_height(
+    sensor_kPa,
+    water_temp = water_temp,
+    type = "vented"
+  )
 
   expect_length(result_vector, length(sensor_kPa))
   expect_true(all(result_vector > 0))
@@ -65,8 +94,19 @@ test_that("calc_water_height behaves as expected under various conditions", {
   water_temp <- 25
   sensor_kPa <- 120.5
   atmo_kPa <- 0
-  result_atmo_zero <- calc_water_height(sensor_kPa, atmo_kPa = atmo_kPa, water_temp = water_temp, type = "unvented")
+  result_atmo_zero <- calc_water_height(
+    sensor_kPa,
+    atmo_kPa = atmo_kPa,
+    water_temp = water_temp,
+    type = "unvented"
+  )
 
   expect_gt(result_atmo_zero, 0)
+})
 
+test_that("calc_water_height errors when atmo_kPa is NULL for unvented type", {
+  expect_snapshot(
+    error = TRUE,
+    calc_water_height(120.5, water_temp = 15, type = "unvented")
+  )
 })

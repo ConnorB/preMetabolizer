@@ -8,24 +8,20 @@ http://education.gsfc.nasa.gov/experimental/July61999siteupdate/inv99Project.Sit
 calc_solar_insolation(
   app.solar.time,
   latitude,
-  max.insolation = convert_PAR_to_SW(2326),
+  max.insolation = streamMetabolizer::convert_PAR_to_SW(2326),
   format = c("degrees", "radians")
 )
 }
 \arguments{
 \item{app.solar.time}{POSIXct vector of date-time values in apparent solar
-time, e.g., as returned by \code{convert_UTC_to_solartime(...,
-  time.type="apparent solar")}}
+time, e.g., as returned by \code{convert_UTC_to_solartime(..., time.type="apparent solar")}}
 
-\item{latitude}{numeric value or vector indicating the site latitude in
-decimal degrees (never radians or deg-min-sec, no matter what \code{format}
-is) between -90 (South Pole) and 90 (North Pole).}
+\item{latitude}{numeric. Site latitude in decimal degrees between -90 and 90.}
 
 \item{max.insolation}{insolation rate at solar noon, W/m2 == J/s/m2. varies
 greatly with atmospheric conditions}
 
-\item{format}{The format of both the input and the output. May be "degrees"
-or "radians".}
+\item{format}{character. \code{"degrees"} or \code{"radians"}.}
 }
 \description{
 Adapted from \code{streamMetabolizer}, included under the CC0 1.0 Universal public domain dedication:

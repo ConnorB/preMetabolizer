@@ -36,7 +36,7 @@
 #' @export
 #' @useDynLib preMetabolizer, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
-#' @seealso \code{\link[stats]{mad}}, \code{\link[stats]{median}}
+#' @seealso [stats::mad()], [stats::median()]
 flag_z <- function(x, width = 5, threshold = 3.0, return_z = FALSE) {
   .Call(`_preMetabolizer_flag_z`, x, width, threshold, return_z)
 }

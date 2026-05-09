@@ -34,7 +34,7 @@ using geodesic distance calculations. Returns station metadata including
 distance from the target location.
 }
 \details{
-Distance calculations use \code{\link[geosphere]{distGeo}} for highly accurate
+Distance calculations use \code{\link[geosphere:distGeo]{geosphere::distGeo()}} for highly accurate
 geodesic distance calculations. See the function documentation for details
 about the ellipsoid model and algorithm used.
 }

@@ -10,9 +10,7 @@ calc_light(solar.time, latitude, longitude, max.PAR = 2326)
 \item{solar.time}{mean solar time, as required for input to metabolism
 models.}
 
-\item{latitude}{numeric value or vector indicating the site latitude in
-decimal degrees (never radians or deg-min-sec, no matter what \code{format}
-is) between -90 (South Pole) and 90 (North Pole).}
+\item{latitude}{numeric. Site latitude in decimal degrees between -90 and 90.}
 
 \item{longitude}{Numeric longitude in decimal degrees (east positive, west negative).}
 

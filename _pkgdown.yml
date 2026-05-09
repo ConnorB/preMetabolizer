@@ -1,0 +1,81 @@
+url: https://connorb.github.io/preMetabolizer/
+authors:
+  Connor Brown:
+    href: https://connorb.github.io/
+template:
+  bootstrap: 5
+  light-switch: true
+
+reference:
+  - title: Data access
+    desc: Download and read meteorological and hydrological data from external sources.
+    contents:
+      - download_ghcnh
+      - read_ghcnh
+      - get_nasa_data
+      - get_noaa_stations
+      - closest_noaa_stations
+      - get_ks_meso
+      - read_ks_meso
+      - ks_meso_stations
+      - ks_meso_station_activity
+      - read_shp
+
+  - title: Chemistry calculations
+    desc: >
+      Calculate dissolved gas concentrations, solubility constants, and related
+      thermodynamic quantities.
+    contents:
+      - calc_O2sat
+      - calc_CO2_molKg
+      - calc_CO2_mgL
+      - calc_K0
+      - calc_vapor_press
+      - xCO2_to_pCO2
+      - pCO2_to_xCO2
+
+  - title: Physical property calculations
+    desc: Calculate water density, depth from pressure, and solar radiation.
+    contents:
+      - calc_water_density
+      - calc_water_height
+      - calc_light
+      - calc_solar_insolation
+
+  - title: Statistical utilities
+    desc: Descriptive statistics and outlier detection for time series data.
+    contents:
+      - calc_bin_width
+      - calc_cv
+      - calc_mode
+      - calc_exceedance_prob
+      - flag_z
+
+  - title: Unit conversion
+    desc: Convert between common units used in hydrology and atmospheric science.
+    contents:
+      - convert_flow
+      - convert_pressure
+      - convert_pressure_to_atm
+      - correct_bp
+
+  - title: Time utilities
+    desc: Work with meteorological seasons and solar time.
+    contents:
+      - get_season
+      - even_timesteps
+      - convert_UTC_to_solartime
+      - convert_solartime_to_UTC
+
+  - title: Data
+    desc: Built-in reference datasets.
+    contents:
+      - ks_mesonet_vars
+      - french_creek
+
+articles:
+  - title: Workflows
+    desc: End-to-end examples preparing data for streamMetabolizer.
+    contents:
+      - french-creek
+

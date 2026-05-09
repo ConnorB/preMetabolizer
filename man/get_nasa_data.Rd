@@ -20,7 +20,7 @@ get_nasa_data(
 \item \code{start_date}, \code{end_date}: date range (can be \code{Date} or character)
 }}
 
-\item{params}{Case-insensitive character vector of solar, meteorological or climatology parameters to download. Defaults to "PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", and "T2M". See \link[nasapower]{get_power} for more information.}
+\item{params}{Case-insensitive character vector of solar, meteorological or climatology parameters to download. Defaults to "PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", and "T2M". See \link[nasapower:get_power]{get_power} for more information.}
 
 \item{max_attempts}{Number of retry attempts for failed API calls. Default is 5.}
 }

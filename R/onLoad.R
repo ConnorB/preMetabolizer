@@ -10,7 +10,7 @@
 #' @keywords internal
 #' @noRd
 #' @importFrom tools R_user_dir
-NULL  # This documents all internal functions
+NULL # This documents all internal functions
 "_PACKAGE"
 
 .onLoad <- function(libname, pkgname) {
@@ -58,4 +58,3 @@ mesonet_cache <- function() {
 nasa_cache <- function() {
   getOption("preMetabolizer.nasa_cache", stop("NASAPower cache path not set."))
 }
-

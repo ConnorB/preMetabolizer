@@ -7,7 +7,7 @@
 #' @param temp_water Numeric. Water temperature in degrees Celsius.
 #' @param atmo_press Numeric. Atmospheric pressure.
 #' @param press_units Character. Units of atmospheric pressure.
-#' @param ... Additional arguments passed to the \code{calc_vapor_press} function.
+#' @param ... Additional arguments passed to the `calc_vapor_press` function.
 #'
 #' @return Numeric. Partial pressure of CO2 in µatm.
 #'
@@ -18,7 +18,7 @@
 #' and \eqn{xCO2} is the mole fraction of CO2 in air.
 #'
 #' @references
-#' - Dickson, A.G., Sabine, C.L., & Christian, J.R. (2007). \emph{Guide to Best Practices for Ocean CO2 Measurements}.
+#' - Dickson, A.G., Sabine, C.L., & Christian, J.R. (2007). *Guide to Best Practices for Ocean CO2 Measurements*.
 #' - Weiss, R.F. (1974). Carbon dioxide in water and seawater: the solubility of a non-ideal gas. Marine Chemistry, 2(3), 203–215.
 #'
 #' @keywords internal
