@@ -9,7 +9,7 @@ Description: Tools for preparing environmental time series before fitting
     meteorological and elevation data, aligning irregular observations,
     converting units, and calculating light, pressure, dissolved gas, and water
     property inputs for streamMetabolizer.
-License: GPL (>= 3)
+License: AGPL (>= 3)
 URL: https://connorb.github.io/preMetabolizer/, https://github.com/ConnorB/preMetabolizer
 BugReports: https://github.com/ConnorB/preMetabolizer/issues
 Depends:
