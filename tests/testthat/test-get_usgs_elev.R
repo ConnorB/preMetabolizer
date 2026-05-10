@@ -71,7 +71,8 @@ test_that("get_usgs_elev validates service responses", {
     json_response('{"value":null}')
   })
 
-  expect_snapshot(error = TRUE, {
-    get_usgs_elev(latitude = 39, longitude = -96)
+  expect_snapshot({
+    result <- get_usgs_elev(latitude = 39, longitude = -96)
+    expect_equal(result, NA_real_)
   })
 })

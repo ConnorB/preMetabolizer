@@ -11,14 +11,18 @@
     Code
       get_usgs_elev(latitude = 91, longitude = -96)
     Condition
-      Error in `get_usgs_elev()`:
-      ! `latitude` values must be between -90 and 90.
+      Error in `validate_coord()`:
+      ! `latitude` contains invalid values.
+      i Values must be finite and between -90 and 90.
+      x Invalid positions: 1
 
 # get_usgs_elev validates service responses
 
     Code
-      get_usgs_elev(latitude = 39, longitude = -96)
+      result <- get_usgs_elev(latitude = 39, longitude = -96)
     Condition
-      Error in `get_usgs_elev()`:
-      ! USGS elevation response did not include a valid elevation for point 1.
+      Warning:
+      USGS elevation response did not include an elevation for point 1.
+    Code
+      expect_equal(result, NA_real_)
 
