@@ -62,11 +62,15 @@
 <li>
 <code><a href="../reference/correct_bp.html">correct_bp()</a></code> no longer accepts a <code>drop_units</code> argument; it always returns a plain numeric vector. Elevation inputs must be plain numeric (meters) (#TBD).</li>
 <li>
+<code><a href="../reference/download_ghcnh.html">download_ghcnh()</a></code> now validates inputs more clearly, treats existing local files as skipped downloads, and reports skipped files in its summary (#TBD).</li>
+<li>
 <code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> no longer errors on single-column data frames due to <code>drop = TRUE</code> subsetting.</li>
 <li>
 <code><a href="../reference/get_ks_meso.html">get_ks_meso()</a></code> now supports Kansas Mesonet network requests with <code>network = "KSRE"</code>, <code>"BBW"</code>, or <code>"EBW"</code>, accepts <code>"all"</code> as a station selector, and correctly reports invalid variable names in the error message (previously reported them as “Invalid stations:” instead of “Invalid variables:”).</li>
 <li>
 <code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site <code>latitude</code> and <code>longitude</code> arguments or per-site <code>latitude</code>, <code>longitude</code>, and <code>elev_m</code> columns, interpolates NASA values to the input timestamps, and returns <code>light.obs</code> by converting <code>ALLSKY_SFC_SW_DWN</code> with <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code>. The old <code>lat</code> and <code>lon</code> aliases are deprecated (#TBD).</li>
+<li>
+<code><a href="../reference/get_noaa_stations.html">get_noaa_stations()</a></code> now filters cached raw station metadata by <code>state</code>, validates options more clearly, and uses cached station metadata when remote modification times are unavailable (#TBD).</li>
 <li>
 <code><a href="../reference/get_usgs_elev.html">get_usgs_elev()</a></code> can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (#TBD).</li>
 <li>
@@ -75,6 +79,10 @@
 <code><a href="../reference/ks_meso_fw13.html">ks_meso_fw13()</a></code> can now retrieve Kansas Mesonet fire weather data in FW13 format for one station and date range (#TBD).</li>
 <li>
 <code><a href="../reference/ks_meso_most_recent.html">ks_meso_most_recent()</a></code> can now retrieve the most recently ingested Kansas Mesonet timestamp for each station at a requested interval (#TBD).</li>
+<li>
+<code><a href="../reference/rcpp_calc_exceedance_prob.html">rcpp_calc_exceedance_prob()</a></code> now provides a C++ implementation of flow exceedance probability calculations (#TBD).</li>
+<li>
+<code><a href="../reference/read_ghcnh.html">read_ghcnh()</a></code> is now exported, validates file inputs, can suppress progress messages with <code>quiet = TRUE</code>, and handles files that lack <code>Station_name</code> or <code>Station_ID</code> columns (#TBD).</li>
 </ul></div>
   </main></div>
 

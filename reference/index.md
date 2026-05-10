@@ -12,15 +12,15 @@ Download and read meteorological and hydrological data from external
 sources.
 
 - [`download_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/download_ghcnh.md)
-  : Download GHCNh CSV Files
+  : Download GHCNh CSV files
 - [`read_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/read_ghcnh.md)
-  : Read GHCNh CSV Files
+  : Read GHCNh CSV files
 - [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
   : Download NASA POWER hourly data
 - [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
   : Get elevation from the USGS Elevation Point Query Service
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
-  : Get NOAA Station Information
+  : Get NOAA station information
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
   : Find NOAA stations near a location
 - [`ks_meso_vars()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_vars.md)
@@ -87,6 +87,8 @@ Descriptive statistics and outlier detection for time series data.
   : Calculate the Mode(s) of a Vector
 - [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
   : Calculate Flow Exceedence Probabilities
+- [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
+  : Calculate Flow Exceedance Probabilities with C++
 - [`flag_z()`](https://connorb.github.io/preMetabolizer/reference/flag_z.md)
   : Flag Outliers Using Robust Z-Scores
 

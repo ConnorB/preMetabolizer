@@ -46,6 +46,9 @@
   no longer accepts a `drop_units` argument; it always returns a plain
   numeric vector. Elevation inputs must be plain numeric (meters)
   (#TBD).
+- [`download_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/download_ghcnh.md)
+  now validates inputs more clearly, treats existing local files as
+  skipped downloads, and reports skipped files in its summary (#TBD).
 - [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
   no longer errors on single-column data frames due to `drop = TRUE`
   subsetting.
@@ -63,6 +66,10 @@
   and returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with
   [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html).
   The old `lat` and `lon` aliases are deprecated (#TBD).
+- [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
+  now filters cached raw station metadata by `state`, validates options
+  more clearly, and uses cached station metadata when remote
+  modification times are unavailable (#TBD).
 - [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
   can now retrieve elevation values from the USGS Elevation Point Query
   Service for one or more coordinate pairs (#TBD).
@@ -74,3 +81,10 @@
 - [`ks_meso_most_recent()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_most_recent.md)
   can now retrieve the most recently ingested Kansas Mesonet timestamp
   for each station at a requested interval (#TBD).
+- [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
+  now provides a C++ implementation of flow exceedance probability
+  calculations (#TBD).
+- [`read_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/read_ghcnh.md)
+  is now exported, validates file inputs, can suppress progress messages
+  with `quiet = TRUE`, and handles files that lack `Station_name` or
+  `Station_ID` columns (#TBD).

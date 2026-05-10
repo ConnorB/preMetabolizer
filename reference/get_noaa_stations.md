@@ -1,4 +1,4 @@
-# Get NOAA Station Information
+# Get NOAA station information
 
 Downloads, processes, and optionally cleans NOAA station metadata from
 the Meteorological Station Historical Repository (MSHR).

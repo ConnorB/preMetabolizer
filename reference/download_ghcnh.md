@@ -1,4 +1,4 @@
-# Download GHCNh CSV Files
+# Download GHCNh CSV files
 
 Downloads GHCNh CSV files for specified stations and years, saving them
 to an output directory.
@@ -41,6 +41,10 @@ A list summarizing the download process:
 - successful_downloads:
 
   Character vector of successfully downloaded files.
+
+- skipped_downloads:
+
+  Character vector of files already present locally.
 
 - failed_downloads:
 

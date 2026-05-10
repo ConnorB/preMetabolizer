@@ -1,4 +1,4 @@
-# Read GHCNh CSV Files
+# Read GHCNh CSV files
 
 Reads GHCNh CSV files from specified files or directory and optionally
 combines them into a single dataframe.
@@ -6,7 +6,7 @@ combines them into a single dataframe.
 ## Usage
 
 ``` r
-read_ghcnh(files = NULL, directory = NULL, combine = TRUE)
+read_ghcnh(files = NULL, directory = NULL, combine = TRUE, quiet = FALSE)
 ```
 
 ## Arguments
@@ -25,6 +25,10 @@ read_ghcnh(files = NULL, directory = NULL, combine = TRUE)
 
   Logical. If `TRUE`, combines all successfully read files into a single
   dataframe. Defaults to `TRUE`.
+
+- quiet:
+
+  Logical. If `TRUE`, suppresses messages. Defaults to `FALSE`.
 
 ## Value
 
