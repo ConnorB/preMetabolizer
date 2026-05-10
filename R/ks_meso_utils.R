@@ -31,10 +31,12 @@ validate_ks_meso_dates <- function(start_date, end_date) {
   )
 
   if (is.na(dates$start) || is.na(dates$end)) {
-    stop("start_date and end_date must be valid dates")
+    cli::cli_abort("{.arg start_date} and {.arg end_date} must be valid dates.")
   }
   if (dates$start > dates$end) {
-    stop("start_date must be before or equal to end_date")
+    cli::cli_abort(
+      "{.arg start_date} must be before or equal to {.arg end_date}."
+    )
   }
 
   dates

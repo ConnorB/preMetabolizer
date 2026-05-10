@@ -18,6 +18,10 @@
 #'
 #' @export
 convert_pressure <- function(pressure, from, to = "atm") {
+  check_numeric(pressure)
+  check_string(from, allow_empty = FALSE)
+  check_string(to, allow_empty = FALSE)
+
   to_pa <- c(
     atm = 101325,
     hpa = 100,
@@ -34,10 +38,14 @@ convert_pressure <- function(pressure, from, to = "atm") {
 
   valid <- names(to_pa)
   if (!from_lc %in% valid) {
-    stop("`from` must be one of: atm, hPa, mbar, kPa, Pa, Torr, psi, bar.")
+    cli::cli_abort(
+      "{.arg from} must be one of {.val {valid}}, not {.val {from}}."
+    )
   }
   if (!to_lc %in% valid) {
-    stop("`to` must be one of: atm, hPa, mbar, kPa, Pa, Torr, psi, bar.")
+    cli::cli_abort(
+      "{.arg to} must be one of {.val {valid}}, not {.val {to}}."
+    )
   }
 
   pressure * to_pa[[from_lc]] / to_pa[[to_lc]]

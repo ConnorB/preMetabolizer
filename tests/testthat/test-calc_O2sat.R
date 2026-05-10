@@ -57,7 +57,7 @@ test_that("calc_O2sat uses corrected vapor pressure at non-standard pressure", {
   standard <- calc_O2sat(25, 1, "atm", 0)
   low_pressure <- calc_O2sat(25, 900, "mbar", 0)
   vapor_press <- calc_vapor_press(25, salinity = 0, method = "MIMSY")
-  expected_corr <- (convert_pressure_to_atm(900, "mbar") - vapor_press) /
+  expected_corr <- (convert_pressure(900, "mbar", "atm") - vapor_press) /
     (1 - vapor_press)
 
   expect_equal(low_pressure, standard * expected_corr, tolerance = 1e-8)

@@ -13,6 +13,7 @@ get_nasa_data(
   elev_m = NULL,
   params = c("PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", "T2M"),
   max_attempts = 5,
+  quiet = TRUE,
   lat = lifecycle::deprecated(),
   lon = lifecycle::deprecated()
 )
@@ -42,6 +43,8 @@ climatology parameters to download. Defaults to \code{"PSC"},
 
 \item{max_attempts}{Number of retry attempts for failed API calls. Default
 is 5.}
+
+\item{quiet}{Logical. If \code{TRUE} (default), suppresses progress messages.}
 
 \item{lat, lon}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{latitude} and
 \code{longitude} instead. Data columns named \code{lat} and \code{lon} are also

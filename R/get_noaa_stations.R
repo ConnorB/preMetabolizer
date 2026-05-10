@@ -249,7 +249,7 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
   process_data <- memoise::memoise(
     function(df, state, debug) {
       if (debug) {
-        message("Processing data...")
+        cli::cli_inform("Processing NOAA station metadata.")
       }
 
       cols_to_keep <- c(
@@ -314,7 +314,7 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
         noaa_data <- noaa_data |>
           dplyr::filter(toupper(trimws(.data$STATE_PROV)) == state)
         if (nrow(noaa_data) == 0) {
-          warning(sprintf("No stations found for state code '%s'", state))
+          cli::cli_warn("No NOAA stations found for state code {.val {state}}.")
         }
       }
 
@@ -355,7 +355,7 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
 
     raw_data <- raw_data[toupper(trimws(raw_data$STATE_PROV)) == state, ]
     if (nrow(raw_data) == 0) {
-      warning(sprintf("No stations found for state code '%s'", state))
+      cli::cli_warn("No NOAA stations found for state code {.val {state}}.")
     }
     raw_data
   }
@@ -372,7 +372,7 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
     }
     if (!needs_update) {
       if (debug) {
-        message("Loading cached RDS file")
+        cli::cli_inform("Loading cached NOAA station metadata.")
       }
       raw_data <- readRDS(mshr_rds)
       return(
@@ -389,7 +389,7 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
   tryCatch(
     {
       if (debug) {
-        message("Downloading and processing data...")
+        cli::cli_inform("Downloading and processing NOAA station metadata.")
       }
 
       # Download zip file
@@ -406,7 +406,9 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
         cli::cli_abort("Could not find the unzipped MSHR text file.")
       }
       if (debug) {
-        message("Reading file: ", mshr_txt)
+        cli::cli_inform(
+          "Reading NOAA station metadata from {.path {mshr_txt}}."
+        )
       }
 
       # Read the file using read_fwf
@@ -441,7 +443,7 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
       # Clean up any temporary files in case of error
       unlink(mshr_zip)
       unlink(mshr_txt)
-      stop("Processing failed: ", e$message)
+      cli::cli_abort("Processing NOAA station metadata failed.", parent = e)
     }
   )
 }

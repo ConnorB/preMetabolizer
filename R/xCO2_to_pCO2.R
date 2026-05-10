@@ -37,7 +37,7 @@
 #' @export
 xCO2_to_pCO2 <- function(xCO2_ppm, temp_water, atmo_press, press_units, ...) {
   # Convert atmospheric pressure to atm
-  atmo_press_atm <- convert_pressure_to_atm(atmo_press, press_units)
+  atmo_press_atm <- convert_pressure(atmo_press, from = press_units, to = "atm")
 
   # Calculate vapor pressure of water
   vapor_press <- calc_vapor_press(temp_water, ...)
@@ -82,7 +82,7 @@ xCO2_to_pCO2 <- function(xCO2_ppm, temp_water, atmo_press, press_units, ...) {
 #' @export
 pCO2_to_xCO2 <- function(temp_water, pCO2_uatm, atmo_press, press_units, ...) {
   # Convert atmospheric pressure to atm
-  atmo_press_atm <- convert_pressure_to_atm(atmo_press, press_units)
+  atmo_press_atm <- convert_pressure(atmo_press, from = press_units, to = "atm")
 
   # Calculate vapor pressure of water
   vapor_press <- calc_vapor_press(temp_water, ...)

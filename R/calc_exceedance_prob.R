@@ -27,19 +27,19 @@
 calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
   # Input type and validity checks
   if (!is.numeric(flow)) {
-    stop("'flow' must be a numeric vector.")
+    cli::cli_abort("{.arg flow} must be a numeric vector.")
   }
 
   if (any(is.infinite(flow))) {
-    stop("'flow' contains infinite values. These are not allowed.")
+    cli::cli_abort("{.arg flow} must not contain infinite values.")
   }
 
   if (!is.logical(rm.zero)) {
-    stop("'rm.zero' must be a logical value (TRUE or FALSE).")
+    cli::cli_abort("{.arg rm.zero} must be `TRUE` or `FALSE`.")
   }
 
   if (length(flow) == 0) {
-    warning("'flow' is an empty vector. Returning an empty numeric vector.")
+    cli::cli_warn("{.arg flow} is empty. Returning an empty numeric vector.")
     return(numeric(0))
   }
 
@@ -55,8 +55,8 @@ calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
     # Remove zeros
     flow_no_na <- flow_no_na[flow_no_na > 0]
     if (length(flow_no_na) == 0) {
-      warning(
-        "All non-NA values in 'flow' were zero. Returning a vector of NAs with the original length."
+      cli::cli_warn(
+        "All non-missing values in {.arg flow} were zero. Returning `NA` values."
       )
       return(rep(NA, original_length))
     }
@@ -102,25 +102,25 @@ calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
 #' @export
 rcpp_calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
   if (!is.numeric(flow)) {
-    stop("'flow' must be a numeric vector.")
+    cli::cli_abort("{.arg flow} must be a numeric vector.")
   }
 
   if (any(is.infinite(flow))) {
-    stop("'flow' contains infinite values. These are not allowed.")
+    cli::cli_abort("{.arg flow} must not contain infinite values.")
   }
 
   if (!is.logical(rm.zero)) {
-    stop("'rm.zero' must be a logical value (TRUE or FALSE).")
+    cli::cli_abort("{.arg rm.zero} must be `TRUE` or `FALSE`.")
   }
 
   if (length(flow) == 0) {
-    warning("'flow' is an empty vector. Returning an empty numeric vector.")
+    cli::cli_warn("{.arg flow} is empty. Returning an empty numeric vector.")
     return(numeric(0))
   }
 
   if (rm.zero && length(flow[flow > 0 & !is.na(flow)]) == 0) {
-    warning(
-      "All non-NA values in 'flow' were zero. Returning a vector of NAs with the original length."
+    cli::cli_warn(
+      "All non-missing values in {.arg flow} were zero. Returning `NA` values."
     )
     return(rep(NA, length(flow)))
   }

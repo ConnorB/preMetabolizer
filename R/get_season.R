@@ -26,7 +26,7 @@
 get_season <- function(date) {
   # Convert input to Date if necessary
   date <- tryCatch(base::as.Date(date), error = function(e) {
-    stop("Error: Input is not a valid date or cannot be coerced to a Date.")
+    cli::cli_abort("{.arg date} must contain valid dates.", parent = e)
   })
 
   # Extract month and day

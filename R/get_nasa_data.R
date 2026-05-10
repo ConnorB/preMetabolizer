@@ -22,6 +22,7 @@
 #'   [get_power][nasapower::get_power] for more information.
 #' @param max_attempts Number of retry attempts for failed API calls. Default
 #'   is 5.
+#' @param quiet Logical. If `TRUE` (default), suppresses progress messages.
 #' @param lat,lon `r lifecycle::badge("deprecated")` Use `latitude` and
 #'   `longitude` instead. Data columns named `lat` and `lon` are also
 #'   deprecated; use `latitude` and `longitude` columns instead.
@@ -79,6 +80,7 @@ get_nasa_data <- function(
   elev_m = NULL,
   params = c("PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", "T2M"),
   max_attempts = 5,
+  quiet = TRUE,
   lat = lifecycle::deprecated(),
   lon = lifecycle::deprecated()
 ) {
@@ -149,6 +151,7 @@ get_nasa_data <- function(
   ) {
     cli::cli_abort("{.arg max_attempts} must be a single positive number.")
   }
+  check_bool(quiet)
 
   datetimes <- tryCatch(
     lubridate::as_datetime(data[[datetime_col]], tz = "UTC"),
@@ -385,7 +388,7 @@ get_nasa_data <- function(
     }
   }
 
-  retry_get_power <- function(..., max_attempts = 5) {
+  retry_get_power <- function(..., max_attempts = 5, quiet = TRUE) {
     attempt <- 1
     while (attempt <= max_attempts) {
       result <- tryCatch(
@@ -395,15 +398,23 @@ get_nasa_data <- function(
         error = function(e) {
           if (attempt < max_attempts) {
             wait <- stats::runif(1, min = 1, max = 2) * 2^(attempt - 1)
-            cli::cli_alert_warning("    Attempt {attempt} failed: {e$message}")
-            cli::cli_alert_info("    Retrying in {round(wait, 2)} seconds...")
+            cli_inform_if(
+              !quiet,
+              c(
+                "!" = "NASA POWER request attempt {attempt} failed: {e$message}",
+                "i" = "Retrying in {round(wait, 2)} seconds."
+              )
+            )
             Sys.sleep(wait)
             NULL
           } else {
-            cli::cli_alert_danger(
-              "    Failed after {max_attempts} attempts: {e$message}"
+            cli::cli_abort(
+              c(
+                "NASA POWER request failed after {max_attempts} attempt{?s}.",
+                "i" = e$message
+              ),
+              parent = e
             )
-            stop(e)
           }
         }
       )
@@ -491,7 +502,7 @@ get_nasa_data <- function(
     dplyr::bind_rows(interpolated)
   }
 
-  cli::cli_h1("Downloading NASA POWER data")
+  cli_inform_if(!quiet, "Downloading NASA POWER data")
 
   all_data <- list()
   request_count <- 1
@@ -508,13 +519,13 @@ get_nasa_data <- function(
 
     years <- seq(lubridate::year(start_date), lubridate::year(end_date))
 
-    cli::cli_h2("Site: {.strong {site$label}}")
+    cli_inform_if(!quiet, "Site: {.strong {site$label}}")
 
     for (yr in years) {
       start <- max(start_date, lubridate::ymd(paste0(yr, "-01-01")))
       end <- min(end_date, lubridate::ymd(paste0(yr, "-12-31")))
 
-      cli::cli_alert_info("  Retrieving data: {start} to {end}")
+      cli_inform_if(!quiet, "Retrieving data: {start} to {end}")
 
       dat <- retry_get_power(
         community = "sb",
@@ -524,7 +535,8 @@ get_nasa_data <- function(
         dates = c(start, end),
         site_elev = site$elev_m,
         time_standard = "UTC",
-        max_attempts = max_attempts
+        max_attempts = max_attempts,
+        quiet = quiet
       )
 
       if (!is.null(site_col)) {
@@ -537,7 +549,8 @@ get_nasa_data <- function(
       Sys.sleep(1)
     }
 
-    cli::cli_alert_success(
+    cli_inform_if(
+      !quiet,
       "Finished downloading data for {.strong {site$label}}"
     )
   }

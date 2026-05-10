@@ -61,19 +61,17 @@ get_ks_meso <- function(
   debug = TRUE
 ) {
   interval <- rlang::arg_match(interval, c("hour", "5min", "day"))
-  if (!is.logical(debug) || length(debug) != 1 || is.na(debug)) {
-    stop("debug must be TRUE or FALSE")
-  }
+  check_bool(debug)
   if (!is.null(stations) && !is.null(network)) {
-    stop("Only one of stations or network can be supplied")
+    cli::cli_abort("Use only one of {.arg stations} and {.arg network}.")
   }
   if (is.null(stations) && is.null(network)) {
-    stop("One of stations or network must be supplied")
+    cli::cli_abort("One of {.arg stations} or {.arg network} must be supplied.")
   }
   if (
     !is.null(stations) && (!is.character(stations) || length(stations) == 0)
   ) {
-    stop("stations must be a character vector")
+    cli::cli_abort("{.arg stations} must be a character vector.")
   }
   if (!is.null(network)) {
     network <- rlang::arg_match(network, c("KSRE", "BBW", "EBW"))
@@ -101,10 +99,7 @@ get_ks_meso <- function(
     stations_to_check <- setdiff(stations, "all")
     invalid_stations <- setdiff(stations_to_check, available_stations)
     if (length(invalid_stations) > 0) {
-      stop(sprintf(
-        "Invalid stations: %s",
-        paste(invalid_stations, collapse = ", ")
-      ))
+      cli::cli_abort("Invalid station{?s}: {.val {invalid_stations}}.")
     }
   }
 
@@ -112,17 +107,14 @@ get_ks_meso <- function(
   available_vars <- ks_meso_vars()$csv_heading
   invalid_vars <- setdiff(vars, available_vars)
   if (length(invalid_vars) > 0) {
-    stop(sprintf(
-      "Invalid variables: %s",
-      paste(invalid_vars, collapse = ", ")
-    ))
+    cli::cli_abort("Invalid variable{?s}: {.val {invalid_vars}}.")
   }
 
   # Handle output directory
   output_dir <- if (is.null(output_dir)) {
     path <- mesonet_cache()
     if (debug) {
-      message("Using cache directory: ", path)
+      cli::cli_inform("Using Kansas Mesonet cache directory {.path {path}}.")
     }
     path
   } else {
@@ -157,7 +149,7 @@ get_ks_meso <- function(
   # Process each station or network sequentially
   for (request_name in request_names) {
     if (debug) {
-      message(sprintf("Processing %s: %s", query_type, request_name))
+      cli::cli_inform("Processing {query_type} {.val {request_name}}.")
     }
 
     tryCatch(
@@ -176,7 +168,9 @@ get_ks_meso <- function(
         # Skip if file exists
         if (file.exists(output_file)) {
           if (debug) {
-            message(sprintf("File exists: %s", output_file))
+            cli::cli_inform(
+              "Using cached Kansas Mesonet file {.path {output_file}}."
+            )
           }
           results$success <- c(results$success, request_name)
           next
@@ -210,12 +204,9 @@ get_ks_meso <- function(
           api_url <- request$url
 
           if (debug) {
-            message(sprintf(
-              "Downloading %s: %s to %s",
-              request_name,
-              time_start,
-              time_end
-            ))
+            cli::cli_inform(
+              "Downloading {.val {request_name}} from {time_start} to {time_end}."
+            )
           }
 
           # Try to download with automatic retry and error handling
@@ -226,15 +217,19 @@ get_ks_meso <- function(
             },
             error = function(e) {
               if (debug) {
-                message(sprintf("Error in chunk %d: %s", i, e$message))
+                cli::cli_inform(
+                  c(
+                    "!" = "Kansas Mesonet chunk {i} failed.",
+                    "i" = e$message
+                  )
+                )
               }
               if (grepl("limit of 3000 records", e$message)) {
                 max_days_per_call <<- floor(max_days_per_call * 0.75)
                 if (debug) {
-                  message(sprintf(
-                    "Reducing max_days_per_call to %d",
-                    max_days_per_call
-                  ))
+                  cli::cli_inform(
+                    "Reducing {.code max_days_per_call} to {max_days_per_call}."
+                  )
                 }
               }
               return(NULL)
@@ -262,7 +257,12 @@ get_ks_meso <- function(
               },
               error = function(e) {
                 if (debug) {
-                  message(sprintf("Error parsing chunk %d: %s", i, e$message))
+                  cli::cli_inform(
+                    c(
+                      "!" = "Could not parse Kansas Mesonet chunk {i}.",
+                      "i" = e$message
+                    )
+                  )
                 }
                 chunk_success[i] <- FALSE
               }
@@ -283,23 +283,25 @@ get_ks_meso <- function(
 
           results$success <- c(results$success, request_name)
 
-          if (debug) message(sprintf("Data saved to: %s", output_file))
+          if (debug) {
+            cli::cli_inform(
+              "Saved Kansas Mesonet data to {.path {output_file}}."
+            )
+          }
         } else {
-          warning(sprintf(
-            "No data retrieved for %s %s",
-            query_type,
-            request_name
-          ))
+          cli::cli_warn(
+            "No data retrieved for {query_type} {.val {request_name}}."
+          )
           results$failed <- c(results$failed, request_name)
         }
       },
       error = function(e) {
-        message(sprintf(
-          "Error processing %s %s: %s",
-          query_type,
-          request_name,
-          e$message
-        ))
+        cli::cli_inform(
+          c(
+            "!" = "Error processing {query_type} {.val {request_name}}.",
+            "i" = e$message
+          )
+        )
         results$failed <- c(results$failed, request_name)
       }
     )

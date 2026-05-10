@@ -43,7 +43,7 @@ read_ks_meso <- function(
   output_dir = NULL
 ) {
   if (missing(station) || !is.character(station)) {
-    stop("station must be provided as a character string")
+    cli::cli_abort("{.arg station} must be provided as a character vector.")
   }
 
   if (
@@ -52,13 +52,13 @@ read_ks_meso <- function(
       !inherits(lubridate::ymd(start_date), "Date") ||
       !inherits(lubridate::ymd(end_date), "Date")
   ) {
-    stop(
-      "start_date and end_date must be provided as valid date strings (YYYY-MM-DD)"
+    cli::cli_abort(
+      "{.arg start_date} and {.arg end_date} must be valid date strings in YYYY-MM-DD format."
     )
   }
 
   if (missing(interval) || !is.character(interval)) {
-    stop("interval must be provided as a character string")
+    cli::cli_abort("{.arg interval} must be provided as a character string.")
   }
 
   if (is.null(output_dir)) {
@@ -78,13 +78,12 @@ read_ks_meso <- function(
   )
 
   if (!file.exists(output_file)) {
-    stop(sprintf(
-      "Cached file for station %s, interval %s, and date range %s to %s does not exist.",
-      station,
-      interval,
-      start_date,
-      end_date
-    ))
+    cli::cli_abort(
+      c(
+        "Cached Kansas Mesonet file does not exist.",
+        "i" = "Expected file: {.path {output_file}}."
+      )
+    )
   }
 
   read_ks_meso_csv(output_file)

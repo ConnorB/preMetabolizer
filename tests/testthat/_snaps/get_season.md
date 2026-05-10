@@ -3,6 +3,8 @@
     Code
       get_season("not-a-date")
     Condition
-      Error in `value[[3L]]()`:
-      ! Error: Input is not a valid date or cannot be coerced to a Date.
+      Error in `get_season()`:
+      ! `date` must contain valid dates.
+      Caused by error in `charToDate()`:
+      ! character string is not in a standard unambiguous format
 

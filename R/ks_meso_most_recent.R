@@ -49,7 +49,10 @@ ks_meso_most_recent <- function(interval) {
         )
     },
     error = function(e) {
-      stop(sprintf("Error fetching most recent Mesonet data: %s", e$message))
+      cli::cli_abort(
+        "Failed to fetch most recent Kansas Mesonet data.",
+        parent = e
+      )
     }
   )
 }

@@ -22,10 +22,10 @@ test_that("convert_pressure is vectorized", {
   expect_length(result, 3)
 })
 
-test_that("convert_pressure_to_atm converts common units correctly", {
-  expect_equal(convert_pressure_to_atm(1, "atm"), 1)
-  expect_equal(convert_pressure_to_atm(1013.25, "hPa"), 1, tolerance = 1e-6)
-  expect_equal(convert_pressure_to_atm(101.325, "kPa"), 1, tolerance = 1e-6)
+test_that("convert_pressure converts common units to atm", {
+  expect_equal(convert_pressure(1, "atm", "atm"), 1)
+  expect_equal(convert_pressure(1013.25, "hPa", "atm"), 1, tolerance = 1e-6)
+  expect_equal(convert_pressure(101.325, "kPa", "atm"), 1, tolerance = 1e-6)
 })
 
 test_that("correct_bp gives lower pressure at higher elevation", {

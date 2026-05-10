@@ -49,19 +49,23 @@ even_timesteps <- function(
 ) {
   # Input validation
   if (!is.data.frame(loggerData)) {
-    stop("Input must be a data frame")
+    cli::cli_abort("{.arg loggerData} must be a data frame.")
   }
   if (!datetime_col %in% names(loggerData)) {
-    stop(sprintf("Column '%s' not found in input data frame", datetime_col))
+    cli::cli_abort(
+      "{.arg loggerData} must contain a {.field {datetime_col}} column."
+    )
   }
   if (!is.null(site_col) && !site_col %in% names(loggerData)) {
-    stop(sprintf("Site column '%s' not found in input data frame", site_col))
+    cli::cli_abort(
+      "{.arg loggerData} must contain a {.field {site_col}} column."
+    )
   }
 
   # Get datetime vector
   datetime_vec <- loggerData[[datetime_col]]
   if (!inherits(datetime_vec, "POSIXct")) {
-    stop(sprintf("Column '%s' must be of class POSIXct", datetime_col))
+    cli::cli_abort("{.field {datetime_col}} must be a POSIXct vector.")
   }
 
   # Function to process a single site
@@ -69,7 +73,7 @@ even_timesteps <- function(
     # Find most common time interval for this site
     time_diffs <- diff(sort(unique(site_data[[datetime_col]])))[1] # Use first diff as representative
     if (length(time_diffs) == 0) {
-      warning("Site has insufficient data points to determine interval")
+      cli::cli_warn("Site has insufficient data points to determine interval.")
       return(site_data)
     }
 

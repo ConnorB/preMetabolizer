@@ -20,19 +20,20 @@
 #'
 #' @export
 convert_flow <- function(flow, from, to = "cms") {
-  to_cms <- c(cfs = 0.028316846592, cms = 1, lps = 0.001)
+  check_numeric(flow)
+  check_string(from, allow_empty = FALSE)
+  check_string(to, allow_empty = FALSE)
 
-  if (!from %in% names(to_cms)) {
-    stop(sprintf(
-      "`from` must be one of: %s.",
-      paste(names(to_cms), collapse = ", ")
-    ))
+  to_cms <- c(cfs = 0.028316846592, cms = 1, lps = 0.001)
+  valid <- names(to_cms)
+
+  if (!from %in% valid) {
+    cli::cli_abort(
+      "{.arg from} must be one of {.val {valid}}, not {.val {from}}."
+    )
   }
-  if (!to %in% names(to_cms)) {
-    stop(sprintf(
-      "`to` must be one of: %s.",
-      paste(names(to_cms), collapse = ", ")
-    ))
+  if (!to %in% valid) {
+    cli::cli_abort("{.arg to} must be one of {.val {valid}}, not {.val {to}}.")
   }
 
   flow * to_cms[[from]] / to_cms[[to]]

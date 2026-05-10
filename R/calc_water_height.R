@@ -52,7 +52,9 @@ calc_water_height <- function(
   }
 
   if (length(sensor_kPa) != length(water_temp)) {
-    stop("Inputs 'sensor_kPa' and 'water_temp' must have the same length.")
+    cli::cli_abort(
+      "{.arg sensor_kPa} and {.arg water_temp} must have the same length."
+    )
   }
 
   # Calculate water density

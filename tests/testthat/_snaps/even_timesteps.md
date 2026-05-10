@@ -4,7 +4,7 @@
       even_timesteps(df)
     Condition
       Error in `even_timesteps()`:
-      ! Column 'DateTime_UTC' not found in input data frame
+      ! `loggerData` must contain a DateTime_UTC column.
 
 # even_timesteps errors on non-data.frame input
 
@@ -12,5 +12,5 @@
       even_timesteps(1:10)
     Condition
       Error in `even_timesteps()`:
-      ! Input must be a data frame
+      ! `loggerData` must be a data frame.
 

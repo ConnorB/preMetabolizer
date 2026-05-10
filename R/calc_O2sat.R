@@ -31,7 +31,7 @@
 #' @export
 calc_O2sat <- function(temp_water, atmo_press, units = "atm", salinity = 0) {
   # Barometric pressure conversion
-  pressure_atm <- convert_pressure_to_atm(atmo_press, units)
+  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
 
   # Vapor pressure correction (Antoine equation)
   P_H2O_atm <- calc_vapor_press(temp_water, salinity = 0, method = "MIMSY")

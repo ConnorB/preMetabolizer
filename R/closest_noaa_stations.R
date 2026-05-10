@@ -148,14 +148,14 @@ closest_noaa_stations <- function(
     )
   }
   if (nrow(stations) == 0) {
-    message("No stations found")
+    cli::cli_inform("No NOAA stations found.")
     return(NULL)
   }
 
   # Check for stations with valid coordinates
   valid_coords <- stats::complete.cases(stations[, c("LAT_DEC", "LON_DEC")])
   if (!any(valid_coords)) {
-    message("No stations with valid coordinates found")
+    cli::cli_inform("No NOAA stations with valid coordinates found.")
     return(NULL)
   }
   stations <- stations[valid_coords, ]
@@ -172,7 +172,7 @@ closest_noaa_stations <- function(
   # Filter stations within radius
   in_radius <- distances <= dist_m
   if (!any(in_radius)) {
-    message("No stations found within ", dist_km, " km radius")
+    cli::cli_inform("No NOAA stations found within {dist_km} km.")
     return(NULL)
   }
 

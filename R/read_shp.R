@@ -67,9 +67,14 @@ read_shp <- function(path, layer = NULL) {
   if (is.null(layer)) {
     layers <- sf::st_layers(dsn)$name
     if (length(layers) == 0) {
-      stop("No layers found at the specified path.")
+      cli::cli_abort("No layers found at {.path {path}}.")
     } else if (length(layers) > 1) {
-      warning("Multiple layers found. Using the first one: ", layers[1])
+      cli::cli_warn(
+        c(
+          "Multiple layers found in {.path {path}}.",
+          "i" = "Using the first layer: {.val {layers[1]}}."
+        )
+      )
     }
     layer <- layers[1]
   }

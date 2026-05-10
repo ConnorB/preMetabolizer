@@ -25,19 +25,19 @@
 #' @export
 calc_cv <- function(x, na.rm = TRUE, as_percent = TRUE, robust = FALSE) {
   if (!is.numeric(x)) {
-    warning("Input must be numeric")
+    cli::cli_warn("{.arg x} must be numeric.")
     return(NA_real_)
   }
 
   if (length(x) == 0) {
-    warning("Empty input vector")
+    cli::cli_warn("{.arg x} is empty.")
     return(NA_real_)
   }
 
   if (na.rm) {
     x <- x[!is.na(x)]
     if (length(x) == 0) {
-      warning("No non-NA values in input")
+      cli::cli_warn("{.arg x} contains no non-missing values.")
       return(NA_real_)
     }
   } else if (any(is.na(x))) {
@@ -53,9 +53,8 @@ calc_cv <- function(x, na.rm = TRUE, as_percent = TRUE, robust = FALSE) {
   }
 
   if (abs(center) < .Machine$double.eps^0.5) {
-    warning(
-      if (robust) "Median is zero" else "Mean is zero",
-      ", CV cannot be calculated"
+    cli::cli_warn(
+      "{if (robust) 'Median' else 'Mean'} is zero, so CV cannot be calculated."
     )
     return(NA_real_)
   }

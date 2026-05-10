@@ -37,9 +37,10 @@ calc_CO2_molKg <- function(
   salinity = 0
 ) {
   # Pressure to atm
-  atmo_press_atm <- convert_pressure_to_atm(
+  atmo_press_atm <- convert_pressure(
     pressure = atmo_press,
-    units = press_units
+    from = press_units,
+    to = "atm"
   )
 
   # Water pressure in atm (convert depth in meters to atm; 10.1325 m = 1 atm)
@@ -99,9 +100,10 @@ calc_CO2_mgL <- function(
   # Molar mass of CO2 in g/mol
   molar_mass_CO2 <- 44.0095 * 1e3 # g to mg
   # Pressure to atm
-  atmo_press_atm <- convert_pressure_to_atm(
+  atmo_press_atm <- convert_pressure(
     pressure = atmo_press,
-    units = press_units
+    from = press_units,
+    to = "atm"
   )
 
   # Water pressure in atm (convert depth in meters to atm; 10.1325 m = 1 atm)

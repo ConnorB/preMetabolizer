@@ -48,7 +48,6 @@ reference:
       - calc_water_density
       - calc_water_height
       - calc_light
-      - calc_solar_insolation
 
   - title: Statistical utilities
     desc: Descriptive statistics and outlier detection for time series data.
@@ -65,7 +64,6 @@ reference:
     contents:
       - convert_flow
       - convert_pressure
-      - convert_pressure_to_atm
       - correct_bp
 
   - title: Time utilities

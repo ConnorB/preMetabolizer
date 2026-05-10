@@ -71,7 +71,7 @@ download_ghcnh <- function(
   } else {
     output_dir <- noaa_cache()
     if (!quiet) {
-      message("Saving to cache directory")
+      cli::cli_inform("Saving GHCNh files to the NOAA cache directory.")
     }
   }
 
@@ -102,14 +102,9 @@ download_ghcnh <- function(
 
     if (file.exists(output_file)) {
       if (!quiet) {
-        message(paste0(
-          sprintf(
-            "Cache file exist for station %s and year %d",
-            station_id,
-            year
-          ),
-          ", skipping download"
-        ))
+        cli::cli_inform(
+          "GHCNh cache file already exists for station {.val {station_id}} and year {year}; skipping download."
+        )
       }
       results$skipped <- c(results$skipped, sprintf("%s_%d", station_id, year))
       next
@@ -119,11 +114,9 @@ download_ghcnh <- function(
       {
         # Attempt download
         if (!quiet) {
-          message(sprintf(
-            "Downloading data for station %s, year %d",
-            station_id,
-            year
-          ))
+          cli::cli_inform(
+            "Downloading GHCNh data for station {.val {station_id}}, year {year}."
+          )
         }
         status <- utils::download.file(
           url,
@@ -139,22 +132,20 @@ download_ghcnh <- function(
           sprintf("%s_%d", station_id, year)
         )
         if (!quiet) {
-          message(sprintf(
-            "Successfully downloaded data for station %s, year %d",
-            station_id,
-            year
-          ))
+          cli::cli_inform(
+            "Downloaded GHCNh data for station {.val {station_id}}, year {year}."
+          )
         }
       },
       error = function(e) {
         unlink(output_file)
         results$failed <- c(results$failed, sprintf("%s_%d", station_id, year))
-        warning(sprintf(
-          "Failed to download data for station %s, year %d: %s",
-          station_id,
-          year,
-          e$message
-        ))
+        cli::cli_warn(
+          c(
+            "Failed to download GHCNh data for station {.val {station_id}}, year {year}.",
+            "i" = e$message
+          )
+        )
       }
     )
   }
@@ -247,7 +238,7 @@ read_ghcnh <- function(
   if (is.null(files) && is.null(directory)) {
     directory <- noaa_cache()
     if (!quiet) {
-      message("Loading files from cache")
+      cli::cli_inform("Loading GHCNh files from the NOAA cache directory.")
     }
   }
 
@@ -399,12 +390,17 @@ read_ghcnh <- function(
         results$data[[file_info]] <- df
         results$success <- c(results$success, file_info)
         if (!quiet) {
-          message("Successfully read: ", file_info)
+          cli::cli_inform("Read GHCNh file {.file {file_info}}.")
         }
       },
       error = function(e) {
         results$failed <- c(results$failed, basename(file))
-        warning("Failed to read ", basename(file), ": ", e$message)
+        cli::cli_warn(
+          c(
+            "Failed to read GHCNh file {.file {basename(file)}}.",
+            "i" = e$message
+          )
+        )
       }
     )
   }

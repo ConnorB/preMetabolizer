@@ -36,7 +36,7 @@
 #' @seealso [table()] for frequency tables.
 calc_mode <- function(x, na.rm = TRUE, multi = "first") {
   if (!is.atomic(x)) {
-    stop("Input must be an atomic vector")
+    cli::cli_abort("{.arg x} must be an atomic vector.")
   }
 
   if (na.rm) {

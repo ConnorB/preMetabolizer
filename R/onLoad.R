@@ -37,7 +37,10 @@ NULL # This documents all internal functions
 #' @keywords internal
 #' @noRd
 noaa_cache <- function() {
-  getOption("preMetabolizer.noaa_cache", stop("NOAA cache path not set."))
+  getOption(
+    "preMetabolizer.noaa_cache",
+    cli::cli_abort("NOAA cache path is not set.")
+  )
 }
 
 #' Retrieve Mesonet cache path
@@ -46,7 +49,10 @@ noaa_cache <- function() {
 #' @keywords internal
 #' @noRd
 mesonet_cache <- function() {
-  getOption("preMetabolizer.mesonet_cache", stop("Mesonet cache path not set."))
+  getOption(
+    "preMetabolizer.mesonet_cache",
+    cli::cli_abort("Mesonet cache path is not set.")
+  )
 }
 
 #' Retrieve NASAPower cache path
@@ -55,5 +61,8 @@ mesonet_cache <- function() {
 #' @keywords internal
 #' @noRd
 nasa_cache <- function() {
-  getOption("preMetabolizer.nasa_cache", stop("NASAPower cache path not set."))
+  getOption(
+    "preMetabolizer.nasa_cache",
+    cli::cli_abort("NASA POWER cache path is not set.")
+  )
 }

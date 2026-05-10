@@ -3,8 +3,8 @@
     Code
       calc_vapor_press(20, 10, "MIMSY")
     Condition
-      Warning in `calc_vapor_press()`:
-      Salinity should be 0 when using the 'MIMSY' method
+      Warning:
+      `salinity` should be 0 when using `method = "MIMSY"`.
     Output
       [1] 0.02300875
 
@@ -14,5 +14,5 @@
       calc_vapor_press(20, 0, "invalid")
     Condition
       Error in `calc_vapor_press()`:
-      ! Invalid method. Choose 'Dickenson' or 'freshwater'.
+      ! `method` must be one of "Dickson2007" or "MIMSY", not "invalid".
 

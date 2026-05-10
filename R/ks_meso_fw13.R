@@ -36,7 +36,7 @@
 #' @export
 ks_meso_fw13 <- function(station, start_date, end_date) {
   if (!is.character(station) || length(station) != 1 || is.na(station)) {
-    stop("station must be a single character string")
+    cli::cli_abort("{.arg station} must be a single string.")
   }
 
   dates <- validate_ks_meso_dates(start_date, end_date)
@@ -55,7 +55,7 @@ ks_meso_fw13 <- function(station, start_date, end_date) {
       strsplit(httr2::resp_body_string(response), "\n", fixed = TRUE)[[1]]
     },
     error = function(e) {
-      stop(sprintf("Error fetching FW13 Mesonet data: %s", e$message))
+      cli::cli_abort("Failed to fetch FW13 Mesonet data.", parent = e)
     }
   )
 }

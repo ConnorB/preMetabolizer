@@ -3,8 +3,8 @@
     Code
       calc_cv(numeric(0))
     Condition
-      Warning in `calc_cv()`:
-      Empty input vector
+      Warning:
+      `x` is empty.
     Output
       [1] NA
 
@@ -13,8 +13,8 @@
     Code
       calc_cv(c(0, 0, 0))
     Condition
-      Warning in `calc_cv()`:
-      Mean is zero, CV cannot be calculated
+      Warning:
+      Mean is zero, so CV cannot be calculated.
     Output
       [1] NA
 

@@ -4,7 +4,7 @@
       convert_flow(1, "gallons", "cms")
     Condition
       Error in `convert_flow()`:
-      ! `from` must be one of: cfs, cms, lps.
+      ! `from` must be one of "cfs", "cms", and "lps", not "gallons".
 
 ---
 
@@ -12,5 +12,5 @@
       convert_flow(1, "cfs", "gallons")
     Condition
       Error in `convert_flow()`:
-      ! `to` must be one of: cfs, cms, lps.
+      ! `to` must be one of "cfs", "cms", and "lps", not "gallons".
 

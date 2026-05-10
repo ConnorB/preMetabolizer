@@ -50,7 +50,10 @@ ks_meso_stations <- function() {
       station_names
     },
     error = function(e) {
-      stop(sprintf("Error fetching station names: %s", e$message))
+      cli::cli_abort(
+        "Failed to fetch Kansas Mesonet station names.",
+        parent = e
+      )
     }
   )
 }

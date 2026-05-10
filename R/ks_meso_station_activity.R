@@ -85,7 +85,10 @@ ks_meso_station_activity <- function() {
       return(station_activity)
     },
     error = function(e) {
-      stop(sprintf("Error fetching station activity data: %s", e$message))
+      cli::cli_abort(
+        "Failed to fetch Kansas Mesonet station activity data.",
+        parent = e
+      )
     }
   )
 }

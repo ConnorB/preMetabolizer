@@ -33,6 +33,8 @@ calc_vapor_press <- function(
   salinity = 0,
   method = "Dickson2007"
 ) {
+  method <- rlang::arg_match(method, c("Dickson2007", "MIMSY"))
+
   kelvin_offset <- 273.15 # Conversion factor [deg C] to [K]
   abs_temp <- temp_water + kelvin_offset # Absolute temperature [K]
 
@@ -92,9 +94,11 @@ calc_vapor_press <- function(
 
     # Vapor pressure of seawater [atm]
     vapor_press <- vp_water * exp(-0.018 * osmotic_press * ionic_strength)
-  } else if (method == "MIMSY") {
-    if (salinity != 0) {
-      warning("Salinity should be 0 when using the 'MIMSY' method")
+  } else {
+    if (any(salinity != 0, na.rm = TRUE)) {
+      cli::cli_warn(
+        "{.arg salinity} should be 0 when using {.code method = \"MIMSY\"}."
+      )
     }
     # Antoine equation to calculate vapor pressure of water [bar]. See NIST Chemistry WebBook for coefficent table,
     # coefficents are valid for temperatures between -18 to 100C
@@ -109,8 +113,6 @@ calc_vapor_press <- function(
 
     # Convert bar to atm
     vapor_press <- vapor_press / 1.01325 # [atm]
-  } else {
-    stop("Invalid method. Choose 'Dickenson' or 'freshwater'.")
   }
 
   return(vapor_press)
