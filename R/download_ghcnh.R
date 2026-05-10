@@ -1,16 +1,20 @@
-#' Download GHCNh CSV Files
+#' Download GHCNh CSV files
 #'
 #' Downloads GHCNh CSV files for specified stations and years, saving them to an
 #' output directory.
 #'
-#' @param station_id Character string specifying the station ID for which data is to be downloaded.
-#' @param years Numeric vector specifying the years for which data is to be downloaded.
-#' @param output_dir Optional. Character string specifying the output directory. Defaults to NOAA cache directory.
+#' @param station_id Character string specifying the station ID for which data
+#'   is to be downloaded.
+#' @param years Numeric vector specifying the years for which data is to be
+#'   downloaded.
+#' @param output_dir Optional. Character string specifying the output directory.
+#'   Defaults to NOAA cache directory.
 #' @param quiet Logical. If `TRUE`, suppresses messages. Defaults to `FALSE`.
 #'
 #' @return A list summarizing the download process:
 #'   \item{output_directory}{The directory where files were saved.}
 #'   \item{successful_downloads}{Character vector of successfully downloaded files.}
+#'   \item{skipped_downloads}{Character vector of files already present locally.}
 #'   \item{failed_downloads}{Character vector of failed downloads.}
 #'   \item{total_attempted}{Total number of download attempts.}
 #'   \item{total_successful}{Total number of successful downloads.}
@@ -27,13 +31,36 @@ download_ghcnh <- function(
   output_dir = NULL,
   quiet = FALSE
 ) {
-  # Input validation
-  if (missing(station_id) || !is.character(station_id)) {
-    stop("station_id must be provided as a character string")
+  if (
+    missing(station_id) ||
+      !is.character(station_id) ||
+      length(station_id) != 1 ||
+      is.na(station_id) ||
+      !nzchar(station_id)
+  ) {
+    cli::cli_abort("{.arg station_id} must be a single non-empty string.")
   }
 
-  if (missing(years) || !is.numeric(years)) {
-    stop("years must be provided as numeric values")
+  if (
+    missing(years) ||
+      !is.numeric(years) ||
+      length(years) == 0 ||
+      anyNA(years) ||
+      any(!is.finite(years)) ||
+      any(years != floor(years))
+  ) {
+    cli::cli_abort("{.arg years} must be one or more whole numeric years.")
+  }
+  if (
+    !is.null(output_dir) &&
+      (!is.character(output_dir) ||
+        length(output_dir) != 1 ||
+        is.na(output_dir))
+  ) {
+    cli::cli_abort("{.arg output_dir} must be `NULL` or a single string.")
+  }
+  if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
+    cli::cli_abort("{.arg quiet} must be `TRUE` or `FALSE`.")
   }
 
   # Create output directory if specified and doesn't exist
@@ -43,12 +70,15 @@ download_ghcnh <- function(
     }
   } else {
     output_dir <- noaa_cache()
-    message("Saving to cache directory")
+    if (!quiet) {
+      message("Saving to cache directory")
+    }
   }
 
   # Initialize results tracking
   results <- list(
     success = character(),
+    skipped = character(),
     failed = character()
   )
 
@@ -81,6 +111,7 @@ download_ghcnh <- function(
           ", skipping download"
         ))
       }
+      results$skipped <- c(results$skipped, sprintf("%s_%d", station_id, year))
       next
     }
 
@@ -94,18 +125,29 @@ download_ghcnh <- function(
             year
           ))
         }
-        utils::download.file(url, output_file, mode = "auto", quiet = T)
+        status <- utils::download.file(
+          url,
+          output_file,
+          mode = "wb",
+          quiet = quiet
+        )
+        if (!isTRUE(status == 0)) {
+          cli::cli_abort("Download failed with status code {status}.")
+        }
         results$success <- c(
           results$success,
           sprintf("%s_%d", station_id, year)
         )
-        message(sprintf(
-          "Successfully downloaded data for station %s, year %d",
-          station_id,
-          year
-        ))
+        if (!quiet) {
+          message(sprintf(
+            "Successfully downloaded data for station %s, year %d",
+            station_id,
+            year
+          ))
+        }
       },
       error = function(e) {
+        unlink(output_file)
         results$failed <- c(results$failed, sprintf("%s_%d", station_id, year))
         warning(sprintf(
           "Failed to download data for station %s, year %d: %s",
@@ -121,15 +163,17 @@ download_ghcnh <- function(
   summary <- list(
     output_directory = normalizePath(output_dir),
     successful_downloads = results$success,
+    skipped_downloads = results$skipped,
     failed_downloads = results$failed,
     total_attempted = length(years),
-    total_successful = length(results$success)
+    total_successful = length(results$success),
+    total_skipped = length(results$skipped)
   )
 
   return(summary)
 }
 
-#' Read GHCNh CSV Files
+#' Read GHCNh CSV files
 #'
 #' Reads GHCNh CSV files from specified files or directory and optionally
 #' combines them into a single dataframe.
@@ -138,7 +182,9 @@ download_ghcnh <- function(
 #'   Defaults to `NULL`.
 #' @param directory Optional. Character string specifying the directory
 #'   containing CSV files. Defaults to `NULL`.
-#' @param combine Logical. If `TRUE`, combines all successfully read files into a single dataframe. Defaults to `TRUE`.
+#' @param combine Logical. If `TRUE`, combines all successfully read files into
+#'   a single dataframe. Defaults to `TRUE`.
+#' @param quiet Logical. If `TRUE`, suppresses messages. Defaults to `FALSE`.
 #'
 #' @return If `combine` is `TRUE`, returns a list with:
 #'   \item{data}{Combined dataframe of all successfully read files.}
@@ -162,26 +208,70 @@ download_ghcnh <- function(
 #' }
 #'
 #' @importFrom rlang .data
-read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
+#' @export
+read_ghcnh <- function(
+  files = NULL,
+  directory = NULL,
+  combine = TRUE,
+  quiet = FALSE
+) {
   # Initialize variables to avoid R CMD check notes
   DateTime <- Station_name <- Station_ID <- DATE <- Year <- Month <- Day <- Hour <- Minute <- NULL
 
-  # Input validation
+  if (!is.null(files)) {
+    if (
+      !is.character(files) ||
+        length(files) == 0 ||
+        anyNA(files) ||
+        any(!nzchar(files))
+    ) {
+      cli::cli_abort("{.arg files} must be `NULL` or a character vector.")
+    }
+  }
+  if (
+    !is.null(directory) &&
+      (!is.character(directory) || length(directory) != 1 || is.na(directory))
+  ) {
+    cli::cli_abort("{.arg directory} must be `NULL` or a single string.")
+  }
+  if (!is.logical(combine) || length(combine) != 1 || is.na(combine)) {
+    cli::cli_abort("{.arg combine} must be `TRUE` or `FALSE`.")
+  }
+  if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
+    cli::cli_abort("{.arg quiet} must be `TRUE` or `FALSE`.")
+  }
+  if (!is.null(files) && !is.null(directory)) {
+    cli::cli_abort("Use only one of {.arg files} and {.arg directory}.")
+  }
+
   if (is.null(files) && is.null(directory)) {
     directory <- noaa_cache()
-    message("Loading files from cache")
+    if (!quiet) {
+      message("Loading files from cache")
+    }
   }
 
   # Find CSV files
   if (!is.null(directory)) {
+    if (!dir.exists(directory)) {
+      cli::cli_abort("{.arg directory} does not exist.")
+    }
     files <- list.files(
       path = directory,
       pattern = "^GHCNh.*\\.csv(\\.gz)?$",
       full.names = TRUE
     )
     if (length(files) == 0) {
-      stop("No GHCNh CSV files found in directory")
+      cli::cli_abort("No GHCNh CSV files found in {.arg directory}.")
     }
+  }
+  files <- sort(files)
+  missing_files <- files[!file.exists(files)]
+  if (length(missing_files) > 0) {
+    cli::cli_abort(c(
+      "All paths in {.arg files} must exist.",
+      x = "Missing {.file {missing_files}}."
+    ))
   }
 
   # Initialize results
@@ -250,7 +340,19 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
         if (inherits(date, "POSIXt")) {
           return(as.POSIXct(date, tz = "UTC"))
         }
-        return(as.POSIXct(date, tz = "UTC", format = "%Y-%m-%dT%H:%M:%S"))
+        datetime <- suppressWarnings(lubridate::ymd_hms(
+          date,
+          tz = "UTC",
+          quiet = TRUE
+        ))
+        if (all(is.na(datetime))) {
+          datetime <- suppressWarnings(lubridate::ymd_hm(
+            date,
+            tz = "UTC",
+            quiet = TRUE
+          ))
+        }
+        return(datetime)
       }
 
       if (all(c("Year", "Month", "Day", "Hour", "Minute") %in% names(df))) {
@@ -276,8 +378,13 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
       dplyr::mutate(DateTime = datetime) |>
       dplyr::select(
         -dplyr::any_of(c("DATE", "Year", "Month", "Day", "Hour", "Minute"))
-      ) |>
-      dplyr::relocate(DateTime, .after = "Station_name")
+      )
+
+    if ("Station_name" %in% names(df)) {
+      df <- dplyr::relocate(df, DateTime, .after = "Station_name")
+    } else {
+      df <- dplyr::relocate(df, DateTime)
+    }
 
     return(df)
   }
@@ -291,7 +398,9 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
           standardize_df()
         results$data[[file_info]] <- df
         results$success <- c(results$success, file_info)
-        message("Successfully read: ", file_info)
+        if (!quiet) {
+          message("Successfully read: ", file_info)
+        }
       },
       error = function(e) {
         results$failed <- c(results$failed, basename(file))
@@ -304,13 +413,22 @@ read_ghcnh <- function(files = NULL, directory = NULL, combine = TRUE) {
   if (combine && length(results$data) > 0) {
     combined_data <- dplyr::bind_rows(results$data)
     na_cols <- sapply(combined_data, function(x) all(is.na(x)))
+    datetime <- combined_data$DateTime
+    date_range <- as.Date(c(NA, NA))
+    if (any(!is.na(datetime))) {
+      date_range <- as.Date(range(datetime, na.rm = TRUE))
+    }
+    stations <- character()
+    if ("Station_ID" %in% names(combined_data)) {
+      stations <- unique(stats::na.omit(combined_data$Station_ID))
+    }
     list(
       data = combined_data[, !na_cols],
       files_read = results$success,
       files_failed = results$failed,
       total_rows = nrow(combined_data),
-      date_range = as.Date(range(combined_data$DateTime, na.rm = TRUE)),
-      stations = unique(combined_data$Station_ID),
+      date_range = date_range,
+      stations = stations,
       removed_cols = names(na_cols)[na_cols]
     )
   } else {

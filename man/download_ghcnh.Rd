@@ -2,16 +2,19 @@
 % Please edit documentation in R/download_ghcnh.R
 \name{download_ghcnh}
 \alias{download_ghcnh}
-\title{Download GHCNh CSV Files}
+\title{Download GHCNh CSV files}
 \usage{
 download_ghcnh(station_id, years, output_dir = NULL, quiet = FALSE)
 }
 \arguments{
-\item{station_id}{Character string specifying the station ID for which data is to be downloaded.}
+\item{station_id}{Character string specifying the station ID for which data
+is to be downloaded.}
 
-\item{years}{Numeric vector specifying the years for which data is to be downloaded.}
+\item{years}{Numeric vector specifying the years for which data is to be
+downloaded.}
 
-\item{output_dir}{Optional. Character string specifying the output directory. Defaults to NOAA cache directory.}
+\item{output_dir}{Optional. Character string specifying the output directory.
+Defaults to NOAA cache directory.}
 
 \item{quiet}{Logical. If \code{TRUE}, suppresses messages. Defaults to \code{FALSE}.}
 }
@@ -19,6 +22,7 @@ download_ghcnh(station_id, years, output_dir = NULL, quiet = FALSE)
 A list summarizing the download process:
 \item{output_directory}{The directory where files were saved.}
 \item{successful_downloads}{Character vector of successfully downloaded files.}
+\item{skipped_downloads}{Character vector of files already present locally.}
 \item{failed_downloads}{Character vector of failed downloads.}
 \item{total_attempted}{Total number of download attempts.}
 \item{total_successful}{Total number of successful downloads.}

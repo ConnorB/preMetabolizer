@@ -2,27 +2,38 @@
 % Please edit documentation in R/get_noaa_stations.R
 \name{get_noaa_stations}
 \alias{get_noaa_stations}
-\title{Get NOAA Station Information}
+\title{Get NOAA station information}
 \usage{
 get_noaa_stations(state = NULL, clean = TRUE, debug = TRUE)
 }
 \arguments{
-\item{state}{Optional character string specifying a two-letter U.S. state code to filter stations.}
+\item{state}{Optional character string specifying a two-letter U.S. state
+code to filter stations.}
 
-\item{clean}{Logical. If \code{TRUE} (default), returns processed and cleaned data; if \code{FALSE}, returns raw data.}
+\item{clean}{Logical. If \code{TRUE} (default), returns processed and cleaned
+data; if \code{FALSE}, returns raw data.}
 
-\item{debug}{Logical. If \code{TRUE} (default), outputs debug messages during data download and processing.}
+\item{debug}{Logical. If \code{TRUE} (default), outputs debug messages during
+data download and processing.}
 }
 \value{
-A data frame containing NOAA station metadata. Columns include station identifiers, names, location (latitude, longitude), elevation, operational dates, and more.
+A data frame containing NOAA station metadata. Columns include
+station identifiers, names, location (latitude, longitude), elevation,
+operational dates, and more.
 }
 \description{
-Downloads, processes, and optionally cleans NOAA station metadata from the Meteorological Station Historical Repository (MSHR).
+Downloads, processes, and optionally cleans NOAA station metadata from the
+Meteorological Station Historical Repository (MSHR).
 }
 \details{
-This function retrieves and processes data from NOAA's Meteorological Station Historical Repository (MSHR). The data include detailed information about meteorological stations, including their geographic coordinates, elevation, operational status, and identifiers across various systems (e.g., GHCND, WBAN, FAA).
+This function retrieves and processes data from NOAA's Meteorological Station
+Historical Repository (MSHR). The data include detailed information about
+meteorological stations, including their geographic coordinates, elevation,
+operational status, and identifiers across various systems (e.g., GHCND,
+WBAN, FAA).
 
-If the data file already exists in a cached location and is up-to-date, the cached data is loaded to improve performance.
+If the data file already exists in a cached location and is up-to-date, the
+cached data is loaded to improve performance.
 
 When \code{clean = TRUE}, the function processes the raw data by:
 \itemize{
@@ -31,7 +42,8 @@ When \code{clean = TRUE}, the function processes the raw data by:
 \item Aggregating station data to consolidate records by station identifier (\code{GHCND_ID}).
 }
 
-If a state code is provided via the \code{state} parameter, the returned data will be limited to stations located within that state.
+If a state code is provided via the \code{state} parameter, the returned data will
+be limited to stations located within that state.
 }
 \examples{
 \dontrun{

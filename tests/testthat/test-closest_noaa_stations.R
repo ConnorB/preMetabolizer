@@ -70,3 +70,30 @@ test_that("closest_noaa_stations warns about deprecated lon alias", {
   })
   expect_equal(result$station_id, "near")
 })
+
+test_that("closest_noaa_stations validates metadata shape", {
+  local_mocked_bindings(
+    get_noaa_stations = function(state = NULL, clean = TRUE) {
+      data.frame(station_id = "bad")
+    }
+  )
+
+  expect_snapshot(error = TRUE, {
+    closest_noaa_stations(
+      latitude = 39.1,
+      longitude = -96.6,
+      dist_km = 25
+    )
+  })
+})
+
+test_that("closest_noaa_stations validates clean", {
+  expect_snapshot(error = TRUE, {
+    closest_noaa_stations(
+      latitude = 39.1,
+      longitude = -96.6,
+      dist_km = 25,
+      clean = NA
+    )
+  })
+})

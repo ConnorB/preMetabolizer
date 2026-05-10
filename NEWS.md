@@ -11,10 +11,13 @@
 * `convert_PAR_to_SW()` and `convert_SW_to_PAR()` are no longer re-exported from preMetabolizer. Call `streamMetabolizer::convert_PAR_to_SW()` and `streamMetabolizer::convert_SW_to_PAR()` directly (#TBD).
 * `convert_pressure()` now requires an explicit `from` argument; it always returns a plain numeric vector. Unit-bearing objects are no longer accepted as input (#TBD).
 * `correct_bp()` no longer accepts a `drop_units` argument; it always returns a plain numeric vector. Elevation inputs must be plain numeric (meters) (#TBD).
+* `download_ghcnh()` now validates inputs more clearly, treats existing local files as skipped downloads, and reports skipped files in its summary (#TBD).
 * `even_timesteps()` no longer errors on single-column data frames due to `drop = TRUE` subsetting.
 * `get_ks_meso()` now supports Kansas Mesonet network requests with `network = "KSRE"`, `"BBW"`, or `"EBW"`, accepts `"all"` as a station selector, and correctly reports invalid variable names in the error message (previously reported them as "Invalid stations:" instead of "Invalid variables:").
 * `get_nasa_data()` now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site `latitude` and `longitude` arguments or per-site `latitude`, `longitude`, and `elev_m` columns, interpolates NASA values to the input timestamps, and returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with `streamMetabolizer::convert_SW_to_PAR()`. The old `lat` and `lon` aliases are deprecated (#TBD).
+* `get_noaa_stations()` now filters cached raw station metadata by `state`, validates options more clearly, and uses cached station metadata when remote modification times are unavailable (#TBD).
 * `get_usgs_elev()` can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (#TBD).
 * `has_units()` has been removed. The `units` package is no longer a dependency (#TBD).
 * `ks_meso_fw13()` can now retrieve Kansas Mesonet fire weather data in FW13 format for one station and date range (#TBD).
 * `ks_meso_most_recent()` can now retrieve the most recently ingested Kansas Mesonet timestamp for each station at a requested interval (#TBD).
+* `read_ghcnh()` is now exported, validates file inputs, can suppress progress messages with `quiet = TRUE`, and handles files that lack `Station_name` or `Station_ID` columns (#TBD).

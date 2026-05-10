@@ -2,9 +2,9 @@
 % Please edit documentation in R/download_ghcnh.R
 \name{read_ghcnh}
 \alias{read_ghcnh}
-\title{Read GHCNh CSV Files}
+\title{Read GHCNh CSV files}
 \usage{
-read_ghcnh(files = NULL, directory = NULL, combine = TRUE)
+read_ghcnh(files = NULL, directory = NULL, combine = TRUE, quiet = FALSE)
 }
 \arguments{
 \item{files}{Optional. Character vector specifying the paths to CSV files.
@@ -13,7 +13,10 @@ Defaults to \code{NULL}.}
 \item{directory}{Optional. Character string specifying the directory
 containing CSV files. Defaults to \code{NULL}.}
 
-\item{combine}{Logical. If \code{TRUE}, combines all successfully read files into a single dataframe. Defaults to \code{TRUE}.}
+\item{combine}{Logical. If \code{TRUE}, combines all successfully read files into
+a single dataframe. Defaults to \code{TRUE}.}
+
+\item{quiet}{Logical. If \code{TRUE}, suppresses messages. Defaults to \code{FALSE}.}
 }
 \value{
 If \code{combine} is \code{TRUE}, returns a list with:

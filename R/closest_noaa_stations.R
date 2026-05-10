@@ -136,13 +136,25 @@ closest_noaa_stations <- function(
   if (dist_km <= 0) {
     cli::cli_abort("{.arg dist_km} must be greater than 0.")
   }
+  if (!is.logical(clean) || length(clean) != 1 || is.na(clean)) {
+    cli::cli_abort("{.arg clean} must be `TRUE` or `FALSE`.")
+  }
 
   # Load station data
   stations <- get_noaa_stations(state = state, clean = clean)
+  if (!all(c("LAT_DEC", "LON_DEC") %in% names(stations))) {
+    cli::cli_abort(
+      "{.fn get_noaa_stations} must return {.field LAT_DEC} and {.field LON_DEC} columns."
+    )
+  }
+  if (nrow(stations) == 0) {
+    message("No stations found")
+    return(NULL)
+  }
 
   # Check for stations with valid coordinates
   valid_coords <- stats::complete.cases(stations[, c("LAT_DEC", "LON_DEC")])
-  if (sum(valid_coords) == 0) {
+  if (!any(valid_coords)) {
     message("No stations with valid coordinates found")
     return(NULL)
   }
@@ -159,7 +171,7 @@ closest_noaa_stations <- function(
 
   # Filter stations within radius
   in_radius <- distances <= dist_m
-  if (sum(in_radius) == 0) {
+  if (!any(in_radius)) {
     message("No stations found within ", dist_km, " km radius")
     return(NULL)
   }

@@ -1,17 +1,28 @@
-#' Get NOAA Station Information
+#' Get NOAA station information
 #'
-#' Downloads, processes, and optionally cleans NOAA station metadata from the Meteorological Station Historical Repository (MSHR).
+#' Downloads, processes, and optionally cleans NOAA station metadata from the
+#' Meteorological Station Historical Repository (MSHR).
 #'
-#' @param state Optional character string specifying a two-letter U.S. state code to filter stations.
-#' @param clean Logical. If `TRUE` (default), returns processed and cleaned data; if `FALSE`, returns raw data.
-#' @param debug Logical. If `TRUE` (default), outputs debug messages during data download and processing.
+#' @param state Optional character string specifying a two-letter U.S. state
+#'   code to filter stations.
+#' @param clean Logical. If `TRUE` (default), returns processed and cleaned
+#'   data; if `FALSE`, returns raw data.
+#' @param debug Logical. If `TRUE` (default), outputs debug messages during
+#'   data download and processing.
 #'
-#' @return A data frame containing NOAA station metadata. Columns include station identifiers, names, location (latitude, longitude), elevation, operational dates, and more.
+#' @return A data frame containing NOAA station metadata. Columns include
+#'   station identifiers, names, location (latitude, longitude), elevation,
+#'   operational dates, and more.
 #'
 #' @details
-#' This function retrieves and processes data from NOAA's Meteorological Station Historical Repository (MSHR). The data include detailed information about meteorological stations, including their geographic coordinates, elevation, operational status, and identifiers across various systems (e.g., GHCND, WBAN, FAA).
+#' This function retrieves and processes data from NOAA's Meteorological Station
+#' Historical Repository (MSHR). The data include detailed information about
+#' meteorological stations, including their geographic coordinates, elevation,
+#' operational status, and identifiers across various systems (e.g., GHCND,
+#' WBAN, FAA).
 #'
-#' If the data file already exists in a cached location and is up-to-date, the cached data is loaded to improve performance.
+#' If the data file already exists in a cached location and is up-to-date, the
+#' cached data is loaded to improve performance.
 #'
 #' When `clean = TRUE`, the function processes the raw data by:
 #' \itemize{
@@ -20,7 +31,8 @@
 #'   \item Aggregating station data to consolidate records by station identifier (`GHCND_ID`).
 #' }
 #'
-#' If a state code is provided via the `state` parameter, the returned data will be limited to stations located within that state.
+#' If a state code is provided via the `state` parameter, the returned data will
+#' be limited to stations located within that state.
 #'
 #' @examples
 #' \dontrun{
@@ -39,22 +51,27 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
   BEGIN_DATE <- END_DATE <- LAT_DEC <- LON_DEC <- PLATFORM <- STATE_PROV <- GHCND_ID <- NULL
   ..cols_to_keep <- NULL
 
+  if (!is.null(state)) {
+    if (!is.character(state) || length(state) != 1 || is.na(state)) {
+      cli::cli_abort("{.arg state} must be a single two-letter state code.")
+    }
+    state <- toupper(trimws(state))
+    if (!grepl("^[A-Z]{2}$", state)) {
+      cli::cli_abort("{.arg state} must be a single two-letter state code.")
+    }
+  }
+  if (!is.logical(clean) || length(clean) != 1 || is.na(clean)) {
+    cli::cli_abort("{.arg clean} must be `TRUE` or `FALSE`.")
+  }
+  if (!is.logical(debug) || length(debug) != 1 || is.na(debug)) {
+    cli::cli_abort("{.arg debug} must be `TRUE` or `FALSE`.")
+  }
+
   mshr_url <- "https://www.ncei.noaa.gov/access/homr/file/mshr_enhanced.txt.zip"
 
   mshr_zip <- file.path(noaa_cache(), "mshr_enhanced.txt.zip")
   mshr_txt <- file.path(noaa_cache(), "mshr_enhanced.txt")
   mshr_rds <- file.path(noaa_cache(), "mshr_enhanced.rds")
-
-  # Validate state parameter if provided
-  if (!is.null(state)) {
-    if (!is.character(state) || length(state) != 1) {
-      stop("state must be a single character string")
-    }
-    state <- toupper(trimws(state))
-    if (nchar(state) != 2) {
-      stop("state must be a two-letter state code")
-    }
-  }
 
   # Define column specs
   spec <- readr::fwf_positions(
@@ -331,6 +348,18 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
     cache = memoise::cache_filesystem(getOption("preMetabolizer.noaa_cache"))
   )
 
+  filter_raw_state <- function(raw_data, state) {
+    if (is.null(state)) {
+      return(raw_data)
+    }
+
+    raw_data <- raw_data[toupper(trimws(raw_data$STATE_PROV)) == state, ]
+    if (nrow(raw_data) == 0) {
+      warning(sprintf("No stations found for state code '%s'", state))
+    }
+    raw_data
+  }
+
   # Check if RDS exists and is up to date
   needs_update <- TRUE
   if (file.exists(mshr_rds)) {
@@ -338,13 +367,21 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
     if (!is.null(remote_time)) {
       rds_time <- file.info(mshr_rds)$mtime
       needs_update <- remote_time > rds_time
+    } else {
+      needs_update <- FALSE
     }
     if (!needs_update) {
       if (debug) {
         message("Loading cached RDS file")
       }
       raw_data <- readRDS(mshr_rds)
-      return(if (clean) process_data(raw_data, state, debug) else raw_data)
+      return(
+        if (clean) {
+          process_data(raw_data, state, debug)
+        } else {
+          filter_raw_state(raw_data, state)
+        }
+      )
     }
   }
 
@@ -362,9 +399,12 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
       utils::unzip(mshr_zip, exdir = dirname(mshr_txt))
       mshr_txt <- list.files(
         noaa_cache(),
-        pattern = "\\.txt$",
+        pattern = "^mshr_enhanced.*\\.txt$",
         full.names = TRUE
-      )[[1]]
+      )
+      if (length(mshr_txt) != 1) {
+        cli::cli_abort("Could not find the unzipped MSHR text file.")
+      }
       if (debug) {
         message("Reading file: ", mshr_txt)
       }
@@ -392,14 +432,7 @@ get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
 
       # Return either raw or processed data based on clean parameter
       if (!clean) {
-        # If state is provided but clean=FALSE, still filter by state
-        if (!is.null(state)) {
-          raw_data <- raw_data[toupper(trimws(raw_data$STATE_PROV)) == state, ]
-          if (nrow(raw_data) == 0) {
-            warning(sprintf("No stations found for state code '%s'", state))
-          }
-        }
-        return(raw_data)
+        return(filter_raw_state(raw_data, state))
       } else {
         return(process_data(raw_data, state, debug))
       }
