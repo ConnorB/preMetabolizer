@@ -10,7 +10,9 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Preparing French Creek Data for Stream Metabolism Modeling">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="french-creek_files/libs/quarto-html/popper.min.js"></script><script src="french-creek_files/libs/quarto-html/tippy.umd.min.js"></script><link href="french-creek_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="french-creek_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Preparing French Creek Data for Stream Metabolism Modeling">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -51,31 +53,28 @@
 
 
   </div>
-</nav><div class="container template-article">
-
-
-
-
+</nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Preparing French Creek Data for Stream Metabolism Modeling</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/ConnorB/preMetabolizer/blob/main/vignettes/french-creek.Rmd" class="external-link"><code>vignettes/french-creek.Rmd</code></a></small>
-      <div class="d-none name"><code>french-creek.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/ConnorB/preMetabolizer/blob/main/vignettes/french-creek.qmd" class="external-link"><code>vignettes/french-creek.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+
+
+
+
+
+    <section class="level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Stream metabolism models estimate gross primary production and
-ecosystem respiration from continuous sensor records. The <a href="https://github.com/ConnorB/streamMetabolizer" class="external-link">streamMetabolizer</a>
-package fits these models, but it requires a specific set of input
-variables:</p>
-<table class="table">
+<p>Stream metabolism models estimate gross primary production and ecosystem respiration from continuous sensor records. The <a href="https://github.com/ConnorB/streamMetabolizer" class="external-link">streamMetabolizer</a> package fits these models, but it requires a specific set of input variables:</p>
+<table class="table caption-top">
 <thead><tr class="header">
 <th>Column</th>
 <th>Description</th>
@@ -95,7 +94,7 @@ variables:</p>
 </tr>
 <tr class="even">
 <td><code>depth</code></td>
-<td>Mean stream depth (m)</td>
+<td>Water depth (m)</td>
 </tr>
 <tr class="odd">
 <td><code>temp.water</code></td>
@@ -107,177 +106,202 @@ variables:</p>
 </tr>
 </tbody>
 </table>
-<p>This vignette walks through computing each of those inputs from the
-<code>french_creek</code> dataset using preMetabolizer. The data come
-from a field study on French Creek near Laramie, Wyoming, USA (Hall et
-al. 2016, <a href="https://doi.org/10.1890/14-0631.1" class="external-link uri">https://doi.org/10.1890/14-0631.1</a>). Below we keep
-NASA-derived PAR as <code>light.obs</code> and modeled PAR from
-<code><a href="../reference/calc_light.html">calc_light()</a></code> as <code>light.calc</code> so the two light
-series can be compared.</p>
+<p>This vignette walks through computing each of those inputs from the <code>french_creek</code> dataset using preMetabolizer. The data come from a field study on French Creek near Laramie, Wyoming, USA <span class="citation" data-cites="hotchkiss2015whole">(<a href="#ref-hotchkiss2015whole" role="doc-biblioref">Hotchkiss and Hall 2015</a>)</span>. Below we keep NASA-derived PAR as <code>light.obs</code> and modeled PAR from <code><a href="../reference/calc_light.html">calc_light()</a></code> as <code>light.calc</code> so the two light series can be compared.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://connorb.github.io/preMetabolizer/">preMetabolizer</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     filter, lag</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="the-french_creek-dataset">The <code>french_creek</code> dataset<a class="anchor" aria-label="anchor" href="#the-french_creek-dataset"></a>
+</section><section class="level2"><h2 id="the-french_creek-dataset">The <code>french_creek</code> dataset<a class="anchor" aria-label="anchor" href="#the-french_creek-dataset"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">french_creek</span><span class="op">)</span></span>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">french_creek</span><span class="op">)</span></span>
 <span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/minute.html" class="external-link">minute</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span>, <span class="fl">30</span>, <span class="fl">45</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/minute.html" class="external-link">minute</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span>, <span class="fl">30</span>, <span class="fl">45</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">glimpse</span><span class="op">(</span><span class="va">french_creek</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">french_creek</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 3,629</span></span>
 <span><span class="co">#&gt; Columns: 4</span></span>
-<span><span class="co">#&gt; $ datetime <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span> 2012-08-23 23:15:00<span style="color: #949494;">, </span>2012-08-23 23:30:00<span style="color: #949494;">, </span>2012-08-23 23:45:0…</span></span>
-<span><span class="co">#&gt; $ sonde    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> "REZN"<span style="color: #949494;">, </span>"REZN"<span style="color: #949494;">, </span>"REZN"<span style="color: #949494;">, </span>"REZN"<span style="color: #949494;">, </span>"REZN"<span style="color: #949494;">, </span>"REZN"<span style="color: #949494;">, </span>"REZN"<span style="color: #949494;">, </span>"REZN…</span></span>
-<span><span class="co">#&gt; $ temp_C   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 14.13<span style="color: #949494;">, </span>13.86<span style="color: #949494;">, </span>13.60<span style="color: #949494;">, </span>13.36<span style="color: #949494;">, </span>13.19<span style="color: #949494;">, </span>13.02<span style="color: #949494;">, </span>12.88<span style="color: #949494;">, </span>12.76<span style="color: #949494;">, </span>12.61…</span></span>
-<span><span class="co">#&gt; $ DO_mgL   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> 7.40<span style="color: #949494;">, </span>7.30<span style="color: #949494;">, </span>7.27<span style="color: #949494;">, </span>7.25<span style="color: #949494;">, </span>7.26<span style="color: #949494;">, </span>7.28<span style="color: #949494;">, </span>7.25<span style="color: #949494;">, </span>7.23<span style="color: #949494;">, </span>7.12<span style="color: #949494;">, </span>7.03<span style="color: #949494;">, </span>6…</span></span></code></pre></div>
-<p>The dataset covers 15-minute intervals from August 23 to September
-30, 2012. Two sensors were deployed at the site: <code>"REZN"</code> ran
-from the start of the study through September 1 at 12:50 MDT, when it
-was replaced by <code>"TOWN"</code>. The plot below shows the full
-record for both sensors.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; $ datetime &lt;dttm&gt; 2012-08-23 23:15:00, 2012-08-23 23:30:00, 2012-08-23 23:45:0…</span></span>
+<span><span class="co">#&gt; $ sonde    &lt;chr&gt; "REZN", "REZN", "REZN", "REZN", "REZN", "REZN", "REZN", "REZN…</span></span>
+<span><span class="co">#&gt; $ temp_C   &lt;dbl&gt; 14.13, 13.86, 13.60, 13.36, 13.19, 13.02, 12.88, 12.76, 12.61…</span></span>
+<span><span class="co">#&gt; $ DO_mgL   &lt;dbl&gt; 7.40, 7.30, 7.27, 7.25, 7.26, 7.28, 7.25, 7.23, 7.12, 7.03, 6…</span></span></code></pre></div>
+</div>
+<p>The dataset covers 15-minute intervals from August 23 to September 30, 2012. Two sensors were deployed at the site: <code>"REZN"</code> ran from the start of the study through September 1 at 12:50 MDT, when it was replaced by <code>"TOWN"</code>. The plot below shows the full record for both sensors.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">temp_C</span>, <span class="va">DO_mgL</span><span class="op">)</span>,</span>
 <span>    names_to <span class="op">=</span> <span class="st">"variable"</span>,</span>
 <span>    values_to <span class="op">=</span> <span class="st">"value"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>variable <span class="op">=</span> <span class="fu">recode</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>variable <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html" class="external-link">recode</a></span><span class="op">(</span></span>
 <span>    <span class="va">variable</span>,</span>
 <span>    temp_C <span class="op">=</span> <span class="st">"Temperature (°C)"</span>,</span>
 <span>    DO_mgL <span class="op">=</span> <span class="st">"DO (mg/L)"</span></span>
 <span>  <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">datetime</span>, <span class="va">value</span>, color <span class="op">=</span> <span class="va">sonde</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.3</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">facet_wrap</span><span class="op">(</span><span class="op">~</span><span class="va">variable</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">scale_color_manual</span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>REZN <span class="op">=</span> <span class="st">"#E69F00"</span>, TOWN <span class="op">=</span> <span class="st">"#0072B2"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span>, color <span class="op">=</span> <span class="st">"Sensor"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="va">value</span>, color <span class="op">=</span> <span class="va">sonde</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.3</span>, alpha <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">variable</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>REZN <span class="op">=</span> <span class="st">"#E69F00"</span>, TOWN <span class="op">=</span> <span class="st">"#0072B2"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span>, color <span class="op">=</span> <span class="st">"Sensor"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 272 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
-<p><img src="french-creek_files/figure-html/plot-raw-1.png" class="r-plt" alt="Time series of water temperature and dissolved oxygen at French Creek, colored by sensor (REZN and TOWN)." width="672"></p>
-<p>The REZN sensor shows a cluster of anomalous negative temperature
-values near the end of its deployment. For the rest of this vignette we
-filter to the TOWN sensor, which has the longer and cleaner record.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sonde</span> <span class="op">==</span> <span class="st">"TOWN"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span><span class="op">-</span><span class="va">sonde</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="french-creek_files/figure-html/check%20out%20data-1.png" alt="Time series of water temperature and dissolved oxygen at French Creek, colored by sensor (REZN and TOWN)." width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="remove-anomalous-values">Remove anomalous values<a class="anchor" aria-label="anchor" href="#remove-anomalous-values"></a>
-</h2>
-<p>Negative water temperatures are physically impossible for liquid
-water and indicate sensor malfunction. DO values &lt;= 5 mg/L are
-improbable and may indicate sensor malfunction. We’ll remove those
-rows.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">temp_C</span><span class="op">)</span> <span class="op">|</span> <span class="va">temp_C</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">DO_mgL</span><span class="op">)</span> <span class="op">|</span> <span class="va">DO_mgL</span> <span class="op">&gt;</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="ensure-even-timesteps">Ensure even timesteps<a class="anchor" aria-label="anchor" href="#ensure-even-timesteps"></a>
+</div>
+<p>The REZN sensor shows a cluster of anomalous negative temperature values near the end of its deployment. For the rest of this vignette we filter to the TOWN sensor, which has the longer and cleaner record.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">sonde</span> <span class="op">==</span> <span class="st">"TOWN"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">sonde</span><span class="op">)</span></span></code></pre></div>
+</div>
+</section><section class="level2"><h2 id="remove-anomalous-values">Remove anomalous values<a class="anchor" aria-label="anchor" href="#remove-anomalous-values"></a>
 </h2>
-<p>streamMetabolizer requires evenly spaced data.
-<code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> fills any gaps with <code>NA</code> rows
-so the interval is consistent.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p>Negative water temperatures are physically impossible for liquid water and indicate sensor malfunction. DO values &lt;= 5 mg/L are improbable and may indicate sensor malfunction. We’ll remove those rows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">temp_C</span><span class="op">)</span> <span class="op">|</span> <span class="va">temp_C</span> <span class="op">&gt;=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">DO_mgL</span><span class="op">)</span> <span class="op">|</span> <span class="va">DO_mgL</span> <span class="op">&gt;</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+</div>
+</section><section class="level2"><h2 id="ensure-even-timesteps">Ensure even timesteps<a class="anchor" aria-label="anchor" href="#ensure-even-timesteps"></a>
+</h2>
+<p>streamMetabolizer requires evenly spaced data. <code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> fills any gaps with <code>NA</code> rows so the interval is consistent.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/even_timesteps.html">even_timesteps</a></span><span class="op">(</span><span class="va">french_creek</span>, datetime_col <span class="op">=</span> <span class="st">"datetime"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="convert-datetime-to-solar-time">Convert datetime to solar time<a class="anchor" aria-label="anchor" href="#convert-datetime-to-solar-time"></a>
+</section><section class="level2"><h2 id="convert-datetime-to-solar-time">Convert datetime to solar time<a class="anchor" aria-label="anchor" href="#convert-datetime-to-solar-time"></a>
 </h2>
-<p>streamMetabolizer works in mean solar time, which shifts UTC by the
-longitude-based offset so that noon falls roughly when the sun is
-highest. We define site constants once and reuse them throughout.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">lat</span> <span class="op">&lt;-</span> <span class="fl">41.33</span></span>
-<span><span class="va">lon</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">106.3</span></span>
+<p>streamMetabolizer works in mean solar time, which shifts UTC by the longitude-based offset so that noon falls roughly when the sun is highest. We define site constants once and reuse them throughout.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">site_latitude</span> <span class="op">&lt;-</span> <span class="fl">41.329678</span></span>
+<span><span class="va">site_longitude</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">106.359058</span></span>
 <span></span>
 <span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    solar.time <span class="op">=</span> <span class="fu"><a href="../reference/convert_UTC_to_solartime.html">convert_UTC_to_solartime</a></span><span class="op">(</span></span>
 <span>      <span class="va">datetime</span>,</span>
-<span>      longitude <span class="op">=</span> <span class="va">lon</span>,</span>
+<span>      longitude <span class="op">=</span> <span class="va">site_longitude</span>,</span>
 <span>      time.type <span class="op">=</span> <span class="st">"mean solar"</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">solar.time</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2012-09-18 04:05:58"</span><span class="op">)</span> <span class="op">&amp;</span></span>
-<span>         <span class="va">solar.time</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2012-09-21 03:50:58"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">solar.time</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2012-09-18 04:05:58"</span><span class="op">)</span> <span class="op">&amp;</span></span>
+<span>           <span class="va">solar.time</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2012-09-21 03:50:58"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="calculate-modeled-light-par">Calculate modeled light (PAR)<a class="anchor" aria-label="anchor" href="#calculate-modeled-light-par"></a>
+</section><section class="level2"><h2 id="calculate-modeled-light-par">Calculate modeled light (PAR)<a class="anchor" aria-label="anchor" href="#calculate-modeled-light-par"></a>
 </h2>
-<p><code><a href="../reference/calc_light.html">calc_light()</a></code> returns photosynthetically active radiation
-in µmol/m²/s based on the solar geometry at the site. It takes mean
-solar time as input.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/calc_light.html">calc_light()</a></code> returns photosynthetically active radiation in µmol/m²/s based on the solar geometry at the site. It takes mean solar time as input.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>light.calc <span class="op">=</span> <span class="fu"><a href="../reference/calc_light.html">calc_light</a></span><span class="op">(</span><span class="va">solar.time</span>, latitude <span class="op">=</span> <span class="va">lat</span>, longitude <span class="op">=</span> <span class="va">lon</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    light.calc <span class="op">=</span> <span class="fu"><a href="../reference/calc_light.html">calc_light</a></span><span class="op">(</span></span>
+<span>      <span class="va">solar.time</span>,</span>
+<span>      latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
+<span>      longitude <span class="op">=</span> <span class="va">site_longitude</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="get-barometric-pressure-and-observed-light">Get barometric pressure and observed light<a class="anchor" aria-label="anchor" href="#get-barometric-pressure-and-observed-light"></a>
+</section><section class="level2"><h2 id="get-barometric-pressure-and-observed-light">Get barometric pressure and observed light<a class="anchor" aria-label="anchor" href="#get-barometric-pressure-and-observed-light"></a>
 </h2>
-<p>French Creek sits at roughly 2,195 m (7,200 ft) above sea level.
-Using standard sea-level pressure (101.325 kPa) would overpredict
-O<sub>2</sub> saturation by about 20%, so we download NASA POWER surface
-pressure for the site with <code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code>. We also
-download shortwave irradiance; <code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> converts it
-to observed PAR as <code>light.obs</code> and interpolates NASA fields
-to the same timestamps as <code>french_creek</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">french_elev_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_usgs_elev.html">get_usgs_elev</a></span><span class="op">(</span></span>
-<span>  latitude <span class="op">=</span> <span class="va">lat</span>,</span>
-<span>  longitude <span class="op">=</span> <span class="va">lon</span>,</span>
-<span>  units <span class="op">=</span> <span class="st">"Meters"</span></span>
+<p>French Creek sits at roughly 3,205 m (10,515 ft) above sea level. Using standard sea-level pressure (101.325 kPa) would over predict O₂ saturation, so we download NASA POWER surface pressure for the site with <code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code>. We also download shortwave irradiance; <code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> converts it to observed PAR as <code>light.obs</code> and interpolates NASA fields to the same timestamps as <code>french_creek</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get site elevation from USGS; fall back to known French Creek elevation if unavailable</span></span>
+<span><span class="va">french_elev_m</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/get_usgs_elev.html">get_usgs_elev</a></span><span class="op">(</span></span>
+<span>    latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
+<span>    longitude <span class="op">=</span> <span class="va">site_longitude</span>,</span>
+<span>    units <span class="op">=</span> <span class="st">"Meters"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="fl">3205.625</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">nasa_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nasa_data.html">get_nasa_data</a></span><span class="op">(</span></span>
-<span>  data <span class="op">=</span> <span class="va">french_creek</span>,</span>
-<span>  datetime_col <span class="op">=</span> <span class="st">"datetime"</span>,</span>
-<span>  lat <span class="op">=</span> <span class="va">lat</span>,</span>
-<span>  lon <span class="op">=</span> <span class="va">lon</span>,</span>
-<span>  elev_m <span class="op">=</span> <span class="va">french_elev_m</span>,</span>
-<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PSC"</span>, <span class="st">"ALLSKY_SFC_SW_DWN"</span><span class="op">)</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">select</span><span class="op">(</span>datetime <span class="op">=</span> <span class="va">dateTime</span>, bp_kPa <span class="op">=</span> <span class="va">PSC</span>, <span class="va">light.obs</span><span class="op">)</span></span>
+<span><span class="co"># Download NASA POWER pressure and shortwave radiation data for the site</span></span>
+<span><span class="va">nasa_dat</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/get_nasa_data.html">get_nasa_data</a></span><span class="op">(</span></span>
+<span>    data <span class="op">=</span> <span class="va">french_creek</span>,</span>
+<span>    datetime_col <span class="op">=</span> <span class="st">"datetime"</span>,</span>
+<span>    latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
+<span>    longitude <span class="op">=</span> <span class="va">site_longitude</span>,</span>
+<span>    elev_m <span class="op">=</span> <span class="va">french_elev_m</span>,</span>
+<span>    params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PSC"</span>, <span class="st">"ALLSKY_SFC_SW_DWN"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="co"># Keep timestamp, surface pressure, and observed PAR</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>datetime <span class="op">=</span> <span class="va">dateTime</span>, bp_kPa <span class="op">=</span> <span class="va">PSC</span>, <span class="va">light.obs</span><span class="op">)</span>,</span>
+<span>  </span>
+<span>  <span class="co"># If NASA download fails, estimate pressure from elevation and use modeled light</span></span>
+<span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span></span>
+<span>        <span class="va">datetime</span>,</span>
+<span>        bp_kPa <span class="op">=</span> <span class="fu"><a href="../reference/correct_bp.html">correct_bp</a></span><span class="op">(</span></span>
+<span>          station_bp <span class="op">=</span> <span class="fl">101.325</span>,</span>
+<span>          air_temp <span class="op">=</span> <span class="va">temp_C</span>,</span>
+<span>          station_elev <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>          site_elev <span class="op">=</span> <span class="va">french_elev_m</span></span>
+<span>        <span class="op">)</span>,</span>
+<span>        light.obs <span class="op">=</span> <span class="va">light.calc</span></span>
+<span>      <span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="font-weight: bold;">Downloading NASA POWER data</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────</span></span></span>
+<span><span class="co">#&gt; ── Downloading NASA POWER data ─────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Site: single site</span> ──</span></span>
+<span><span class="co">#&gt; ── Site: single site ──</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span>   Retrieving data: 2012-09-18 to 2012-09-21</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> Finished downloading data for <span style="font-weight: bold;">single site</span></span></span>
+<span><span class="co">#&gt; ℹ   Retrieving data: 2012-09-18 to 2012-09-21</span></span>
+<span><span class="co">#&gt; ✔ Finished downloading data for single site</span></span>
 <span></span>
+<span><span class="co"># Inspect NASA-derived or fallback atmospheric/light data</span></span>
 <span><span class="va">nasa_dat</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 287 × 3</span></span></span>
+<span><span class="co">#&gt; # A tibble: 287 × 3</span></span>
 <span><span class="co">#&gt;    datetime            bp_kPa light.obs</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2012-09-18 <span style="color: #949494;">11:15:00</span>   69.4       0  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 2012-09-18 <span style="color: #949494;">11:30:00</span>   69.4       0  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 2012-09-18 <span style="color: #949494;">11:45:00</span>   69.4       0  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 2012-09-18 <span style="color: #949494;">12:00:00</span>   69.4       0  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 2012-09-18 <span style="color: #949494;">12:15:00</span>   69.4      42.6</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 2012-09-18 <span style="color: #949494;">12:30:00</span>   69.4      85.1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 2012-09-18 <span style="color: #949494;">12:45:00</span>   69.5     128. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2012-09-18 <span style="color: #949494;">13:00:00</span>   69.5     170. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2012-09-18 <span style="color: #949494;">13:15:00</span>   69.5     274. </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2012-09-18 <span style="color: #949494;">13:30:00</span>   69.5     379. </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 277 more rows</span></span></span>
+<span><span class="co">#&gt;    &lt;dttm&gt;               &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 2012-09-18 11:15:00   70.2       0  </span></span>
+<span><span class="co">#&gt;  2 2012-09-18 11:30:00   70.2       0  </span></span>
+<span><span class="co">#&gt;  3 2012-09-18 11:45:00   70.2       0  </span></span>
+<span><span class="co">#&gt;  4 2012-09-18 12:00:00   70.2       0  </span></span>
+<span><span class="co">#&gt;  5 2012-09-18 12:15:00   70.2      42.6</span></span>
+<span><span class="co">#&gt;  6 2012-09-18 12:30:00   70.2      85.1</span></span>
+<span><span class="co">#&gt;  7 2012-09-18 12:45:00   70.3     128. </span></span>
+<span><span class="co">#&gt;  8 2012-09-18 13:00:00   70.3     170. </span></span>
+<span><span class="co">#&gt;  9 2012-09-18 13:15:00   70.3     274. </span></span>
+<span><span class="co">#&gt; 10 2012-09-18 13:30:00   70.3     379. </span></span>
+<span><span class="co">#&gt; # ℹ 277 more rows</span></span>
 <span></span>
+<span><span class="co"># Join pressure and observed light onto the main French Creek dataset</span></span>
 <span><span class="va">french_data</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">nasa_dat</span>, by <span class="op">=</span> <span class="st">"datetime"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">nasa_dat</span>, by <span class="op">=</span> <span class="st">"datetime"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="calculate-o2-saturation">Calculate O<sub>2</sub> saturation<a class="anchor" aria-label="anchor" href="#calculate-o2-saturation"></a>
+</section><section class="level2"><h2 id="calculate-o2-saturation">Calculate O<sub>2</sub> saturation<a class="anchor" aria-label="anchor" href="#calculate-o2-saturation"></a>
 </h2>
-<p>With site-adjusted pressure and water temperature,
-<code><a href="../reference/calc_O2sat.html">calc_O2sat()</a></code> returns the DO saturation concentration in
-mg/L.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>With site-adjusted pressure and water temperature, <code><a href="../reference/calc_O2sat.html">calc_O2sat()</a></code> returns the DO saturation concentration in mg/L.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">french_data</span> <span class="op">&lt;-</span> <span class="va">french_data</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    DO.sat <span class="op">=</span> <span class="fu"><a href="../reference/calc_O2sat.html">calc_O2sat</a></span><span class="op">(</span></span>
 <span>      temp_water <span class="op">=</span> <span class="va">temp_C</span>,</span>
 <span>      atmo_press <span class="op">=</span> <span class="va">bp_kPa</span>,</span>
@@ -287,16 +311,15 @@ mg/L.</p>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">french_data</span><span class="op">$</span><span class="va">DO.sat</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
-<span><span class="co">#&gt;   7.211   7.723   8.367   8.257   8.781   9.153</span></span></code></pre></div>
+<span><span class="co">#&gt;   7.291   7.810   8.465   8.352   8.883   9.260</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="assemble-the-final-tibble">Assemble the final tibble<a class="anchor" aria-label="anchor" href="#assemble-the-final-tibble"></a>
+</section><section class="level2"><h2 id="assemble-the-final-tibble">Assemble the final tibble<a class="anchor" aria-label="anchor" href="#assemble-the-final-tibble"></a>
 </h2>
-<p>The final step restructures the data and retains both observed and
-calculated light.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>The final step restructures the data and retains both observed and calculated light.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sm_input</span> <span class="op">&lt;-</span> <span class="va">french_data</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">transmute</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span></span>
 <span>    solar.time <span class="op">=</span> <span class="va">solar.time</span>,</span>
 <span>    DO.obs     <span class="op">=</span> <span class="va">DO_mgL</span>,</span>
 <span>    DO.sat     <span class="op">=</span> <span class="va">DO.sat</span>,</span>
@@ -307,31 +330,40 @@ calculated light.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sm_input</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 7</span></span></span>
+<span><span class="co">#&gt; # A tibble: 6 × 7</span></span>
 <span><span class="co">#&gt;   solar.time          DO.obs DO.sat depth temp.water light.obs light.calc</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 2012-09-18 <span style="color: #949494;">04:10:58</span>   8.4    9.05  0.16       3.58       0            0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 2012-09-18 <span style="color: #949494;">04:25:58</span>   8.42   9.06  0.16       3.54       0            0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 2012-09-18 <span style="color: #949494;">04:40:58</span>   8.42   9.07  0.16       3.5        0            0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 2012-09-18 <span style="color: #949494;">04:55:58</span>   8.42   9.08  0.16       3.46       0            0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 2012-09-18 <span style="color: #949494;">05:10:58</span>   8.44   9.09  0.16       3.42      42.6          0</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 2012-09-18 <span style="color: #949494;">05:25:58</span>   8.47   9.10  0.16       3.37      85.1          0</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt;   &lt;dttm&gt;               &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 2012-09-18 04:10:44   8.4    9.15  0.16       3.58       0            0</span></span>
+<span><span class="co">#&gt; 2 2012-09-18 04:25:44   8.42   9.16  0.16       3.54       0            0</span></span>
+<span><span class="co">#&gt; 3 2012-09-18 04:40:44   8.42   9.17  0.16       3.5        0            0</span></span>
+<span><span class="co">#&gt; 4 2012-09-18 04:55:44   8.42   9.18  0.16       3.46       0            0</span></span>
+<span><span class="co">#&gt; 5 2012-09-18 05:10:44   8.44   9.20  0.16       3.42      42.6          0</span></span>
+<span><span class="co">#&gt; 6 2012-09-18 05:25:44   8.47   9.21  0.16       3.37      85.1          0</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sm_input</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>DO.pctsat <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">DO.obs</span> <span class="op">/</span> <span class="va">DO.sat</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>DO.pctsat <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">DO.obs</span> <span class="op">/</span> <span class="va">DO.sat</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">DO.obs</span>, <span class="va">DO.sat</span>, <span class="va">DO.pctsat</span><span class="op">)</span>,</span>
 <span>    names_to <span class="op">=</span> <span class="st">"variable"</span>,</span>
 <span>    values_to <span class="op">=</span> <span class="st">"value"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span>units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">variable</span> <span class="op">==</span> <span class="st">"DO.pctsat"</span>, <span class="st">"DO\n(% sat)"</span>, <span class="st">"DO\n(mg/L)"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">solar.time</span>, <span class="va">value</span>, color <span class="op">=</span> <span class="va">variable</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">facet_grid</span><span class="op">(</span><span class="va">units</span> <span class="op">~</span> <span class="va">.</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Solar time"</span>, y <span class="op">=</span> <span class="cn">NULL</span>, color <span class="op">=</span> <span class="st">"Variable"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="french-creek_files/figure-html/plot-sm-input-do-1.png" class="r-plt" alt="Time series of observed DO, saturated DO, and percent DO saturation at French Creek." width="672"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>units <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">variable</span> <span class="op">==</span> <span class="st">"DO.pctsat"</span>, <span class="st">"DO\n(% sat)"</span>, <span class="st">"DO\n(mg/L)"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">solar.time</span>, <span class="va">value</span>, color <span class="op">=</span> <span class="va">variable</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">units</span> <span class="op">~</span> <span class="va">.</span>, scales <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Solar time"</span>, y <span class="op">=</span> <span class="cn">NULL</span>, color <span class="op">=</span> <span class="st">"Variable"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="french-creek_files/figure-html/plot-sm-input-do-1.png" alt="Time series of observed DO, saturated DO, and percent DO saturation at French Creek." width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  depth      <span class="op">=</span> <span class="st">"depth~(m)"</span>,</span>
 <span>  temp.water <span class="op">=</span> <span class="st">"water~temp~(degree*C)"</span>,</span>
@@ -345,20 +377,20 @@ calculated light.</p>
 <span>    names_to <span class="op">=</span> <span class="st">"variable"</span>,</span>
 <span>    values_to <span class="op">=</span> <span class="st">"value"</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    variable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">ordered</a></span><span class="op">(</span></span>
 <span>      <span class="va">variable</span>,</span>
 <span>      levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"depth"</span>, <span class="st">"temp.water"</span>, <span class="st">"light.obs"</span>, <span class="st">"light.calc"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">solar.time</span>, <span class="va">value</span>, color <span class="op">=</span> <span class="va">variable</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_line</span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">facet_grid</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">solar.time</span>, <span class="va">value</span>, color <span class="op">=</span> <span class="va">variable</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span></span>
 <span>    <span class="va">variable</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>    scales <span class="op">=</span> <span class="st">"free_y"</span>,</span>
 <span>    labeller <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/as_labeller.html" class="external-link">as_labeller</a></span><span class="op">(</span><span class="va">labels</span>, <span class="va">label_parsed</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">scale_color_manual</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span></span>
 <span>    values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>      depth      <span class="op">=</span> <span class="st">"#333333"</span>,</span>
 <span>      temp.water <span class="op">=</span> <span class="st">"#e8000d"</span>,</span>
@@ -366,26 +398,109 @@ calculated light.</p>
 <span>      light.calc <span class="op">=</span> <span class="st">"#f5c542"</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">labs</span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Solar time"</span>, y <span class="op">=</span> <span class="cn">NULL</span>, color <span class="op">=</span> <span class="st">"Variable"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="french-creek_files/figure-html/plot-sm-input-other-1.png" class="r-plt" alt="Time series of depth, water temperature, observed PAR, and calculated PAR at French Creek." width="672"></p>
-<p>To fit a model with <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/metab.html" class="external-link">streamMetabolizer::metab()</a></code>, choose
-either <code>light.obs</code> or <code>light.calc</code> and rename that
-column to <code>light</code>. See the <a href="https://github.com/ConnorB/streamMetabolizer" class="external-link">streamMetabolizer
-documentation</a> for details on model fitting and interpreting
-metabolism estimates.</p>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Solar time"</span>, y <span class="op">=</span> <span class="cn">NULL</span>, color <span class="op">=</span> <span class="st">"Variable"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="french-creek_files/figure-html/plot-sm-input-other-1.png" alt="Time series of depth, water temperature, observed PAR, and calculated PAR at French Creek." width="672"></p>
+</figure>
 </div>
-<div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</div>
+</div>
+<p>To fit a model with <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/metab.html" class="external-link">streamMetabolizer::metab()</a></code>, choose either <code>light.obs</code> or <code>light.calc</code> and rename that column to <code>light</code>. See the <a href="https://github.com/ConnorB/streamMetabolizer" class="external-link">streamMetabolizer documentation</a> for details on model fitting and interpreting metabolism estimates.</p>
+</section><section class="level2 unnumbered"><h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Hall, R. O., Jr., Tank, J. L., Baker, M. A., Rosi-Marshall, E. J.,
-&amp; Hotchkiss, E. R. (2016). Metabolism, gas exchange, and carbon
-spiraling in rivers. <em>Ecosystems</em>, 19(1), 73–86. <a href="https://doi.org/10.1890/14-0631.1" class="external-link uri">https://doi.org/10.1890/14-0631.1</a></p>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-hotchkiss2015whole" class="csl-entry" role="listitem">
+Hotchkiss, Erin R., and Robert O. Hall Jr. 2015. <span>“Whole-Stream <span>13C</span> Tracer Addition Reveals Distinct Fates of Newly Fixed Carbon.”</span> <em>Ecology</em> 96 (2): 403–16. <a href="https://doi.org/10.1890/14-0631.1" class="external-link">https://doi.org/10.1890/14-0631.1</a>.
 </div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+</div>
+</section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
     <footer><div class="pkgdown-footer-left">

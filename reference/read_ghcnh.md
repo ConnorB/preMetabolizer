@@ -1,7 +1,7 @@
-# Read GHCNh Parquet Files
+# Read GHCNh CSV Files
 
-Reads GHCNh parquet files from specified files or directory and
-optionally combines them into a single dataframe.
+Reads GHCNh CSV files from specified files or directory and optionally
+combines them into a single dataframe.
 
 ## Usage
 
@@ -13,12 +13,12 @@ read_ghcnh(files = NULL, directory = NULL, combine = TRUE)
 
 - files:
 
-  Optional. Character vector specifying the paths to parquet files.
-  Defaults to `NULL`.
+  Optional. Character vector specifying the paths to CSV files. Defaults
+  to `NULL`.
 
 - directory:
 
-  Optional. Character string specifying the directory containing parquet
+  Optional. Character string specifying the directory containing CSV
   files. Defaults to `NULL`.
 
 - combine:
@@ -69,8 +69,8 @@ if (FALSE) { # \dontrun{
   data <- read_ghcnh(directory = "data/ghcnh")
 
   # Read specific files
-  files <- c("data/ghcnh/GHCNh_USW00023183_2022.parquet",
-             "data/ghcnh/GHCNh_USW00023183_2023.parquet")
+  files <- c("data/ghcnh/GHCNh_USW00023183_2022.csv.gz",
+             "data/ghcnh/GHCNh_USW00023183_2023.csv.gz")
   data <- read_ghcnh(files = files)
 } # }
 ```

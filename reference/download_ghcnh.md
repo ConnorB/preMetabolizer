@@ -1,7 +1,7 @@
-# Download GHCNh Parquet Files
+# Download GHCNh CSV Files
 
-Downloads GHCNh parquet files for specified stations and years, saving
-them to an output directory.
+Downloads GHCNh CSV files for specified stations and years, saving them
+to an output directory.
 
 ## Usage
 

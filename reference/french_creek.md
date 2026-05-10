@@ -36,10 +36,9 @@ A tibble with 10,883 rows and 4 columns:
 
 ## Source
 
-Hall, R. O., Jr., Tank, J. L., Baker, M. A., Rosi-Marshall, E. J., &
-Hotchkiss, E. R. (2016). Metabolism, gas exchange, and carbon spiraling
-in rivers. *Ecosystems*, 19(1), 73–86.
-[doi:10.1890/14-0631.1](https://doi.org/10.1890/14-0631.1)
+Hotchkiss, E. R., & Hall, R. O., Jr. (2015). Whole-stream 13C tracer
+addition reveals distinct fates of newly fixed carbon. *Ecology*, 96,
+403–416. [doi:10.1890/14-0631.1](https://doi.org/10.1890/14-0631.1)
 
 ## Details
 
@@ -51,7 +50,7 @@ in rivers. *Ecosystems*, 19(1), 73–86.
 
 - **Stream depth**: 0.16 m
 
-- **Elevation**: approximately 2,195 m (7,200 ft)
+- **Elevation**: approximately 3,115 m (10220 ft)
 
 - **Location**: French Creek, Laramie, Wyoming, USA
 

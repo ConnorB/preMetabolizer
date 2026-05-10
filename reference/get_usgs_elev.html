@@ -57,7 +57,9 @@ longitude pairs. Coordinates are always interpreted as WGS84 (WKID 4326).</p>
 
 
 <dl><dt id="arg-latitude-longitude">latitude, longitude<a class="anchor" aria-label="anchor" href="#arg-latitude-longitude"></a></dt>
-<dd><p>Numeric vectors of latitude and longitude in decimal degrees.</p></dd>
+<dd><p>Numeric vectors of latitude and longitude in
+decimal degrees. Latitude values must be between -90 and 90; longitude
+values must be between -180 and 180. Western longitudes are negative.</p></dd>
 
 
 <dt id="arg-units">units<a class="anchor" aria-label="anchor" href="#arg-units"></a></dt>
@@ -71,6 +73,14 @@ longitude pairs. Coordinates are always interpreted as WGS84 (WKID 4326).</p>
 element for each input coordinate pair.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="fu">get_usgs_elev</span><span class="op">(</span>latitude <span class="op">=</span> <span class="fl">39.102075</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.594689</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

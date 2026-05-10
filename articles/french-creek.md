@@ -13,21 +13,37 @@ variables:
 | `solar.time` | Mean solar time (POSIXct, tz = “UTC”)           |
 | `DO.obs`     | Observed dissolved oxygen (mg/L)                |
 | `DO.sat`     | DO saturation at current conditions (mg/L)      |
-| `depth`      | Mean stream depth (m)                           |
+| `depth`      | Water depth (m)                                 |
 | `temp.water` | Water temperature (°C)                          |
 | `light`      | Photosynthetically active radiation (µmol/m²/s) |
 
 This vignette walks through computing each of those inputs from the
 `french_creek` dataset using preMetabolizer. The data come from a field
-study on French Creek near Laramie, Wyoming, USA (Hall et al. 2016,
-<https://doi.org/10.1890/14-0631.1>). Below we keep NASA-derived PAR as
+study on French Creek near Laramie, Wyoming, USA ([Hotchkiss and Hall
+2015](#ref-hotchkiss2015whole)). Below we keep NASA-derived PAR as
 `light.obs` and modeled PAR from
 [`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md)
 as `light.calc` so the two light series can be compared.
 
+``` r
+
+library(preMetabolizer)
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(ggplot2)
+```
+
 ## The `french_creek` dataset
 
 ``` r
+
 
 data(french_creek)
 french_creek <- french_creek |> 
@@ -72,7 +88,7 @@ french_creek |>
 
 ![Time series of water temperature and dissolved oxygen at French Creek,
 colored by sensor (REZN and
-TOWN).](french-creek_files/figure-html/plot-raw-1.png)
+TOWN).](french-creek_files/figure-html/check%20out%20data-1.png)
 
 The REZN sensor shows a cluster of anomalous negative temperature values
 near the end of its deployment. For the rest of this vignette we filter
@@ -117,19 +133,19 @@ highest. We define site constants once and reuse them throughout.
 
 ``` r
 
-lat <- 41.33
-lon <- -106.3
+site_latitude <- 41.329678
+site_longitude <- -106.359058
 
 french_creek <- french_creek |>
   mutate(
     solar.time = convert_UTC_to_solartime(
       datetime,
-      longitude = lon,
+      longitude = site_longitude,
       time.type = "mean solar"
     )
   ) |> 
   filter(solar.time >= as.POSIXct("2012-09-18 04:05:58") &
-         solar.time <= as.POSIXct("2012-09-21 03:50:58"))
+           solar.time <= as.POSIXct("2012-09-21 03:50:58"))
 ```
 
 ## Calculate modeled light (PAR)
@@ -141,15 +157,20 @@ solar geometry at the site. It takes mean solar time as input.
 ``` r
 
 french_creek <- french_creek |>
-  mutate(light.calc = calc_light(solar.time, latitude = lat, longitude = lon))
+  mutate(
+    light.calc = calc_light(
+      solar.time,
+      latitude = site_latitude,
+      longitude = site_longitude
+    )
+  )
 ```
 
 ## Get barometric pressure and observed light
 
-French Creek sits at roughly 2,195 m (7,200 ft) above sea level. Using
-standard sea-level pressure (101.325 kPa) would overpredict O₂
-saturation by about 20%, so we download NASA POWER surface pressure for
-the site with
+French Creek sits at roughly 3,205 m (10,515 ft) above sea level. Using
+standard sea-level pressure (101.325 kPa) would over predict O₂
+saturation, so we download NASA POWER surface pressure for the site with
 [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md).
 We also download shortwave irradiance;
 [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
@@ -158,21 +179,44 @@ to the same timestamps as `french_creek`.
 
 ``` r
 
-french_elev_m <- get_usgs_elev(
-  latitude = lat,
-  longitude = lon,
-  units = "Meters"
+# Get site elevation from USGS; fall back to known French Creek elevation if unavailable
+french_elev_m <- tryCatch(
+  get_usgs_elev(
+    latitude = site_latitude,
+    longitude = site_longitude,
+    units = "Meters"
+  ),
+  error = function(e) 3205.625
 )
 
-nasa_dat <- get_nasa_data(
-  data = french_creek,
-  datetime_col = "datetime",
-  lat = lat,
-  lon = lon,
-  elev_m = french_elev_m,
-  params = c("PSC", "ALLSKY_SFC_SW_DWN")
-) |>
-  select(datetime = dateTime, bp_kPa = PSC, light.obs)
+# Download NASA POWER pressure and shortwave radiation data for the site
+nasa_dat <- tryCatch(
+  get_nasa_data(
+    data = french_creek,
+    datetime_col = "datetime",
+    latitude = site_latitude,
+    longitude = site_longitude,
+    elev_m = french_elev_m,
+    params = c("PSC", "ALLSKY_SFC_SW_DWN")
+  ) |>
+    # Keep timestamp, surface pressure, and observed PAR
+    select(datetime = dateTime, bp_kPa = PSC, light.obs),
+  
+  # If NASA download fails, estimate pressure from elevation and use modeled light
+  error = function(e) {
+    french_creek |>
+      transmute(
+        datetime,
+        bp_kPa = correct_bp(
+          station_bp = 101.325,
+          air_temp = temp_C,
+          station_elev = 0,
+          site_elev = french_elev_m
+        ),
+        light.obs = light.calc
+      )
+  }
+)
 #> 
 #> ── Downloading NASA POWER data ─────────────────────────────────────────────────
 #> 
@@ -181,22 +225,24 @@ nasa_dat <- get_nasa_data(
 #> ℹ   Retrieving data: 2012-09-18 to 2012-09-21
 #> ✔ Finished downloading data for single site
 
+# Inspect NASA-derived or fallback atmospheric/light data
 nasa_dat
 #> # A tibble: 287 × 3
 #>    datetime            bp_kPa light.obs
 #>    <dttm>               <dbl>     <dbl>
-#>  1 2012-09-18 11:15:00   69.4       0  
-#>  2 2012-09-18 11:30:00   69.4       0  
-#>  3 2012-09-18 11:45:00   69.4       0  
-#>  4 2012-09-18 12:00:00   69.4       0  
-#>  5 2012-09-18 12:15:00   69.4      42.6
-#>  6 2012-09-18 12:30:00   69.4      85.1
-#>  7 2012-09-18 12:45:00   69.5     128. 
-#>  8 2012-09-18 13:00:00   69.5     170. 
-#>  9 2012-09-18 13:15:00   69.5     274. 
-#> 10 2012-09-18 13:30:00   69.5     379. 
+#>  1 2012-09-18 11:15:00   70.2       0  
+#>  2 2012-09-18 11:30:00   70.2       0  
+#>  3 2012-09-18 11:45:00   70.2       0  
+#>  4 2012-09-18 12:00:00   70.2       0  
+#>  5 2012-09-18 12:15:00   70.2      42.6
+#>  6 2012-09-18 12:30:00   70.2      85.1
+#>  7 2012-09-18 12:45:00   70.3     128. 
+#>  8 2012-09-18 13:00:00   70.3     170. 
+#>  9 2012-09-18 13:15:00   70.3     274. 
+#> 10 2012-09-18 13:30:00   70.3     379. 
 #> # ℹ 277 more rows
 
+# Join pressure and observed light onto the main French Creek dataset
 french_data <- french_creek |>
   left_join(nasa_dat, by = "datetime")
 ```
@@ -220,7 +266,7 @@ french_data <- french_data |>
 
 summary(french_data$DO.sat)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   7.211   7.723   8.367   8.257   8.781   9.153
+#>   7.291   7.810   8.465   8.352   8.883   9.260
 ```
 
 ## Assemble the final tibble
@@ -245,12 +291,12 @@ head(sm_input)
 #> # A tibble: 6 × 7
 #>   solar.time          DO.obs DO.sat depth temp.water light.obs light.calc
 #>   <dttm>               <dbl>  <dbl> <dbl>      <dbl>     <dbl>      <dbl>
-#> 1 2012-09-18 04:10:58   8.4    9.05  0.16       3.58       0            0
-#> 2 2012-09-18 04:25:58   8.42   9.06  0.16       3.54       0            0
-#> 3 2012-09-18 04:40:58   8.42   9.07  0.16       3.5        0            0
-#> 4 2012-09-18 04:55:58   8.42   9.08  0.16       3.46       0            0
-#> 5 2012-09-18 05:10:58   8.44   9.09  0.16       3.42      42.6          0
-#> 6 2012-09-18 05:25:58   8.47   9.10  0.16       3.37      85.1          0
+#> 1 2012-09-18 04:10:44   8.4    9.15  0.16       3.58       0            0
+#> 2 2012-09-18 04:25:44   8.42   9.16  0.16       3.54       0            0
+#> 3 2012-09-18 04:40:44   8.42   9.17  0.16       3.5        0            0
+#> 4 2012-09-18 04:55:44   8.42   9.18  0.16       3.46       0            0
+#> 5 2012-09-18 05:10:44   8.44   9.20  0.16       3.42      42.6          0
+#> 6 2012-09-18 05:25:44   8.47   9.21  0.16       3.37      85.1          0
 ```
 
 ``` r
@@ -326,7 +372,6 @@ on model fitting and interpreting metabolism estimates.
 
 ## References
 
-Hall, R. O., Jr., Tank, J. L., Baker, M. A., Rosi-Marshall, E. J., &
-Hotchkiss, E. R. (2016). Metabolism, gas exchange, and carbon spiraling
-in rivers. *Ecosystems*, 19(1), 73–86.
-<https://doi.org/10.1890/14-0631.1>
+Hotchkiss, Erin R., and Robert O. Hall Jr. 2015. “Whole-Stream 13C
+Tracer Addition Reveals Distinct Fates of Newly Fixed Carbon.” *Ecology*
+96 (2): 403–16. <https://doi.org/10.1890/14-0631.1>.

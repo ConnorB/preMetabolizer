@@ -1,7 +1,10 @@
 # preMetabolizer
 
-`preMetabolizer` is a utility R package that provides tools for
-wrangling the input data required by
+`preMetabolizer` helps prepare environmental time series before fitting
+stream metabolism models. It provides tools for downloading
+meteorological and elevation data, aligning irregular observations,
+converting units, and calculating light, pressure, dissolved gas, and
+water property inputs for
 [`streamMetabolizer`](https://github.com/ConnorB/streamMetabolizer).
 
 ## Installation

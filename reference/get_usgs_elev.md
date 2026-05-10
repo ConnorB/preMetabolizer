@@ -14,7 +14,9 @@ get_usgs_elev(latitude, longitude, units = c("Meters", "Feet"))
 
 - latitude, longitude:
 
-  Numeric vectors of latitude and longitude in decimal degrees.
+  Numeric vectors of latitude and longitude in decimal degrees. Latitude
+  values must be between -90 and 90; longitude values must be between
+  -180 and 180. Western longitudes are negative.
 
 - units:
 
@@ -25,3 +27,11 @@ get_usgs_elev(latitude, longitude, units = c("Meters", "Feet"))
 
 A numeric vector of elevations in the requested units, with one element
 for each input coordinate pair.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+get_usgs_elev(latitude = 39.102075, longitude = -96.594689)
+} # }
+```

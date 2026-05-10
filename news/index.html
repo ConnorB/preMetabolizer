@@ -41,34 +41,40 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="premetabolizer-0009000">preMetabolizer 0.0.0.9000<a class="anchor" aria-label="anchor" href="#premetabolizer-0009000"></a></h2>
-<ul><li>
-<code>convert_PAR_to_SW()</code> and <code>convert_SW_to_PAR()</code> are no longer re-exported from preMetabolizer. Call <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html" class="external-link">streamMetabolizer::convert_PAR_to_SW()</a></code> and <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code> directly (#TBD).</li>
-<li>Added <code>french_creek</code> dataset: 5-minute dissolved oxygen and water temperature records from French Creek, Laramie, WY (Aug–Sep 2012), courtesy of Bob Hall. Source: Hall et al. (2016), .</li>
+<ul><li>Added <code>french_creek</code> dataset: 5-minute dissolved oxygen and water temperature records from French Creek, Laramie, WY (Aug–Sep 2012), courtesy of Bob Hall. Source: Hall et al. (2016), .</li>
 <li>Added “Preparing French Creek Data for Stream Metabolism Modeling” vignette demonstrating a complete preMetabolizer workflow: solar time conversion, modeled PAR, elevation-corrected barometric pressure, O2 saturation, and streamMetabolizer input assembly.</li>
 <li>
 <code><a href="../reference/calc_O2sat.html">calc_O2sat()</a></code> now uses the Benson and Krause umol/kg coefficients from Garcia and Gordon (1992), converts to mg/L with salinity-aware density, and applies the corrected vapor-pressure term for non-standard pressure (#TBD).</li>
 <li>
 <code><a href="../reference/calc_vapor_press.html">calc_vapor_press()</a></code> with <code>method = "MIMSY"</code> now returns physically correct values. The Antoine equation constant <code>B</code> was incorrectly set to 140.264 (should be 1435.264), causing vapor pressures that were orders of magnitude too large.</li>
 <li>
-<code><a href="../reference/calc_water_height.html">calc_water_height()</a></code> now gives a clear error when <code>type = "unvented"</code> is used without providing <code>atmo_kPa</code>, rather than silently returning <code>NA</code>.</li>
-<li>
-<code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> no longer errors on single-column data frames due to <code>drop = TRUE</code> subsetting.</li>
-<li>
-<code><a href="../reference/get_ks_meso.html">get_ks_meso()</a></code> now correctly reports invalid variable names in the error message (previously reported them as “Invalid stations:” instead of “Invalid variables:”).</li>
-<li>
-<code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site coordinate arguments or per-site <code>lat</code>, <code>lon</code>, and <code>elev_m</code> columns, interpolates NASA values to the input timestamps, and returns <code>light.obs</code> by converting <code>ALLSKY_SFC_SW_DWN</code> with <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code> (#TBD).</li>
-<li>
-<code><a href="../reference/get_usgs_elev.html">get_usgs_elev()</a></code> can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (#TBD).</li>
-<li>
 <code><a href="../reference/calc_water_density.html">calc_water_density()</a></code> no longer accepts a <code>.drop_units</code> argument; it always returns a plain numeric vector (#TBD).</li>
 <li>
+<code><a href="../reference/calc_water_height.html">calc_water_height()</a></code> now gives a clear error when <code>type = "unvented"</code> is used without providing <code>atmo_kPa</code>, rather than silently returning <code>NA</code>.</li>
+<li>
+<code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> now uses <code>latitude</code> and <code>longitude</code> arguments. The old <code>lat</code>, <code>long</code>, and <code>lon</code> aliases are deprecated (#TBD).</li>
+<li>
 <code><a href="../reference/convert_flow.html">convert_flow()</a></code> now requires an explicit <code>from</code> argument specifying the input unit; it always returns a plain numeric vector instead of a <code>units</code> object (#TBD).</li>
+<li>
+<code>convert_PAR_to_SW()</code> and <code>convert_SW_to_PAR()</code> are no longer re-exported from preMetabolizer. Call <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html" class="external-link">streamMetabolizer::convert_PAR_to_SW()</a></code> and <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code> directly (#TBD).</li>
 <li>
 <code><a href="../reference/convert_pressure.html">convert_pressure()</a></code> now requires an explicit <code>from</code> argument; it always returns a plain numeric vector. Unit-bearing objects are no longer accepted as input (#TBD).</li>
 <li>
 <code><a href="../reference/correct_bp.html">correct_bp()</a></code> no longer accepts a <code>drop_units</code> argument; it always returns a plain numeric vector. Elevation inputs must be plain numeric (meters) (#TBD).</li>
 <li>
+<code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> no longer errors on single-column data frames due to <code>drop = TRUE</code> subsetting.</li>
+<li>
+<code><a href="../reference/get_ks_meso.html">get_ks_meso()</a></code> now supports Kansas Mesonet network requests with <code>network = "KSRE"</code>, <code>"BBW"</code>, or <code>"EBW"</code>, accepts <code>"all"</code> as a station selector, and correctly reports invalid variable names in the error message (previously reported them as “Invalid stations:” instead of “Invalid variables:”).</li>
+<li>
+<code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site <code>latitude</code> and <code>longitude</code> arguments or per-site <code>latitude</code>, <code>longitude</code>, and <code>elev_m</code> columns, interpolates NASA values to the input timestamps, and returns <code>light.obs</code> by converting <code>ALLSKY_SFC_SW_DWN</code> with <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code>. The old <code>lat</code> and <code>lon</code> aliases are deprecated (#TBD).</li>
+<li>
+<code><a href="../reference/get_usgs_elev.html">get_usgs_elev()</a></code> can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (#TBD).</li>
+<li>
 <code>has_units()</code> has been removed. The <code>units</code> package is no longer a dependency (#TBD).</li>
+<li>
+<code><a href="../reference/ks_meso_fw13.html">ks_meso_fw13()</a></code> can now retrieve Kansas Mesonet fire weather data in FW13 format for one station and date range (#TBD).</li>
+<li>
+<code><a href="../reference/ks_meso_most_recent.html">ks_meso_most_recent()</a></code> can now retrieve the most recently ingested Kansas Mesonet timestamp for each station at a requested interval (#TBD).</li>
 </ul></div>
   </main></div>
 

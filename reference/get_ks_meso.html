@@ -36,7 +36,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Fetch Data from Kansas Mesonet</h1>
-      <small class="dont-index">Source: <a href="https://github.com/ConnorB/preMetabolizer/blob/main/R/ks_mesonet.R" class="external-link"><code>R/ks_mesonet.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/ConnorB/preMetabolizer/blob/main/R/get_ks_meso.R" class="external-link"><code>R/get_ks_meso.R</code></a></small>
       <div class="d-none name"><code>get_ks_meso.Rd</code></div>
     </div>
 
@@ -47,13 +47,14 @@
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_ks_meso</span><span class="op">(</span></span>
-<span>  <span class="va">stations</span>,</span>
+<span>  stations <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  network <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">start_date</span>,</span>
 <span>  <span class="va">end_date</span>,</span>
 <span>  <span class="va">interval</span>,</span>
 <span>  vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  output_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">T</span></span>
+<span>  debug <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -62,7 +63,16 @@
 
 
 <dl><dt id="arg-stations">stations<a class="anchor" aria-label="anchor" href="#arg-stations"></a></dt>
-<dd><p>Character vector of station names to retrieve data for.</p></dd>
+<dd><p>Character vector of station names to retrieve data for. Use
+<code>"all"</code> to retrieve data for all stations. Must be <code>NULL</code> when <code>network</code>
+is supplied.</p></dd>
+
+
+<dt id="arg-network">network<a class="anchor" aria-label="anchor" href="#arg-network"></a></dt>
+<dd><p>Network name to retrieve data for, one of:</p><ul><li><p><code>"BBW"</code>: Big Bend Groundwater Management District</p></li>
+<li><p><code>"EBW"</code>: Equus Beds Groundwater Management District</p></li>
+<li><p><code>"KSRE"</code>: K-State Research and Extension</p></li>
+</ul><p>This is an alternative to <code>stations</code>.</p></dd>
 
 
 <dt id="arg-start-date">start_date<a class="anchor" aria-label="anchor" href="#arg-start-date"></a></dt>
@@ -74,7 +84,8 @@
 
 
 <dt id="arg-interval">interval<a class="anchor" aria-label="anchor" href="#arg-interval"></a></dt>
-<dd><p>Data interval. Must be one of <code>'hour'</code>, <code>'5min'</code>, or <code>'day'</code>.</p></dd>
+<dd><p>Data interval. Must be one of <code>"hour"</code>, <code>"5min"</code>, or
+<code>"day"</code>.</p></dd>
 
 
 <dt id="arg-vars">vars<a class="anchor" aria-label="anchor" href="#arg-vars"></a></dt>
@@ -92,6 +103,21 @@
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A list with details about successful and failed downloads, output directory, and data chunks.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p>Kansas Mesonet data are preliminary and subject to revision. Cite the Kansas
+Mesonet when sharing, publishing, or otherwise disseminating data accessed
+with this function. A suggested citation format is: Kansas Mesonet, year:
+webpage title. Accessed date, webpage URL. Review the Kansas Mesonet data
+usage policy before automated use; automated page scraping or data ingesting
+without written consent is not permitted.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Kansas Mesonet data usage policy:
+<a href="https://mesonet.k-state.edu/about/usage/" class="external-link">https://mesonet.k-state.edu/about/usage/</a></p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -33,3 +33,19 @@ read_ks_meso(station, start_date, end_date, interval, output_dir = NULL)
 ## Value
 
 A data frame containing the requested Mesonet data.
+
+## Details
+
+**\[experimental\]**
+
+Kansas Mesonet data are preliminary and subject to revision. Cite the
+Kansas Mesonet when sharing, publishing, or otherwise disseminating data
+read with this function. A suggested citation format is: Kansas Mesonet,
+year: webpage title. Accessed date, webpage URL. Review the Kansas
+Mesonet data usage policy before automated use; automated page scraping
+or data ingesting without written consent is not permitted.
+
+## References
+
+Kansas Mesonet data usage policy:
+<https://mesonet.k-state.edu/about/usage/>

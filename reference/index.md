@@ -1,14 +1,20 @@
 # Package index
 
+## Package overview
+
+- [`preMetabolizer`](https://connorb.github.io/preMetabolizer/reference/preMetabolizer-package.md)
+  [`preMetabolizer-package`](https://connorb.github.io/preMetabolizer/reference/preMetabolizer-package.md)
+  : preMetabolizer: Prepare data for stream metabolism modeling
+
 ## Data access
 
 Download and read meteorological and hydrological data from external
 sources.
 
 - [`download_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/download_ghcnh.md)
-  : Download GHCNh Parquet Files
+  : Download GHCNh CSV Files
 - [`read_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/read_ghcnh.md)
-  : Read GHCNh Parquet Files
+  : Read GHCNh CSV Files
 - [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
   : Download NASA POWER hourly data
 - [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
@@ -16,7 +22,9 @@ sources.
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
   : Get NOAA Station Information
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
-  : Find NOAA Stations Within Specified Radius
+  : Find NOAA stations near a location
+- [`ks_meso_vars()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_vars.md)
+  : Fetch Kansas Mesonet variable metadata
 - [`get_ks_meso()`](https://connorb.github.io/preMetabolizer/reference/get_ks_meso.md)
   : Fetch Data from Kansas Mesonet
 - [`read_ks_meso()`](https://connorb.github.io/preMetabolizer/reference/read_ks_meso.md)
@@ -25,6 +33,10 @@ sources.
   : Get Kansas Mesonet Station Information
 - [`ks_meso_station_activity()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_station_activity.md)
   : Get Kansas Mesonet Station Activity
+- [`ks_meso_most_recent()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_most_recent.md)
+  : Get Most Recent Kansas Mesonet Data Timestamp
+- [`ks_meso_fw13()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_fw13.md)
+  : Get Kansas Mesonet FW13 Data
 - [`read_shp()`](https://connorb.github.io/preMetabolizer/reference/read_shp.md)
   : Read Shapefile or Zipped Shapefile
 
@@ -108,7 +120,7 @@ Work with meteorological seasons and solar time.
 
 Built-in reference datasets.
 
-- [`ks_mesonet_vars`](https://connorb.github.io/preMetabolizer/reference/ks_mesonet_vars.md)
-  : Kansas Mesonet Variables
 - [`french_creek`](https://connorb.github.io/preMetabolizer/reference/french_creek.md)
   : French Creek Stream Metabolism Data
+- [`kings_discharge`](https://connorb.github.io/preMetabolizer/reference/kings_discharge.md)
+  : Kings Creek daily water data
