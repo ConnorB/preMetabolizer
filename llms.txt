@@ -298,10 +298,6 @@ Calculate water density, depth from pressure, and solar radiation.
   : Calculate water height from pressure
 - [`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md)
   : Calculate modeled photosynthetically active radiation
-- [`calc_solar_insolation()`](https://connorb.github.io/preMetabolizer/reference/calc_solar_insolation.md)
-  : Model solar insolation on a horizontal surface (W/m2 == J/s/m2) as
-  in
-  http://education.gsfc.nasa.gov/experimental/July61999siteupdate/inv99Project.Site/Pages/solar.insolation.html
 
 ## Statistical utilities
 
@@ -328,8 +324,6 @@ Convert between common units used in hydrology and atmospheric science.
   : Convert stream discharge between units
 - [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
   : Convert barometric pressure between units
-- [`convert_pressure_to_atm()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure_to_atm.md)
-  : Convert barometric pressure to atmospheres
 - [`correct_bp()`](https://connorb.github.io/preMetabolizer/reference/correct_bp.md)
   : Correct barometric pressure for elevation change
 

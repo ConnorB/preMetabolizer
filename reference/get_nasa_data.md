@@ -16,6 +16,7 @@ get_nasa_data(
   elev_m = NULL,
   params = c("PSC", "ALLSKY_SFC_SW_DWN", "PRECTOTCORR", "T2M"),
   max_attempts = 5,
+  quiet = TRUE,
   lat = lifecycle::deprecated(),
   lon = lifecycle::deprecated()
 )
@@ -62,6 +63,10 @@ get_nasa_data(
 - max_attempts:
 
   Number of retry attempts for failed API calls. Default is 5.
+
+- quiet:
+
+  Logical. If `TRUE` (default), suppresses progress messages.
 
 - lat, lon:
 

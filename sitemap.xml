@@ -19,7 +19,6 @@
 <url><loc>https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/calc_light.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/calc_mode.html</loc></url>
-<url><loc>https://connorb.github.io/preMetabolizer/reference/calc_solar_insolation.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/calc_vapor_press.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/calc_water_density.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/calc_water_height.html</loc></url>
@@ -27,7 +26,6 @@
 <url><loc>https://connorb.github.io/preMetabolizer/reference/convert_UTC_to_solartime.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/convert_flow.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/convert_pressure.html</loc></url>
-<url><loc>https://connorb.github.io/preMetabolizer/reference/convert_pressure_to_atm.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/convert_solartime_to_UTC.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/correct_bp.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/download_ghcnh.html</loc></url>
@@ -37,7 +35,6 @@
 <url><loc>https://connorb.github.io/preMetabolizer/reference/get_ks_meso.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/get_nasa_data.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.html</loc></url>
-<url><loc>https://connorb.github.io/preMetabolizer/reference/get_remote_mtime.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/get_season.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.html</loc></url>
 <url><loc>https://connorb.github.io/preMetabolizer/reference/index.html</loc></url>

@@ -9,11 +9,13 @@
   vignette demonstrating a complete preMetabolizer workflow: solar time
   conversion, modeled PAR, elevation-corrected barometric pressure, O2
   saturation, and streamMetabolizer input assembly.
+- Messages, warnings, and errors now consistently use cli formatting
+  across the package (no issue).
 - [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
   now uses the Benson and Krause umol/kg coefficients from Garcia and
   Gordon (1992), converts to mg/L with salinity-aware density, and
   applies the corrected vapor-pressure term for non-standard pressure
-  (#TBD).
+  (no issue).
 - [`calc_vapor_press()`](https://connorb.github.io/preMetabolizer/reference/calc_vapor_press.md)
   with `method = "MIMSY"` now returns physically correct values. The
   Antoine equation constant `B` was incorrectly set to 140.264 (should
@@ -21,34 +23,37 @@
   too large.
 - [`calc_water_density()`](https://connorb.github.io/preMetabolizer/reference/calc_water_density.md)
   no longer accepts a `.drop_units` argument; it always returns a plain
-  numeric vector (#TBD).
+  numeric vector (no issue).
 - [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md)
   now gives a clear error when `type = "unvented"` is used without
   providing `atmo_kPa`, rather than silently returning `NA`.
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
   now uses `latitude` and `longitude` arguments. The old `lat`, `long`,
-  and `lon` aliases are deprecated (#TBD).
+  and `lon` aliases are deprecated (no issue).
 - [`convert_flow()`](https://connorb.github.io/preMetabolizer/reference/convert_flow.md)
   now requires an explicit `from` argument specifying the input unit; it
-  always returns a plain numeric vector instead of a `units` object
-  (#TBD).
+  always returns a plain numeric vector instead of a `units` object (no
+  issue).
 - `convert_PAR_to_SW()` and `convert_SW_to_PAR()` are no longer
   re-exported from preMetabolizer. Call
   [`streamMetabolizer::convert_PAR_to_SW()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html)
   and
   [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html)
-  directly (#TBD).
+  directly (no issue).
 - [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
   now requires an explicit `from` argument; it always returns a plain
-  numeric vector. Unit-bearing objects are no longer accepted as input
-  (#TBD).
+  numeric vector. Unit-bearing objects are no longer accepted as input.
+  [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
+  is now the sole public pressure conversion helper;
+  `convert_pressure_to_atm()` has been removed (no issue).
 - [`correct_bp()`](https://connorb.github.io/preMetabolizer/reference/correct_bp.md)
   no longer accepts a `drop_units` argument; it always returns a plain
-  numeric vector. Elevation inputs must be plain numeric (meters)
-  (#TBD).
+  numeric vector. Elevation inputs must be plain numeric (meters) (no
+  issue).
 - [`download_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/download_ghcnh.md)
   now validates inputs more clearly, treats existing local files as
-  skipped downloads, and reports skipped files in its summary (#TBD).
+  skipped downloads, and reports skipped files in its summary (no
+  issue).
 - [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
   no longer errors on single-column data frames due to `drop = TRUE`
   subsetting.
@@ -63,28 +68,29 @@
   ranges from the data, uses either single-site `latitude` and
   `longitude` arguments or per-site `latitude`, `longitude`, and
   `elev_m` columns, interpolates NASA values to the input timestamps,
-  and returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html).
-  The old `lat` and `lon` aliases are deprecated (#TBD).
+  returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with
+  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html),
+  and runs quietly by default. The old `lat` and `lon` aliases are
+  deprecated (no issue).
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
   now filters cached raw station metadata by `state`, validates options
   more clearly, and uses cached station metadata when remote
-  modification times are unavailable (#TBD).
+  modification times are unavailable (no issue).
 - [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
   can now retrieve elevation values from the USGS Elevation Point Query
-  Service for one or more coordinate pairs (#TBD).
+  Service for one or more coordinate pairs (no issue).
 - `has_units()` has been removed. The `units` package is no longer a
-  dependency (#TBD).
+  dependency (no issue).
 - [`ks_meso_fw13()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_fw13.md)
   can now retrieve Kansas Mesonet fire weather data in FW13 format for
-  one station and date range (#TBD).
+  one station and date range (no issue).
 - [`ks_meso_most_recent()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_most_recent.md)
   can now retrieve the most recently ingested Kansas Mesonet timestamp
-  for each station at a requested interval (#TBD).
+  for each station at a requested interval (no issue).
 - [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
   now provides a C++ implementation of flow exceedance probability
-  calculations (#TBD).
+  calculations (no issue).
 - [`read_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/read_ghcnh.md)
   is now exported, validates file inputs, can suppress progress messages
   with `quiet = TRUE`, and handles files that lack `Station_name` or
-  `Station_ID` columns (#TBD).
+  `Station_ID` columns (no issue).

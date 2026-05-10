@@ -55,5 +55,5 @@ pCO2_to_xCO2(
   salinity = 0,
   method = "MIMSY"
 )
-#> [1] 409.4203
+#> [1] 409.4202
 ```
