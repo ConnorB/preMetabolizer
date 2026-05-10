@@ -1,4 +1,4 @@
-# Correct Barometric Pressure for Elevation Change
+# Correct barometric pressure for elevation change
 
 Adjusts barometric pressure from one elevation to another using the
 barometric formula. Always returns a plain numeric vector.

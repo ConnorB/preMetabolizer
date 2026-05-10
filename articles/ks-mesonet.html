@@ -96,21 +96,7 @@
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mesonet_vars</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"temp|precip|solar|humidity"</span>, <span class="va">desc</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">var</span>, <span class="va">tidy_name</span>, <span class="va">units</span>, <span class="va">desc</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 44 × 4</span></span>
-<span><span class="co">#&gt;    var                    tidy_name               units desc                    </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                  &lt;chr&gt;                   &lt;chr&gt; &lt;chr&gt;                   </span></span>
-<span><span class="co">#&gt;  1 AirTemperature.avg     air_temperature_avg     °C    Average air temperature…</span></span>
-<span><span class="co">#&gt;  2 AirTemperature.min     air_temperature_min     °C    Min air temperature at …</span></span>
-<span><span class="co">#&gt;  3 AirTemperature.max     air_temperature_max     °C    Max air temperature at …</span></span>
-<span><span class="co">#&gt;  4 AirTemperature.smp     air_temperature_smp     °C    Most recent 5 second sa…</span></span>
-<span><span class="co">#&gt;  5 AirTemperature.10m.avg air_temperature_10m_avg °C    Average air temperature…</span></span>
-<span><span class="co">#&gt;  6 AirTemperature.10m.min air_temperature_10m_min °C    Min air temperature at …</span></span>
-<span><span class="co">#&gt;  7 AirTemperature.10m.max air_temperature_10m_max °C    Max air temperature at …</span></span>
-<span><span class="co">#&gt;  8 RelativeHumidity.avg   relative_humidity_avg   %     Average relative humidi…</span></span>
-<span><span class="co">#&gt;  9 RelativeHumidity.max   relative_humidity_max   %     Max relative humidity a…</span></span>
-<span><span class="co">#&gt; 10 RelativeHumidity.min   relative_humidity_min   %     Min relative humidity a…</span></span>
-<span><span class="co">#&gt; # ℹ 34 more rows</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">var</span>, <span class="va">tidy_name</span>, <span class="va">units</span>, <span class="va">desc</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="discover-stations">Discover stations<a class="anchor" aria-label="anchor" href="#discover-stations"></a>
 </h2>
@@ -118,18 +104,7 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_stations.html">ks_meso_stations</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">stations</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 129</span></span>
-<span><span class="co">#&gt; Columns: 9</span></span>
-<span><span class="co">#&gt; $ StationName  &lt;chr&gt; "Alma 5SE", "Ashland 8S", "Ashland Bottoms", "Belleville …</span></span>
-<span><span class="co">#&gt; $ County       &lt;chr&gt; "Waubansee", "Clark", "Riley", "Republic", "Ottawa", "Sed…</span></span>
-<span><span class="co">#&gt; $ Latitude     &lt;dbl&gt; 38.96615, 37.06476, 39.12577, 39.81409, 39.07380, 37.8538…</span></span>
-<span><span class="co">#&gt; $ Longitude    &lt;dbl&gt; -96.20630, -99.75109, -96.63653, -97.67509, -97.58620, -9…</span></span>
-<span><span class="co">#&gt; $ Elevation_m  &lt;dbl&gt; 428.0000, 562.0000, 324.6120, 471.0000, 392.0000, 422.000…</span></span>
-<span><span class="co">#&gt; $ Network      &lt;chr&gt; "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "…</span></span>
-<span><span class="co">#&gt; $ Abbreviation &lt;chr&gt; "Alma 5SE", "ASUK1", "ASBK1", "BVMK1", NA, NA, NA, "EDCK1…</span></span>
-<span><span class="co">#&gt; $ OperatorName &lt;chr&gt; "Alma 5SE", "Ashland 8S", "Ashland Bottoms", "Belleville …</span></span>
-<span><span class="co">#&gt; $ FW13         &lt;chr&gt; "000000", "140201", "142201", "140301", "000000", "000000…</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">stations</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Filter to find Konza Prairie and confirm the exact station name used by the API:</p>
 <div class="cell">
@@ -137,12 +112,7 @@
 <code class="sourceCode R"><span><span class="va">konza</span> <span class="op">&lt;-</span> <span class="va">stations</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Konza"</span>, <span class="va">StationName</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">konza</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 9</span></span>
-<span><span class="co">#&gt;   StationName   County Latitude Longitude Elevation_m Network Abbreviation</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;       </span></span>
-<span><span class="co">#&gt; 1 Konza Prairie Riley      39.1     -96.5        436. KSRE    &lt;NA&gt;        </span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: OperatorName &lt;chr&gt;, FW13 &lt;chr&gt;</span></span></code></pre></div>
+<span><span class="va">konza</span></span></code></pre></div>
 </div>
 <p>The station name recognized by the API is <code>"Konza Prairie"</code>.</p>
 </section><section class="level2"><h2 id="check-station-activity">Check station activity<a class="anchor" aria-label="anchor" href="#check-station-activity"></a>
@@ -153,15 +123,7 @@
 <code class="sourceCode R"><span><span class="va">activity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_station_activity.html">ks_meso_station_activity</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">activity</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">station</span> <span class="op">==</span> <span class="st">"Konza Prairie"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;         station interval interval_seconds   first_observation</span></span>
-<span><span class="co">#&gt; 1 Konza Prairie     5min              300 2023-10-06 05:25:00</span></span>
-<span><span class="co">#&gt; 2 Konza Prairie     hour             3600 2023-10-06 07:00:00</span></span>
-<span><span class="co">#&gt; 3 Konza Prairie      day            86400 2023-10-08 00:00:00</span></span>
-<span><span class="co">#&gt;      last_observation data_span_days is_current</span></span>
-<span><span class="co">#&gt; 1 2026-05-09 11:45:00       946.2639       TRUE</span></span>
-<span><span class="co">#&gt; 2 2026-05-09 11:00:00       946.1667       TRUE</span></span>
-<span><span class="co">#&gt; 3 2026-05-09 00:00:00       944.0000       TRUE</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">station</span> <span class="op">==</span> <span class="st">"Konza Prairie"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="check-the-most-recent-observation">Check the most recent observation<a class="anchor" aria-label="anchor" href="#check-the-most-recent-observation"></a>
 </h2>
@@ -171,11 +133,7 @@
 <code class="sourceCode R"><span><span class="va">recent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_most_recent.html">ks_meso_most_recent</a></span><span class="op">(</span>interval <span class="op">=</span> <span class="st">"hour"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">recent</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">station</span> <span class="op">==</span> <span class="st">"Konza Prairie"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 2</span></span>
-<span><span class="co">#&gt;   station       timestamp          </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;         &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt; 1 Konza Prairie 2026-05-09 18:00:00</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">station</span> <span class="op">==</span> <span class="st">"Konza Prairie"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="download-data">Download data<a class="anchor" aria-label="anchor" href="#download-data"></a>
 </h2>
@@ -190,46 +148,8 @@
 <span>  interval   <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>  vars       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TEMP2MAVG"</span>, <span class="st">"RELHUM2MAVG"</span>, <span class="st">"PRECIP"</span>, <span class="st">"PRESSUREAVG"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Using cache directory: /home/runner/.cache/R/preMetabolizer/mesonet_cache</span></span>
-<span><span class="co">#&gt; Processing station: Konza Prairie</span></span>
-<span><span class="co">#&gt; Downloading Konza Prairie: 20240101000000 to 20240421235959</span></span>
-<span><span class="co">#&gt; Downloading Konza Prairie: 20240422000000 to 20240811235959</span></span>
-<span><span class="co">#&gt; Downloading Konza Prairie: 20240812000000 to 20241201235959</span></span>
-<span><span class="co">#&gt; Downloading Konza Prairie: 20241202000000 to 20241231235959</span></span>
-<span><span class="co">#&gt; Data saved to: /home/runner/.cache/R/preMetabolizer/mesonet_cache/Mesonet_Konza Prairie_hour_2024-01-01_to_2024-12-31.csv</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">download_result</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 6</span></span>
-<span><span class="co">#&gt;  $ output_directory    : chr "/home/runner/.cache/R/preMetabolizer/mesonet_cache"</span></span>
-<span><span class="co">#&gt;  $ successful_downloads: chr "Konza Prairie"</span></span>
-<span><span class="co">#&gt;  $ failed_downloads    : chr(0) </span></span>
-<span><span class="co">#&gt;  $ total_attempted     : int 1</span></span>
-<span><span class="co">#&gt;  $ total_successful    : int 1</span></span>
-<span><span class="co">#&gt;  $ chunks              :List of 4</span></span>
-<span><span class="co">#&gt;   ..$ :List of 5</span></span>
-<span><span class="co">#&gt;   .. ..$ station   : chr "Konza Prairie"</span></span>
-<span><span class="co">#&gt;   .. ..$ start_time: chr "20240101000000"</span></span>
-<span><span class="co">#&gt;   .. ..$ end_time  : chr "20240421235959"</span></span>
-<span><span class="co">#&gt;   .. ..$ url       : chr "http://mesonet.k-state.edu/rest/stationdata/?int=hour&amp;t_start=20240101000000&amp;t_end=20240421235959&amp;vars=TEMP2MAV"| __truncated__</span></span>
-<span><span class="co">#&gt;   .. ..$ records   : int 2688</span></span>
-<span><span class="co">#&gt;   ..$ :List of 5</span></span>
-<span><span class="co">#&gt;   .. ..$ station   : chr "Konza Prairie"</span></span>
-<span><span class="co">#&gt;   .. ..$ start_time: chr "20240422000000"</span></span>
-<span><span class="co">#&gt;   .. ..$ end_time  : chr "20240811235959"</span></span>
-<span><span class="co">#&gt;   .. ..$ url       : chr "http://mesonet.k-state.edu/rest/stationdata/?int=hour&amp;t_start=20240422000000&amp;t_end=20240811235959&amp;vars=TEMP2MAV"| __truncated__</span></span>
-<span><span class="co">#&gt;   .. ..$ records   : int 2688</span></span>
-<span><span class="co">#&gt;   ..$ :List of 5</span></span>
-<span><span class="co">#&gt;   .. ..$ station   : chr "Konza Prairie"</span></span>
-<span><span class="co">#&gt;   .. ..$ start_time: chr "20240812000000"</span></span>
-<span><span class="co">#&gt;   .. ..$ end_time  : chr "20241201235959"</span></span>
-<span><span class="co">#&gt;   .. ..$ url       : chr "http://mesonet.k-state.edu/rest/stationdata/?int=hour&amp;t_start=20240812000000&amp;t_end=20241201235959&amp;vars=TEMP2MAV"| __truncated__</span></span>
-<span><span class="co">#&gt;   .. ..$ records   : int 2688</span></span>
-<span><span class="co">#&gt;   ..$ :List of 5</span></span>
-<span><span class="co">#&gt;   .. ..$ station   : chr "Konza Prairie"</span></span>
-<span><span class="co">#&gt;   .. ..$ start_time: chr "20241202000000"</span></span>
-<span><span class="co">#&gt;   .. ..$ end_time  : chr "20241231235959"</span></span>
-<span><span class="co">#&gt;   .. ..$ url       : chr "http://mesonet.k-state.edu/rest/stationdata/?int=hour&amp;t_start=20241202000000&amp;t_end=20241231235959&amp;vars=TEMP2MAV"| __truncated__</span></span>
-<span><span class="co">#&gt;   .. ..$ records   : int 720</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">download_result</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="read-cached-data">Read cached data<a class="anchor" aria-label="anchor" href="#read-cached-data"></a>
 </h2>
@@ -243,15 +163,7 @@
 <span>  interval   <span class="op">=</span> <span class="st">"hour"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">konza_hourly</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 8,784</span></span>
-<span><span class="co">#&gt; Columns: 6</span></span>
-<span><span class="co">#&gt; $ TIMESTAMP   &lt;dttm&gt; 2024-01-01 00:00:00, 2024-01-01 01:00:00, 2024-01-01 02:0…</span></span>
-<span><span class="co">#&gt; $ STATION     &lt;chr&gt; "Konza Prairie", "Konza Prairie", "Konza Prairie", "Konza …</span></span>
-<span><span class="co">#&gt; $ PRESSUREAVG &lt;dbl&gt; 97.52, 97.51, 97.51, 97.55, 97.57, 97.55, 97.54, 97.57, 97…</span></span>
-<span><span class="co">#&gt; $ TEMP2MAVG   &lt;dbl&gt; -3.67, -3.84, -3.92, -4.12, -3.97, -3.93, -4.17, -4.41, -4…</span></span>
-<span><span class="co">#&gt; $ RELHUM2MAVG &lt;dbl&gt; 87.35, 88.25, 88.72, 84.79, 81.95, 81.69, 81.83, 83.27, 84…</span></span>
-<span><span class="co">#&gt; $ PRECIP      &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, 0, 0, 0, 0, 0, 0, …</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">konza_hourly</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="example-workflow-monthly-precipitation">Example workflow: monthly precipitation<a class="anchor" aria-label="anchor" href="#example-workflow-monthly-precipitation"></a>
 </h2>
@@ -275,12 +187,6 @@
 <span>    title <span class="op">=</span> <span class="st">"Monthly precipitation — Konza Prairie 2024"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure><p><img src="ks-mesonet_files/figure-html/monthly-ppt-1.png" width="672"></p>
-</figure>
-</div>
-</div>
 </div>
 </section><section class="level2"><h2 id="fw13-fire-weather-data">FW13 fire weather data<a class="anchor" aria-label="anchor" href="#fw13-fire-weather-data"></a>
 </h2>

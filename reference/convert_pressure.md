@@ -1,4 +1,4 @@
-# Convert Barometric Pressure Between Units
+# Convert barometric pressure between units
 
 Converts barometric pressure from one unit to another using exact
 conversion factors. Always returns a plain numeric vector.

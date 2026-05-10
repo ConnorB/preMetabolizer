@@ -1,4 +1,4 @@
-# Fetch Data from Kansas Mesonet
+# Fetch data from Kansas Mesonet
 
 Retrieves weather data for specified stations from the Kansas Mesonet.
 
@@ -82,3 +82,17 @@ scraping or data ingesting without written consent is not permitted.
 
 Kansas Mesonet data usage policy:
 <https://mesonet.k-state.edu/about/usage/>
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+get_ks_meso(
+  stations = "Konza Prairie",
+  start_date = "2024-06-01",
+  end_date = "2024-06-07",
+  interval = "hour",
+  vars = c("TEMP2MAVG", "RELHUM2MAVG", "PRESSUREAVG")
+)
+} # }
+```

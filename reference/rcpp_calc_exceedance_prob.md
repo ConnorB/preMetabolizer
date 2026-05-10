@@ -1,4 +1,4 @@
-# Calculate Flow Exceedance Probabilities with C++
+# Calculate flow exceedance probabilities with C++
 
 Calculates exceedance probabilities using the same Weibull plotting
 position method and return shape as
@@ -15,12 +15,12 @@ rcpp_calc_exceedance_prob(flow, rm.zero = FALSE)
 
 - flow:
 
-  A numeric vector of flow (discharge) values.
+  Numeric vector of flow or discharge values.
 
 - rm.zero:
 
-  Logical. If `TRUE`, zero values are removed from the calculation, and
-  positions corresponding to zeros are filled with `NA` in the output.
+  Logical. If `TRUE`, zero and negative values are omitted from the
+  ranking and returned as `NA`. Defaults to `FALSE`.
 
 ## Value
 

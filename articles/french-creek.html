@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Preparing French Creek Data for Stream Metabolism Modeling • preMetabolizer</title>
+<title>Preparing French Creek data for stream metabolism modeling • preMetabolizer</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="french-creek_files/libs/quarto-html/popper.min.js"></script><script src="french-creek_files/libs/quarto-html/tippy.umd.min.js"></script><link href="french-creek_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="french-creek_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Preparing French Creek Data for Stream Metabolism Modeling">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Preparing French Creek data for stream metabolism modeling">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -57,7 +57,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Preparing French Creek Data for Stream Metabolism Modeling</h1>
+      <h1>Preparing French Creek data for stream metabolism modeling</h1>
 
 
 
@@ -73,7 +73,8 @@
 
     <section class="level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Stream metabolism models estimate gross primary production and ecosystem respiration from continuous sensor records. The <a href="https://github.com/ConnorB/streamMetabolizer" class="external-link">streamMetabolizer</a> package fits these models, but it requires a specific set of input variables:</p>
+<p>Stream metabolism models estimate gross primary production and ecosystem respiration from continuous sensor records. The <a href="https://github.com/ConnorB/streamMetabolizer" class="external-link">streamMetabolizer</a> package fits these models, but the input data usually need a fair amount of preparation first: timestamps must be regular, times must be converted to mean solar time, site pressure must be realistic, and dissolved oxygen saturation must be calculated from the actual water temperature and pressure.</p>
+<p>This vignette shows that preparation step by step using the built-in <code>french_creek</code> dataset.</p>
 <table class="table caption-top">
 <thead><tr class="header">
 <th>Column</th>
@@ -106,7 +107,7 @@
 </tr>
 </tbody>
 </table>
-<p>This vignette walks through computing each of those inputs from the <code>french_creek</code> dataset using preMetabolizer. The data come from a field study on French Creek near Laramie, Wyoming, USA <span class="citation" data-cites="hotchkiss2015whole">(<a href="#ref-hotchkiss2015whole" role="doc-biblioref">Hotchkiss and Hall 2015</a>)</span>. Below we keep NASA-derived PAR as <code>light.obs</code> and modeled PAR from <code><a href="../reference/calc_light.html">calc_light()</a></code> as <code>light.calc</code> so the two light series can be compared.</p>
+<p>The data come from a field study on French Creek near Laramie, Wyoming, USA <span class="citation" data-cites="hotchkiss2015whole">(<a href="#ref-hotchkiss2015whole" role="doc-biblioref">Hotchkiss and Hall 2015</a>)</span>. The runnable workflow uses modeled PAR from <code><a href="../reference/calc_light.html">calc_light()</a></code>. An optional chunk also shows how to retrieve observed light and surface pressure from NASA POWER when you are working interactively with an internet connection.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://connorb.github.io/preMetabolizer/">preMetabolizer</a></span><span class="op">)</span></span>
@@ -162,7 +163,7 @@
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure><p><img src="french-creek_files/figure-html/check%20out%20data-1.png" alt="Time series of water temperature and dissolved oxygen at French Creek, colored by sensor (REZN and TOWN)." width="672"></p>
+<figure><p><img src="french-creek_files/figure-html/check-data-1.png" alt="Time series of water temperature and dissolved oxygen at French Creek, colored by sensor (REZN and TOWN)." width="672"></p>
 </figure>
 </div>
 </div>
@@ -223,83 +224,57 @@
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="get-barometric-pressure-and-observed-light">Get barometric pressure and observed light<a class="anchor" aria-label="anchor" href="#get-barometric-pressure-and-observed-light"></a>
+</section><section class="level2"><h2 id="estimate-barometric-pressure">Estimate barometric pressure<a class="anchor" aria-label="anchor" href="#estimate-barometric-pressure"></a>
 </h2>
-<p>French Creek sits at roughly 3,205 m (10,515 ft) above sea level. Using standard sea-level pressure (101.325 kPa) would over predict O₂ saturation, so we download NASA POWER surface pressure for the site with <code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code>. We also download shortwave irradiance; <code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> converts it to observed PAR as <code>light.obs</code> and interpolates NASA fields to the same timestamps as <code>french_creek</code>.</p>
+<p>French Creek sits at roughly 3,205 m above sea level. Using standard sea-level pressure (101.325 kPa) would overpredict O<sub>2</sub> saturation, so we adjust sea-level pressure to the site elevation with <code><a href="../reference/correct_bp.html">correct_bp()</a></code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get site elevation from USGS; fall back to known French Creek elevation if unavailable</span></span>
-<span><span class="va">french_elev_m</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/get_usgs_elev.html">get_usgs_elev</a></span><span class="op">(</span></span>
-<span>    latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
-<span>    longitude <span class="op">=</span> <span class="va">site_longitude</span>,</span>
-<span>    units <span class="op">=</span> <span class="st">"Meters"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="fl">3205.625</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">french_elev_m</span> <span class="op">&lt;-</span> <span class="fl">3205</span></span>
 <span></span>
-<span><span class="co"># Download NASA POWER pressure and shortwave radiation data for the site</span></span>
-<span><span class="va">nasa_dat</span> <span class="op">&lt;-</span> <span class="kw"><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/get_nasa_data.html">get_nasa_data</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="va">french_creek</span>,</span>
-<span>    datetime_col <span class="op">=</span> <span class="st">"datetime"</span>,</span>
-<span>    latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
-<span>    longitude <span class="op">=</span> <span class="va">site_longitude</span>,</span>
-<span>    elev_m <span class="op">=</span> <span class="va">french_elev_m</span>,</span>
-<span>    params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PSC"</span>, <span class="st">"ALLSKY_SFC_SW_DWN"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>    <span class="co"># Keep timestamp, surface pressure, and observed PAR</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>datetime <span class="op">=</span> <span class="va">dateTime</span>, bp_kPa <span class="op">=</span> <span class="va">PSC</span>, <span class="va">light.obs</span><span class="op">)</span>,</span>
-<span>  </span>
-<span>  <span class="co"># If NASA download fails, estimate pressure from elevation and use modeled light</span></span>
-<span>  error <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
-<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span></span>
-<span>        <span class="va">datetime</span>,</span>
-<span>        bp_kPa <span class="op">=</span> <span class="fu"><a href="../reference/correct_bp.html">correct_bp</a></span><span class="op">(</span></span>
-<span>          station_bp <span class="op">=</span> <span class="fl">101.325</span>,</span>
-<span>          air_temp <span class="op">=</span> <span class="va">temp_C</span>,</span>
-<span>          station_elev <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>          site_elev <span class="op">=</span> <span class="va">french_elev_m</span></span>
-<span>        <span class="op">)</span>,</span>
-<span>        light.obs <span class="op">=</span> <span class="va">light.calc</span></span>
-<span>      <span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Downloading NASA POWER data ─────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Site: single site ──</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ℹ   Retrieving data: 2012-09-18 to 2012-09-21</span></span>
-<span><span class="co">#&gt; ✔ Finished downloading data for single site</span></span>
-<span></span>
-<span><span class="co"># Inspect NASA-derived or fallback atmospheric/light data</span></span>
-<span><span class="va">nasa_dat</span></span>
-<span><span class="co">#&gt; # A tibble: 287 × 3</span></span>
-<span><span class="co">#&gt;    datetime            bp_kPa light.obs</span></span>
-<span><span class="co">#&gt;    &lt;dttm&gt;               &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 2012-09-18 11:15:00   70.2       0  </span></span>
-<span><span class="co">#&gt;  2 2012-09-18 11:30:00   70.2       0  </span></span>
-<span><span class="co">#&gt;  3 2012-09-18 11:45:00   70.2       0  </span></span>
-<span><span class="co">#&gt;  4 2012-09-18 12:00:00   70.2       0  </span></span>
-<span><span class="co">#&gt;  5 2012-09-18 12:15:00   70.2      42.6</span></span>
-<span><span class="co">#&gt;  6 2012-09-18 12:30:00   70.2      85.1</span></span>
-<span><span class="co">#&gt;  7 2012-09-18 12:45:00   70.3     128. </span></span>
-<span><span class="co">#&gt;  8 2012-09-18 13:00:00   70.3     170. </span></span>
-<span><span class="co">#&gt;  9 2012-09-18 13:15:00   70.3     274. </span></span>
-<span><span class="co">#&gt; 10 2012-09-18 13:30:00   70.3     379. </span></span>
-<span><span class="co">#&gt; # ℹ 277 more rows</span></span>
-<span></span>
-<span><span class="co"># Join pressure and observed light onto the main French Creek dataset</span></span>
 <span><span class="va">french_data</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    bp_kPa <span class="op">=</span> <span class="fu"><a href="../reference/correct_bp.html">correct_bp</a></span><span class="op">(</span></span>
+<span>      station_bp <span class="op">=</span> <span class="fl">101.325</span>,</span>
+<span>      air_temp <span class="op">=</span> <span class="va">temp_C</span>,</span>
+<span>      station_elev <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>      site_elev <span class="op">=</span> <span class="va">french_elev_m</span></span>
+<span>    <span class="op">)</span>,</span>
+<span>    light.obs <span class="op">=</span> <span class="va">light.calc</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</div>
+<section class="level3"><h3 id="optional-get-pressure-and-observed-light-from-nasa-power">Optional: get pressure and observed light from NASA POWER<a class="anchor" aria-label="anchor" href="#optional-get-pressure-and-observed-light-from-nasa-power"></a>
+</h3>
+<p><code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> can download NASA POWER surface pressure (<code>PSC</code>) and shortwave irradiance (<code>ALLSKY_SFC_SW_DWN</code>) for the site. It converts shortwave irradiance to observed PAR as <code>light.obs</code> and interpolates the NASA fields to the same timestamps as the logger data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nasa_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nasa_data.html">get_nasa_data</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">french_creek</span>,</span>
+<span>  datetime_col <span class="op">=</span> <span class="st">"datetime"</span>,</span>
+<span>  latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
+<span>  longitude <span class="op">=</span> <span class="va">site_longitude</span>,</span>
+<span>  elev_m <span class="op">=</span> <span class="va">french_elev_m</span>,</span>
+<span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PSC"</span>, <span class="st">"ALLSKY_SFC_SW_DWN"</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span>datetime <span class="op">=</span> <span class="va">dateTime</span>, bp_kPa <span class="op">=</span> <span class="va">PSC</span>, <span class="va">light.obs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">french_data</span> <span class="op">&lt;-</span> <span class="va">french_data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">bp_kPa</span>, <span class="op">-</span><span class="va">light.obs</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">nasa_dat</span>, by <span class="op">=</span> <span class="st">"datetime"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="calculate-o2-saturation">Calculate O<sub>2</sub> saturation<a class="anchor" aria-label="anchor" href="#calculate-o2-saturation"></a>
+<p>You can retrieve the elevation directly from the USGS Elevation Point Query Service when you do not already know it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">french_elev_m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_usgs_elev.html">get_usgs_elev</a></span><span class="op">(</span></span>
+<span>  latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
+<span>  longitude <span class="op">=</span> <span class="va">site_longitude</span>,</span>
+<span>  units <span class="op">=</span> <span class="st">"Meters"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</section></section><section class="level2"><h2 id="calculate-o2-saturation">Calculate O<sub>2</sub> saturation<a class="anchor" aria-label="anchor" href="#calculate-o2-saturation"></a>
 </h2>
 <p>With site-adjusted pressure and water temperature, <code><a href="../reference/calc_O2sat.html">calc_O2sat()</a></code> returns the DO saturation concentration in mg/L.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">french_data</span> <span class="op">&lt;-</span> <span class="va">french_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    DO.sat <span class="op">=</span> <span class="fu"><a href="../reference/calc_O2sat.html">calc_O2sat</a></span><span class="op">(</span></span>
@@ -311,13 +286,13 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">french_data</span><span class="op">$</span><span class="va">DO.sat</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
-<span><span class="co">#&gt;   7.291   7.810   8.465   8.352   8.883   9.260</span></span></code></pre></div>
+<span><span class="co">#&gt;   7.134   7.626   8.239   8.129   8.624   8.970</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="assemble-the-final-tibble">Assemble the final tibble<a class="anchor" aria-label="anchor" href="#assemble-the-final-tibble"></a>
 </h2>
 <p>The final step restructures the data and retains both observed and calculated light.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sm_input</span> <span class="op">&lt;-</span> <span class="va">french_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span></span>
 <span>    solar.time <span class="op">=</span> <span class="va">solar.time</span>,</span>
@@ -333,15 +308,15 @@
 <span><span class="co">#&gt; # A tibble: 6 × 7</span></span>
 <span><span class="co">#&gt;   solar.time          DO.obs DO.sat depth temp.water light.obs light.calc</span></span>
 <span><span class="co">#&gt;   &lt;dttm&gt;               &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 2012-09-18 04:10:44   8.4    9.15  0.16       3.58       0            0</span></span>
-<span><span class="co">#&gt; 2 2012-09-18 04:25:44   8.42   9.16  0.16       3.54       0            0</span></span>
-<span><span class="co">#&gt; 3 2012-09-18 04:40:44   8.42   9.17  0.16       3.5        0            0</span></span>
-<span><span class="co">#&gt; 4 2012-09-18 04:55:44   8.42   9.18  0.16       3.46       0            0</span></span>
-<span><span class="co">#&gt; 5 2012-09-18 05:10:44   8.44   9.20  0.16       3.42      42.6          0</span></span>
-<span><span class="co">#&gt; 6 2012-09-18 05:25:44   8.47   9.21  0.16       3.37      85.1          0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 2012-09-18 04:10:44   8.4    8.89  0.16       3.58         0          0</span></span>
+<span><span class="co">#&gt; 2 2012-09-18 04:25:44   8.42   8.90  0.16       3.54         0          0</span></span>
+<span><span class="co">#&gt; 3 2012-09-18 04:40:44   8.42   8.91  0.16       3.5          0          0</span></span>
+<span><span class="co">#&gt; 4 2012-09-18 04:55:44   8.42   8.92  0.16       3.46         0          0</span></span>
+<span><span class="co">#&gt; 5 2012-09-18 05:10:44   8.44   8.93  0.16       3.42         0          0</span></span>
+<span><span class="co">#&gt; 6 2012-09-18 05:25:44   8.47   8.94  0.16       3.37         0          0</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sm_input</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>DO.pctsat <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">DO.obs</span> <span class="op">/</span> <span class="va">DO.sat</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html" class="external-link">pivot_longer</a></span><span class="op">(</span></span>
@@ -363,7 +338,7 @@
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  depth      <span class="op">=</span> <span class="st">"depth~(m)"</span>,</span>
 <span>  temp.water <span class="op">=</span> <span class="st">"water~temp~(degree*C)"</span>,</span>

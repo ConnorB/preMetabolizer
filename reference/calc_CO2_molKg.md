@@ -1,6 +1,8 @@
-# Calculate CO2 Concentration from Sensor Data
+# Calculate dissolved CO2 concentration in mol/kg
 
-Calculate CO2 Concentration from Sensor Data
+Converts a measured or modeled CO2 mole fraction to dissolved CO2
+concentration using atmospheric pressure, water-column pressure, vapor
+pressure, and the Weiss (1974) CO2 solubility coefficient.
 
 ## Usage
 
@@ -19,28 +21,50 @@ calc_CO2_molKg(
 
 - CO2_ppm:
 
-  Numeric. Mole fraction of CO2 in parts per million.
+  Numeric vector. Mole fraction of CO2 in air in parts per million.
 
 - temp_water:
 
-  Numeric. Water temperature in degrees Celsius.
+  Numeric vector. Water temperature in degrees Celsius.
 
 - waterDepth_m:
 
-  Numeric. Water depth in meters.
+  Numeric vector. Water depth above the sensor in meters.
 
 - atmo_press:
 
-  Numeric. Atmospheric pressure.
+  Numeric vector. Atmospheric pressure at the water surface.
 
 - press_units:
 
-  Character. Units of atmospheric pressure.
+  Character string giving the units of `atmo_press`. See
+  [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
+  for accepted pressure units.
 
 - salinity:
 
-  Numeric. Salinity in PSU.
+  Numeric vector. Salinity in practical salinity units. Defaults to
+  freshwater (`0`).
 
 ## Value
 
-a numeric vector of CO2 concentration in mol/kg.
+Numeric vector of dissolved CO2 concentration in mol/kg.
+
+## See also
+
+[`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md),
+[`xCO2_to_pCO2()`](https://connorb.github.io/preMetabolizer/reference/xCO2_to_pCO2.md),
+[`calc_K0()`](https://connorb.github.io/preMetabolizer/reference/calc_K0.md)
+
+## Examples
+
+``` r
+calc_CO2_molKg(
+  CO2_ppm = 420,
+  temp_water = 20,
+  waterDepth_m = 0.5,
+  atmo_press = 101.325,
+  press_units = "kPa"
+)
+#> [1] 1.686021e-05
+```

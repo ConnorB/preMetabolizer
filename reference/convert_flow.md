@@ -1,4 +1,4 @@
-# Convert Stream Discharge Between Units
+# Convert stream discharge between units
 
 Converts stream discharge measurements between cubic feet per second
 (cfs), cubic meters per second (cms), and liters per second (lps).

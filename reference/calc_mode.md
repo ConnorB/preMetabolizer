@@ -1,8 +1,7 @@
-# Calculate the Mode(s) of a Vector
+# Calculate the mode of a vector
 
-Computes the mode (most frequent value) of a vector. By default returns
-a single mode even when multiple modes exist. Handles NA values and
-preserves the input data type.
+Finds the most frequent value in an atomic vector. Ties can be handled
+by returning the first mode, last mode, a random mode, or all modes.
 
 ## Usage
 
@@ -14,100 +13,62 @@ calc_mode(x, na.rm = TRUE, multi = "first")
 
 - x:
 
-  An atomic vector (numeric, character, factor, etc.) for which to
-  compute the mode.
+  Atomic vector, such as numeric, character, logical, or factor.
 
 - na.rm:
 
-  Logical indicating whether to remove NA values before computation
-  (default: `TRUE`).
+  Logical. If `TRUE`, remove missing values before calculation. Defaults
+  to `TRUE`.
 
 - multi:
 
-  Method to handle multiple modes when they exist. Options are:
+  Character string controlling ties. Options are:
 
-  "first"
+  `"first"`
 
-  :   Returns the first occurring mode (default)
+  :   Return the first mode in sorted table order.
 
-  "last"
+  `"last"`
 
-  :   Returns the last occurring mode
+  :   Return the last mode in sorted table order.
 
-  "sample"
+  `"sample"`
 
-  :   Returns one random mode
+  :   Return one randomly selected mode.
 
-  "all"
+  `"all"`
 
-  :   Returns all modes as a vector
+  :   Return all tied modes.
 
 ## Value
 
-A value or vector of the same type as `x` containing:
-
-- A single mode (default behavior)
-
-- All modes if `multi = "all"` and multiple modes exist
-
-- `NA` if:
-
-  - Input is empty
-
-  - Input contains only NAs (when `na.rm = TRUE`)
-
-  - No mode can be determined
+A value or vector with the same general type as `x`. Returns `NA` for
+empty inputs or inputs containing only missing values after `NA`
+removal.
 
 ## Details
 
-For factors, the returned mode(s) maintain the original factor levels.
-When `na.rm = FALSE` and NAs are present, the function returns `NA`. The
-function handles ties (multiple values with the same maximum frequency)
-according to the `multi` parameter.
+For factors, returned mode values preserve the original levels. When
+`na.rm = FALSE`, missing values are included in the frequency table.
 
 ## See also
 
-[`table()`](https://rdrr.io/r/base/table.html) for frequency tables,
-[`which.max()`](https://rdrr.io/r/base/which.min.html) for single
-maximum values
+[`table()`](https://rdrr.io/r/base/table.html) for frequency tables.
 
 ## Examples
 
 ``` r
-# Single mode
-calc_mode(c(1, 2, 2, 3, 3, 3))  # returns 3
+calc_mode(c(1, 2, 2, 3, 3, 3))
 #> [1] 3
 
-# Multiple modes (returns first by default)
-calc_mode(c(1, 1, 2, 2, 3))     # returns 1
-#> [1] 1
+tied <- c("riffle", "run", "riffle", "pool", "run")
+calc_mode(tied)
+#> [1] "riffle"
+calc_mode(tied, multi = "all")
+#> [1] "riffle" "run"   
 
-# Multiple modes with different handling
-calc_mode(c(1, 1, 2, 2, 3), multi = "last")   # returns 2
-#> [1] 2
-calc_mode(c(1, 1, 2, 2, 3), multi = "sample") # returns 1 or 2 randomly
-#> [1] 1
-calc_mode(c(1, 1, 2, 2, 3), multi = "all")    # returns c(1, 2)
-#> [1] 1 2
-
-# Factor vector
 fruit <- factor(c("apple", "banana", "banana", "cherry"))
-calc_mode(fruit)  # returns "banana" (factor level maintained)
+calc_mode(fruit)
 #> [1] banana
 #> Levels: apple banana cherry
-
-# With NA values
-calc_mode(c(1, 2, 2, NA))        # returns 2
-#> [1] 2
-calc_mode(c(NA, NA), na.rm = FALSE) # returns NA
-#> Warning: no non-missing arguments to max; returning -Inf
-#> logical(0)
-
-# Edge cases
-calc_mode(integer(0))            # returns NA
-#> [1] NA
-calc_mode(c(NA, NA))             # returns NA
-#> [1] NA
-calc_mode(c(1))                  # returns 1
-#> [1] 1
 ```

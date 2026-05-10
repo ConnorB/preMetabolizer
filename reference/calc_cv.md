@@ -1,8 +1,8 @@
-# Calculate Coefficient of Variation
+# Calculate the coefficient of variation
 
-Computes the coefficient of variation (CV), defined as the ratio of the
-standard deviation to the mean. Handles NA values, zero-mean cases, and
-provides percentage formatting.
+Computes the coefficient of variation (CV), a unitless measure of
+relative variability. By default, the result is returned as a
+percentage.
 
 ## Usage
 
@@ -14,53 +14,37 @@ calc_cv(x, na.rm = TRUE, as_percent = TRUE, robust = FALSE)
 
 - x:
 
-  A numeric vector for which to compute CV.
+  Numeric vector.
 
 - na.rm:
 
-  Logical indicating whether to remove NA values (default: TRUE).
+  Logical. If `TRUE`, remove missing values before calculation. Defaults
+  to `TRUE`.
 
 - as_percent:
 
-  Logical indicating whether to return result as percentage (default:
-  TRUE).
+  Logical. If `TRUE`, multiply the CV by 100. Defaults to `TRUE`.
 
 - robust:
 
-  Logical indicating whether to use median/MAD instead of mean/SD for
-  robust CV (default: FALSE).
+  Logical. If `TRUE`, use median and MAD instead of mean and standard
+  deviation. Defaults to `FALSE`.
 
 ## Value
 
-The CV as numeric (percentage if `as_percent = TRUE`). Returns NA with
-warning for:
-
-- Non-numeric input
-
-- Zero-length input
-
-- All-NA input (when na.rm = TRUE)
-
-- Zero-mean input (for non-robust version)
+A single numeric CV value, or `NA_real_` when the input is non-numeric,
+empty, all missing after `NA` removal, or centered on zero. Problematic
+inputs also produce a warning.
 
 ## Examples
 
 ``` r
-calc_cv(c(10, 20, 30, 40, 50))  # 47.14045 (percentage)
-#> [1] 52.70463
-calc_cv(c(10, 20, 30, 40, 50), as_percent = FALSE)  # 0.4714045
-#> [1] 0.5270463
-calc_cv(c(10, 20, NA, 40, 50))  # NA removed by default
-#> [1] 60.85806
-calc_cv(c(10, 20, NA, 40, 50), na.rm = FALSE)  # NA
-#> [1] NA
-calc_cv(numeric(0))  # NA with warning
-#> Warning: Empty input vector
-#> [1] NA
-calc_cv(c(0, 0, 0))  # NA with warning (zero mean)
-#> Warning: Mean is zero, CV cannot be calculated
-#> [1] NA
-calc_cv(c(0, 0, 0), robust = TRUE)  # Computes robust CV
-#> Warning: Median is zero, CV cannot be calculated
-#> [1] NA
+discharge <- c(0.12, 0.18, 0.15, 1.4, 0.09)
+
+calc_cv(discharge)
+#> [1] 146.0615
+calc_cv(discharge, as_percent = FALSE)
+#> [1] 1.460615
+calc_cv(discharge, robust = TRUE)
+#> [1] 20
 ```

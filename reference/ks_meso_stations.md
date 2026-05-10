@@ -1,4 +1,4 @@
-# Get Kansas Mesonet Station Information
+# Get Kansas Mesonet station information
 
 Fetches metadata about Kansas Mesonet stations, including location and
 network details.
@@ -28,3 +28,12 @@ scraping or data ingesting without written consent is not permitted.
 
 Kansas Mesonet data usage policy:
 <https://mesonet.k-state.edu/about/usage/>
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+stations <- ks_meso_stations()
+subset(stations, grepl("Konza", StationName))
+} # }
+```

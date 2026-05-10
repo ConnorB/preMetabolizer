@@ -1,4 +1,4 @@
-# Convert UTC Time to Mean or Apparent Solar Time
+# Convert UTC time to solar time
 
 Converts a UTC datetime to mean or apparent solar time for a given
 longitude. Uses a high-precision offset for longitude and applies the
@@ -18,11 +18,11 @@ convert_UTC_to_solartime(
 
 - date.time:
 
-  A POSIXct datetime object in UTC timezone.
+  POSIXct vector in UTC.
 
 - longitude:
 
-  Longitude in decimal degrees (east positive, west negative).
+  Numeric longitude in decimal degrees. Western longitudes are negative.
 
 - time.type:
 
@@ -34,8 +34,8 @@ A POSIXct datetime in mean or apparent solar time (still tz = "UTC").
 
 ## Details
 
-"apparent solar", i.e. true solar time, is noon when the sun is at its
-zenith. "mean solar" approximates apparent solar time but with noons
+Apparent solar time, or true solar time, is noon when the sun is at its
+zenith. Mean solar time approximates apparent solar time but keeps noons
 exactly 24 hours apart. Elsewhere in this package, variables named
 `solar.time` are mean solar time.
 

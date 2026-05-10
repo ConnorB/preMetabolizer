@@ -4,8 +4,8 @@
 
 End-to-end examples preparing data for streamMetabolizer.
 
-- [Preparing French Creek Data for Stream Metabolism
-  Modeling](https://connorb.github.io/preMetabolizer/articles/french-creek.md):
+- [Preparing French Creek data for stream metabolism
+  modeling](https://connorb.github.io/preMetabolizer/articles/french-creek.md):
 - [Analyzing discharge at Kings
   Creek](https://connorb.github.io/preMetabolizer/articles/kings-creek.md):
 - [Downloading Kansas Mesonet

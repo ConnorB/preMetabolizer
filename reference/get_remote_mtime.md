@@ -1,8 +1,8 @@
-# Get the Last Modified Time of a Remote File (Internal)
+# Get the last modified time of a remote file
 
 This internal function retrieves the "Last-Modified" timestamp of a
 remote file by sending an HTTP HEAD request to the given URL. The result
-is memoised to cache results for repeated calls with the same URL.
+is memoised to cache repeated calls with the same URL.
 
 ## Usage
 

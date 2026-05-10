@@ -1,12 +1,18 @@
-# Preparing French Creek Data for Stream Metabolism Modeling
+# Preparing French Creek data for stream metabolism modeling
 
 ## Introduction
 
 Stream metabolism models estimate gross primary production and ecosystem
 respiration from continuous sensor records. The
 [streamMetabolizer](https://github.com/ConnorB/streamMetabolizer)
-package fits these models, but it requires a specific set of input
-variables:
+package fits these models, but the input data usually need a fair amount
+of preparation first: timestamps must be regular, times must be
+converted to mean solar time, site pressure must be realistic, and
+dissolved oxygen saturation must be calculated from the actual water
+temperature and pressure.
+
+This vignette shows that preparation step by step using the built-in
+`french_creek` dataset.
 
 | Column       | Description                                     |
 |--------------|-------------------------------------------------|
@@ -17,13 +23,13 @@ variables:
 | `temp.water` | Water temperature (°C)                          |
 | `light`      | Photosynthetically active radiation (µmol/m²/s) |
 
-This vignette walks through computing each of those inputs from the
-`french_creek` dataset using preMetabolizer. The data come from a field
-study on French Creek near Laramie, Wyoming, USA ([Hotchkiss and Hall
-2015](#ref-hotchkiss2015whole)). Below we keep NASA-derived PAR as
-`light.obs` and modeled PAR from
-[`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md)
-as `light.calc` so the two light series can be compared.
+The data come from a field study on French Creek near Laramie, Wyoming,
+USA ([Hotchkiss and Hall 2015](#ref-hotchkiss2015whole)). The runnable
+workflow uses modeled PAR from
+[`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md).
+An optional chunk also shows how to retrieve observed light and surface
+pressure from NASA POWER when you are working interactively with an
+internet connection.
 
 ``` r
 
@@ -88,7 +94,7 @@ french_creek |>
 
 ![Time series of water temperature and dissolved oxygen at French Creek,
 colored by sensor (REZN and
-TOWN).](french-creek_files/figure-html/check%20out%20data-1.png)
+TOWN).](french-creek_files/figure-html/check-data-1.png)
 
 The REZN sensor shows a cluster of anomalous negative temperature values
 near the end of its deployment. For the rest of this vignette we filter
@@ -166,85 +172,64 @@ french_creek <- french_creek |>
   )
 ```
 
-## Get barometric pressure and observed light
+## Estimate barometric pressure
 
-French Creek sits at roughly 3,205 m (10,515 ft) above sea level. Using
-standard sea-level pressure (101.325 kPa) would over predict O₂
-saturation, so we download NASA POWER surface pressure for the site with
-[`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md).
-We also download shortwave irradiance;
-[`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
-converts it to observed PAR as `light.obs` and interpolates NASA fields
-to the same timestamps as `french_creek`.
+French Creek sits at roughly 3,205 m above sea level. Using standard
+sea-level pressure (101.325 kPa) would overpredict O₂ saturation, so we
+adjust sea-level pressure to the site elevation with
+[`correct_bp()`](https://connorb.github.io/preMetabolizer/reference/correct_bp.md).
 
 ``` r
 
-# Get site elevation from USGS; fall back to known French Creek elevation if unavailable
-french_elev_m <- tryCatch(
-  get_usgs_elev(
-    latitude = site_latitude,
-    longitude = site_longitude,
-    units = "Meters"
-  ),
-  error = function(e) 3205.625
-)
+french_elev_m <- 3205
 
-# Download NASA POWER pressure and shortwave radiation data for the site
-nasa_dat <- tryCatch(
-  get_nasa_data(
-    data = french_creek,
-    datetime_col = "datetime",
-    latitude = site_latitude,
-    longitude = site_longitude,
-    elev_m = french_elev_m,
-    params = c("PSC", "ALLSKY_SFC_SW_DWN")
-  ) |>
-    # Keep timestamp, surface pressure, and observed PAR
-    select(datetime = dateTime, bp_kPa = PSC, light.obs),
-  
-  # If NASA download fails, estimate pressure from elevation and use modeled light
-  error = function(e) {
-    french_creek |>
-      transmute(
-        datetime,
-        bp_kPa = correct_bp(
-          station_bp = 101.325,
-          air_temp = temp_C,
-          station_elev = 0,
-          site_elev = french_elev_m
-        ),
-        light.obs = light.calc
-      )
-  }
-)
-#> 
-#> ── Downloading NASA POWER data ─────────────────────────────────────────────────
-#> 
-#> ── Site: single site ──
-#> 
-#> ℹ   Retrieving data: 2012-09-18 to 2012-09-21
-#> ✔ Finished downloading data for single site
-
-# Inspect NASA-derived or fallback atmospheric/light data
-nasa_dat
-#> # A tibble: 287 × 3
-#>    datetime            bp_kPa light.obs
-#>    <dttm>               <dbl>     <dbl>
-#>  1 2012-09-18 11:15:00   70.2       0  
-#>  2 2012-09-18 11:30:00   70.2       0  
-#>  3 2012-09-18 11:45:00   70.2       0  
-#>  4 2012-09-18 12:00:00   70.2       0  
-#>  5 2012-09-18 12:15:00   70.2      42.6
-#>  6 2012-09-18 12:30:00   70.2      85.1
-#>  7 2012-09-18 12:45:00   70.3     128. 
-#>  8 2012-09-18 13:00:00   70.3     170. 
-#>  9 2012-09-18 13:15:00   70.3     274. 
-#> 10 2012-09-18 13:30:00   70.3     379. 
-#> # ℹ 277 more rows
-
-# Join pressure and observed light onto the main French Creek dataset
 french_data <- french_creek |>
+  mutate(
+    bp_kPa = correct_bp(
+      station_bp = 101.325,
+      air_temp = temp_C,
+      station_elev = 0,
+      site_elev = french_elev_m
+    ),
+    light.obs = light.calc
+  )
+```
+
+### Optional: get pressure and observed light from NASA POWER
+
+[`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
+can download NASA POWER surface pressure (`PSC`) and shortwave
+irradiance (`ALLSKY_SFC_SW_DWN`) for the site. It converts shortwave
+irradiance to observed PAR as `light.obs` and interpolates the NASA
+fields to the same timestamps as the logger data.
+
+``` r
+
+nasa_dat <- get_nasa_data(
+  data = french_creek,
+  datetime_col = "datetime",
+  latitude = site_latitude,
+  longitude = site_longitude,
+  elev_m = french_elev_m,
+  params = c("PSC", "ALLSKY_SFC_SW_DWN")
+) |>
+  select(datetime = dateTime, bp_kPa = PSC, light.obs)
+
+french_data <- french_data |>
+  select(-bp_kPa, -light.obs) |>
   left_join(nasa_dat, by = "datetime")
+```
+
+You can retrieve the elevation directly from the USGS Elevation Point
+Query Service when you do not already know it:
+
+``` r
+
+french_elev_m <- get_usgs_elev(
+  latitude = site_latitude,
+  longitude = site_longitude,
+  units = "Meters"
+)
 ```
 
 ## Calculate O₂ saturation
@@ -266,7 +251,7 @@ french_data <- french_data |>
 
 summary(french_data$DO.sat)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   7.291   7.810   8.465   8.352   8.883   9.260
+#>   7.134   7.626   8.239   8.129   8.624   8.970
 ```
 
 ## Assemble the final tibble
@@ -291,12 +276,12 @@ head(sm_input)
 #> # A tibble: 6 × 7
 #>   solar.time          DO.obs DO.sat depth temp.water light.obs light.calc
 #>   <dttm>               <dbl>  <dbl> <dbl>      <dbl>     <dbl>      <dbl>
-#> 1 2012-09-18 04:10:44   8.4    9.15  0.16       3.58       0            0
-#> 2 2012-09-18 04:25:44   8.42   9.16  0.16       3.54       0            0
-#> 3 2012-09-18 04:40:44   8.42   9.17  0.16       3.5        0            0
-#> 4 2012-09-18 04:55:44   8.42   9.18  0.16       3.46       0            0
-#> 5 2012-09-18 05:10:44   8.44   9.20  0.16       3.42      42.6          0
-#> 6 2012-09-18 05:25:44   8.47   9.21  0.16       3.37      85.1          0
+#> 1 2012-09-18 04:10:44   8.4    8.89  0.16       3.58         0          0
+#> 2 2012-09-18 04:25:44   8.42   8.90  0.16       3.54         0          0
+#> 3 2012-09-18 04:40:44   8.42   8.91  0.16       3.5          0          0
+#> 4 2012-09-18 04:55:44   8.42   8.92  0.16       3.46         0          0
+#> 5 2012-09-18 05:10:44   8.44   8.93  0.16       3.42         0          0
+#> 6 2012-09-18 05:25:44   8.47   8.94  0.16       3.37         0          0
 ```
 
 ``` r

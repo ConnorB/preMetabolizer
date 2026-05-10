@@ -1,4 +1,4 @@
-# Get Kansas Mesonet FW13 Data
+# Get Kansas Mesonet FW13 data
 
 Retrieves fire weather data in FW13 format for one station and date
 range.
@@ -43,3 +43,15 @@ scraping or data ingesting without written consent is not permitted.
 
 Kansas Mesonet data usage policy:
 <https://mesonet.k-state.edu/about/usage/>
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+ks_meso_fw13(
+  station = "Konza Prairie",
+  start_date = "2024-04-01",
+  end_date = "2024-04-07"
+)
+} # }
+```

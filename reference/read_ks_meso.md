@@ -1,4 +1,4 @@
-# Read Cached Kansas Mesonet Data
+# Read cached Kansas Mesonet data
 
 Reads previously downloaded and cached Kansas Mesonet data.
 
@@ -49,3 +49,16 @@ or data ingesting without written consent is not permitted.
 
 Kansas Mesonet data usage policy:
 <https://mesonet.k-state.edu/about/usage/>
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+konza_hourly <- read_ks_meso(
+  station = "Konza Prairie",
+  start_date = "2024-06-01",
+  end_date = "2024-06-07",
+  interval = "hour"
+)
+} # }
+```

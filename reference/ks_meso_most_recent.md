@@ -1,4 +1,4 @@
-# Get Most Recent Kansas Mesonet Data Timestamp
+# Get most recent Kansas Mesonet data timestamp
 
 Retrieves the timestamp of the most recently ingested data for each
 station for a given observation interval. The returned data includes the
@@ -35,3 +35,11 @@ scraping or data ingesting without written consent is not permitted.
 
 Kansas Mesonet data usage policy:
 <https://mesonet.k-state.edu/about/usage/>
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+ks_meso_most_recent(interval = "hour")
+} # }
+```

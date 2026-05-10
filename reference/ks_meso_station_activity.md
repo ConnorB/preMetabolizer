@@ -1,4 +1,4 @@
-# Get Kansas Mesonet Station Activity
+# Get Kansas Mesonet station activity
 
 Retrieves activity data for Kansas Mesonet stations, including
 observation intervals and data spans.
@@ -29,3 +29,12 @@ scraping or data ingesting without written consent is not permitted.
 
 Kansas Mesonet data usage policy:
 <https://mesonet.k-state.edu/about/usage/>
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+activity <- ks_meso_station_activity()
+subset(activity, station == "Konza Prairie")
+} # }
+```

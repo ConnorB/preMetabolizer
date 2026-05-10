@@ -1,8 +1,7 @@
-# Convert Mole Fraction of CO2 (xCO2) to Partial Pressure (pCO2)
+# Convert CO2 mole fraction to partial pressure
 
-This function calculates the partial pressure of carbon dioxide (pCO2)
-in water from its mole fraction (xCO2) in air, considering temperature
-and atmospheric pressure.
+Converts CO2 mole fraction, `xCO2`, to the water-vapor-corrected partial
+pressure, `pCO2`.
 
 ## Usage
 
@@ -14,40 +13,53 @@ xCO2_to_pCO2(xCO2_ppm, temp_water, atmo_press, press_units, ...)
 
 - xCO2_ppm:
 
-  Numeric. Mole fraction of CO2 in air in parts per million (ppm).
-  Default is 400 ppm.
+  Numeric vector. Mole fraction of CO2 in air in parts per million.
 
 - temp_water:
 
-  Numeric. Water temperature in degrees Celsius.
+  Numeric vector. Water temperature in degrees Celsius.
 
 - atmo_press:
 
-  Numeric. Atmospheric pressure.
+  Numeric vector. Atmospheric pressure.
 
 - press_units:
 
-  Character. Units of atmospheric pressure.
+  Character string giving the units of `atmo_press`. See
+  [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
+  for accepted pressure units.
 
 - ...:
 
-  Additional arguments passed to the `calc_vapor_press` function.
+  Additional arguments passed to
+  [`calc_vapor_press()`](https://connorb.github.io/preMetabolizer/reference/calc_vapor_press.md),
+  such as `salinity` or `method`.
 
 ## Value
 
-Numeric. Partial pressure of CO2 in µatm.
+Numeric vector of partial pressure of CO2 in microatmospheres.
 
 ## Details
 
-The partial pressure of CO2 (\\pCO2\\) is computed using the equation:
-\$\$pCO2 = (P\_{atm} - P\_{H2O}) \cdot xCO2\$\$ where \\P\_{atm}\\ is
-the atmospheric pressure, \\P\_{H2O}\\ is the water vapor pressure, and
-\\xCO2\\ is the mole fraction of CO2 in air.
+The conversion uses: \$\$pCO2 = (P\_{atm} - P\_{H2O}) \cdot xCO2\$\$
+where atmospheric pressure and water vapor pressure are in atm and
+`xCO2` is supplied in parts per million.
 
 ## References
 
-- Dickson, A.G., Sabine, C.L., & Christian, J.R. (2007). *Guide to Best
-  Practices for Ocean CO2 Measurements*.
+Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to
+best practices for ocean CO2 measurements. PICES Special Publication 3.
 
-- Weiss, R.F. (1974). Carbon dioxide in water and seawater: the
-  solubility of a non-ideal gas. Marine Chemistry, 2(3), 203–215.
+## Examples
+
+``` r
+xCO2_to_pCO2(
+  xCO2_ppm = 420,
+  temp_water = 20,
+  atmo_press = 101.325,
+  press_units = "kPa",
+  salinity = 0,
+  method = "MIMSY"
+)
+#> [1] 410.3363
+```

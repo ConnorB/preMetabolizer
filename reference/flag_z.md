@@ -1,4 +1,4 @@
-# Flag Outliers Using Robust Z-Scores
+# Flag outliers with robust Z-scores
 
 Identifies potential outliers in a numeric vector based on a moving
 window robust Z-score approach. The robust Z-score is computed using a
@@ -14,21 +14,21 @@ flag_z(x, width = 5, threshold = 3, return_z = FALSE)
 
 - x:
 
-  A numeric vector to be checked for outliers.
+  Numeric vector to check for outliers.
 
 - width:
 
-  An odd integer specifying the width of the moving window (default: 5).
+  Odd integer giving the moving-window width. Defaults to `5`.
 
 - threshold:
 
-  A numeric threshold for the absolute Z-score above which a value is
-  flagged (default: 3.0).
+  Numeric threshold for the absolute Z-score above which a value is
+  flagged. Defaults to `3`.
 
 - return_z:
 
-  Logical; if `TRUE`, returns both Z-scores and flags. If `FALSE`,
-  returns only flags (default: `FALSE`).
+  Logical. If `TRUE`, return both Z-scores and flags. If `FALSE`, return
+  only flags. Defaults to `FALSE`.
 
 ## Value
 
@@ -40,8 +40,8 @@ If `return_z = TRUE`, a list with:
 
 - flag:
 
-  A character vector of same length as `x`, with `"Z"` where an outlier
-  is detected, and `NA` otherwise.
+  A character vector of the same length as `x`, with `"Z"` where an
+  outlier is detected and `NA` otherwise.
 
 If `return_z = FALSE`, only the `flag` vector is returned.
 
