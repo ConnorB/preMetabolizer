@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_ks_meso.R
 \name{get_ks_meso}
 \alias{get_ks_meso}
-\title{Fetch Data from Kansas Mesonet}
+\title{Fetch data from Kansas Mesonet}
 \usage{
 get_ks_meso(
   stations = NULL,
@@ -43,7 +43,8 @@ This is an alternative to \code{stations}.}
 \item{debug}{Logical; if \code{TRUE}, debug messages are printed.}
 }
 \value{
-A list with details about successful and failed downloads, output directory, and data chunks.
+A list with details about successful and failed downloads, output
+directory, and data chunks.
 }
 \description{
 Retrieves weather data for specified stations from the Kansas Mesonet.
@@ -57,6 +58,18 @@ with this function. A suggested citation format is: Kansas Mesonet, year:
 webpage title. Accessed date, webpage URL. Review the Kansas Mesonet data
 usage policy before automated use; automated page scraping or data ingesting
 without written consent is not permitted.
+}
+\examples{
+\dontrun{
+get_ks_meso(
+  stations = "Konza Prairie",
+  start_date = "2024-06-01",
+  end_date = "2024-06-07",
+  interval = "hour",
+  vars = c("TEMP2MAVG", "RELHUM2MAVG", "PRESSUREAVG")
+)
+}
+
 }
 \references{
 Kansas Mesonet data usage policy:

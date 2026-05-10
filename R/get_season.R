@@ -1,13 +1,27 @@
-#' Determine the Season from a Date
+#' Determine the season from a date
 #'
-#' This function determines the meteorological season (Winter, Spring, Summer, or Fall) based on the input date.
-#' It handles invalid inputs and provides clear error messages.
+#' Classifies dates into astronomical seasons: Winter, Spring, Summer, or Fall.
 #'
-#' @param date A character string or Date object. If a character string, it should be in a format that can be coerced to a Date.
-#' @return A character string indicating the season: "Winter", "Spring", "Summer", or "Fall".
+#' @param date Character, Date, or date-time vector coercible with
+#'   [base::as.Date()].
+#'
+#' @return Character vector of season names with one value per input date.
+#'
+#' @details
+#' Seasons use fixed northern-hemisphere transition dates: Spring begins
+#' March 20, Summer begins June 21, Fall begins September 23, and Winter begins
+#' December 21.
+#'
 #' @examples
 #' get_season("2024-12-25")
-#' get_season(as.Date("2024-07-04"))
+#'
+#' get_season(as.Date(c(
+#'   "2024-01-15",
+#'   "2024-04-15",
+#'   "2024-07-15",
+#'   "2024-10-15"
+#' )))
+#'
 #' @export
 get_season <- function(date) {
   # Convert input to Date if necessary

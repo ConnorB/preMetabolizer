@@ -1,4 +1,4 @@
-#' French Creek Stream Metabolism Data
+#' French Creek stream metabolism data
 #'
 #' Dissolved oxygen and water temperature measured at 5-minute intervals on
 #' French Creek near Laramie, Wyoming, USA during summer/fall 2012. Data
@@ -48,7 +48,8 @@
 #'   \item{monitoring_location_id}{USGS monitoring location ID.}
 #'   \item{time}{Date of observation.}
 #'   \item{value}{Observed value. Units depend on `parameter_code`.}
-#'   \item{parameter_code}{USGS parameter code: `00060` = discharge, `00065` = gage height, `00010` = water temperature.}
+#'   \item{parameter_code}{USGS parameter code: `00060` = discharge,
+#'     `00065` = gage height, `00010` = water temperature.}
 #'   \item{qualifier}{USGS data qualifier.}
 #' }
 #'

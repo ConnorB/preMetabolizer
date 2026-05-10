@@ -2,7 +2,7 @@
 % Please edit documentation in R/streamMetabolizer.R
 \name{convert_solartime_to_UTC}
 \alias{convert_solartime_to_UTC}
-\title{Convert DateTime from Local Solar Time to UTC}
+\title{Convert solar time to UTC}
 \usage{
 convert_solartime_to_UTC(
   any.solar.time,
@@ -11,20 +11,36 @@ convert_solartime_to_UTC(
 )
 }
 \arguments{
-\item{any.solar.time}{A POSIXct datetime object in solar time (mean or apparent). Must have tz = "UTC".}
+\item{any.solar.time}{POSIXct vector in solar time. The timezone attribute
+must be UTC, even though the clock time represents solar time.}
 
-\item{longitude}{Numeric longitude in decimal degrees (east positive, west negative).}
+\item{longitude}{Numeric longitude in decimal degrees. Western longitudes
+are negative.}
 
-\item{time.type}{Character string: either \code{"mean solar"} or \code{"apparent solar"}.
-"apparent solar", i.e. true solar time, is noon when the sun is at its zenith.
-"mean solar" approximates apparent solar time but with noons exactly 24 hours apart.}
+\item{time.type}{Character string: either \code{"mean solar"} or
+\code{"apparent solar"}.}
 }
 \value{
 A POSIXct datetime in UTC.
 }
 \description{
-Converts a datetime from local solar time back to UTC. Input time may be either
-apparent solar time (sun at zenith at noon) or mean solar time (noons exactly 24 hours apart).
+Converts a datetime from local solar time back to UTC. Input time may be
+either apparent solar time or mean solar time.
+}
+\examples{
+utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
+solar <- convert_UTC_to_solartime(
+  utc,
+  longitude = -96.6,
+  time.type = "mean solar"
+)
+
+convert_solartime_to_UTC(
+  solar,
+  longitude = -96.6,
+  time.type = "mean solar"
+)
+
 }
 \references{
 Yard, Bennett, Mietz, Coggins, Stevens, Hueftle, and Blinn. 2005.

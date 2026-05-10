@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_CO2_conc.R
 \name{calc_CO2_molKg}
 \alias{calc_CO2_molKg}
-\title{Calculate CO2 Concentration from Sensor Data}
+\title{Calculate dissolved CO2 concentration in mol/kg}
 \usage{
 calc_CO2_molKg(
   CO2_ppm,
@@ -14,21 +14,39 @@ calc_CO2_molKg(
 )
 }
 \arguments{
-\item{CO2_ppm}{Numeric. Mole fraction of CO2 in parts per million.}
+\item{CO2_ppm}{Numeric vector. Mole fraction of CO2 in air in parts per
+million.}
 
-\item{temp_water}{Numeric. Water temperature in degrees Celsius.}
+\item{temp_water}{Numeric vector. Water temperature in degrees Celsius.}
 
-\item{waterDepth_m}{Numeric. Water depth in meters.}
+\item{waterDepth_m}{Numeric vector. Water depth above the sensor in meters.}
 
-\item{atmo_press}{Numeric. Atmospheric pressure.}
+\item{atmo_press}{Numeric vector. Atmospheric pressure at the water surface.}
 
-\item{press_units}{Character. Units of atmospheric pressure.}
+\item{press_units}{Character string giving the units of \code{atmo_press}. See
+\code{\link[=convert_pressure]{convert_pressure()}} for accepted pressure units.}
 
-\item{salinity}{Numeric. Salinity in PSU.}
+\item{salinity}{Numeric vector. Salinity in practical salinity units.
+Defaults to freshwater (\code{0}).}
 }
 \value{
-a numeric vector of CO2 concentration in mol/kg.
+Numeric vector of dissolved CO2 concentration in mol/kg.
 }
 \description{
-Calculate CO2 Concentration from Sensor Data
+Converts a measured or modeled CO2 mole fraction to dissolved CO2
+concentration using atmospheric pressure, water-column pressure, vapor
+pressure, and the Weiss (1974) CO2 solubility coefficient.
+}
+\examples{
+calc_CO2_molKg(
+  CO2_ppm = 420,
+  temp_water = 20,
+  waterDepth_m = 0.5,
+  atmo_press = 101.325,
+  press_units = "kPa"
+)
+
+}
+\seealso{
+\code{\link[=calc_CO2_mgL]{calc_CO2_mgL()}}, \code{\link[=xCO2_to_pCO2]{xCO2_to_pCO2()}}, \code{\link[=calc_K0]{calc_K0()}}
 }

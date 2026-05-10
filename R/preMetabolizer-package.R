@@ -3,8 +3,9 @@
 #' preMetabolizer provides helpers for building the environmental time series
 #' commonly needed before fitting stream metabolism models. It includes tools
 #' to download external meteorological and elevation data, align irregular time
-#' series, convert units, calculate water and gas chemistry quantities, and
-#' assemble light and pressure inputs for streamMetabolizer.
+#' series, convert hydrology and atmospheric units, calculate water and gas
+#' chemistry quantities, and assemble light and pressure inputs for
+#' streamMetabolizer.
 #'
 #' @section Coordinates:
 #' Functions that require locations use `latitude` and `longitude` in decimal
@@ -13,15 +14,22 @@
 #'
 #' @section Main workflows:
 #' \itemize{
-#'   \item Download site-level environmental data with [get_nasa_data()],
-#'     [get_usgs_elev()], [get_noaa_stations()], and [get_ks_meso()].
-#'   \item Prepare regularly spaced time series with [even_timesteps()] and
-#'     [get_season()].
-#'   \item Calculate light, barometric pressure, dissolved oxygen saturation,
-#'     water density, stream depth, and dissolved carbon dioxide inputs.
-#'   \item Convert common hydrology and atmospheric units with
-#'     [convert_flow()] and [convert_pressure()].
+#'   \item Find and download meteorological data with [get_noaa_stations()],
+#'     [closest_noaa_stations()], [download_ghcnh()], [get_nasa_data()], and
+#'     [get_ks_meso()].
+#'   \item Retrieve or calculate site context with [get_usgs_elev()],
+#'     [correct_bp()], [convert_UTC_to_solartime()], and [calc_light()].
+#'   \item Prepare model inputs with [even_timesteps()], [calc_O2sat()],
+#'     [calc_water_height()], and the built-in example datasets.
+#'   \item Summarize and check data with [flag_z()],
+#'     [calc_exceedance_prob()], [calc_cv()], and [calc_bin_width()].
 #' }
+#'
+#' @section Built-in datasets:
+#' [french_creek] contains 5-minute dissolved oxygen and water temperature
+#' observations for a complete metabolism-preparation example.
+#' [kings_discharge] contains daily USGS discharge, gage height, and water
+#' temperature observations for flow-duration and seasonal summaries.
 #'
 #' @seealso
 #' [streamMetabolizer::metab()],

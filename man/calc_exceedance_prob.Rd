@@ -2,33 +2,35 @@
 % Please edit documentation in R/calc_exceedance_prob.R
 \name{calc_exceedance_prob}
 \alias{calc_exceedance_prob}
-\title{Calculate Flow Exceedence Probabilities}
+\title{Calculate flow exceedance probabilities}
 \usage{
 calc_exceedance_prob(flow, rm.zero = FALSE)
 }
 \arguments{
-\item{flow}{A numeric vector of flow (discharge) values.}
+\item{flow}{Numeric vector of flow or discharge values.}
 
-\item{rm.zero}{Logical. If \code{TRUE}, zero values are removed from the calculation, and
-positions corresponding to zeros are filled with \code{NA} in the output.}
+\item{rm.zero}{Logical. If \code{TRUE}, zero and negative values are omitted from
+the ranking and returned as \code{NA}. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of exceedance probabilities. If \code{rm.zero = TRUE}, the returned vector
-will have the same length as the input with \code{NA} at positions of zero values.
+Numeric vector of exceedance probabilities with the same length as
+\code{flow}. Missing input values return \code{NA}.
 }
 \description{
-This function calculates the exceedance probability for a given numeric vector of flow values.
-The exceedance probability is calculated using the Weibull plotting position formula.
+Calculates exceedance probabilities for a discharge vector with the Weibull
+plotting-position formula. Higher flows receive lower exceedance
+probabilities.
 }
 \details{
-The Weibull plotting position is used to compute the exceedance probability:
-\deqn{P = \frac{\text{rank}}{n + 1}}
-where \code{rank} is the rank of the flow value (in descending order), and \code{n} is the
-number of observations.
+The Weibull plotting position is:
+\deqn{P = \frac{\mathrm{rank}}{n + 1}}
+where \code{rank} is the descending rank of the flow value and \code{n} is the number
+of ranked observations.
 }
 \examples{
 flow_data <- c(10, 5, 0, 15, 8, NA, 0, 20)
-exceedance_probs <- calc_exceedance_prob(flow_data)
-exceedance_probs_no_zeros <- calc_exceedance_prob(flow_data, rm.zero = TRUE)
+
+calc_exceedance_prob(flow_data)
+calc_exceedance_prob(flow_data, rm.zero = TRUE)
 
 }

@@ -1,4 +1,4 @@
-#' Initialize Package Cache Directories
+#' Initialize package cache directories
 #'
 #' @description
 #' Internal function executed automatically when the package is loaded. It initializes
@@ -31,7 +31,7 @@ NULL # This documents all internal functions
   )
 }
 
-#' Retrieve NOAA Cache Path
+#' Retrieve NOAA cache path
 #'
 #' @return Path to NOAA cache directory.
 #' @keywords internal
@@ -40,7 +40,7 @@ noaa_cache <- function() {
   getOption("preMetabolizer.noaa_cache", stop("NOAA cache path not set."))
 }
 
-#' Retrieve Mesonet Cache Path
+#' Retrieve Mesonet cache path
 #'
 #' @return Path to Mesonet cache directory.
 #' @keywords internal
@@ -49,7 +49,7 @@ mesonet_cache <- function() {
   getOption("preMetabolizer.mesonet_cache", stop("Mesonet cache path not set."))
 }
 
-#' Retrieve NASAPower Cache Path
+#' Retrieve NASAPower cache path
 #'
 #' @return Path to NASA POWER cache directory.
 #' @keywords internal

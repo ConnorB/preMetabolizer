@@ -2,7 +2,7 @@
 % Please edit documentation in R/convert_flow.R
 \name{convert_flow}
 \alias{convert_flow}
-\title{Convert Stream Discharge Between Units}
+\title{Convert stream discharge between units}
 \usage{
 convert_flow(flow, from, to = "cms")
 }

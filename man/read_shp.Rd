@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_shp.R
 \name{read_shp}
 \alias{read_shp}
-\title{Read Shapefile or Zipped Shapefile}
+\title{Read a shapefile or zipped shapefile}
 \usage{
 read_shp(path, layer = NULL)
 }

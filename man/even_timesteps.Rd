@@ -2,44 +2,54 @@
 % Please edit documentation in R/even_timesteps.R
 \name{even_timesteps}
 \alias{even_timesteps}
-\title{Get evenly spaced time steps for logger data}
+\title{Fill missing rows in an even time series}
 \usage{
 even_timesteps(loggerData, datetime_col = "DateTime_UTC", site_col = NULL)
 }
 \arguments{
-\item{loggerData}{A data frame containing a DateTime_UTC column with timestamp data}
+\item{loggerData}{Data frame or tibble containing timestamped logger data.}
 
-\item{datetime_col}{Character string specifying the datetime column name.
-Defaults to "DateTime_UTC"}
+\item{datetime_col}{Character string naming the POSIXct datetime column.
+Defaults to \code{"DateTime_UTC"}.}
 
-\item{site_col}{Character string specifying the site column name. If NULL (default),
-treats all data as a single site.}
+\item{site_col}{Optional character string naming a site column. When
+supplied, each site is completed independently.}
 }
 \value{
-A data frame or tibble with evenly spaced time steps for each site, including
-all original data points plus NAs for missing intervals. The class matches the input.
+A data frame or tibble, matching the input class, with all original
+rows plus inserted \code{NA} rows for missing time steps.
 }
 \description{
-Creates a dataframe with evenly spaced time steps by merging original
-data with a sequence of timestamps at the most common sampling interval. Can handle
-multiple sites with different time intervals.
+Builds a complete timestamp sequence for logger data and joins the original
+observations onto it. Missing timestamps become explicit rows with \code{NA}
+values in the measured columns.
+}
+\details{
+The time step is inferred from the sorted unique timestamps for each site.
+Use this after removing obvious duplicate or invalid timestamps.
 }
 \examples{
-\dontrun{
-# Single site usage
 df <- data.frame(
-  DateTime_UTC = seq(as.POSIXct("2024-01-01"), by = "1 hour", length.out = 10)
+  DateTime_UTC = as.POSIXct(
+    c("2024-01-01 00:00", "2024-01-01 01:00", "2024-01-01 03:00"),
+    tz = "UTC"
+  ),
+  temp_C = c(10.1, 10.4, 10.5)
 )
+
 even_timesteps(df)
 
-# Multiple sites
 df_multi <- data.frame(
   DateTime_UTC = c(
-    seq(as.POSIXct("2024-01-01"), by = "1 hour", length.out = 5),
-    seq(as.POSIXct("2024-01-01"), by = "30 min", length.out = 5)
+    as.POSIXct(
+      c("2024-01-01 00:00", "2024-01-01 01:00", "2024-01-01 03:00"),
+      tz = "UTC"
+    ),
+    as.POSIXct(c("2024-01-01 00:00", "2024-01-01 00:30"), tz = "UTC")
   ),
-  Site = c(rep("Site1", 5), rep("Site2", 5))
+  Site = c("A", "A", "A", "B", "B")
 )
+
 even_timesteps(df_multi, site_col = "Site")
-}
+
 }

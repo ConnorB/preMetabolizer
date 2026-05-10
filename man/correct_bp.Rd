@@ -2,7 +2,7 @@
 % Please edit documentation in R/correct_bp.R
 \name{correct_bp}
 \alias{correct_bp}
-\title{Correct Barometric Pressure for Elevation Change}
+\title{Correct barometric pressure for elevation change}
 \usage{
 correct_bp(
   station_bp,

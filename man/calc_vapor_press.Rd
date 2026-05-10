@@ -2,38 +2,40 @@
 % Please edit documentation in R/calc_vapor_press.R
 \name{calc_vapor_press}
 \alias{calc_vapor_press}
-\title{Calculate the vapor pressure of water at the supplied conditions}
+\title{Calculate water vapor pressure}
 \usage{
 calc_vapor_press(temp_water = 25, salinity = 0, method = "Dickson2007")
 }
 \arguments{
-\item{temp_water}{Water temperature in degrees Celsius (default: 25).}
+\item{temp_water}{Numeric vector. Water temperature in degrees Celsius.
+Defaults to \code{25}.}
 
-\item{salinity}{Salinity of the water in PSU (default: 0).}
+\item{salinity}{Numeric vector. Salinity in practical salinity units.
+Defaults to freshwater (\code{0}).}
 
-\item{method}{Character. The method to use for calculation, either \code{"Dickson2007"} for seawater
-or \code{"MIMSY"} for freshwater. Defaults to \code{"Dickson2007"}.}
+\item{method}{Character string. Calculation method. Use \code{"Dickson2007"} for
+seawater and \code{"MIMSY"} for freshwater. Defaults to \code{"Dickson2007"}.}
 }
 \value{
-Vapor pressure in atm.
+Numeric vector of vapor pressure in atm.
 }
 \description{
-This function calculates the vapor pressure of fresh or sea water.
+Calculates the vapor pressure of freshwater or seawater in atmospheres.
 }
 \details{
-\itemize{
-\item \code{"Dickson2007"} follows the method outlined in Dickson et al. (2007) and adjusts for seawater.
-\item \code{"MIMSY"} uses the Antoine equation for freshwater vapor pressure calculation.
-}
+\code{"Dickson2007"} follows the ocean CO2 best-practices guide and includes a
+salinity correction. \code{"MIMSY"} uses the Antoine equation for freshwater.
 }
 \examples{
-calc_vapor_press(temp_water = 25, salinity = 35,  method = "Dickson2007")
+calc_vapor_press(temp_water = 25, salinity = 35, method = "Dickson2007")
 calc_vapor_press(temp_water = 20, salinity = 0, method = "MIMSY")
+
 }
 \references{
-Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to best practices for
-ocean CO2 measurements. PICES Special Publication 3, 191 pp.
+Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to
+best practices for ocean CO2 measurements. PICES Special Publication 3.
 
-Kelly, M.C. (2024). mimsy: Calculate MIMS Dissolved Gas Concentrations Without Getting a Headache.
-R package version 0.6.5. Available at: \url{https://CRAN.R-project.org/package=mimsy}
+Kelly, M.C. (2024). mimsy: Calculate MIMS Dissolved Gas Concentrations
+Without Getting a Headache. R package version 0.6.5.
+\url{https://CRAN.R-project.org/package=mimsy}
 }

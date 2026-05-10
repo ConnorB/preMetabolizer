@@ -2,71 +2,48 @@
 % Please edit documentation in R/calc_mode.R
 \name{calc_mode}
 \alias{calc_mode}
-\title{Calculate the Mode(s) of a Vector}
+\title{Calculate the mode of a vector}
 \usage{
 calc_mode(x, na.rm = TRUE, multi = "first")
 }
 \arguments{
-\item{x}{An atomic vector (numeric, character, factor, etc.) for which to compute the mode.}
+\item{x}{Atomic vector, such as numeric, character, logical, or factor.}
 
-\item{na.rm}{Logical indicating whether to remove NA values before computation (default: \code{TRUE}).}
+\item{na.rm}{Logical. If \code{TRUE}, remove missing values before calculation.
+Defaults to \code{TRUE}.}
 
-\item{multi}{Method to handle multiple modes when they exist. Options are:
+\item{multi}{Character string controlling ties. Options are:
 \describe{
-\item{"first"}{Returns the first occurring mode (default)}
-\item{"last"}{Returns the last occurring mode}
-\item{"sample"}{Returns one random mode}
-\item{"all"}{Returns all modes as a vector}
+\item{\code{"first"}}{Return the first mode in sorted table order.}
+\item{\code{"last"}}{Return the last mode in sorted table order.}
+\item{\code{"sample"}}{Return one randomly selected mode.}
+\item{\code{"all"}}{Return all tied modes.}
 }}
 }
 \value{
-A value or vector of the same type as \code{x} containing:
-\itemize{
-\item A single mode (default behavior)
-\item All modes if \code{multi = "all"} and multiple modes exist
-\item \code{NA} if:
-\itemize{
-\item Input is empty
-\item Input contains only NAs (when \code{na.rm = TRUE})
-\item No mode can be determined
-}
-}
+A value or vector with the same general type as \code{x}. Returns \code{NA}
+for empty inputs or inputs containing only missing values after \code{NA}
+removal.
 }
 \description{
-Computes the mode (most frequent value) of a vector. By default returns a single mode
-even when multiple modes exist. Handles NA values and preserves the input data type.
+Finds the most frequent value in an atomic vector. Ties can be handled by
+returning the first mode, last mode, a random mode, or all modes.
 }
 \details{
-For factors, the returned mode(s) maintain the original factor levels. When \code{na.rm = FALSE}
-and NAs are present, the function returns \code{NA}. The function handles ties (multiple values
-with the same maximum frequency) according to the \code{multi} parameter.
+For factors, returned mode values preserve the original levels. When
+\code{na.rm = FALSE}, missing values are included in the frequency table.
 }
 \examples{
-# Single mode
-calc_mode(c(1, 2, 2, 3, 3, 3))  # returns 3
+calc_mode(c(1, 2, 2, 3, 3, 3))
 
-# Multiple modes (returns first by default)
-calc_mode(c(1, 1, 2, 2, 3))     # returns 1
+tied <- c("riffle", "run", "riffle", "pool", "run")
+calc_mode(tied)
+calc_mode(tied, multi = "all")
 
-# Multiple modes with different handling
-calc_mode(c(1, 1, 2, 2, 3), multi = "last")   # returns 2
-calc_mode(c(1, 1, 2, 2, 3), multi = "sample") # returns 1 or 2 randomly
-calc_mode(c(1, 1, 2, 2, 3), multi = "all")    # returns c(1, 2)
-
-# Factor vector
 fruit <- factor(c("apple", "banana", "banana", "cherry"))
-calc_mode(fruit)  # returns "banana" (factor level maintained)
-
-# With NA values
-calc_mode(c(1, 2, 2, NA))        # returns 2
-calc_mode(c(NA, NA), na.rm = FALSE) # returns NA
-
-# Edge cases
-calc_mode(integer(0))            # returns NA
-calc_mode(c(NA, NA))             # returns NA
-calc_mode(c(1))                  # returns 1
+calc_mode(fruit)
 
 }
 \seealso{
-\code{\link[=table]{table()}} for frequency tables, \code{\link[=which.max]{which.max()}} for single maximum values
+\code{\link[=table]{table()}} for frequency tables.
 }

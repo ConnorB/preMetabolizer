@@ -2,21 +2,33 @@
 % Please edit documentation in R/get_season.R
 \name{get_season}
 \alias{get_season}
-\title{Determine the Season from a Date}
+\title{Determine the season from a date}
 \usage{
 get_season(date)
 }
 \arguments{
-\item{date}{A character string or Date object. If a character string, it should be in a format that can be coerced to a Date.}
+\item{date}{Character, Date, or date-time vector coercible with
+\code{\link[base:as.Date]{base::as.Date()}}.}
 }
 \value{
-A character string indicating the season: "Winter", "Spring", "Summer", or "Fall".
+Character vector of season names with one value per input date.
 }
 \description{
-This function determines the meteorological season (Winter, Spring, Summer, or Fall) based on the input date.
-It handles invalid inputs and provides clear error messages.
+Classifies dates into astronomical seasons: Winter, Spring, Summer, or Fall.
+}
+\details{
+Seasons use fixed northern-hemisphere transition dates: Spring begins
+March 20, Summer begins June 21, Fall begins September 23, and Winter begins
+December 21.
 }
 \examples{
 get_season("2024-12-25")
-get_season(as.Date("2024-07-04"))
+
+get_season(as.Date(c(
+  "2024-01-15",
+  "2024-04-15",
+  "2024-07-15",
+  "2024-10-15"
+)))
+
 }

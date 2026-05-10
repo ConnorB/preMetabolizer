@@ -1,4 +1,4 @@
-#' Convert Barometric Pressure to Atmospheres
+#' Convert barometric pressure to atmospheres
 #'
 #' This helper function converts barometric pressure from various units
 #' to atmospheres (\[atm\]). It is intended for internal use within the package.
@@ -9,7 +9,10 @@
 #'
 #' @return Numeric. Barometric pressure in atmospheres (\[atm\]).
 #'
-#' @keywords internal
+#' @examples
+#' convert_pressure_to_atm(101.325, units = "kPa")
+#' convert_pressure_to_atm(1013.25, units = "hPa")
+#'
 #' @export
 convert_pressure_to_atm <- function(pressure, units) {
   if (units == "atm") {
@@ -34,13 +37,17 @@ convert_pressure_to_atm <- function(pressure, units) {
 }
 
 
-#' Get the Last Modified Time of a Remote File (Internal)
+#' Get the last modified time of a remote file
 #'
-#' This internal function retrieves the "Last-Modified" timestamp of a remote file by sending an HTTP HEAD request to the given URL. The result is memoised to cache results for repeated calls with the same URL.
+#' This internal function retrieves the "Last-Modified" timestamp of a remote
+#' file by sending an HTTP HEAD request to the given URL. The result is
+#' memoised to cache repeated calls with the same URL.
 #'
 #' @param url A character string specifying the URL of the remote file.
 #'
-#' @return A POSIXlt object representing the last modified timestamp of the remote file, or `NULL` if the information is unavailable or an error occurs.
+#' @return A POSIXlt object representing the last modified timestamp of the
+#'   remote file, or `NULL` if the information is unavailable or an error
+#'   occurs.
 #'
 #' @details The function sends an HTTP HEAD request to the specified URL using
 #'   the \pkg{httr2} package. If the server responds with a 200 status code and

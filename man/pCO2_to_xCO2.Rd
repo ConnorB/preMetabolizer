@@ -2,29 +2,43 @@
 % Please edit documentation in R/xCO2_to_pCO2.R
 \name{pCO2_to_xCO2}
 \alias{pCO2_to_xCO2}
-\title{Convert p(CO2) to x(CO2)}
+\title{Convert CO2 partial pressure to mole fraction}
 \usage{
 pCO2_to_xCO2(temp_water, pCO2_uatm, atmo_press, press_units, ...)
 }
 \arguments{
-\item{temp_water}{Water temperature in degrees Celsius.}
+\item{temp_water}{Numeric vector. Water temperature in degrees Celsius.}
 
-\item{pCO2_uatm}{Partial pressure of CO2 in µatm.}
+\item{pCO2_uatm}{Numeric vector. Partial pressure of CO2 in
+microatmospheres.}
 
-\item{atmo_press}{Atmospheric pressure.}
+\item{atmo_press}{Numeric vector. Atmospheric pressure.}
 
-\item{press_units}{Units for pressure, either "atm" or others (default: "atm").}
+\item{press_units}{Character string giving the units of \code{atmo_press}. See
+\code{\link[=convert_pressure]{convert_pressure()}} for accepted pressure units.}
 
-\item{...}{Additional parameters passed to \code{calc_vapor_press}.}
+\item{...}{Additional arguments passed to \code{\link[=calc_vapor_press]{calc_vapor_press()}}, such as
+\code{salinity} or \code{method}.}
 }
 \value{
-CO2 mole fraction (xCO2) in ppm.
+Numeric vector of CO2 mole fraction in parts per million.
 }
 \description{
-Converts partial pressure of CO2 p(CO2) µatm to mole fraction of CO2 x(CO2) ppm. This involves corrections for water vapor pressure to account for equilibrium conditions.
+Converts water-vapor-corrected CO2 partial pressure, \code{pCO2}, to CO2 mole
+fraction, \code{xCO2}.
+}
+\examples{
+pCO2_to_xCO2(
+  temp_water = 20,
+  pCO2_uatm = 400,
+  atmo_press = 101.325,
+  press_units = "kPa",
+  salinity = 0,
+  method = "MIMSY"
+)
+
 }
 \references{
-Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to best practices for
-ocean CO2 measurements. PICES Special Publication 3, 191 pp.
+Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to
+best practices for ocean CO2 measurements. PICES Special Publication 3.
 }
-\keyword{internal}

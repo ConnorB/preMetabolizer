@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{convert_pressure_to_atm}
 \alias{convert_pressure_to_atm}
-\title{Convert Barometric Pressure to Atmospheres}
+\title{Convert barometric pressure to atmospheres}
 \usage{
 convert_pressure_to_atm(pressure, units)
 }
@@ -19,4 +19,8 @@ Numeric. Barometric pressure in atmospheres ([atm]).
 This helper function converts barometric pressure from various units
 to atmospheres ([atm]). It is intended for internal use within the package.
 }
-\keyword{internal}
+\examples{
+convert_pressure_to_atm(101.325, units = "kPa")
+convert_pressure_to_atm(1013.25, units = "hPa")
+
+}

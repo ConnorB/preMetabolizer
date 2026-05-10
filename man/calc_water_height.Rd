@@ -2,62 +2,49 @@
 % Please edit documentation in R/calc_water_height.R
 \name{calc_water_height}
 \alias{calc_water_height}
-\title{Calculate Water Height from Sensor and Atmospheric Pressure}
+\title{Calculate water height from pressure}
 \usage{
 calc_water_height(sensor_kPa, atmo_kPa = NULL, water_temp, type = "vented")
 }
 \arguments{
-\item{sensor_kPa}{Numeric value representing the sensor pressure in kilopascals.
-\itemize{
-\item For \code{type = "vented"}, this is the differential pressure (water pressure only).
-\item For \code{type = "unvented"}, this is the absolute pressure measured by the sensor.
-}}
+\item{sensor_kPa}{Numeric vector. Sensor pressure in kilopascals. For
+\code{type = "vented"}, this is differential pressure from the water column.
+For \code{type = "unvented"}, this is absolute pressure.}
 
-\item{atmo_kPa}{Numeric value representing the atmospheric pressure in kilopascals.
-Required when \code{type = "unvented"}.}
+\item{atmo_kPa}{Numeric vector. Atmospheric pressure in kilopascals. Required
+when \code{type = "unvented"}.}
 
-\item{water_temp}{Numeric value representing the water temperature in degrees Celsius.}
+\item{water_temp}{Numeric vector. Water temperature in degrees Celsius.}
 
-\item{type}{Character string specifying the sensor type: \code{"vented"} or \code{"unvented"}.
-Defaults to \code{"vented"}.}
+\item{type}{Character string. Sensor type, either \code{"vented"} or
+\code{"unvented"}. Defaults to \code{"vented"}.}
 }
 \value{
-A numeric value representing the water height in meters.
+Numeric vector of water height in meters.
 }
 \description{
-This function computes the water height in meters based on the sensor pressure readings,
-atmospheric pressure, water temperature, and sensor type (vented or unvented).
+Converts pressure readings from vented or unvented water-level sensors to
+water height in meters.
 }
 \details{
-The function calculates the water density using the equation from Kell (1975) for pure water.
-It then computes the water height by dividing the pressure difference by the product of
-water density and gravity.
-\itemize{
-\item \strong{Vented Sensor (\code{type = "vented"}):} The sensor measures the pressure difference directly,
-so only \code{sensor_kPa} is required.
-\item \strong{Unvented Sensor (\code{type = "unvented"}):} The sensor measures absolute pressure,
-so atmospheric pressure (\code{atmo_kPa}) must be provided to calculate the pressure difference.
-}
+The pressure difference is divided by water density and gravitational
+acceleration. Water density is calculated with \code{\link[=calc_water_density]{calc_water_density()}}.
 }
 \examples{
-# Example usage with a vented sensor:
-sensor_pressure <- 19.2 # kPa (pressure due to water column)
-temperature <- 15 # degrees Celsius
-calc_water_height(sensor_pressure, water_temp = temperature, type = "vented")
+calc_water_height(sensor_kPa = 19.2, water_temp = 15, type = "vented")
 
-# Example usage with an unvented sensor:
-sensor_pressure <- 120.5 # kPa (absolute pressure)
-atmospheric_pressure <- 101.3 # kPa
-temperature <- 15 # degrees Celsius
-calc_water_height(sensor_pressure,
-  atmo_kPa = atmospheric_pressure,
-  water_temp = temperature, type = "unvented"
+calc_water_height(
+  sensor_kPa = 120.5,
+  atmo_kPa = 101.3,
+  water_temp = 15,
+  type = "unvented"
 )
 
 }
 \references{
-Kell, G. S. (1975). Density, thermal expansivity, and compressibility of liquid water from 0° to 150°C:
-Correlations and tables for atmospheric pressure and saturation reviewed and expressed on 1968 temperature scale.
-\emph{Journal of Chemical and Engineering Data}, 20(1), 97–105.
+Kell, G. S. (1975). Density, thermal expansivity, and compressibility of
+liquid water from 0° to 150°C: Correlations and tables for atmospheric
+pressure and saturation reviewed and expressed on 1968 temperature scale.
+\emph{Journal of Chemical and Engineering Data}, 20(1), 97-105.
 \doi{10.1021/je60064a005}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_ks_meso.R
 \name{read_ks_meso}
 \alias{read_ks_meso}
-\title{Read Cached Kansas Mesonet Data}
+\title{Read cached Kansas Mesonet data}
 \usage{
 read_ks_meso(station, start_date, end_date, interval, output_dir = NULL)
 }
@@ -32,6 +32,17 @@ this function. A suggested citation format is: Kansas Mesonet, year: webpage
 title. Accessed date, webpage URL. Review the Kansas Mesonet data usage
 policy before automated use; automated page scraping or data ingesting
 without written consent is not permitted.
+}
+\examples{
+\dontrun{
+konza_hourly <- read_ks_meso(
+  station = "Konza Prairie",
+  start_date = "2024-06-01",
+  end_date = "2024-06-07",
+  interval = "hour"
+)
+}
+
 }
 \references{
 Kansas Mesonet data usage policy:

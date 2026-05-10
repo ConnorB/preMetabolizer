@@ -1,5 +1,5 @@
 ---
-title: "Preparing French Creek Data for Stream Metabolism Modeling"
+title: "Preparing French Creek data for stream metabolism modeling"
 bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{Preparing French Creek Data for Stream Metabolism Modeling}
@@ -20,7 +20,16 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-Stream metabolism models estimate gross primary production and ecosystem respiration from continuous sensor records. The [streamMetabolizer](https://github.com/ConnorB/streamMetabolizer) package fits these models, but it requires a specific set of input variables:
+Stream metabolism models estimate gross primary production and ecosystem
+respiration from continuous sensor records. The
+[streamMetabolizer](https://github.com/ConnorB/streamMetabolizer) package fits
+these models, but the input data usually need a fair amount of preparation
+first: timestamps must be regular, times must be converted to mean solar time,
+site pressure must be realistic, and dissolved oxygen saturation must be
+calculated from the actual water temperature and pressure.
+
+This vignette shows that preparation step by step using the built-in
+`french_creek` dataset.
 
 | Column       | Description                                     |
 |--------------|-------------------------------------------------|
@@ -31,7 +40,11 @@ Stream metabolism models estimate gross primary production and ecosystem respira
 | `temp.water` | Water temperature (°C)                          |
 | `light`      | Photosynthetically active radiation (µmol/m²/s) |
 
-This vignette walks through computing each of those inputs from the `french_creek` dataset using preMetabolizer. The data come from a field study on French Creek near Laramie, Wyoming, USA [@hotchkiss2015whole]. Below we keep NASA-derived PAR as `light.obs` and modeled PAR from `calc_light()` as `light.calc` so the two light series can be compared.
+The data come from a field study on French Creek near Laramie, Wyoming, USA
+[@hotchkiss2015whole]. The runnable workflow uses modeled PAR from
+`calc_light()`. An optional chunk also shows how to retrieve observed light and
+surface pressure from NASA POWER when you are working interactively with an
+internet connection.
 
 ```{r}
 #| label: libraries
@@ -57,7 +70,7 @@ glimpse(french_creek)
 The dataset covers 15-minute intervals from August 23 to September 30, 2012. Two sensors were deployed at the site: `"REZN"` ran from the start of the study through September 1 at 12:50 MDT, when it was replaced by `"TOWN"`. The plot below shows the full record for both sensors.
 
 ```{r}
-#| label: check out data
+#| label: check-data
 #| fig-alt: "Time series of water temperature and dissolved oxygen at French Creek, colored by sensor (REZN and TOWN)."
 
 french_creek |>
@@ -150,58 +163,67 @@ french_creek <- french_creek |>
   )
 ```
 
-## Get barometric pressure and observed light
+## Estimate barometric pressure
 
-French Creek sits at roughly 3,205 m (10,515 ft) above sea level. Using standard sea-level pressure (101.325 kPa) would over predict O₂ saturation, so we download NASA POWER surface pressure for the site with `get_nasa_data()`. We also download shortwave irradiance; `get_nasa_data()` converts it to observed PAR as `light.obs` and interpolates NASA fields to the same timestamps as `french_creek`.
+French Creek sits at roughly 3,205 m above sea level. Using standard sea-level
+pressure (101.325 kPa) would overpredict O~2~ saturation, so we adjust sea-level
+pressure to the site elevation with `correct_bp()`.
+
+```{r}
+#| label: pressure
+
+french_elev_m <- 3205
+
+french_data <- french_creek |>
+  mutate(
+    bp_kPa = correct_bp(
+      station_bp = 101.325,
+      air_temp = temp_C,
+      station_elev = 0,
+      site_elev = french_elev_m
+    ),
+    light.obs = light.calc
+  )
+```
+
+### Optional: get pressure and observed light from NASA POWER
+
+`get_nasa_data()` can download NASA POWER surface pressure (`PSC`) and
+shortwave irradiance (`ALLSKY_SFC_SW_DWN`) for the site. It converts shortwave
+irradiance to observed PAR as `light.obs` and interpolates the NASA fields to
+the same timestamps as the logger data.
 
 ```{r}
 #| label: NASA-data
+#| eval: false
 
-# Get site elevation from USGS; fall back to known French Creek elevation if unavailable
-french_elev_m <- tryCatch(
-  get_usgs_elev(
-    latitude = site_latitude,
-    longitude = site_longitude,
-    units = "Meters"
-  ),
-  error = function(e) 3205.625
-)
+nasa_dat <- get_nasa_data(
+  data = french_creek,
+  datetime_col = "datetime",
+  latitude = site_latitude,
+  longitude = site_longitude,
+  elev_m = french_elev_m,
+  params = c("PSC", "ALLSKY_SFC_SW_DWN")
+) |>
+  select(datetime = dateTime, bp_kPa = PSC, light.obs)
 
-# Download NASA POWER pressure and shortwave radiation data for the site
-nasa_dat <- tryCatch(
-  get_nasa_data(
-    data = french_creek,
-    datetime_col = "datetime",
-    latitude = site_latitude,
-    longitude = site_longitude,
-    elev_m = french_elev_m,
-    params = c("PSC", "ALLSKY_SFC_SW_DWN")
-  ) |>
-    # Keep timestamp, surface pressure, and observed PAR
-    select(datetime = dateTime, bp_kPa = PSC, light.obs),
-  
-  # If NASA download fails, estimate pressure from elevation and use modeled light
-  error = function(e) {
-    french_creek |>
-      transmute(
-        datetime,
-        bp_kPa = correct_bp(
-          station_bp = 101.325,
-          air_temp = temp_C,
-          station_elev = 0,
-          site_elev = french_elev_m
-        ),
-        light.obs = light.calc
-      )
-  }
-)
-
-# Inspect NASA-derived or fallback atmospheric/light data
-nasa_dat
-
-# Join pressure and observed light onto the main French Creek dataset
-french_data <- french_creek |>
+french_data <- french_data |>
+  select(-bp_kPa, -light.obs) |>
   left_join(nasa_dat, by = "datetime")
+```
+
+You can retrieve the elevation directly from the USGS Elevation Point Query
+Service when you do not already know it:
+
+```{r}
+#| label: usgs-elevation
+#| eval: false
+
+french_elev_m <- get_usgs_elev(
+  latitude = site_latitude,
+  longitude = site_longitude,
+  units = "Meters"
+)
 ```
 
 ## Calculate O~2~ saturation
@@ -209,7 +231,7 @@ french_data <- french_creek |>
 With site-adjusted pressure and water temperature, `calc_O2sat()` returns the DO saturation concentration in mg/L.
 
 ```{r}
-#| label: O2 Sat
+#| label: o2-sat
 
 french_data <- french_data |>
   mutate(
@@ -305,6 +327,9 @@ sm_input |>
   theme_bw()
 ```
 
-To fit a model with `streamMetabolizer::metab()`, choose either `light.obs` or `light.calc` and rename that column to `light`. See the [streamMetabolizer documentation](https://github.com/ConnorB/streamMetabolizer) for details on model fitting and interpreting metabolism estimates.
+To fit a model with `streamMetabolizer::metab()`, choose either `light.obs` or
+`light.calc` and rename that column to `light`. See the
+[streamMetabolizer documentation](https://github.com/ConnorB/streamMetabolizer)
+for details on model fitting and interpreting metabolism estimates.
 
 ## References

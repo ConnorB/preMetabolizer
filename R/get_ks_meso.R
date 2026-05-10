@@ -1,4 +1,4 @@
-#' Fetch Data from Kansas Mesonet
+#' Fetch data from Kansas Mesonet
 #'
 #' Retrieves weather data for specified stations from the Kansas Mesonet.
 #'
@@ -21,7 +21,8 @@
 #' @param output_dir Directory to save the downloaded data. Defaults to the cache path.
 #' @param debug Logical; if `TRUE`, debug messages are printed.
 #'
-#' @return A list with details about successful and failed downloads, output directory, and data chunks.
+#' @return A list with details about successful and failed downloads, output
+#'   directory, and data chunks.
 #'
 #' @details
 #' Kansas Mesonet data are preliminary and subject to revision. Cite the Kansas
@@ -36,6 +37,17 @@
 #' \url{https://mesonet.k-state.edu/about/usage/}
 #'
 #' @importFrom rlang .data
+#'
+#' @examples
+#' \dontrun{
+#' get_ks_meso(
+#'   stations = "Konza Prairie",
+#'   start_date = "2024-06-01",
+#'   end_date = "2024-06-07",
+#'   interval = "hour",
+#'   vars = c("TEMP2MAVG", "RELHUM2MAVG", "PRESSUREAVG")
+#' )
+#' }
 #'
 #' @export
 get_ks_meso <- function(

@@ -10,7 +10,8 @@ A tibble with 716 rows and 5 variables:
 \item{monitoring_location_id}{USGS monitoring location ID.}
 \item{time}{Date of observation.}
 \item{value}{Observed value. Units depend on \code{parameter_code}.}
-\item{parameter_code}{USGS parameter code: \code{00060} = discharge, \code{00065} = gage height, \code{00010} = water temperature.}
+\item{parameter_code}{USGS parameter code: \code{00060} = discharge,
+\code{00065} = gage height, \code{00010} = water temperature.}
 \item{qualifier}{USGS data qualifier.}
 }
 }

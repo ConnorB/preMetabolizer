@@ -2,15 +2,15 @@
 % Please edit documentation in R/calc_exceedance_prob.R
 \name{rcpp_calc_exceedance_prob}
 \alias{rcpp_calc_exceedance_prob}
-\title{Calculate Flow Exceedance Probabilities with C++}
+\title{Calculate flow exceedance probabilities with C++}
 \usage{
 rcpp_calc_exceedance_prob(flow, rm.zero = FALSE)
 }
 \arguments{
-\item{flow}{A numeric vector of flow (discharge) values.}
+\item{flow}{Numeric vector of flow or discharge values.}
 
-\item{rm.zero}{Logical. If \code{TRUE}, zero values are removed from the calculation, and
-positions corresponding to zeros are filled with \code{NA} in the output.}
+\item{rm.zero}{Logical. If \code{TRUE}, zero and negative values are omitted from
+the ranking and returned as \code{NA}. Defaults to \code{FALSE}.}
 }
 \value{
 A numeric vector of exceedance probabilities. If \code{rm.zero = TRUE},

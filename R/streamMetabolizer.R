@@ -1,7 +1,10 @@
-#' Calculate modeled light from solar.time
+#' Calculate modeled photosynthetically active radiation
 #'
 #' Calculate photosynthetically active radiation (PAR) for a series of
-#' date-times and site coordinates. This function was adapted from
+#' date-times and site coordinates. Input times should be mean solar time, as
+#' expected by stream metabolism models.
+#'
+#' This function was adapted from
 #' `streamMetabolizer::calc_light` and is included here under the terms of the
 #' CC0 1.0 Universal public domain dedication, as described at:
 #' https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits
@@ -12,16 +15,22 @@
 #' Estimation. *Journal of Geophysical Research: Biogeosciences*, 123(2), 624–645.
 #' https://doi.org/10.1002/2017JG004140
 #'
-#' @param solar.time mean solar time, as required for input to metabolism
-#'   models.
-#' @param latitude numeric. Site latitude in decimal degrees between -90 and 90.
+#' @param solar.time POSIXct vector of mean solar time values.
+#' @param latitude Numeric. Site latitude in decimal degrees between -90 and
+#'   90.
 #' @inheritParams convert_solartime_to_UTC
-#' @param max.PAR numeric: the PAR (umol m^-2 s^-1) that each
-#'   day should reach at peak light
+#' @param max.PAR Numeric. Peak daily PAR in umol m^-2 s^-1. Defaults to
+#'   `2326`.
 #' @inheritParams calc_solar_insolation
+#'
+#' @return Numeric vector of modeled PAR in umol m^-2 s^-1.
+#'
 #' @examples
-#' solar.time <- lubridate::force_tz(as.POSIXct('2016-09-27 12:00'), 'UTC')
-#' calc_light(solar.time, 40, -120)
+#' utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
+#' solar.time <- convert_UTC_to_solartime(utc, longitude = -96.6)
+#'
+#' calc_light(solar.time, latitude = 39.1, longitude = -96.6)
+#'
 #' @export
 calc_light <- function(
   solar.time,
@@ -50,20 +59,22 @@ calc_light <- function(
   pmax(par, 0)
 }
 
-#' Convert UTC Time to Mean or Apparent Solar Time
+#' Convert UTC time to solar time
 #'
 #' Converts a UTC datetime to mean or apparent solar time for a given longitude.
 #' Uses a high-precision offset for longitude and applies the equation of time
 #' for apparent solar time.
 #'
-#' @param date.time A POSIXct datetime object in UTC timezone.
-#' @param longitude Longitude in decimal degrees (east positive, west negative).
+#' @param date.time POSIXct vector in UTC.
+#' @param longitude Numeric longitude in decimal degrees. Western longitudes
+#'   are negative.
 #' @param time.type One of `"mean solar"` (default) or `"apparent solar"`.
 #'
 #' @details
-#' "apparent solar", i.e. true solar time, is noon when the sun is at its zenith.
-#' "mean solar" approximates apparent solar time but with noons exactly 24 hours apart.
-#' Elsewhere in this package, variables named `solar.time` are mean solar time.
+#' Apparent solar time, or true solar time, is noon when the sun is at its
+#' zenith. Mean solar time approximates apparent solar time but keeps noons
+#' exactly 24 hours apart. Elsewhere in this package, variables named
+#' `solar.time` are mean solar time.
 #'
 #' @return A POSIXct datetime in mean or apparent solar time (still tz = "UTC").
 #'
@@ -106,18 +117,33 @@ convert_UTC_to_solartime <- function(
   return(apparent_solar_time)
 }
 
-#' Convert DateTime from Local Solar Time to UTC
+#' Convert solar time to UTC
 #'
-#' Converts a datetime from local solar time back to UTC. Input time may be either
-#' apparent solar time (sun at zenith at noon) or mean solar time (noons exactly 24 hours apart).
+#' Converts a datetime from local solar time back to UTC. Input time may be
+#' either apparent solar time or mean solar time.
 #'
-#' @param any.solar.time A POSIXct datetime object in solar time (mean or apparent). Must have tz = "UTC".
-#' @param longitude Numeric longitude in decimal degrees (east positive, west negative).
-#' @param time.type Character string: either `"mean solar"` or `"apparent solar"`.
-#'   "apparent solar", i.e. true solar time, is noon when the sun is at its zenith.
-#'   "mean solar" approximates apparent solar time but with noons exactly 24 hours apart.
+#' @param any.solar.time POSIXct vector in solar time. The timezone attribute
+#'   must be UTC, even though the clock time represents solar time.
+#' @param longitude Numeric longitude in decimal degrees. Western longitudes
+#'   are negative.
+#' @param time.type Character string: either `"mean solar"` or
+#'   `"apparent solar"`.
 #'
 #' @return A POSIXct datetime in UTC.
+#'
+#' @examples
+#' utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
+#' solar <- convert_UTC_to_solartime(
+#'   utc,
+#'   longitude = -96.6,
+#'   time.type = "mean solar"
+#' )
+#'
+#' convert_solartime_to_UTC(
+#'   solar,
+#'   longitude = -96.6,
+#'   time.type = "mean solar"
+#' )
 #'
 #' @export
 #' @references Yard, Bennett, Mietz, Coggins, Stevens, Hueftle, and Blinn. 2005.

@@ -1,13 +1,15 @@
-#' Flag Outliers Using Robust Z-Scores
+#' Flag outliers with robust Z-scores
 #'
 #' Identifies potential outliers in a numeric vector based on a moving window
 #' robust Z-score approach. The robust Z-score is computed using a
 #' biweight scale estimate centered on the median.
 #'
-#' @param x A numeric vector to be checked for outliers.
-#' @param width An odd integer specifying the width of the moving window (default: 5).
-#' @param threshold A numeric threshold for the absolute Z-score above which a value is flagged (default: 3.0).
-#' @param return_z Logical; if `TRUE`, returns both Z-scores and flags. If `FALSE`, returns only flags (default: `FALSE`).
+#' @param x Numeric vector to check for outliers.
+#' @param width Odd integer giving the moving-window width. Defaults to `5`.
+#' @param threshold Numeric threshold for the absolute Z-score above which a
+#'   value is flagged. Defaults to `3`.
+#' @param return_z Logical. If `TRUE`, return both Z-scores and flags. If
+#'   `FALSE`, return only flags. Defaults to `FALSE`.
 #'
 #' @details
 #' For each value in `x`, a window of length `width` centered on that value
@@ -17,14 +19,16 @@
 #' - Estimates a robust scale using Tukey’s biweight estimator based on MAD.
 #' - Computes a Z-score as \eqn{(x_i - \text{median}) / \text{scale}}.
 #'
-#' If the absolute value of the Z-score exceeds `threshold`, the value is flagged with `"Z"`.
+#' If the absolute value of the Z-score exceeds `threshold`, the value is
+#' flagged with `"Z"`.
 #'
 #' NA values are ignored in the window statistics but retained in output positions.
 #'
 #' @return If `return_z = TRUE`, a list with:
 #' \describe{
 #'   \item{z}{A numeric vector of robust Z-scores (with `NA` where not computable).}
-#'   \item{flag}{A character vector of same length as `x`, with `"Z"` where an outlier is detected, and `NA` otherwise.}
+#'   \item{flag}{A character vector of the same length as `x`, with `"Z"`
+#'     where an outlier is detected and `NA` otherwise.}
 #' }
 #' If `return_z = FALSE`, only the `flag` vector is returned.
 #'

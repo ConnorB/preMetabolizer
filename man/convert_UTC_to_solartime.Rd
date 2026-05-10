@@ -2,7 +2,7 @@
 % Please edit documentation in R/streamMetabolizer.R
 \name{convert_UTC_to_solartime}
 \alias{convert_UTC_to_solartime}
-\title{Convert UTC Time to Mean or Apparent Solar Time}
+\title{Convert UTC time to solar time}
 \usage{
 convert_UTC_to_solartime(
   date.time,
@@ -11,9 +11,10 @@ convert_UTC_to_solartime(
 )
 }
 \arguments{
-\item{date.time}{A POSIXct datetime object in UTC timezone.}
+\item{date.time}{POSIXct vector in UTC.}
 
-\item{longitude}{Longitude in decimal degrees (east positive, west negative).}
+\item{longitude}{Numeric longitude in decimal degrees. Western longitudes
+are negative.}
 
 \item{time.type}{One of \code{"mean solar"} (default) or \code{"apparent solar"}.}
 }
@@ -26,9 +27,10 @@ Uses a high-precision offset for longitude and applies the equation of time
 for apparent solar time.
 }
 \details{
-"apparent solar", i.e. true solar time, is noon when the sun is at its zenith.
-"mean solar" approximates apparent solar time but with noons exactly 24 hours apart.
-Elsewhere in this package, variables named \code{solar.time} are mean solar time.
+Apparent solar time, or true solar time, is noon when the sun is at its
+zenith. Mean solar time approximates apparent solar time but keeps noons
+exactly 24 hours apart. Elsewhere in this package, variables named
+\code{solar.time} are mean solar time.
 }
 \examples{
 utc <- as.POSIXct("2025-04-30 12:00:00", tz = "UTC")

@@ -2,28 +2,36 @@
 % Please edit documentation in R/calc_K0.R
 \name{calc_K0}
 \alias{calc_K0}
-\title{Calculate Solubility Constant (K0) for CO2 in Water}
+\title{Calculate the CO2 solubility coefficient}
 \usage{
 calc_K0(temp_water, waterDepth_m = 0, atmo_press = 1, salinity = 0)
 }
 \arguments{
-\item{temp_water}{Numeric. Water temperature in degrees Celsius.}
+\item{temp_water}{Numeric vector. Water temperature in degrees Celsius.}
 
-\item{waterDepth_m}{Numeric. Water depth in meters.}
+\item{waterDepth_m}{Numeric vector. Water depth in meters. Defaults to \code{0}.}
 
-\item{atmo_press}{Numeric. Atmospheric pressure in atm.}
+\item{atmo_press}{Numeric vector. Atmospheric pressure in atm. Defaults to
+standard atmosphere (\code{1}).}
 
-\item{salinity}{Numeric. Salinity in PSU (Practical Salinity Units).}
+\item{salinity}{Numeric vector. Salinity in practical salinity units.
+Defaults to freshwater (\code{0}).}
 }
 \value{
-Numeric. Solubility constant (K0) in mol/(kg·atm).
+Numeric vector of \code{K0} values in mol/(kg atm).
 }
 \description{
-This function calculates the solubility constant (K0) for CO2 in water
-as a function of temperature and salinity, based on Weiss (1974).
+Calculates the Weiss (1974) CO2 solubility coefficient, \code{K0}, for water at
+the supplied temperature, salinity, atmospheric pressure, and water depth.
+The depth and atmospheric pressure terms apply a pressure correction for
+the total pressure at the sensor.
+}
+\examples{
+calc_K0(temp_water = 20)
+calc_K0(temp_water = c(5, 15, 25), waterDepth_m = 1, salinity = 0)
+
 }
 \references{
 Weiss, R.F. (1974). Carbon dioxide in water and seawater: the solubility of
 a non-ideal gas. Marine Chemistry, 2, 203-215.
 }
-\keyword{internal}

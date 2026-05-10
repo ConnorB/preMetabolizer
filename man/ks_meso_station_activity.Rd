@@ -2,7 +2,7 @@
 % Please edit documentation in R/ks_meso_station_activity.R
 \name{ks_meso_station_activity}
 \alias{ks_meso_station_activity}
-\title{Get Kansas Mesonet Station Activity}
+\title{Get Kansas Mesonet station activity}
 \usage{
 ks_meso_station_activity()
 }
@@ -10,7 +10,8 @@ ks_meso_station_activity()
 A data frame with station activity details, including start and end observation times.
 }
 \description{
-Retrieves activity data for Kansas Mesonet stations, including observation intervals and data spans.
+Retrieves activity data for Kansas Mesonet stations, including observation
+intervals and data spans.
 }
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
@@ -21,6 +22,13 @@ with this function. A suggested citation format is: Kansas Mesonet, year:
 webpage title. Accessed date, webpage URL. Review the Kansas Mesonet data
 usage policy before automated use; automated page scraping or data ingesting
 without written consent is not permitted.
+}
+\examples{
+\dontrun{
+activity <- ks_meso_station_activity()
+subset(activity, station == "Konza Prairie")
+}
+
 }
 \references{
 Kansas Mesonet data usage policy:

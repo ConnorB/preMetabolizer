@@ -9,8 +9,9 @@
 preMetabolizer provides helpers for building the environmental time series
 commonly needed before fitting stream metabolism models. It includes tools
 to download external meteorological and elevation data, align irregular time
-series, convert units, calculate water and gas chemistry quantities, and
-assemble light and pressure inputs for streamMetabolizer.
+series, convert hydrology and atmospheric units, calculate water and gas
+chemistry quantities, and assemble light and pressure inputs for
+streamMetabolizer.
 }
 \section{Coordinates}{
 
@@ -22,15 +23,24 @@ and western longitudes are negative.
 \section{Main workflows}{
 
 \itemize{
-\item Download site-level environmental data with \code{\link[=get_nasa_data]{get_nasa_data()}},
-\code{\link[=get_usgs_elev]{get_usgs_elev()}}, \code{\link[=get_noaa_stations]{get_noaa_stations()}}, and \code{\link[=get_ks_meso]{get_ks_meso()}}.
-\item Prepare regularly spaced time series with \code{\link[=even_timesteps]{even_timesteps()}} and
-\code{\link[=get_season]{get_season()}}.
-\item Calculate light, barometric pressure, dissolved oxygen saturation,
-water density, stream depth, and dissolved carbon dioxide inputs.
-\item Convert common hydrology and atmospheric units with
-\code{\link[=convert_flow]{convert_flow()}} and \code{\link[=convert_pressure]{convert_pressure()}}.
+\item Find and download meteorological data with \code{\link[=get_noaa_stations]{get_noaa_stations()}},
+\code{\link[=closest_noaa_stations]{closest_noaa_stations()}}, \code{\link[=download_ghcnh]{download_ghcnh()}}, \code{\link[=get_nasa_data]{get_nasa_data()}}, and
+\code{\link[=get_ks_meso]{get_ks_meso()}}.
+\item Retrieve or calculate site context with \code{\link[=get_usgs_elev]{get_usgs_elev()}},
+\code{\link[=correct_bp]{correct_bp()}}, \code{\link[=convert_UTC_to_solartime]{convert_UTC_to_solartime()}}, and \code{\link[=calc_light]{calc_light()}}.
+\item Prepare model inputs with \code{\link[=even_timesteps]{even_timesteps()}}, \code{\link[=calc_O2sat]{calc_O2sat()}},
+\code{\link[=calc_water_height]{calc_water_height()}}, and the built-in example datasets.
+\item Summarize and check data with \code{\link[=flag_z]{flag_z()}},
+\code{\link[=calc_exceedance_prob]{calc_exceedance_prob()}}, \code{\link[=calc_cv]{calc_cv()}}, and \code{\link[=calc_bin_width]{calc_bin_width()}}.
 }
+}
+
+\section{Built-in datasets}{
+
+\link{french_creek} contains 5-minute dissolved oxygen and water temperature
+observations for a complete metabolism-preparation example.
+\link{kings_discharge} contains daily USGS discharge, gage height, and water
+temperature observations for flow-duration and seasonal summaries.
 }
 
 \seealso{

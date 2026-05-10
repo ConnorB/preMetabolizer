@@ -1,28 +1,26 @@
-#' Calculate Coefficient of Variation
+#' Calculate the coefficient of variation
 #'
-#' @description
-#' Computes the coefficient of variation (CV), defined as the ratio of the standard deviation
-#' to the mean. Handles NA values, zero-mean cases, and provides percentage formatting.
+#' Computes the coefficient of variation (CV), a unitless measure of relative
+#' variability. By default, the result is returned as a percentage.
 #'
-#' @param x A numeric vector for which to compute CV.
-#' @param na.rm Logical indicating whether to remove NA values (default: TRUE).
-#' @param as_percent Logical indicating whether to return result as percentage (default: TRUE).
-#' @param robust Logical indicating whether to use median/MAD instead of mean/SD for robust CV (default: FALSE).
+#' @param x Numeric vector.
+#' @param na.rm Logical. If `TRUE`, remove missing values before calculation.
+#'   Defaults to `TRUE`.
+#' @param as_percent Logical. If `TRUE`, multiply the CV by 100. Defaults to
+#'   `TRUE`.
+#' @param robust Logical. If `TRUE`, use median and MAD instead of mean and
+#'   standard deviation. Defaults to `FALSE`.
 #'
-#' @return The CV as numeric (percentage if `as_percent = TRUE`). Returns NA with warning for:
-#' - Non-numeric input
-#' - Zero-length input
-#' - All-NA input (when na.rm = TRUE)
-#' - Zero-mean input (for non-robust version)
+#' @return A single numeric CV value, or `NA_real_` when the input is
+#'   non-numeric, empty, all missing after `NA` removal, or centered on zero.
+#'   Problematic inputs also produce a warning.
 #'
 #' @examples
-#' calc_cv(c(10, 20, 30, 40, 50))  # 47.14045 (percentage)
-#' calc_cv(c(10, 20, 30, 40, 50), as_percent = FALSE)  # 0.4714045
-#' calc_cv(c(10, 20, NA, 40, 50))  # NA removed by default
-#' calc_cv(c(10, 20, NA, 40, 50), na.rm = FALSE)  # NA
-#' calc_cv(numeric(0))  # NA with warning
-#' calc_cv(c(0, 0, 0))  # NA with warning (zero mean)
-#' calc_cv(c(0, 0, 0), robust = TRUE)  # Computes robust CV
+#' discharge <- c(0.12, 0.18, 0.15, 1.4, 0.09)
+#'
+#' calc_cv(discharge)
+#' calc_cv(discharge, as_percent = FALSE)
+#' calc_cv(discharge, robust = TRUE)
 #'
 #' @export
 calc_cv <- function(x, na.rm = TRUE, as_percent = TRUE, robust = FALSE) {

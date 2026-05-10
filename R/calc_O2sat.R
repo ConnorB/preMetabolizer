@@ -1,37 +1,32 @@
-#' Calculate Dissolved Oxygen Saturation
+#' Calculate dissolved oxygen saturation
 #'
-#' This function calculates dissolved oxygen saturation (\[DO\]) in water,
-#' accounting for temperature, barometric pressure, and salinity.
-#' It uses the Benson and Krause \eqn{\mu}mol/kg coefficients reported by
-#' Garcia and Gordon (1992) and corrects for vapor pressure and water density.
+#' Calculates dissolved oxygen saturation in mg/L from water temperature,
+#' barometric pressure, and salinity. This is the `DO.sat` quantity commonly
+#' required by stream metabolism models.
 #'
-#' @param temp_water Numeric. Water temperature in degrees Celsius.
-#' @param atmo_press Numeric. Barometric pressure values.
-#' @param units Character. Units of barometric pressure. Accepted values are
-#'   `"atm"`, `"hPa"`, `"mbar"`, and `"kPa"`.
-#'   Default is `"atm"`.
-#' @param salinity Numeric. salinity in parts per thousand (ppt). Default is `0`.
+#' @param temp_water Numeric vector. Water temperature in degrees Celsius.
+#' @param atmo_press Numeric vector. Barometric pressure at the site.
+#' @param units Character string. Units of `atmo_press`. Accepted values are
+#'   `"atm"`, `"hPa"`, `"mbar"`, and `"kPa"`. Defaults to `"atm"`.
+#' @param salinity Numeric vector. Salinity in parts per thousand. Defaults to
+#'   freshwater (`0`).
 #'
-#' @return Numeric. Dissolved oxygen saturation (\[DO\]) in mg/L.
+#' @return Numeric vector of dissolved oxygen saturation in mg/L.
 #'
 #' @details
-#' The function calculates dissolved oxygen saturation from the Benson and
-#' Krause \eqn{\mu}mol/kg fit reported in Garcia and Gordon (1992). It includes
-#' corrections for:
-#' - Barometric pressure, converted from the specified units to atm.
-#' - Vapor pressure of water, using the Antoine equation.
-#' - Water density, dynamically calculated based on temperature and salinity.
+#' The calculation uses the Benson and Krause umol/kg fit reported by Garcia
+#' and Gordon (1992), applies a vapor-pressure correction for non-standard
+#' barometric pressure, and converts from mass-based concentration to mg/L with
+#' a salinity-aware density correction.
 #'
 #' @examples
-#' # Example with mbar
-#' temp <- 25  # Water temperature in °C
-#' atmo_mbar <- c(1013, 1015, 1012)  # Barometric pressure in mbar
-#' calc_O2sat(temp_water = temp, atmo_press = atmo_mbar, units = "mbar")
+#' calc_O2sat(temp_water = 15, atmo_press = 1, units = "atm")
 #'
-#' # Example with kPa
-#' temp <- 20
-#' atmo_kPa <- c(101.3, 101.5, 101.2)  # Barometric pressure in kPa
-#' calc_O2sat(temp_water = temp, atmo_press = atmo_kPa, units = "kPa")
+#' calc_O2sat(
+#'   temp_water = c(5, 15, 25),
+#'   atmo_press = c(101.2, 100.8, 100.5),
+#'   units = "kPa"
+#' )
 #'
 #' @export
 calc_O2sat <- function(temp_water, atmo_press, units = "atm", salinity = 0) {

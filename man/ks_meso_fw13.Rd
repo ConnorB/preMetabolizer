@@ -2,7 +2,7 @@
 % Please edit documentation in R/ks_meso_fw13.R
 \name{ks_meso_fw13}
 \alias{ks_meso_fw13}
-\title{Get Kansas Mesonet FW13 Data}
+\title{Get Kansas Mesonet FW13 data}
 \usage{
 ks_meso_fw13(station, start_date, end_date)
 }
@@ -30,6 +30,16 @@ with this function. A suggested citation format is: Kansas Mesonet, year:
 webpage title. Accessed date, webpage URL. Review the Kansas Mesonet data
 usage policy before automated use; automated page scraping or data ingesting
 without written consent is not permitted.
+}
+\examples{
+\dontrun{
+ks_meso_fw13(
+  station = "Konza Prairie",
+  start_date = "2024-04-01",
+  end_date = "2024-04-07"
+)
+}
+
 }
 \references{
 Kansas Mesonet data usage policy:

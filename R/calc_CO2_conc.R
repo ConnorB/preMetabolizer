@@ -1,13 +1,32 @@
-#' Calculate CO2 Concentration from Sensor Data
+#' Calculate dissolved CO2 concentration in mol/kg
 #'
-#' @param CO2_ppm Numeric. Mole fraction of CO2 in parts per million.
-#' @param temp_water Numeric. Water temperature in degrees Celsius.
-#' @param waterDepth_m Numeric. Water depth in meters.
-#' @param atmo_press Numeric. Atmospheric pressure.
-#' @param press_units Character. Units of atmospheric pressure.
-#' @param salinity Numeric. Salinity in PSU.
+#' Converts a measured or modeled CO2 mole fraction to dissolved CO2
+#' concentration using atmospheric pressure, water-column pressure, vapor
+#' pressure, and the Weiss (1974) CO2 solubility coefficient.
 #'
-#' @return a numeric vector of CO2 concentration in mol/kg.
+#' @param CO2_ppm Numeric vector. Mole fraction of CO2 in air in parts per
+#'   million.
+#' @param temp_water Numeric vector. Water temperature in degrees Celsius.
+#' @param waterDepth_m Numeric vector. Water depth above the sensor in meters.
+#' @param atmo_press Numeric vector. Atmospheric pressure at the water surface.
+#' @param press_units Character string giving the units of `atmo_press`. See
+#'   [convert_pressure()] for accepted pressure units.
+#' @param salinity Numeric vector. Salinity in practical salinity units.
+#'   Defaults to freshwater (`0`).
+#'
+#' @return Numeric vector of dissolved CO2 concentration in mol/kg.
+#'
+#' @seealso [calc_CO2_mgL()], [xCO2_to_pCO2()], [calc_K0()]
+#'
+#' @examples
+#' calc_CO2_molKg(
+#'   CO2_ppm = 420,
+#'   temp_water = 20,
+#'   waterDepth_m = 0.5,
+#'   atmo_press = 101.325,
+#'   press_units = "kPa"
+#' )
+#'
 #' @export
 calc_CO2_molKg <- function(
   CO2_ppm,
@@ -47,16 +66,27 @@ calc_CO2_molKg <- function(
   return(CO2_molKg)
 }
 
-#' Calculate CO2 Concentration from Sensor Data
+#' Calculate dissolved CO2 concentration in mg/L
 #'
-#' @param CO2_ppm Numeric. Mole fraction of CO2 in parts per million.
-#' @param temp_water Numeric. Water temperature in degrees Celsius.
-#' @param waterDepth_m Numeric. Water depth in meters.
-#' @param atmo_press Numeric. Atmospheric pressure.
-#' @param press_units Character. Units of atmospheric pressure.
-#' @param salinity Numeric. Salinity in PSU.
+#' Converts a measured or modeled CO2 mole fraction to dissolved CO2
+#' concentration in mg/L. This is a volume-based companion to
+#' [calc_CO2_molKg()] and uses water density to convert from mol/kg.
 #'
-#' @return a numeric vector of CO2 concentration in mg/L.
+#' @inheritParams calc_CO2_molKg
+#'
+#' @return Numeric vector of dissolved CO2 concentration in mg/L.
+#'
+#' @seealso [calc_CO2_molKg()], [xCO2_to_pCO2()], [calc_water_density()]
+#'
+#' @examples
+#' calc_CO2_mgL(
+#'   CO2_ppm = c(420, 800, 1200),
+#'   temp_water = 20,
+#'   waterDepth_m = 0.5,
+#'   atmo_press = 101.325,
+#'   press_units = "kPa"
+#' )
+#'
 #' @export
 calc_CO2_mgL <- function(
   CO2_ppm,

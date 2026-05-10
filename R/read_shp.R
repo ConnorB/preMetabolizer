@@ -1,4 +1,4 @@
-#' Read Shapefile or Zipped Shapefile
+#' Read a shapefile or zipped shapefile
 #'
 #' Reads a shapefile or shapefile contained in a zip archive, automatically handling
 #' path specifications and layer detection. This is a convenience wrapper around

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ks_meso_stations.R
 \name{ks_meso_stations}
 \alias{ks_meso_stations}
-\title{Get Kansas Mesonet Station Information}
+\title{Get Kansas Mesonet station information}
 \usage{
 ks_meso_stations()
 }
@@ -22,6 +22,13 @@ with this function. A suggested citation format is: Kansas Mesonet, year:
 webpage title. Accessed date, webpage URL. Review the Kansas Mesonet data
 usage policy before automated use; automated page scraping or data ingesting
 without written consent is not permitted.
+}
+\examples{
+\dontrun{
+stations <- ks_meso_stations()
+subset(stations, grepl("Konza", StationName))
+}
+
 }
 \references{
 Kansas Mesonet data usage policy:

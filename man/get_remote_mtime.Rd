@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_remote_mtime}
 \alias{get_remote_mtime}
-\title{Get the Last Modified Time of a Remote File (Internal)}
+\title{Get the last modified time of a remote file}
 \usage{
 get_remote_mtime(url)
 }
@@ -10,10 +10,14 @@ get_remote_mtime(url)
 \item{url}{A character string specifying the URL of the remote file.}
 }
 \value{
-A POSIXlt object representing the last modified timestamp of the remote file, or \code{NULL} if the information is unavailable or an error occurs.
+A POSIXlt object representing the last modified timestamp of the
+remote file, or \code{NULL} if the information is unavailable or an error
+occurs.
 }
 \description{
-This internal function retrieves the "Last-Modified" timestamp of a remote file by sending an HTTP HEAD request to the given URL. The result is memoised to cache results for repeated calls with the same URL.
+This internal function retrieves the "Last-Modified" timestamp of a remote
+file by sending an HTTP HEAD request to the given URL. The result is
+memoised to cache repeated calls with the same URL.
 }
 \details{
 The function sends an HTTP HEAD request to the specified URL using

@@ -1,18 +1,27 @@
-#' Calculate Solubility Constant (K0) for CO2 in Water
+#' Calculate the CO2 solubility coefficient
 #'
-#' This function calculates the solubility constant (K0) for CO2 in water
-#' as a function of temperature and salinity, based on Weiss (1974).
+#' Calculates the Weiss (1974) CO2 solubility coefficient, `K0`, for water at
+#' the supplied temperature, salinity, atmospheric pressure, and water depth.
+#' The depth and atmospheric pressure terms apply a pressure correction for
+#' the total pressure at the sensor.
 #'
-#' @param temp_water Numeric. Water temperature in degrees Celsius.
-#' @param waterDepth_m Numeric. Water depth in meters.
-#' @param atmo_press Numeric. Atmospheric pressure in atm.
-#' @param salinity Numeric. Salinity in PSU (Practical Salinity Units).
+#' @param temp_water Numeric vector. Water temperature in degrees Celsius.
+#' @param waterDepth_m Numeric vector. Water depth in meters. Defaults to `0`.
+#' @param atmo_press Numeric vector. Atmospheric pressure in atm. Defaults to
+#'   standard atmosphere (`1`).
+#' @param salinity Numeric vector. Salinity in practical salinity units.
+#'   Defaults to freshwater (`0`).
 #'
-#' @return Numeric. Solubility constant (K0) in mol/(kg·atm).
+#' @return Numeric vector of `K0` values in mol/(kg atm).
+#'
 #' @references
 #' Weiss, R.F. (1974). Carbon dioxide in water and seawater: the solubility of
 #' a non-ideal gas. Marine Chemistry, 2, 203-215.
-#' @keywords internal
+#'
+#' @examples
+#' calc_K0(temp_water = 20)
+#' calc_K0(temp_water = c(5, 15, 25), waterDepth_m = 1, salinity = 0)
+#'
 #' @export
 calc_K0 <- function(
   temp_water,

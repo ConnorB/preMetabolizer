@@ -1,24 +1,27 @@
-#' Calculate Flow Exceedence Probabilities
+#' Calculate flow exceedance probabilities
 #'
-#' This function calculates the exceedance probability for a given numeric vector of flow values.
-#' The exceedance probability is calculated using the Weibull plotting position formula.
+#' Calculates exceedance probabilities for a discharge vector with the Weibull
+#' plotting-position formula. Higher flows receive lower exceedance
+#' probabilities.
 #'
-#' @param flow A numeric vector of flow (discharge) values.
-#' @param rm.zero Logical. If `TRUE`, zero values are removed from the calculation, and
-#'                positions corresponding to zeros are filled with `NA` in the output.
+#' @param flow Numeric vector of flow or discharge values.
+#' @param rm.zero Logical. If `TRUE`, zero and negative values are omitted from
+#'   the ranking and returned as `NA`. Defaults to `FALSE`.
 #'
-#' @return A numeric vector of exceedance probabilities. If `rm.zero = TRUE`, the returned vector
-#'         will have the same length as the input with `NA` at positions of zero values.
+#' @return Numeric vector of exceedance probabilities with the same length as
+#'   `flow`. Missing input values return `NA`.
 #'
-#' @details The Weibull plotting position is used to compute the exceedance probability:
-#'          \deqn{P = \frac{\text{rank}}{n + 1}}
-#'          where `rank` is the rank of the flow value (in descending order), and `n` is the
-#'          number of observations.
+#' @details
+#' The Weibull plotting position is:
+#' \deqn{P = \frac{\mathrm{rank}}{n + 1}}
+#' where `rank` is the descending rank of the flow value and `n` is the number
+#' of ranked observations.
 #'
 #' @examples
 #' flow_data <- c(10, 5, 0, 15, 8, NA, 0, 20)
-#' exceedance_probs <- calc_exceedance_prob(flow_data)
-#' exceedance_probs_no_zeros <- calc_exceedance_prob(flow_data, rm.zero = TRUE)
+#'
+#' calc_exceedance_prob(flow_data)
+#' calc_exceedance_prob(flow_data, rm.zero = TRUE)
 #'
 #' @export
 calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
@@ -79,7 +82,7 @@ calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
   return(full_exceedance_prob)
 }
 
-#' Calculate Flow Exceedance Probabilities with C++
+#' Calculate flow exceedance probabilities with C++
 #'
 #' Calculates exceedance probabilities using the same Weibull plotting position
 #' method and return shape as [calc_exceedance_prob()], but delegates ranking to

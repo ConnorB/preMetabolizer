@@ -21,7 +21,10 @@ knitr::opts_chunk$set(
 
 The [Kansas Mesonet](https://mesonet.k-state.edu/) is a statewide network of automated weather stations operated by Kansas State University. It provides sub-hourly meteorological data — including air temperature, relative humidity, precipitation, solar radiation, wind, and soil measurements — for more than 60 stations across Kansas.
 
-This vignette walks through the workflow for discovering stations, browsing the variable catalog, downloading data, and reading cached files using the preMetabolizer Mesonet functions. We use **Konza Prairie**, a long-term ecological research (LTER) site in northeastern Kansas, as our example station.
+This vignette walks through the workflow for discovering stations, browsing the
+variable catalog, downloading data, and reading cached files using the
+preMetabolizer Mesonet functions. We use **Konza Prairie**, a long-term
+ecological research (LTER) site in northeastern Kansas, as our example station.
 
 > **Note:** Functions that contact the Mesonet API require an internet connection. Code chunks marked with `#| eval: false` will not run during package installation. Run them interactively in your own session.
 
@@ -40,6 +43,7 @@ library(ggplot2)
 
 ```{r}
 #| label: var-catalog
+#| eval: false
 
 mesonet_vars <- ks_meso_vars()
 ```
@@ -48,6 +52,7 @@ Search the catalog to find variables of interest:
 
 ```{r}
 #| label: search-vars
+#| eval: false
 
 mesonet_vars |>
   filter(grepl("temp|precip|solar|humidity", desc, ignore.case = TRUE)) |>
@@ -60,6 +65,7 @@ mesonet_vars |>
 
 ```{r}
 #| label: stations
+#| eval: false
 
 stations <- ks_meso_stations()
 glimpse(stations)
@@ -69,6 +75,7 @@ Filter to find Konza Prairie and confirm the exact station name used by the API:
 
 ```{r}
 #| label: get-konza
+#| eval: false
 
 konza <- stations |>
   filter(grepl("Konza", StationName, ignore.case = TRUE))
@@ -84,6 +91,7 @@ The station name recognized by the API is `"Konza Prairie"`.
 
 ```{r}
 #| label: check-activity
+#| eval: false
 
 activity <- ks_meso_station_activity()
 
@@ -97,6 +105,7 @@ activity |>
 
 ```{r}
 #| label: check-most-recent
+#| eval: false
 
 recent <- ks_meso_most_recent(interval = "hour")
 
@@ -112,6 +121,7 @@ Here we download hourly data for Konza Prairie for the 2024 calendar year, reque
 
 ```{r}
 #| label: download-data
+#| eval: false
 
 download_result <- get_ks_meso(
   stations   = "Konza Prairie",
@@ -130,6 +140,7 @@ Once downloaded, `read_ks_meso()` reads the cached file back into R. The `TIMEST
 
 ```{r}
 #| label: cached
+#| eval: false
 
 konza_hourly <- read_ks_meso(
   station    = "Konza Prairie",
@@ -147,6 +158,7 @@ With the data in hand, standard `dplyr` and `ggplot2` workflows apply. The examp
 
 ```{r}
 #| label: monthly-ppt
+#| eval: false
 
 monthly_precip <- konza_hourly |>
   mutate(month = lubridate::floor_date(TIMESTAMP, "month")) |>

@@ -2,39 +2,36 @@
 % Please edit documentation in R/calc_cv.R
 \name{calc_cv}
 \alias{calc_cv}
-\title{Calculate Coefficient of Variation}
+\title{Calculate the coefficient of variation}
 \usage{
 calc_cv(x, na.rm = TRUE, as_percent = TRUE, robust = FALSE)
 }
 \arguments{
-\item{x}{A numeric vector for which to compute CV.}
+\item{x}{Numeric vector.}
 
-\item{na.rm}{Logical indicating whether to remove NA values (default: TRUE).}
+\item{na.rm}{Logical. If \code{TRUE}, remove missing values before calculation.
+Defaults to \code{TRUE}.}
 
-\item{as_percent}{Logical indicating whether to return result as percentage (default: TRUE).}
+\item{as_percent}{Logical. If \code{TRUE}, multiply the CV by 100. Defaults to
+\code{TRUE}.}
 
-\item{robust}{Logical indicating whether to use median/MAD instead of mean/SD for robust CV (default: FALSE).}
+\item{robust}{Logical. If \code{TRUE}, use median and MAD instead of mean and
+standard deviation. Defaults to \code{FALSE}.}
 }
 \value{
-The CV as numeric (percentage if \code{as_percent = TRUE}). Returns NA with warning for:
-\itemize{
-\item Non-numeric input
-\item Zero-length input
-\item All-NA input (when na.rm = TRUE)
-\item Zero-mean input (for non-robust version)
-}
+A single numeric CV value, or \code{NA_real_} when the input is
+non-numeric, empty, all missing after \code{NA} removal, or centered on zero.
+Problematic inputs also produce a warning.
 }
 \description{
-Computes the coefficient of variation (CV), defined as the ratio of the standard deviation
-to the mean. Handles NA values, zero-mean cases, and provides percentage formatting.
+Computes the coefficient of variation (CV), a unitless measure of relative
+variability. By default, the result is returned as a percentage.
 }
 \examples{
-calc_cv(c(10, 20, 30, 40, 50))  # 47.14045 (percentage)
-calc_cv(c(10, 20, 30, 40, 50), as_percent = FALSE)  # 0.4714045
-calc_cv(c(10, 20, NA, 40, 50))  # NA removed by default
-calc_cv(c(10, 20, NA, 40, 50), na.rm = FALSE)  # NA
-calc_cv(numeric(0))  # NA with warning
-calc_cv(c(0, 0, 0))  # NA with warning (zero mean)
-calc_cv(c(0, 0, 0), robust = TRUE)  # Computes robust CV
+discharge <- c(0.12, 0.18, 0.15, 1.4, 0.09)
+
+calc_cv(discharge)
+calc_cv(discharge, as_percent = FALSE)
+calc_cv(discharge, robust = TRUE)
 
 }

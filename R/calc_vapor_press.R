@@ -1,26 +1,32 @@
-#' Calculate the vapor pressure of water at the supplied conditions
+#' Calculate water vapor pressure
 #'
-#' This function calculates the vapor pressure of fresh or sea water.
-#' @param temp_water Water temperature in degrees Celsius (default: 25).
-#' @param salinity Salinity of the water in PSU (default: 0).
-#' @param method Character. The method to use for calculation, either `"Dickson2007"` for seawater
-#'        or `"MIMSY"` for freshwater. Defaults to `"Dickson2007"`.
+#' Calculates the vapor pressure of freshwater or seawater in atmospheres.
 #'
-#' @return Vapor pressure in atm.
+#' @param temp_water Numeric vector. Water temperature in degrees Celsius.
+#'   Defaults to `25`.
+#' @param salinity Numeric vector. Salinity in practical salinity units.
+#'   Defaults to freshwater (`0`).
+#' @param method Character string. Calculation method. Use `"Dickson2007"` for
+#'   seawater and `"MIMSY"` for freshwater. Defaults to `"Dickson2007"`.
+#'
+#' @return Numeric vector of vapor pressure in atm.
+#'
 #' @details
-#' - `"Dickson2007"` follows the method outlined in Dickson et al. (2007) and adjusts for seawater.
-#' - `"MIMSY"` uses the Antoine equation for freshwater vapor pressure calculation.
+#' `"Dickson2007"` follows the ocean CO2 best-practices guide and includes a
+#' salinity correction. `"MIMSY"` uses the Antoine equation for freshwater.
 #'
 #' @references
-#' Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to best practices for
-#' ocean CO2 measurements. PICES Special Publication 3, 191 pp.
+#' Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to
+#' best practices for ocean CO2 measurements. PICES Special Publication 3.
 #'
-#' Kelly, M.C. (2024). mimsy: Calculate MIMS Dissolved Gas Concentrations Without Getting a Headache.
-#' R package version 0.6.5. Available at: <https://CRAN.R-project.org/package=mimsy>
+#' Kelly, M.C. (2024). mimsy: Calculate MIMS Dissolved Gas Concentrations
+#' Without Getting a Headache. R package version 0.6.5.
+#' <https://CRAN.R-project.org/package=mimsy>
 #'
 #' @examples
-#' calc_vapor_press(temp_water = 25, salinity = 35,  method = "Dickson2007")
+#' calc_vapor_press(temp_water = 25, salinity = 35, method = "Dickson2007")
 #' calc_vapor_press(temp_water = 20, salinity = 0, method = "MIMSY")
+#'
 #' @export
 calc_vapor_press <- function(
   temp_water = 25,

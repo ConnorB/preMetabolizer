@@ -1,6 +1,7 @@
-#' Get Kansas Mesonet Station Activity
+#' Get Kansas Mesonet station activity
 #'
-#' Retrieves activity data for Kansas Mesonet stations, including observation intervals and data spans.
+#' Retrieves activity data for Kansas Mesonet stations, including observation
+#' intervals and data spans.
 #'
 #' `r lifecycle::badge("experimental")`
 #'
@@ -17,6 +18,12 @@
 #' @references
 #' Kansas Mesonet data usage policy:
 #' \url{https://mesonet.k-state.edu/about/usage/}
+#'
+#' @examples
+#' \dontrun{
+#' activity <- ks_meso_station_activity()
+#' subset(activity, station == "Konza Prairie")
+#' }
 #'
 #' @export
 ks_meso_station_activity <- function() {

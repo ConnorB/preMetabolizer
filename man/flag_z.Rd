@@ -2,24 +2,27 @@
 % Please edit documentation in R/flag_z.R
 \name{flag_z}
 \alias{flag_z}
-\title{Flag Outliers Using Robust Z-Scores}
+\title{Flag outliers with robust Z-scores}
 \usage{
 flag_z(x, width = 5, threshold = 3, return_z = FALSE)
 }
 \arguments{
-\item{x}{A numeric vector to be checked for outliers.}
+\item{x}{Numeric vector to check for outliers.}
 
-\item{width}{An odd integer specifying the width of the moving window (default: 5).}
+\item{width}{Odd integer giving the moving-window width. Defaults to \code{5}.}
 
-\item{threshold}{A numeric threshold for the absolute Z-score above which a value is flagged (default: 3.0).}
+\item{threshold}{Numeric threshold for the absolute Z-score above which a
+value is flagged. Defaults to \code{3}.}
 
-\item{return_z}{Logical; if \code{TRUE}, returns both Z-scores and flags. If \code{FALSE}, returns only flags (default: \code{FALSE}).}
+\item{return_z}{Logical. If \code{TRUE}, return both Z-scores and flags. If
+\code{FALSE}, return only flags. Defaults to \code{FALSE}.}
 }
 \value{
 If \code{return_z = TRUE}, a list with:
 \describe{
 \item{z}{A numeric vector of robust Z-scores (with \code{NA} where not computable).}
-\item{flag}{A character vector of same length as \code{x}, with \code{"Z"} where an outlier is detected, and \code{NA} otherwise.}
+\item{flag}{A character vector of the same length as \code{x}, with \code{"Z"}
+where an outlier is detected and \code{NA} otherwise.}
 }
 If \code{return_z = FALSE}, only the \code{flag} vector is returned.
 }
@@ -38,7 +41,8 @@ is extracted. The function:
 \item Computes a Z-score as \eqn{(x_i - \text{median}) / \text{scale}}.
 }
 
-If the absolute value of the Z-score exceeds \code{threshold}, the value is flagged with \code{"Z"}.
+If the absolute value of the Z-score exceeds \code{threshold}, the value is
+flagged with \code{"Z"}.
 
 NA values are ignored in the window statistics but retained in output positions.
 }

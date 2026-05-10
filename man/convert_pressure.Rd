@@ -2,7 +2,7 @@
 % Please edit documentation in R/convert_pressure.R
 \name{convert_pressure}
 \alias{convert_pressure}
-\title{Convert Barometric Pressure Between Units}
+\title{Convert barometric pressure between units}
 \usage{
 convert_pressure(pressure, from, to = "atm")
 }

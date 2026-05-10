@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_water_density.R
 \name{calc_water_density}
 \alias{calc_water_density}
-\title{Calculate Water Density}
+\title{Calculate water density}
 \usage{
 calc_water_density(water_temp)
 }

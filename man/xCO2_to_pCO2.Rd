@@ -2,38 +2,49 @@
 % Please edit documentation in R/xCO2_to_pCO2.R
 \name{xCO2_to_pCO2}
 \alias{xCO2_to_pCO2}
-\title{Convert Mole Fraction of CO2 (xCO2) to Partial Pressure (pCO2)}
+\title{Convert CO2 mole fraction to partial pressure}
 \usage{
 xCO2_to_pCO2(xCO2_ppm, temp_water, atmo_press, press_units, ...)
 }
 \arguments{
-\item{xCO2_ppm}{Numeric. Mole fraction of CO2 in air in parts per million (ppm). Default is 400 ppm.}
+\item{xCO2_ppm}{Numeric vector. Mole fraction of CO2 in air in parts per
+million.}
 
-\item{temp_water}{Numeric. Water temperature in degrees Celsius.}
+\item{temp_water}{Numeric vector. Water temperature in degrees Celsius.}
 
-\item{atmo_press}{Numeric. Atmospheric pressure.}
+\item{atmo_press}{Numeric vector. Atmospheric pressure.}
 
-\item{press_units}{Character. Units of atmospheric pressure.}
+\item{press_units}{Character string giving the units of \code{atmo_press}. See
+\code{\link[=convert_pressure]{convert_pressure()}} for accepted pressure units.}
 
-\item{...}{Additional arguments passed to the \code{calc_vapor_press} function.}
+\item{...}{Additional arguments passed to \code{\link[=calc_vapor_press]{calc_vapor_press()}}, such as
+\code{salinity} or \code{method}.}
 }
 \value{
-Numeric. Partial pressure of CO2 in µatm.
+Numeric vector of partial pressure of CO2 in microatmospheres.
 }
 \description{
-This function calculates the partial pressure of carbon dioxide (pCO2) in water
-from its mole fraction (xCO2) in air, considering temperature and atmospheric pressure.
+Converts CO2 mole fraction, \code{xCO2}, to the water-vapor-corrected partial
+pressure, \code{pCO2}.
 }
 \details{
-The partial pressure of CO2 (\eqn{pCO2}) is computed using the equation:
+The conversion uses:
 \deqn{pCO2 = (P_{atm} - P_{H2O}) \cdot xCO2}
-where \eqn{P_{atm}} is the atmospheric pressure, \eqn{P_{H2O}} is the water vapor pressure,
-and \eqn{xCO2} is the mole fraction of CO2 in air.
+where atmospheric pressure and water vapor pressure are in atm and \code{xCO2}
+is supplied in parts per million.
+}
+\examples{
+xCO2_to_pCO2(
+  xCO2_ppm = 420,
+  temp_water = 20,
+  atmo_press = 101.325,
+  press_units = "kPa",
+  salinity = 0,
+  method = "MIMSY"
+)
+
 }
 \references{
-\itemize{
-\item Dickson, A.G., Sabine, C.L., & Christian, J.R. (2007). \emph{Guide to Best Practices for Ocean CO2 Measurements}.
-\item Weiss, R.F. (1974). Carbon dioxide in water and seawater: the solubility of a non-ideal gas. Marine Chemistry, 2(3), 203–215.
+Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to
+best practices for ocean CO2 measurements. PICES Special Publication 3.
 }
-}
-\keyword{internal}

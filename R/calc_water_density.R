@@ -1,4 +1,4 @@
-#' Calculate Water Density
+#' Calculate water density
 #'
 #' Calculates the density of pure water (kg/m^3) from temperature in
 #' degrees Celsius using the polynomial approximation of Kell (1975).

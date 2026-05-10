@@ -3,7 +3,7 @@
 \docType{data}
 \name{french_creek}
 \alias{french_creek}
-\title{French Creek Stream Metabolism Data}
+\title{French Creek stream metabolism data}
 \format{
 A tibble with 10,883 rows and 4 columns:
 \describe{

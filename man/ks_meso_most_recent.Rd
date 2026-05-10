@@ -2,7 +2,7 @@
 % Please edit documentation in R/ks_meso_most_recent.R
 \name{ks_meso_most_recent}
 \alias{ks_meso_most_recent}
-\title{Get Most Recent Kansas Mesonet Data Timestamp}
+\title{Get most recent Kansas Mesonet data timestamp}
 \usage{
 ks_meso_most_recent(interval)
 }
@@ -27,6 +27,12 @@ with this function. A suggested citation format is: Kansas Mesonet, year:
 webpage title. Accessed date, webpage URL. Review the Kansas Mesonet data
 usage policy before automated use; automated page scraping or data ingesting
 without written consent is not permitted.
+}
+\examples{
+\dontrun{
+ks_meso_most_recent(interval = "hour")
+}
+
 }
 \references{
 Kansas Mesonet data usage policy:
