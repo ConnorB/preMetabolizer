@@ -1,0 +1,182 @@
+---
+title: "Working with Iowa Environmental Mesonet data"
+vignette: >
+  %\VignetteIndexEntry{Working with Iowa Environmental Mesonet data}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+The [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/) (IEM) provides public access to many meteorological and hydrological observing networks. IEM groups stations into network identifiers such as `IA_ASOS`, `IA_COOP`, and many state or special-purpose networks.
+
+preMetabolizer provides helpers for selected IEM API v1 endpoints:
+
+- `iem_networks()` lists available IEM network identifiers.
+- `iem_stations()` retrieves station metadata for one network.
+- `iem_station()` looks up one station identifier across networks.
+- `iem_current()` retrieves current observations.
+- `iem_obhistory()` retrieves one local day of station observations.
+- `iem_daily()` retrieves daily summary observations.
+
+> **Note:** These functions contact IEM web services and require an internet connection. Code chunks marked with `#| eval: false` will not run during package installation. Run them interactively in your own session.
+
+```{r}
+#| label: libraries
+#| message: false
+
+library(preMetabolizer)
+library(dplyr)
+library(ggplot2)
+```
+
+## Discover networks and stations
+
+Start with `iem_networks()` when you need to find the exact network identifier for a station source. The `id` column is the value to pass to other IEM helpers.
+
+```{r}
+#| label: networks
+#| eval: false
+
+networks <- iem_networks()
+
+networks |>
+  filter(grepl("Iowa", name)) |>
+  select(id, name, tzname)
+```
+
+Station metadata for a network includes station identifiers, names, coordinates, archive dates, and the station time zone when IEM provides it.
+
+```{r}
+#| label: stations
+#| eval: false
+
+ia_asos <- iem_stations("IA_ASOS")
+
+ia_asos |>
+  select(id, name, network, tzname, archive_begin, longitude, latitude) |>
+  arrange(id)
+```
+
+Some station identifiers appear in more than one network. Use `iem_station()` when you want to check how IEM resolves a station ID before requesting data.
+
+```{r}
+#| label: station-lookup
+#| eval: false
+
+iem_station("AMW") |>
+  select(id, name, network, tzname, archive_begin)
+```
+
+## Retrieve current observations
+
+`iem_current()` requires at least one filter. You can request all current observations in a network, stations within a network, stations by forecast office, or one or more station identifiers.
+
+```{r}
+#| label: current-network
+#| eval: false
+
+current <- iem_current(network = "IA_ASOS")
+
+current |>
+  select(station, name, utc_valid, tmpf, dwpf, sknt, drct, mslp) |>
+  arrange(station)
+```
+
+For station-specific work, include both `network` and `stations` so shared station identifiers do not surprise you.
+
+```{r}
+#| label: current-stations
+#| eval: false
+
+dsm_current <- iem_current(
+  network = "IA_ASOS",
+  stations = c("DSM", "AMW"),
+  minutes = 120
+)
+
+dsm_current |>
+  select(station, name, utc_valid, tmpf, relh, sknt, p01i)
+```
+
+## Retrieve one day of observations
+
+`iem_obhistory()` returns observations for a single station and local station date. UTC timestamp columns are parsed as UTC `POSIXct` values. Local timestamp columns are returned as character values because station time zones vary across networks.
+
+```{r}
+#| label: obhistory
+#| eval: false
+
+obs <- iem_obhistory(
+  station = "DSM",
+  network = "IA_ASOS",
+  date = "2024-06-01"
+)
+
+obs |>
+  select(utc_valid, local_valid, tmpf, dwpf, sknt, drct, p01i)
+```
+
+Hourly or sub-hourly records can be plotted directly after selecting the variables you need.
+
+```{r}
+#| label: obhistory-plot
+#| eval: false
+
+obs |>
+  filter(!is.na(tmpf)) |>
+  ggplot(aes(utc_valid, tmpf)) +
+  geom_line() +
+  labs(
+    x = "UTC time",
+    y = "Air temperature (deg F)"
+  )
+```
+
+## Retrieve daily summaries
+
+Use `iem_daily()` for daily summary observations. Provide either one `date`, or provide `year` and optional `month` for a longer request.
+
+```{r}
+#| label: daily-station
+#| eval: false
+
+dsm_daily <- iem_daily(
+  network = "IA_ASOS",
+  station = "DSM",
+  year = 2024,
+  month = 6
+)
+
+dsm_daily |>
+  select(station, day, high, low, precip) |>
+  arrange(day)
+```
+
+For a one-day network request, omit `station` and supply `date`.
+
+```{r}
+#| label: daily-network
+#| eval: false
+
+ia_day <- iem_daily("IA_ASOS", date = "2024-06-01")
+
+ia_day |>
+  select(station, day, high, low, precip) |>
+  arrange(desc(precip))
+```
+
+## Practical notes
+
+IEM combines many observing networks, and each network can have different available variables, units, reporting intervals, and station identifiers. A good workflow is to first inspect `iem_networks()` and `iem_stations()`, then request observations from a specific `network` and `station` pair.

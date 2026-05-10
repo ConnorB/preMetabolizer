@@ -25,7 +25,10 @@ and western longitudes are negative.
 \itemize{
 \item Find and download meteorological data with \code{\link[=get_noaa_stations]{get_noaa_stations()}},
 \code{\link[=closest_noaa_stations]{closest_noaa_stations()}}, \code{\link[=download_ghcnh]{download_ghcnh()}}, \code{\link[=get_nasa_data]{get_nasa_data()}}, and
-\code{\link[=get_ks_meso]{get_ks_meso()}}.
+\code{\link[=get_ks_meso]{get_ks_meso()}}. Retrieve mesonet station observations with
+\code{\link[=iem_networks]{iem_networks()}}, \code{\link[=iem_current]{iem_current()}}, \code{\link[=iem_obhistory]{iem_obhistory()}},
+\code{\link[=tex_meso_stations]{tex_meso_stations()}}, \code{\link[=tex_meso_current]{tex_meso_current()}}, and
+\code{\link[=tex_meso_timeseries]{tex_meso_timeseries()}}.
 \item Retrieve or calculate site context with \code{\link[=get_usgs_elev]{get_usgs_elev()}},
 \code{\link[=correct_bp]{correct_bp()}}, \code{\link[=convert_UTC_to_solartime]{convert_UTC_to_solartime()}}, and \code{\link[=calc_light]{calc_light()}}.
 \item Prepare model inputs with \code{\link[=even_timesteps]{even_timesteps()}}, \code{\link[=calc_O2sat]{calc_O2sat()}},

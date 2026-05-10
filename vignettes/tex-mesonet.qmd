@@ -1,0 +1,241 @@
+---
+title: "Working with TexMesonet data"
+vignette: >
+  %\VignetteIndexEntry{Working with TexMesonet data}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+[TexMesonet](https://www.texmesonet.org/) is a statewide earth observation
+network managed by the Texas Water Development Board (TWDB). TWDB stations
+collect near-real-time weather and soil observations, including air
+temperature, humidity, precipitation, wind, solar radiation, soil temperature,
+and soil moisture.
+
+preMetabolizer provides three helpers for the public TexMesonet API:
+
+- `tex_meso_stations()` retrieves TWDB station metadata.
+- `tex_meso_current()` retrieves the most recent observation from each TWDB
+  station.
+- `tex_meso_timeseries()` retrieves recent time-series observations for one
+  station.
+
+> **Note:** These functions contact the TexMesonet API and require an internet
+> connection. Code chunks marked with `#| eval: false` will not run during
+> package installation. Run them interactively in your own session.
+
+```{r}
+#| label: libraries
+#| message: false
+
+library(preMetabolizer)
+library(dplyr)
+library(ggplot2)
+```
+
+## Discover TWDB stations
+
+Use `tex_meso_stations()` to retrieve station names, IDs, display IDs,
+coordinates, elevation, activity status, and online dates.
+
+```{r}
+#| label: stations
+#| eval: false
+
+stations <- tex_meso_stations()
+
+glimpse(stations)
+```
+
+The `active` and `displayed` arguments make it easy to focus on stations that
+are currently operating and shown by TexMesonet.
+
+```{r}
+#| label: active-stations
+#| eval: false
+
+active_stations <- tex_meso_stations(active = TRUE, displayed = TRUE)
+
+active_stations |>
+  select(stationId, stationName, displayId, county, latitude, longitude) |>
+  arrange(county, stationName)
+```
+
+For station time-series requests, keep the integer `stationId`. This example
+finds stations in Blanco County and selects one station ID for later use.
+
+```{r}
+#| label: choose-station
+#| eval: false
+
+blanco_stations <- active_stations |>
+  filter(county == "Blanco") |>
+  select(stationId, stationName, displayId, latitude, longitude, elevation)
+
+blanco_stations
+
+site_id <- blanco_stations$stationId[1]
+```
+
+## Retrieve current observations
+
+`tex_meso_current()` returns the most recent available observation from each
+TWDB station. Not every station measures every parameter, so some columns may
+contain missing values.
+
+```{r}
+#| label: current
+#| eval: false
+
+current <- tex_meso_current()
+
+glimpse(current)
+```
+
+The TexMesonet API reports units in a separate object. preMetabolizer stores
+that object as a data-frame attribute.
+
+```{r}
+#| label: current-units
+#| eval: false
+
+attr(current, "units")
+```
+
+For a quick station check, join current observations to station metadata or
+filter directly by `stationId`.
+
+```{r}
+#| label: current-station
+#| eval: false
+
+current |>
+  filter(stationId == site_id) |>
+  select(
+    stationId,
+    name,
+    recordedTime,
+    airTemp,
+    humidity,
+    precip,
+    windSpeed,
+    airPressure
+  )
+```
+
+## Retrieve recent time series
+
+`tex_meso_timeseries()` retrieves observations for a single station over a
+look-back window measured in minutes. By default, `variable = "all"` uses the
+TexMesonet charting-fields endpoint and returns all fields available for that
+station.
+
+```{r}
+#| label: all-timeseries
+#| eval: false
+
+recent <- tex_meso_timeseries(
+  site_id = site_id,
+  prior_minutes = 24 * 60
+)
+
+glimpse(recent)
+```
+
+The returned `dateTime` column is parsed as UTC.
+
+```{r}
+#| label: datetime
+#| eval: false
+
+range(recent$dateTime, na.rm = TRUE)
+attr(recent$dateTime, "tzone")
+```
+
+## Retrieve one variable
+
+TexMesonet also provides smaller single-variable endpoints. Use the `variable`
+argument when you only need one series.
+
+```{r}
+#| label: temperature-series
+#| eval: false
+
+temperature <- tex_meso_timeseries(
+  site_id = site_id,
+  prior_minutes = 24 * 60,
+  variable = "temperature"
+)
+
+temperature |>
+  arrange(dateTime) |>
+  tail()
+
+attr(temperature, "units")
+```
+
+Available single-variable values are `"temperature"`, `"humidity"`,
+`"barometric_pressure"`, `"precip"`, and `"wind_speed"`.
+
+## Example workflow: station weather summary
+
+The charting-fields endpoint is useful when you want to prepare local
+meteorological covariates for a stream site. The example below summarizes
+hourly temperature, humidity, precipitation, and wind speed from the recent
+station data.
+
+```{r}
+#| label: hourly-summary
+#| eval: false
+
+hourly_weather <- recent |>
+  mutate(hour = lubridate::floor_date(dateTime, "hour")) |>
+  group_by(hour) |>
+  summarise(
+    air_temp_C = mean(airTemp, na.rm = TRUE),
+    humidity_pct = mean(humidity, na.rm = TRUE),
+    precip_mm = sum(precip, na.rm = TRUE),
+    wind_speed_m_s = mean(windSpeed, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+hourly_weather
+```
+
+Plotting the recent series can help identify gaps or station behavior before
+combining meteorological data with stream logger observations.
+
+```{r}
+#| label: plot-temperature
+#| eval: false
+
+ggplot(hourly_weather, aes(hour, air_temp_C)) +
+  geom_line(color = "#2c7fb8") +
+  geom_point(color = "#2c7fb8", size = 1.5) +
+  labs(
+    x = NULL,
+    y = "Air temperature (°C)",
+    title = "Recent TexMesonet air temperature"
+  ) +
+  theme_bw()
+```
+
+## API scope
+
+These functions use the lightweight TexMesonet API endpoints for TWDB stations.
+For historical custom downloads, longer date ranges, or non-TWDB provider
+networks shown in the TexMesonet map viewer, use the TexMesonet Custom
+Downloads page or the source network recommended by TWDB.

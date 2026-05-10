@@ -1,0 +1,194 @@
+---
+title: "Chemistry calculations"
+vignette: >
+  %\VignetteIndexEntry{Chemistry calculations}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+Stream metabolism workflows often need dissolved gas calculations before model
+fitting or quality checks. preMetabolizer includes helpers for oxygen
+saturation, CO2 partial pressure, dissolved CO2 concentration, water vapor
+pressure, and CO2 solubility.
+
+```{r}
+#| label: libraries
+#| message: false
+
+library(preMetabolizer)
+library(dplyr)
+library(ggplot2)
+```
+
+## Dissolved oxygen saturation
+
+`calc_O2sat()` calculates dissolved oxygen saturation in mg/L from water
+temperature, barometric pressure, pressure units, and optional salinity. This is
+the `DO.sat` input commonly used by stream metabolism models.
+
+```{r}
+#| label: oxygen-saturation
+
+water <- tibble::tibble(
+  temp_water = seq(5, 30, by = 5),
+  atmo_press = 101.325,
+  salinity = 0
+) |>
+  mutate(
+    DO_sat_mg_L = calc_O2sat(
+      temp_water = temp_water,
+      atmo_press = atmo_press,
+      units = "kPa",
+      salinity = salinity
+    )
+  )
+
+water
+```
+
+Oxygen saturation declines as water warms.
+
+```{r}
+#| label: plot-oxygen-saturation
+
+ggplot(water, aes(temp_water, DO_sat_mg_L)) +
+  geom_line(color = "#2c7fb8") +
+  geom_point(color = "#2c7fb8") +
+  labs(
+    x = "Water temperature (C)",
+    y = "O2 saturation (mg/L)"
+  ) +
+  theme_bw()
+```
+
+## CO2 partial pressure
+
+`xCO2_to_pCO2()` converts CO2 mole fraction in air to water-vapor-corrected
+partial pressure. `pCO2_to_xCO2()` performs the inverse conversion.
+
+```{r}
+#| label: co2-partial-pressure
+
+pCO2 <- xCO2_to_pCO2(
+  xCO2_ppm = c(420, 800, 1200),
+  temp_water = 20,
+  atmo_press = 101.325,
+  press_units = "kPa",
+  salinity = 0,
+  method = "MIMSY"
+)
+
+pCO2
+
+pCO2_to_xCO2(
+  temp_water = 20,
+  pCO2_uatm = pCO2,
+  atmo_press = 101.325,
+  press_units = "kPa",
+  salinity = 0,
+  method = "MIMSY"
+)
+```
+
+## Dissolved CO2 concentration
+
+`calc_CO2_molKg()` and `calc_CO2_mgL()` estimate dissolved CO2 concentration
+from CO2 mole fraction, water temperature, water depth, atmospheric pressure,
+and salinity.
+
+```{r}
+#| label: co2-concentration
+
+co2 <- tibble::tibble(
+  CO2_ppm = c(420, 800, 1200),
+  temp_water = 20,
+  waterDepth_m = 0.5,
+  atmo_press = 101.325
+) |>
+  mutate(
+    CO2_mol_kg = calc_CO2_molKg(
+      CO2_ppm = CO2_ppm,
+      temp_water = temp_water,
+      waterDepth_m = waterDepth_m,
+      atmo_press = atmo_press,
+      press_units = "kPa"
+    ),
+    CO2_mg_L = calc_CO2_mgL(
+      CO2_ppm = CO2_ppm,
+      temp_water = temp_water,
+      waterDepth_m = waterDepth_m,
+      atmo_press = atmo_press,
+      press_units = "kPa"
+    )
+  )
+
+co2
+```
+
+## Vapor pressure and solubility
+
+`calc_vapor_press()` returns water vapor pressure in atmospheres. Use
+`method = "MIMSY"` for freshwater calculations and `"Dickson2007"` for
+seawater-style salinity corrections. `calc_K0()` returns the Weiss (1974) CO2
+solubility coefficient.
+
+```{r}
+#| label: vapor-pressure-k0
+
+temps <- tibble::tibble(temp_water = c(5, 15, 25)) |>
+  mutate(
+    vapor_press_atm = calc_vapor_press(
+      temp_water,
+      salinity = 0,
+      method = "MIMSY"
+    ),
+    K0_mol_kg_atm = calc_K0(temp_water, waterDepth_m = 0.5)
+  )
+
+temps
+```
+
+## Combine calculations for model input
+
+The calculations are vectorized, so they fit naturally into a data preparation
+pipeline.
+
+```{r}
+#| label: model-input
+
+logger <- tibble::tibble(
+  dateTime = as.POSIXct(
+    c("2024-06-01 00:00:00", "2024-06-01 01:00:00"),
+    tz = "UTC"
+  ),
+  temp_water = c(18.5, 18.2),
+  atmo_kPa = c(99.8, 99.7),
+  xCO2_ppm = c(600, 650)
+) |>
+  mutate(
+    DO.sat = calc_O2sat(temp_water, atmo_kPa, units = "kPa"),
+    pCO2_uatm = xCO2_to_pCO2(
+      xCO2_ppm = xCO2_ppm,
+      temp_water = temp_water,
+      atmo_press = atmo_kPa,
+      press_units = "kPa",
+      salinity = 0,
+      method = "MIMSY"
+    )
+  )
+
+logger
+```

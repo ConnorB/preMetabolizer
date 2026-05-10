@@ -1,0 +1,223 @@
+---
+title: "Time-series and summary utilities"
+vignette: >
+  %\VignetteIndexEntry{Time-series and summary utilities}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+preMetabolizer includes utilities for regularizing logger data, converting
+between UTC and solar time, assigning seasons, flagging outliers, and
+summarizing variability or flow distributions.
+
+```{r}
+#| label: libraries
+#| message: false
+
+library(preMetabolizer)
+library(dplyr)
+library(ggplot2)
+```
+
+## Fill missing timesteps
+
+`even_timesteps()` builds a complete timestamp sequence from the observed time
+step and inserts rows where observations are missing.
+
+```{r}
+#| label: even-timesteps
+
+logger <- tibble::tibble(
+  DateTime_UTC = as.POSIXct(
+    c(
+      "2024-06-01 00:00:00",
+      "2024-06-01 01:00:00",
+      "2024-06-01 03:00:00"
+    ),
+    tz = "UTC"
+  ),
+  temp_water = c(18.1, 18.0, 17.8)
+)
+
+even_timesteps(logger)
+```
+
+For multi-site data, provide the site column so each site is completed
+independently.
+
+```{r}
+#| label: even-timesteps-site
+
+multi_site <- tibble::tibble(
+  Site = c("A", "A", "A", "B", "B"),
+  DateTime_UTC = as.POSIXct(
+    c(
+      "2024-06-01 00:00:00",
+      "2024-06-01 01:00:00",
+      "2024-06-01 03:00:00",
+      "2024-06-01 00:00:00",
+      "2024-06-01 00:30:00"
+    ),
+    tz = "UTC"
+  )
+)
+
+even_timesteps(multi_site, site_col = "Site")
+```
+
+## Convert UTC and solar time
+
+`convert_UTC_to_solartime()` and `convert_solartime_to_UTC()` move between UTC
+and local solar time at a site longitude. Mean solar time is the time basis
+expected by stream metabolism models.
+
+```{r}
+#| label: solar-time
+
+utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
+
+solar <- convert_UTC_to_solartime(
+  utc,
+  longitude = -96.6,
+  time.type = "mean solar"
+)
+
+solar
+
+convert_solartime_to_UTC(
+  solar,
+  longitude = -96.6,
+  time.type = "mean solar"
+)
+```
+
+## Assign seasons
+
+`get_season()` classifies dates into fixed northern-hemisphere astronomical
+seasons.
+
+```{r}
+#| label: seasons
+
+dates <- as.Date(c(
+  "2024-01-15",
+  "2024-04-15",
+  "2024-07-15",
+  "2024-10-15"
+))
+
+tibble::tibble(
+  date = dates,
+  season = get_season(dates)
+)
+```
+
+## Flag potential outliers
+
+`flag_z()` applies a moving-window robust Z-score. The default return is a
+character flag vector. Set `return_z = TRUE` when you also want the Z-scores.
+
+```{r}
+#| label: flag-z
+
+temperature <- c(18.1, 18.2, 18.0, 18.3, 29.9, 18.4, 18.2)
+
+flag_z(temperature, width = 5)
+
+flag_z(temperature, width = 5, return_z = TRUE)
+```
+
+## Summary statistics
+
+`calc_cv()` calculates the coefficient of variation. Use `robust = TRUE` to
+summarize relative variability with the median and MAD instead of mean and
+standard deviation.
+
+```{r}
+#| label: cv-mode
+
+discharge <- c(0.12, 0.18, 0.15, 1.4, 0.09)
+
+calc_cv(discharge)
+calc_cv(discharge, robust = TRUE)
+
+calc_mode(c("riffle", "run", "riffle", "pool", "run"), multi = "all")
+```
+
+## Histogram bin widths
+
+`calc_bin_width()` implements several common histogram rules. This is helpful
+when plotting distributions that should use a consistent, data-driven bin
+width.
+
+```{r}
+#| label: bin-width
+
+set.seed(1)
+values <- stats::rexp(200)
+
+calc_bin_width(values, method = "fd")
+calc_bin_width(values, method = "doane")
+```
+
+```{r}
+#| label: plot-histogram
+
+ggplot(tibble::tibble(values = values), aes(values)) +
+  geom_histogram(
+    binwidth = calc_bin_width(values, method = "fd"),
+    color = "white",
+    fill = "#2c7fb8"
+  ) +
+  labs(x = "Value", y = "Count") +
+  theme_bw()
+```
+
+## Flow exceedance probabilities
+
+`calc_exceedance_prob()` ranks flows with the Weibull plotting-position formula.
+Higher flows receive lower exceedance probabilities. The C++ implementation,
+`rcpp_calc_exceedance_prob()`, returns the same shape and is useful for large
+vectors.
+
+```{r}
+#| label: exceedance
+
+flows <- tibble::tibble(
+  flow_cms = c(10, 5, 0, 15, 8, NA, 0, 20)
+) |>
+  mutate(
+    exceedance = calc_exceedance_prob(flow_cms),
+    exceedance_no_zero = rcpp_calc_exceedance_prob(flow_cms, rm.zero = TRUE)
+  )
+
+flows
+```
+
+```{r}
+#| label: plot-exceedance
+
+flows |>
+  filter(!is.na(exceedance_no_zero)) |>
+  ggplot(aes(exceedance_no_zero, flow_cms)) +
+  geom_point(color = "#2c7fb8", size = 2) +
+  scale_x_continuous(labels = \(x) paste0(round(100 * x), "%")) +
+  labs(
+    x = "Exceedance probability",
+    y = "Flow"
+  ) +
+  theme_bw()
+```

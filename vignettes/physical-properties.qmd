@@ -1,0 +1,181 @@
+---
+title: "Physical properties and unit conversions"
+vignette: >
+  %\VignetteIndexEntry{Physical properties and unit conversions}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+editor: visual
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction
+
+preMetabolizer includes small physical-property and unit-conversion helpers for
+common hydrology and atmospheric science tasks. These functions return plain
+numeric vectors, making them easy to use in base R, dplyr pipelines, and model
+input tables.
+
+```{r}
+#| label: libraries
+#| message: false
+
+library(preMetabolizer)
+library(dplyr)
+library(ggplot2)
+```
+
+## Flow conversions
+
+`convert_flow()` converts discharge between cubic feet per second (`"cfs"`),
+cubic meters per second (`"cms"`), and liters per second (`"lps"`).
+
+```{r}
+#| label: flow-conversions
+
+flow <- tibble::tibble(discharge_cfs = c(1, 5, 25, 100)) |>
+  mutate(
+    discharge_cms = convert_flow(discharge_cfs, from = "cfs", to = "cms"),
+    discharge_lps = convert_flow(discharge_cfs, from = "cfs", to = "lps")
+  )
+
+flow
+```
+
+## Pressure conversions and elevation correction
+
+`convert_pressure()` converts barometric pressure between common units.
+`correct_bp()` adjusts pressure from a weather station elevation to a site
+elevation.
+
+```{r}
+#| label: pressure
+
+convert_pressure(101.325, from = "kPa", to = "atm")
+convert_pressure(1013.25, from = "hPa", to = "Pa")
+
+correct_bp(
+  station_bp = 101.3,
+  air_temp = 15,
+  station_elev = 300,
+  site_elev = 500,
+  from_units = "kPa",
+  to_units = "kPa"
+)
+```
+
+Elevation correction is useful when a nearby weather station is not at the same
+elevation as a stream site.
+
+```{r}
+#| label: pressure-table
+
+site_pressure <- tibble::tibble(
+  station_bp_kPa = c(101.3, 100.9, 100.5),
+  air_temp_C = c(15, 17, 18),
+  station_elev_m = 300,
+  site_elev_m = 500
+) |>
+  mutate(
+    site_bp_kPa = correct_bp(
+      station_bp = station_bp_kPa,
+      air_temp = air_temp_C,
+      station_elev = station_elev_m,
+      site_elev = site_elev_m
+    )
+  )
+
+site_pressure
+```
+
+## Water density and water height
+
+`calc_water_density()` calculates pure-water density from temperature.
+`calc_water_height()` converts pressure-sensor readings into water height.
+
+```{r}
+#| label: water-density
+
+temps <- tibble::tibble(water_temp = seq(0, 30, by = 5)) |>
+  mutate(density_kg_m3 = calc_water_density(water_temp))
+
+temps
+```
+
+For vented sensors, `sensor_kPa` is already the pressure from the water column.
+For unvented sensors, provide atmospheric pressure so it can be subtracted from
+the absolute sensor pressure.
+
+```{r}
+#| label: water-height
+
+water_level <- tibble::tibble(
+  sensor_kPa = c(18.9, 19.2, 19.5),
+  atmo_kPa = c(101.1, 101.0, 100.9),
+  water_temp = c(14.8, 15.0, 15.2)
+) |>
+  mutate(
+    vented_height_m = calc_water_height(
+      sensor_kPa = sensor_kPa,
+      water_temp = water_temp,
+      type = "vented"
+    ),
+    unvented_height_m = calc_water_height(
+      sensor_kPa = sensor_kPa + atmo_kPa,
+      atmo_kPa = atmo_kPa,
+      water_temp = water_temp,
+      type = "unvented"
+    )
+  )
+
+water_level
+```
+
+## Modeled light
+
+`calc_light()` estimates photosynthetically active radiation (PAR) from solar
+time and site coordinates. Input times should be mean solar time.
+
+```{r}
+#| label: modeled-light
+
+utc <- seq(
+  as.POSIXct("2024-06-21 00:00:00", tz = "UTC"),
+  as.POSIXct("2024-06-21 23:00:00", tz = "UTC"),
+  by = "hour"
+)
+
+light <- tibble::tibble(
+  dateTime_UTC = utc,
+  solar_time = convert_UTC_to_solartime(utc, longitude = -96.6)
+) |>
+  mutate(
+    light_PAR = calc_light(
+      solar.time = solar_time,
+      latitude = 39.1,
+      longitude = -96.6
+    )
+  )
+
+head(light)
+```
+
+```{r}
+#| label: plot-light
+
+ggplot(light, aes(dateTime_UTC, light_PAR)) +
+  geom_line(color = "#2c7fb8") +
+  labs(
+    x = NULL,
+    y = "Modeled PAR"
+  ) +
+  theme_bw()
+```

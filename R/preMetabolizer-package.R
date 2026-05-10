@@ -16,7 +16,10 @@
 #' \itemize{
 #'   \item Find and download meteorological data with [get_noaa_stations()],
 #'     [closest_noaa_stations()], [download_ghcnh()], [get_nasa_data()], and
-#'     [get_ks_meso()].
+#'     [get_ks_meso()]. Retrieve mesonet station observations with
+#'     [iem_networks()], [iem_current()], [iem_obhistory()],
+#'     [tex_meso_stations()], [tex_meso_current()], and
+#'     [tex_meso_timeseries()].
 #'   \item Retrieve or calculate site context with [get_usgs_elev()],
 #'     [correct_bp()], [convert_UTC_to_solartime()], and [calc_light()].
 #'   \item Prepare model inputs with [even_timesteps()], [calc_O2sat()],

@@ -20,7 +20,9 @@
 * `get_noaa_stations()` now filters cached raw station metadata by `state`, validates options more clearly, and uses cached station metadata when remote modification times are unavailable (no issue).
 * `get_usgs_elev()` can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (no issue).
 * `has_units()` has been removed. The `units` package is no longer a dependency (no issue).
+* `iem_current()`, `iem_daily()`, `iem_networks()`, `iem_obhistory()`, `iem_station()`, and `iem_stations()` can now retrieve Iowa Environmental Mesonet network metadata, station metadata, current observations, one-day observation histories, and daily summaries (no issue).
 * `ks_meso_fw13()` can now retrieve Kansas Mesonet fire weather data in FW13 format for one station and date range (no issue).
 * `ks_meso_most_recent()` can now retrieve the most recently ingested Kansas Mesonet timestamp for each station at a requested interval (no issue).
 * `rcpp_calc_exceedance_prob()` now provides a C++ implementation of flow exceedance probability calculations (no issue).
 * `read_ghcnh()` is now exported, validates file inputs, can suppress progress messages with `quiet = TRUE`, and handles files that lack `Station_name` or `Station_ID` columns (no issue).
+* `tex_meso_stations()`, `tex_meso_current()`, and `tex_meso_timeseries()` can now retrieve Texas Water Development Board station metadata, current observations, and recent station time-series data from TexMesonet (no issue).

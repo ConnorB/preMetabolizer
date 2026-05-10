@@ -20,6 +20,12 @@ reference:
       - get_usgs_elev
       - get_noaa_stations
       - closest_noaa_stations
+      - iem_networks
+      - iem_stations
+      - iem_station
+      - iem_current
+      - iem_obhistory
+      - iem_daily
       - ks_meso_vars
       - get_ks_meso
       - read_ks_meso
@@ -27,6 +33,9 @@ reference:
       - ks_meso_station_activity
       - ks_meso_most_recent
       - ks_meso_fw13
+      - tex_meso_stations
+      - tex_meso_current
+      - tex_meso_timeseries
       - read_shp
 
   - title: Chemistry calculations
@@ -86,6 +95,11 @@ articles:
     contents:
       - french-creek
       - kings-creek
+      - chemistry-calculations
+      - physical-properties
+      - time-series-utilities
       - ks-mesonet
+      - iem
+      - tex-mesonet
       - noaa
       - ghcnh
