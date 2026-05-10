@@ -78,3 +78,49 @@ calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
 
   return(full_exceedance_prob)
 }
+
+#' Calculate Flow Exceedance Probabilities with C++
+#'
+#' Calculates exceedance probabilities using the same Weibull plotting position
+#' method and return shape as [calc_exceedance_prob()], but delegates ranking to
+#' a C++ implementation.
+#'
+#' @inheritParams calc_exceedance_prob
+#'
+#' @return A numeric vector of exceedance probabilities. If `rm.zero = TRUE`,
+#'   the returned vector has the same length as the input with `NA` at positions
+#'   of zero or negative values.
+#'
+#' @seealso [calc_exceedance_prob()]
+#'
+#' @examples
+#' rcpp_calc_exceedance_prob(c(10, 5, 0, 15, 8, NA, 0, 20))
+#'
+#' @export
+rcpp_calc_exceedance_prob <- function(flow, rm.zero = FALSE) {
+  if (!is.numeric(flow)) {
+    stop("'flow' must be a numeric vector.")
+  }
+
+  if (any(is.infinite(flow))) {
+    stop("'flow' contains infinite values. These are not allowed.")
+  }
+
+  if (!is.logical(rm.zero)) {
+    stop("'rm.zero' must be a logical value (TRUE or FALSE).")
+  }
+
+  if (length(flow) == 0) {
+    warning("'flow' is an empty vector. Returning an empty numeric vector.")
+    return(numeric(0))
+  }
+
+  if (rm.zero && length(flow[flow > 0 & !is.na(flow)]) == 0) {
+    warning(
+      "All non-NA values in 'flow' were zero. Returning a vector of NAs with the original length."
+    )
+    return(rep(NA, length(flow)))
+  }
+
+  cpp_calc_exceedance_prob(flow, rm.zero)
+}

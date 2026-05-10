@@ -57,6 +57,7 @@ reference:
       - calc_cv
       - calc_mode
       - calc_exceedance_prob
+      - rcpp_calc_exceedance_prob
       - flag_z
 
   - title: Unit conversion

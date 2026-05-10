@@ -20,4 +20,5 @@
 * `has_units()` has been removed. The `units` package is no longer a dependency (#TBD).
 * `ks_meso_fw13()` can now retrieve Kansas Mesonet fire weather data in FW13 format for one station and date range (#TBD).
 * `ks_meso_most_recent()` can now retrieve the most recently ingested Kansas Mesonet timestamp for each station at a requested interval (#TBD).
+* `rcpp_calc_exceedance_prob()` now provides a C++ implementation of flow exceedance probability calculations (#TBD).
 * `read_ghcnh()` is now exported, validates file inputs, can suppress progress messages with `quiet = TRUE`, and handles files that lack `Station_name` or `Station_ID` columns (#TBD).

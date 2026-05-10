@@ -27,3 +27,29 @@ test_that("calc_exceedance_prob errors on non-numeric input", {
 test_that("calc_exceedance_prob errors on Inf values", {
   expect_snapshot(error = TRUE, calc_exceedance_prob(c(1, Inf, 3)))
 })
+
+test_that("rcpp_calc_exceedance_prob matches R implementation", {
+  flow <- c(10, 5, 0, 15, 8, NA, 0, 20, 10)
+
+  expect_equal(
+    rcpp_calc_exceedance_prob(flow),
+    calc_exceedance_prob(flow)
+  )
+  expect_equal(
+    rcpp_calc_exceedance_prob(flow, rm.zero = TRUE),
+    calc_exceedance_prob(flow, rm.zero = TRUE)
+  )
+})
+
+test_that("rcpp_calc_exceedance_prob handles ties with average ranks", {
+  result <- rcpp_calc_exceedance_prob(c(10, 20, 20, 30))
+
+  expect_equal(result, c(0.8, 0.5, 0.5, 0.2))
+})
+
+test_that("rcpp_calc_exceedance_prob preserves NA positions", {
+  result <- rcpp_calc_exceedance_prob(c(10, NA, 30))
+
+  expect_equal(result[2], NA_real_)
+  expect_equal(result[1], 2 / 3)
+})
