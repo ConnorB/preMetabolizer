@@ -97,7 +97,7 @@ get_usgs_elev <- function(
     longitude
   )
 
-  responses <- httr2::req_perform_parallel(
+  responses <- http_req_perform_parallel(
     requests,
     on_error = "continue"
   )

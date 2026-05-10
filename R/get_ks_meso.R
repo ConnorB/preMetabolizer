@@ -186,8 +186,9 @@ get_ks_meso <- function(
         # Initialize list to store chunk data
         chunk_data <- vector("list", length(chunks))
         chunk_success <- logical(length(chunks))
+        chunk_requests <- vector("list", length(chunks))
+        chunk_info <- vector("list", length(chunks))
 
-        # Download data chunks
         for (i in seq_along(chunks)) {
           chunk <- chunks[[i]]
           time_start <- format(min(chunk), "%Y%m%d000000")
@@ -201,7 +202,6 @@ get_ks_meso <- function(
             time_end,
             vars
           )
-          api_url <- request$url
 
           if (debug) {
             cli::cli_inform(
@@ -209,34 +209,32 @@ get_ks_meso <- function(
             )
           }
 
-          # Try to download with automatic retry and error handling
-          response <- tryCatch(
-            {
-              request |>
-                httr2::req_perform()
-            },
-            error = function(e) {
-              if (debug) {
-                cli::cli_inform(
-                  c(
-                    "!" = "Kansas Mesonet chunk {i} failed.",
-                    "i" = e$message
-                  )
-                )
-              }
-              if (grepl("limit of 3000 records", e$message)) {
-                max_days_per_call <<- floor(max_days_per_call * 0.75)
-                if (debug) {
-                  cli::cli_inform(
-                    "Reducing {.code max_days_per_call} to {max_days_per_call}."
-                  )
-                }
-              }
-              return(NULL)
-            }
+          chunk_requests[[i]] <- request
+          chunk_info[[i]] <- list(
+            start_time = time_start,
+            end_time = time_end,
+            url = request$url
           )
+        }
 
-          if (!is.null(response)) {
+        responses <- http_req_perform_parallel(
+          chunk_requests,
+          on_error = "continue"
+        )
+
+        for (i in seq_along(responses)) {
+          response <- responses[[i]]
+
+          if (inherits(response, "error")) {
+            if (debug) {
+              cli::cli_inform(
+                c(
+                  "!" = "Kansas Mesonet chunk {i} failed.",
+                  "i" = conditionMessage(response)
+                )
+              )
+            }
+          } else {
             tryCatch(
               {
                 temp_data <- read_ks_meso_csv(
@@ -249,9 +247,9 @@ get_ks_meso <- function(
 
                 results$chunks[[length(results$chunks) + 1]] <- list(
                   station = request_name,
-                  start_time = time_start,
-                  end_time = time_end,
-                  url = api_url,
+                  start_time = chunk_info[[i]]$start_time,
+                  end_time = chunk_info[[i]]$end_time,
+                  url = chunk_info[[i]]$url,
                   records = nrow(chunk_data[[i]])
                 )
               },
@@ -268,8 +266,6 @@ get_ks_meso <- function(
               }
             )
           }
-
-          Sys.sleep(0.5) # Rate limiting
         }
 
         # Remove failed chunks

@@ -50,7 +50,7 @@ ks_meso_fw13 <- function(station, start_date, end_date) {
           t_end = format(dates$end, "%Y%m%d")
         ) |>
         httr2::req_retry(max_tries = 3) |>
-        httr2::req_perform()
+        http_req_perform()
 
       strsplit(httr2::resp_body_string(response), "\n", fixed = TRUE)[[1]]
     },

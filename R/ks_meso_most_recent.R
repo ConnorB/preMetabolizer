@@ -39,7 +39,7 @@ ks_meso_most_recent <- function(interval) {
       ) |>
         httr2::req_url_query(int = interval) |>
         httr2::req_retry(max_tries = 3) |>
-        httr2::req_perform()
+        http_req_perform()
       content <- httr2::resp_body_string(response)
 
       read_ks_meso_csv(I(content)) |>

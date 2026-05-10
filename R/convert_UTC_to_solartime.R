@@ -24,9 +24,9 @@
 #'
 #' @export
 convert_UTC_to_solartime <- function(
-    date.time,
-    longitude,
-    time.type = c("mean solar", "apparent solar")
+  date.time,
+  longitude,
+  time.type = c("mean solar", "apparent solar")
 ) {
   time.type <- match.arg(time.type)
 

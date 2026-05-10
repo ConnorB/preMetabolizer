@@ -33,10 +33,10 @@
 #'
 #' @export
 calc_light <- function(
-    solar.time,
-    latitude,
-    longitude,
-    max.PAR = 2326
+  solar.time,
+  latitude,
+  longitude,
+  max.PAR = 2326
 ) {
   coef.SW.to.PAR <- formals(streamMetabolizer::convert_SW_to_PAR)$coef
   app.solar.time <- solar.time |>

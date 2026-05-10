@@ -25,7 +25,7 @@ get_remote_mtime <- memoise::memoise(function(url) {
     {
       resp <- httr2::request(url) |>
         httr2::req_method("HEAD") |>
-        httr2::req_perform()
+        http_req_perform()
       if (httr2::resp_status(resp) == 200) {
         file_date <- httr2::resp_header(resp, "last-modified")
         file_date <- strptime(file_date, "%a, %d %b %Y %H:%M:%S", tz = "GMT")

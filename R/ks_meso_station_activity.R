@@ -35,7 +35,7 @@ ks_meso_station_activity <- function() {
       # Fetch data with retry capability
       response <- httr2::request(url) |>
         httr2::req_retry(max_tries = 3) |>
-        httr2::req_perform()
+        http_req_perform()
       content <- httr2::resp_body_string(response)
 
       interval_map <- c(

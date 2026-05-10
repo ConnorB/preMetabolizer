@@ -100,7 +100,7 @@ ks_meso_vars <- function() {
   }
 
   html <- httr2::request("https://mesonet.k-state.edu/rest/variables/") |>
-    httr2::req_perform() |>
+    http_req_perform() |>
     httr2::resp_body_string()
 
   json_str <- html |>

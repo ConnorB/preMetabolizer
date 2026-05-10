@@ -31,9 +31,9 @@
 #'   Influence of topographic complexity on solar insolation estimates for the
 #'   Colorado River, Grand Canyon, AZ. Ecological Modelling.
 convert_solartime_to_UTC <- function(
-    any.solar.time,
-    longitude,
-    time.type = c("apparent solar", "mean solar")
+  any.solar.time,
+  longitude,
+  time.type = c("apparent solar", "mean solar")
 ) {
   time.type <- match.arg(time.type)
 
