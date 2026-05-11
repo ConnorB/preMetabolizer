@@ -42,3 +42,31 @@ test_that("correct_bp same elevation returns same pressure", {
 test_that("correct_bp returns expected value", {
   expect_equal(correct_bp(101.3, 15, 300, 500), 98.92626, tolerance = 1e-3)
 })
+
+test_that("correct_bp honors from_units and to_units", {
+  kpa_result <- correct_bp(101.3, 15, 300, 500)
+  hpa_input <- correct_bp(
+    1013,
+    15,
+    300,
+    500,
+    from_units = "hPa",
+    to_units = "kPa"
+  )
+  expect_equal(hpa_input, kpa_result, tolerance = 1e-3)
+
+  hpa_output <- correct_bp(
+    101.3,
+    15,
+    300,
+    500,
+    from_units = "kPa",
+    to_units = "hPa"
+  )
+  expect_equal(hpa_output, kpa_result * 10, tolerance = 1e-3)
+})
+
+test_that("correct_bp is vectorized over station_bp and air_temp", {
+  result <- correct_bp(c(101.3, 100.5), c(15, 10), 300, 500)
+  expect_length(result, 2)
+})

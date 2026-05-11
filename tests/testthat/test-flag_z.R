@@ -28,3 +28,20 @@ test_that("flag_z does not flag uniform data", {
   flags <- flag_z(x)
   expect_true(all(is.na(flags)))
 })
+
+test_that("flag_z z-score matches canonical biweight midvariance (c = 9)", {
+  # Reference: Mosteller & Tukey (1977) / Lax (1985) biweight midvariance.
+  biweight_scale <- function(r, c = 9) {
+    mad_r <- stats::median(abs(r - stats::median(r)))
+    u <- (r - stats::median(r)) / (c * mad_r)
+    ok <- abs(u) < 1
+    num <- sum((r[ok] - stats::median(r))^2 * (1 - u[ok]^2)^4)
+    den <- sum((1 - u[ok]^2) * (1 - 5 * u[ok]^2))
+    sqrt(length(r) * num) / abs(den)
+  }
+  x <- c(1, 2, 1.5, 1.2, 100, 1.1, 1.3, 1.4)
+  result <- flag_z(x, return_z = TRUE)
+  window <- x[3:7] # centered 5-wide window at i = 5
+  expected_z <- (x[5] - stats::median(window)) / biweight_scale(window)
+  expect_equal(result$z[5], expected_z, tolerance = 1e-6)
+})

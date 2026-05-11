@@ -36,9 +36,13 @@ For each value in \code{x}, a window of length \code{width} centered on that val
 is extracted. The function:
 \itemize{
 \item Computes the median of the window.
-\item Calculates residuals from the median.
-\item Estimates a robust scale using Tukey’s biweight estimator based on MAD.
-\item Computes a Z-score as \eqn{(x_i - \text{median}) / \text{scale}}.
+\item Calculates residuals from the median and MAD-based scale.
+\item Estimates a robust scale using the Tukey biweight midvariance with
+tuning constant \code{c = 9} (Mosteller & Tukey 1977; Lax 1985):
+\deqn{s^2 = n \cdot \frac{\sum r_i^2 (1 - u_i^2)^4}{\left[\sum (1 - u_i^2)(1 - 5 u_i^2)\right]^2}}
+where \eqn{u_i = r_i / (c \cdot \mathrm{MAD})} and the sums run over
+\eqn{|u_i| < 1}.
+\item Computes a Z-score as \eqn{(x_i - \text{median}) / s}.
 }
 
 If the absolute value of the Z-score exceeds \code{threshold}, the value is
@@ -51,6 +55,14 @@ x <- c(1, 2, 1.5, 1.2, 100, 1.1, 1.3, 1.4)
 flag_z(x)
 flag_z(x, return_z = TRUE)
 
+}
+\references{
+Mosteller, F. and Tukey, J. W. (1977). \emph{Data Analysis and Regression}.
+Addison-Wesley.
+
+Lax, D. A. (1985). Robust estimators of scale: Finite-sample performance
+in long-tailed symmetric distributions. \emph{Journal of the American
+Statistical Association}, 80(391), 736–741.
 }
 \seealso{
 \code{\link[stats:mad]{stats::mad()}}, \code{\link[stats:median]{stats::median()}}

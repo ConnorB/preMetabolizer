@@ -47,3 +47,20 @@ test_that("even_timesteps errors on missing datetime column", {
 test_that("even_timesteps errors on non-data.frame input", {
   expect_snapshot(error = TRUE, even_timesteps(1:10))
 })
+
+test_that("even_timesteps infers step from modal diff, not first diff", {
+  # Regular hourly data with one near-duplicate at the start. A previous
+  # implementation took the first diff and would have mis-inferred a 1-min
+  # step. The modal diff (1 hour) is the correct step.
+  base <- seq(
+    as.POSIXct("2024-01-01", tz = "UTC"),
+    by = "1 hour",
+    length.out = 8
+  )
+  df <- data.frame(
+    DateTime_UTC = c(base[1] + 60, base[-1])
+  )
+  result <- even_timesteps(df)
+  # 1-hour step over an ~7-hour span should produce ~8 rows, not ~420.
+  expect_lt(nrow(result), 20L)
+})

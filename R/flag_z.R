@@ -15,14 +15,26 @@
 #' For each value in `x`, a window of length `width` centered on that value
 #' is extracted. The function:
 #' - Computes the median of the window.
-#' - Calculates residuals from the median.
-#' - Estimates a robust scale using Tukey’s biweight estimator based on MAD.
-#' - Computes a Z-score as \eqn{(x_i - \text{median}) / \text{scale}}.
+#' - Calculates residuals from the median and MAD-based scale.
+#' - Estimates a robust scale using the Tukey biweight midvariance with
+#'   tuning constant `c = 9` (Mosteller & Tukey 1977; Lax 1985):
+#'   \deqn{s^2 = n \cdot \frac{\sum r_i^2 (1 - u_i^2)^4}{\left[\sum (1 - u_i^2)(1 - 5 u_i^2)\right]^2}}
+#'   where \eqn{u_i = r_i / (c \cdot \mathrm{MAD})} and the sums run over
+#'   \eqn{|u_i| < 1}.
+#' - Computes a Z-score as \eqn{(x_i - \text{median}) / s}.
 #'
 #' If the absolute value of the Z-score exceeds `threshold`, the value is
 #' flagged with `"Z"`.
 #'
 #' NA values are ignored in the window statistics but retained in output positions.
+#'
+#' @references
+#' Mosteller, F. and Tukey, J. W. (1977). *Data Analysis and Regression*.
+#' Addison-Wesley.
+#'
+#' Lax, D. A. (1985). Robust estimators of scale: Finite-sample performance
+#' in long-tailed symmetric distributions. *Journal of the American
+#' Statistical Association*, 80(391), 736–741.
 #'
 #' @return If `return_z = TRUE`, a list with:
 #' \describe{

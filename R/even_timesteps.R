@@ -70,15 +70,18 @@ even_timesteps <- function(
 
   # Function to process a single site
   process_site <- function(site_data) {
-    # Find most common time interval for this site
-    time_diffs <- diff(sort(unique(site_data[[datetime_col]])))[1] # Use first diff as representative
-    if (length(time_diffs) == 0) {
+    # Find the most common time interval. Using the modal diff (rather than
+    # the first one) is robust to near-duplicate timestamps and gaps that
+    # would otherwise mis-infer the step.
+    diffs_sec <- as.numeric(
+      diff(sort(unique(site_data[[datetime_col]]))),
+      units = "secs"
+    )
+    if (length(diffs_sec) == 0) {
       cli::cli_warn("Site has insufficient data points to determine interval.")
       return(site_data)
     }
-
-    # Convert to seconds for sequence generation
-    interval_seconds <- as.numeric(time_diffs, unit = "secs")
+    interval_seconds <- as.numeric(calc_mode(diffs_sec, multi = "first"))
 
     # Create sequence of evenly spaced timestamps
     start_time <- lubridate::ceiling_date(

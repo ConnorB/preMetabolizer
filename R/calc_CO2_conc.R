@@ -43,28 +43,19 @@ calc_CO2_molKg <- function(
     to = "atm"
   )
 
-  # Water pressure in atm (convert depth in meters to atm; 10.1325 m = 1 atm)
-  water_press_atm <- waterDepth_m / 10.1325
-
-  # Total pressure (atmospheric + water)
-  total_pressure <- atmo_press_atm + water_press_atm
-
-  # Calculate K0 for water pressure
+  # Pressure correction to K0 uses the total (atmospheric + hydrostatic)
+  # pressure at the sensor; calc_K0() converts waterDepth_m internally.
   K0 <- calc_K0(temp_water, waterDepth_m, atmo_press_atm, salinity)
 
-  # Calculate vapor pressure of water
+  # Vapor pressure of water at the equilibrator
   vapor_press <- calc_vapor_press(temp_water, salinity)
 
-  # Calculate partial pressure of CO2
-  pCO2_uatm <- (atmo_press_atm - vapor_press) * CO2_ppm
+  # Partial pressure of CO2 (atm). xCO2 [ppm] * (P - P_H2O) [atm] gives uatm,
+  # then *1e-6 to atm.
+  pCO2_atm <- (atmo_press_atm - vapor_press) * CO2_ppm * 1e-6
 
-  # uatm to atm
-  pCO2_atm <- pCO2_uatm * 1e-6
-
-  # Calculate CO2 concentration in water (mol/kg)
-  CO2_molKg <- (pCO2_atm * (total_pressure) * K0)
-
-  return(CO2_molKg)
+  # Henry's law: [CO2*] = K0 * pCO2  (mol/kg)
+  pCO2_atm * K0
 }
 
 #' Calculate dissolved CO2 concentration in mg/L
@@ -97,40 +88,18 @@ calc_CO2_mgL <- function(
   press_units,
   salinity = 0
 ) {
-  # Molar mass of CO2 in g/mol
-  molar_mass_CO2 <- 44.0095 * 1e3 # g to mg
-  # Pressure to atm
-  atmo_press_atm <- convert_pressure(
-    pressure = atmo_press,
-    from = press_units,
-    to = "atm"
+  CO2_molKg <- calc_CO2_molKg(
+    CO2_ppm = CO2_ppm,
+    temp_water = temp_water,
+    waterDepth_m = waterDepth_m,
+    atmo_press = atmo_press,
+    press_units = press_units,
+    salinity = salinity
   )
 
-  # Water pressure in atm (convert depth in meters to atm; 10.1325 m = 1 atm)
-  water_press_atm <- waterDepth_m / 10.1325
+  # mg/mol for CO2, kg/L for water density
+  molar_mass_CO2_mg <- 44.0095 * 1e3
+  density_kgL <- calc_water_density(water_temp = temp_water) / 1e3
 
-  # Total pressure (atmospheric + water)
-  total_pressure <- atmo_press_atm + water_press_atm
-
-  # Calculate K0 for water pressure
-  K0 <- calc_K0(temp_water, waterDepth_m, atmo_press_atm, salinity)
-
-  # Calculate vapor pressure of water
-  vapor_press <- calc_vapor_press(temp_water, salinity)
-
-  # Calculate partial pressure of CO2
-  pCO2_uatm <- (atmo_press_atm - vapor_press) * CO2_ppm
-
-  # uatm to atm
-  pCO2_atm <- pCO2_uatm * 1e-6
-
-  # Calculate CO2 concentration in water (mol/kg)
-  CO2_molKg <- (pCO2_atm * (total_pressure) * K0)
-
-  # Water density
-  density_kgL <- calc_water_density(water_temp = temp_water) / 1e3 #kg/m^3 to kg/L
-
-  # Convert CO2 concentration from mol/kg to mg/L
-  CO2_mgL <- CO2_molKg * molar_mass_CO2 * density_kgL
-  return(CO2_mgL)
+  CO2_molKg * molar_mass_CO2_mg * density_kgL
 }

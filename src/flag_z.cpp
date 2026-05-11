@@ -53,21 +53,28 @@ SEXP flag_z(NumericVector x, int width = 5, double threshold = 3.0, bool return_
       abs_resid[abs_resid.size() / 2];
     if (mad == 0 || NumericVector::is_na(mad)) continue;
     
-    // Tukey's biweight scale
-    double s = mad;
-    double sum_w2_r2 = 0.0;
-    double sum_w2 = 0.0;
+    // Tukey biweight midvariance (Mosteller & Tukey 1977; Lax 1985).
+    //   uᵢ = rᵢ / (c · MAD), c = 9 is the standard scale tuning constant.
+    //   s² = n · Σ rᵢ² (1−uᵢ²)⁴ / [ Σ (1−uᵢ²)(1−5uᵢ²) ]²
+    // Sums are taken over indices with |uᵢ| < 1; points outside the window
+    // are downweighted to zero.
+    const double c_tune = 9.0;
+    double num = 0.0;
+    double den = 0.0;
+    int n_in = 0;
     for (size_t k = 0; k < resid.size(); ++k) {
-      double u = resid[k] / (4.685 * s);
+      double u = resid[k] / (c_tune * mad);
       if (std::abs(u) < 1.0) {
-        double w_i = pow(1 - u * u, 2);
-        sum_w2_r2 += pow(w_i, 2) * resid[k] * resid[k];
-        sum_w2 += pow(w_i, 2);
+        double one_minus_u2 = 1.0 - u * u;
+        num += resid[k] * resid[k] * pow(one_minus_u2, 4);
+        den += one_minus_u2 * (1.0 - 5.0 * u * u);
+        ++n_in;
       }
     }
-    if (sum_w2 == 0) continue;
-    
-    double scale = sqrt(sum_w2_r2 / sum_w2) * 1.4826;
+    if (n_in == 0 || den == 0.0) continue;
+
+    double scale = std::sqrt(static_cast<double>(resid.size()) * num) /
+      std::abs(den);
     if (scale == 0 || !std::isfinite(scale)) continue;
     
     // Z-score

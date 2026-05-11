@@ -15,6 +15,7 @@
 * Data-download helpers now throttle HTTP requests and use bounded parallel request execution to avoid sending too many simultaneous requests to remote services (no issue).
 * Mesonet helpers now return snake_case table columns and use consistent station and network identifiers such as `station_id`, `station_name`, `network`, and `network_name` across Kansas Mesonet, TexMesonet, and IEM results (no issue).
 * Messages, warnings, and errors now consistently use cli formatting across the package (no issue).
+* `calc_CO2_molKg()` and `calc_CO2_mgL()` now follow the standard Henry's law form `[CO2*] = K0 * pCO2`. A spurious additional factor of total pressure (atmospheric + hydrostatic) previously under-reported dissolved CO2 at any site away from 1 atm; the error reached ~15% at typical high-elevation streams (no issue).
 * `calc_O2sat()` now uses the Benson and Krause umol/kg coefficients from Garcia and Gordon (1992), converts to mg/L with salinity-aware density, and applies the corrected vapor-pressure term for non-standard pressure (no issue).
 * `calc_vapor_press()` with `method = "MIMSY"` now returns physically correct values. The Antoine equation constant `B` was incorrectly set to 140.264 (should be 1435.264), causing vapor pressures that were orders of magnitude too large.
 * `calc_water_density()` no longer accepts a `.drop_units` argument; it always returns a plain numeric vector (no issue).
@@ -31,6 +32,8 @@
 * `correct_bp()` no longer accepts a `drop_units` argument; it always returns a plain numeric vector. Elevation inputs must be plain numeric (meters) (no issue).
 * `download_ghcnh()` now validates inputs more clearly, treats existing local files as skipped downloads, and reports skipped files in its summary (no issue).
 * `even_timesteps()` no longer errors on single-column data frames due to `drop = TRUE` subsetting.
+* `even_timesteps()` now infers the time step from the modal diff of timestamps rather than the first diff, so a single near-duplicate timestamp at the start of a series no longer causes a wrong (often much smaller) step to be inferred (no issue).
+* `flag_z()` now uses the canonical Tukey biweight midvariance (Mosteller & Tukey 1977; Lax 1985) with tuning constant `c = 9` for the robust scale estimate, instead of a non-canonical MAD-normalized weighted standard deviation. The returned z-scores are now comparable to a Gaussian z for normally distributed data (no issue).
 * `get_nasa_data()` now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site `latitude` and `longitude` arguments or per-site `latitude`, `longitude`, and `elev_m` columns, interpolates NASA values to the input timestamps, returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with `streamMetabolizer::convert_SW_to_PAR()`, and runs quietly by default. The old `lat` and `lon` aliases are deprecated (no issue).
 * `get_noaa_stations()` now filters cached raw station metadata by `state`, validates options more clearly, and uses cached station metadata when remote modification times are unavailable (no issue).
 * `get_usgs_elev()` can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (no issue).
