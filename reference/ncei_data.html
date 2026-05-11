@@ -94,33 +94,62 @@ When <code>NULL</code> all available types are returned.</p></dd>
 
 
 <dt id="arg-include-station-name">include_station_name<a class="anchor" aria-label="anchor" href="#arg-include-station-name"></a></dt>
-<dd><p>Logical. When <code>TRUE</code> (default), a <code>NAME</code>
-column is included in the result.</p></dd>
+<dd><p>Logical. When <code>TRUE</code> (default), a
+<code>station_name</code> column is included in the result.</p></dd>
 
 
 <dt id="arg-include-station-location">include_station_location<a class="anchor" aria-label="anchor" href="#arg-include-station-location"></a></dt>
-<dd><p>Logical. When <code>TRUE</code>, <code>LATITUDE</code>,
-<code>LONGITUDE</code>, and <code>ELEVATION</code> columns are added. Default <code>FALSE</code>.</p></dd>
+<dd><p>Logical. When <code>TRUE</code>, <code>latitude</code>,
+<code>longitude</code>, and <code>elevation</code> columns are added. Default <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame with one row per observation. The <code>STATION</code> column
-identifies the source station and <code>DATE</code> records the observation
-time. Additional columns depend on the requested <code>dataset</code> and
-<code>data_types</code>.</p>
+    <p>A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with one row per observation
+and snake_case column names. Leading columns (when present) are
+<code>station_id</code>, <code>station_name</code>, <code>latitude</code>, <code>longitude</code>, <code>elevation</code>,
+and either <code>datetime</code> (<code>POSIXct</code> UTC, for sub-daily datasets) or
+<code>date</code> (<code>Date</code>, for daily and coarser datasets). Remaining columns
+depend on the requested <code>dataset</code> and <code>data_types</code>. Columns that are
+entirely <code>NA</code> are dropped.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function calls
 <code>https://www.ncei.noaa.gov/access/services/data/v1</code>. Data are returned
-in CSV format and read into a data frame with <code><a href="https://readr.tidyverse.org/reference/read_delim.html" class="external-link">readr::read_csv()</a></code>.</p>
-<p>The <code>"daily-summaries"</code> dataset returns one row per station per day
-with columns such as <code>PRCP</code>, <code>TMAX</code>, and <code>TMIN</code>. The <code>"global-hourly"</code>
-dataset returns ISD records in which several key variables (<code>TMP</code>,
-<code>WND</code>, <code>DEW</code>, <code>SLP</code>) contain comma-separated sub-fields rather than
-simple numeric values.</p>
-    </div>
+in CSV format and parsed into a tibble.</p>
+<p>For <code>dataset = "global-hourly"</code> (Integrated Surface Database), the
+mandatory packed fields are expanded into typed numeric columns with
+SI units and missing-value sentinels converted to <code>NA</code>:</p>
+<dl><dt><code>WND</code></dt>
+<dd><p><code>wind_direction</code> (degrees), <code>wind_direction_quality</code>,
+<code>wind_type_code</code>, <code>wind_speed</code> (m/s), <code>wind_speed_quality</code>.</p></dd>
+
+<dt><code>CIG</code></dt>
+<dd><p><code>ceiling_height</code> (m), <code>ceiling_quality</code>,
+<code>ceiling_determination_code</code>, <code>ceiling_cavok</code>.</p></dd>
+
+<dt><code>VIS</code></dt>
+<dd><p><code>visibility</code> (m), <code>visibility_quality</code>,
+<code>visibility_variability_code</code>, <code>visibility_variability_quality</code>.</p></dd>
+
+<dt><code>TMP</code></dt>
+<dd><p><code>temperature</code> (°C), <code>temperature_quality</code>.</p></dd>
+
+<dt><code>DEW</code></dt>
+<dd><p><code>dew_point_temperature</code> (°C), <code>dew_point_quality</code>.</p></dd>
+
+<dt><code>SLP</code></dt>
+<dd><p><code>sea_level_pressure</code> (hPa),
+<code>sea_level_pressure_quality</code>.</p></dd>
+
+<dt><code>AA1</code>–<code>AA4</code></dt>
+<dd><p><code>precipitation_period_hours</code> (hr),
+<code>precipitation</code> (mm), <code>precipitation_condition_code</code>,
+<code>precipitation_quality</code>.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="ncei_stations.html">ncei_stations()</a></code> to search for station identifiers,
@@ -139,7 +168,7 @@ simple numeric values.</p>
 <span class="r-in"><span>  data_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TMAX"</span>, <span class="st">"TMIN"</span>, <span class="st">"PRCP"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Hourly ISD observations</span></span></span>
+<span class="r-in"><span><span class="co"># Hourly ISD observations with expanded mandatory fields</span></span></span>
 <span class="r-in"><span><span class="fu">ncei_data</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  dataset <span class="op">=</span> <span class="st">"global-hourly"</span>,</span></span>
 <span class="r-in"><span>  stations <span class="op">=</span> <span class="st">"72469023183"</span>,</span></span>

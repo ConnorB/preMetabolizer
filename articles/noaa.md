@@ -68,15 +68,13 @@ ks_stations <- get_noaa_stations(bbox = bbox)
 
 glimpse(ks_stations)
 #> Rows: 634
-#> Columns: 8
-#> $ station_id    <chr> "USW00013996", "USW00013984", "USW00003936", "USW0000391…
-#> $ name          <chr> "TOPEKA ASOS, KS US", "CONCORDIA ASOS, KS US", "MANHATTA…
-#> $ latitude      <dbl> 39.07246, 39.55127, 39.13456, 38.77996, 38.32906, 38.941…
-#> $ longitude     <dbl> -95.62602, -97.65077, -96.67894, -97.64444, -96.19453, -…
-#> $ elevation     <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
-#> $ start_date    <date> 1946-08-01, 1885-05-01, 1960-06-01, 1952-01-01, 1950-10…
-#> $ end_date      <date> 2026-05-07, 2026-05-07, 2026-05-07, 2026-05-07, 2026-05…
-#> $ data_coverage <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+#> Columns: 6
+#> $ station_id   <chr> "USW00013996", "USW00013984", "USW00003936", "USW00003919…
+#> $ station_name <chr> "TOPEKA ASOS, KS US", "CONCORDIA ASOS, KS US", "MANHATTAN…
+#> $ latitude     <dbl> 39.07246, 39.55127, 39.13456, 38.77996, 38.32906, 38.9414…
+#> $ longitude    <dbl> -95.62602, -97.65077, -96.67894, -97.64444, -96.19453, -9…
+#> $ start_date   <date> 1946-08-01, 1885-05-01, 1960-06-01, 1952-01-01, 1950-10-…
+#> $ end_date     <date> 2026-05-07, 2026-05-07, 2026-05-07, 2026-05-07, 2026-05-…
 ```
 
 Filter to stations that carry the variables you need and span at least
@@ -92,10 +90,10 @@ wx_stations <- get_noaa_stations(
 )
 
 wx_stations |>
-  select(station_id, name, latitude, longitude, start_date, end_date) |>
-  arrange(name)
+  select(station_id, station_name, latitude, longitude, start_date, end_date) |>
+  arrange(station_name)
 #> # A tibble: 47 × 6
-#>    station_id  name                   latitude longitude start_date end_date  
+#>    station_id  station_name           latitude longitude start_date end_date  
 #>    <chr>       <chr>                     <dbl>     <dbl> <date>     <date>    
 #>  1 USC00140010 ABILENE, KS US             38.9     -97.2 1893-01-01 2026-03-31
 #>  2 USC00140682 BELLEVILLE, KS US          39.8     -97.6 1935-04-01 2026-05-08
@@ -128,9 +126,9 @@ konza_noaa <- closest_noaa_stations(
 )
 
 konza_noaa |>
-  select(distance_km, station_id, name, latitude, longitude)
+  select(distance_km, station_id, station_name, latitude, longitude)
 #> # A tibble: 13 × 5
-#>    distance_km station_id  name                               latitude longitude
+#>    distance_km station_id  station_name                       latitude longitude
 #>          <dbl> <chr>       <chr>                                 <dbl>     <dbl>
 #>  1       0.493 USW00053974 MANHATTAN 6 SSW, KS US                 39.1     -96.6
 #>  2       6.58  USW00003936 MANHATTAN ASOS, KS US                  39.1     -96.7
@@ -196,24 +194,24 @@ daily_wx <- ncei_data(
 glimpse(daily_wx)
 #> Rows: 365
 #> Columns: 6
-#> $ STATION <chr> "USW00053974", "USW00053974", "USW00053974", "USW00053974", "U…
-#> $ NAME    <chr> "MANHATTAN 6 SSW, KS US", "MANHATTAN 6 SSW, KS US", "MANHATTAN…
-#> $ DATE    <date> 2024-10-01, 2024-10-02, 2024-10-03, 2024-10-04, 2024-10-05, 2…
-#> $ PRCP    <dbl> 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.7, 0.0, 0.0, 0.…
-#> $ TMAX    <dbl> 22.6, 28.4, 34.7, 28.3, 35.4, 26.2, 24.8, 26.5, 30.2, 29.7, 32…
-#> $ TMIN    <dbl> 5.5, 3.8, 12.5, 13.2, 12.8, 6.4, 2.5, 8.8, 7.0, 12.9, 16.3, 11…
+#> $ station_id   <chr> "USW00053974", "USW00053974", "USW00053974", "USW00053974…
+#> $ station_name <chr> "MANHATTAN 6 SSW, KS US", "MANHATTAN 6 SSW, KS US", "MANH…
+#> $ date         <date> 2024-10-01, 2024-10-02, 2024-10-03, 2024-10-04, 2024-10-…
+#> $ prcp         <dbl> 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.7, 0.0, 0.…
+#> $ tmax         <dbl> 22.6, 28.4, 34.7, 28.3, 35.4, 26.2, 24.8, 26.5, 30.2, 29.…
+#> $ tmin         <dbl> 5.5, 3.8, 12.5, 13.2, 12.8, 6.4, 2.5, 8.8, 7.0, 12.9, 16.…
 ```
 
 With `units = "metric"` (the default),
 [`ncei_data()`](https://connorb.github.io/preMetabolizer/reference/ncei_data.md)
-returns TMAX and TMIN in °C and PRCP in mm. The `DATE` column is already
-a `Date`:
+returns `tmax` and `tmin` in °C and `prcp` in mm. The `date` column is
+already a `Date`:
 
 ``` r
 
-ggplot(daily_wx, aes(DATE)) +
-  geom_ribbon(aes(ymin = TMIN, ymax = TMAX), alpha = 0.3, fill = "#2c7fb8") +
-  geom_line(aes(y = (TMAX + TMIN) / 2), color = "#2c7fb8") +
+ggplot(daily_wx, aes(date)) +
+  geom_ribbon(aes(ymin = tmin, ymax = tmax), alpha = 0.3, fill = "#2c7fb8") +
+  geom_line(aes(y = (tmax + tmin) / 2), color = "#2c7fb8") +
   labs(
     x     = NULL,
     y     = "Air temperature (°C)",
@@ -271,6 +269,5 @@ station_id
 #> [1] "USW00053974"
 ```
 
-See
-[`vignette("ghcnh", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/ghcnh.html)
-for a full hourly-data workflow.
+See `vignette("ghcnh", package = "preMetabolizer")` for a full
+hourly-data workflow.

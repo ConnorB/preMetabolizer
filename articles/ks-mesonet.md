@@ -177,7 +177,7 @@ recent |>
 #> # A tibble: 1 × 2
 #>   station_name  timestamp          
 #>   <chr>         <dttm>             
-#> 1 Konza Prairie 2026-05-10 18:00:00
+#> 1 Konza Prairie 2026-05-10 22:00:00
 ```
 
 ## Retrieve time-series data

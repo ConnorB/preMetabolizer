@@ -53,31 +53,64 @@ ncei_data(
 
 - include_station_name:
 
-  Logical. When `TRUE` (default), a `NAME` column is included in the
-  result.
+  Logical. When `TRUE` (default), a `station_name` column is included in
+  the result.
 
 - include_station_location:
 
-  Logical. When `TRUE`, `LATITUDE`, `LONGITUDE`, and `ELEVATION` columns
+  Logical. When `TRUE`, `latitude`, `longitude`, and `elevation` columns
   are added. Default `FALSE`.
 
 ## Value
 
-A data frame with one row per observation. The `STATION` column
-identifies the source station and `DATE` records the observation time.
-Additional columns depend on the requested `dataset` and `data_types`.
+A [tibble](https://tibble.tidyverse.org/reference/tibble-package.html)
+with one row per observation and snake_case column names. Leading
+columns (when present) are `station_id`, `station_name`, `latitude`,
+`longitude`, `elevation`, and either `datetime` (`POSIXct` UTC, for
+sub-daily datasets) or `date` (`Date`, for daily and coarser datasets).
+Remaining columns depend on the requested `dataset` and `data_types`.
+Columns that are entirely `NA` are dropped.
 
 ## Details
 
 This function calls `https://www.ncei.noaa.gov/access/services/data/v1`.
-Data are returned in CSV format and read into a data frame with
-[`readr::read_csv()`](https://readr.tidyverse.org/reference/read_delim.html).
+Data are returned in CSV format and parsed into a tibble.
 
-The `"daily-summaries"` dataset returns one row per station per day with
-columns such as `PRCP`, `TMAX`, and `TMIN`. The `"global-hourly"`
-dataset returns ISD records in which several key variables (`TMP`,
-`WND`, `DEW`, `SLP`) contain comma-separated sub-fields rather than
-simple numeric values.
+For `dataset = "global-hourly"` (Integrated Surface Database), the
+mandatory packed fields are expanded into typed numeric columns with SI
+units and missing-value sentinels converted to `NA`:
+
+- `WND`:
+
+  `wind_direction` (degrees), `wind_direction_quality`,
+  `wind_type_code`, `wind_speed` (m/s), `wind_speed_quality`.
+
+- `CIG`:
+
+  `ceiling_height` (m), `ceiling_quality`, `ceiling_determination_code`,
+  `ceiling_cavok`.
+
+- `VIS`:
+
+  `visibility` (m), `visibility_quality`, `visibility_variability_code`,
+  `visibility_variability_quality`.
+
+- `TMP`:
+
+  `temperature` (°C), `temperature_quality`.
+
+- `DEW`:
+
+  `dew_point_temperature` (°C), `dew_point_quality`.
+
+- `SLP`:
+
+  `sea_level_pressure` (hPa), `sea_level_pressure_quality`.
+
+- `AA1`–`AA4`:
+
+  `precipitation_period_hours` (hr), `precipitation` (mm),
+  `precipitation_condition_code`, `precipitation_quality`.
 
 ## See also
 
@@ -99,7 +132,7 @@ ncei_data(
   data_types = c("TMAX", "TMIN", "PRCP")
 )
 
-# Hourly ISD observations
+# Hourly ISD observations with expanded mandatory fields
 ncei_data(
   dataset = "global-hourly",
   stations = "72469023183",

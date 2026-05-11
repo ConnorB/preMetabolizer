@@ -219,8 +219,8 @@ get_nasa_data(
   exceedance-probability helpers.
 - [`vignette("noaa", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/noaa.md)
   finds candidate NOAA stations.
-- [`vignette("ghcnh", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/ghcnh.html)
-  downloads and reads NOAA hourly GHCNh files.
+- `vignette("ghcnh", package = "preMetabolizer")` downloads and reads
+  NOAA hourly GHCNh files.
 - [`vignette("ks-mesonet", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/ks-mesonet.md)
   works with Kansas Mesonet station metadata and cached observations.
 - [`vignette("iem", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/iem.md)

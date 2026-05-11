@@ -161,7 +161,7 @@ cat(
   sum(!is.na(kings$temp_flag)),
   "\n"
 )
-#> Flagged temperature values: 9
+#> Flagged temperature values: 3
 ```
 
 ## Flow duration curve

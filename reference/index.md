@@ -19,6 +19,17 @@ sources.
   : Search for NCEI weather stations
 - [`ncei_bbox()`](https://connorb.github.io/preMetabolizer/reference/ncei_bbox.md)
   : Compute a bounding box around a point
+- [`cdo_datasets()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_datacategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_datatypes()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_locationcategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_locations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_stations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_data()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  : Query the NCEI Climate Data Online (CDO) Web Services v2 API
+- [`cdo_request_count()`](https://connorb.github.io/preMetabolizer/reference/cdo_request_count.md)
+  [`cdo_reset_request_count()`](https://connorb.github.io/preMetabolizer/reference/cdo_request_count.md)
+  : Inspect and reset the NCEI CDO session request counter
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
   : Get NOAA station information
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)

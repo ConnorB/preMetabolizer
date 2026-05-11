@@ -14,10 +14,7 @@ closest_noaa_stations(
   dist_km,
   start_date = NULL,
   end_date = NULL,
-  data_types = NULL,
-  lat = lifecycle::deprecated(),
-  long = lifecycle::deprecated(),
-  lon = lifecycle::deprecated()
+  data_types = NULL
 )
 ```
 
@@ -45,17 +42,15 @@ closest_noaa_stations(
   `c("TMAX", "TMIN")`). When supplied only stations carrying all
   requested types are returned.
 
-- lat, long, lon:
-
-  **\[deprecated\]** Use `latitude` and `longitude` instead.
-
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble-package.html)
 of NOAA stations within `dist_km`, sorted by ascending distance. The
 first column is `distance_km`; remaining columns are those returned by
-[`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md).
-Returns `NULL` when no stations are found within the requested radius.
+[`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
+(`station_id`, `station_name`, `latitude`, `longitude`, `start_date`,
+`end_date`). Returns `NULL` when no stations are found within the
+requested radius.
 
 ## Details
 

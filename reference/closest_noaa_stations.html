@@ -61,10 +61,7 @@ radius using geodesic distance.</p>
 <span>  <span class="va">dist_km</span>,</span>
 <span>  start_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  data_types <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  lat <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  long <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  lon <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  data_types <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -93,19 +90,15 @@ Accepts <code>Date</code> objects or <code>"YYYY-MM-DD"</code> strings.</p></dd>
 (e.g., <code>c("TMAX", "TMIN")</code>). When supplied only stations carrying
 all requested types are returned.</p></dd>
 
-
-<dt id="arg-lat-long-lon">lat, long, lon<a class="anchor" aria-label="anchor" href="#arg-lat-long-lon"></a></dt>
-<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use <code>latitude</code>
-and <code>longitude</code> instead.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> of NOAA stations within
 <code>dist_km</code>, sorted by ascending distance. The first column is
 <code>distance_km</code>; remaining columns are those returned by
-<code><a href="get_noaa_stations.html">get_noaa_stations()</a></code>. Returns <code>NULL</code> when no stations are found
-within the requested radius.</p>
+<code><a href="get_noaa_stations.html">get_noaa_stations()</a></code> (<code>station_id</code>, <code>station_name</code>, <code>latitude</code>,
+<code>longitude</code>, <code>start_date</code>, <code>end_date</code>). Returns <code>NULL</code> when no
+stations are found within the requested radius.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

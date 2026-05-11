@@ -1,8 +1,8 @@
 # Get GHCNh hourly observations
 
 Downloads Global Historical Climatology Network hourly (GHCNh) data for
-one or more stations and a date range, returning a parsed data frame
-ready for use in stream metabolism modelling.
+one or more stations and a date range, returning a parsed tibble ready
+for use in stream metabolism modelling.
 
 ## Usage
 

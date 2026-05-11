@@ -59,9 +59,9 @@ get_noaa_stations(
 ## Value
 
 A [tibble](https://tibble.tidyverse.org/reference/tibble-package.html)
-with columns `station_id`, `name`, `latitude`, `longitude`, `elevation`,
-`start_date`, `end_date`, and `data_coverage`. Returns an empty tibble
-when no stations match the query.
+with columns `station_id`, `station_name`, `latitude`, `longitude`,
+`start_date`, and `end_date`. Returns an empty tibble when no stations
+match the query.
 
 ## Details
 

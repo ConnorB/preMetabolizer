@@ -2,6 +2,24 @@
 
 ## preMetabolizer 0.0.0.9000
 
+- [`cdo_data()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_datasets()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_datacategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_datatypes()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_locationcategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_locations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  and
+  [`cdo_stations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  wrap the seven endpoints of the NCEI Climate Data Online (CDO) Web
+  Services v2 API; they auto-paginate, parse date and numeric columns,
+  read the API token from the `API_NCEI_CDO` environment variable,
+  throttle to the per-token limit of 5 requests per second, and abort
+  once the 10,000 requests-per-day limit is reached for the session (use
+  [`cdo_request_count()`](https://connorb.github.io/preMetabolizer/reference/cdo_request_count.md)
+  to inspect and
+  [`cdo_reset_request_count()`](https://connorb.github.io/preMetabolizer/reference/cdo_request_count.md)
+  to clear the session counter) (no issue).
+
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
   now queries the NCEI Search API with a bounding box instead of
   downloading the full MSHR station archive; the `state` and `clean`
@@ -62,6 +80,15 @@
 - Messages, warnings, and errors now consistently use cli formatting
   across the package (no issue).
 
+- [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
+  and
+  [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)
+  now follow the standard Henry’s law form `[CO2*] = K0 * pCO2`. A
+  spurious additional factor of total pressure (atmospheric +
+  hydrostatic) previously under-reported dissolved CO2 at any site away
+  from 1 atm; the error reached ~15% at typical high-elevation streams
+  (no issue).
+
 - [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
   now uses the Benson and Krause umol/kg coefficients from Garcia and
   Gordon (1992), converts to mg/L with salinity-aware density, and
@@ -83,8 +110,33 @@
   providing `atmo_kPa`, rather than silently returning `NA`.
 
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
-  now uses `latitude` and `longitude` arguments. The old `lat`, `long`,
-  and `lon` aliases are deprecated (no issue).
+  no longer accepts the deprecated `lat`, `long`, or `lon` arguments;
+  use `latitude` and `longitude`. The returned tibble uses
+  `station_name` and no longer includes always-`NA` `elevation` or
+  `data_coverage` columns (no issue).
+
+- [`get_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/get_ghcnh.md)
+  internals now share datetime parsing with the mesonet helpers and use
+  the shared `check_*` input validators (no issue).
+
+- [`get_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/get_ghcnh.md)
+  no longer errors with `object 'sid' not found` when called with
+  `quiet = FALSE` (no issue).
+
+- [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
+  returns a tibble with `station_name` and no longer includes
+  always-`NA` `elevation` or `data_coverage` columns (no issue).
+
+- [`ncei_data()`](https://connorb.github.io/preMetabolizer/reference/ncei_data.md)
+  returns a snake_case tibble led by `station_id`, `station_name`, and a
+  parsed `datetime` (or `date`) column; for `dataset = "global-hourly"`
+  the ISD mandatory fields (`WND`, `CIG`, `VIS`, `TMP`, `DEW`, `SLP`,
+  `AA1`–`AA4`) are split into typed numeric columns with units applied
+  and sentinels converted to `NA` (no issue).
+
+- [`ncei_stations()`](https://connorb.github.io/preMetabolizer/reference/ncei_stations.md)
+  returns a tibble with `station_name`; the always-`NA` `elevation` and
+  `data_coverage` columns are removed (no issue).
 
 - [`convert_flow()`](https://connorb.github.io/preMetabolizer/reference/convert_flow.md)
   now requires an explicit `from` argument specifying the input unit; it
@@ -117,6 +169,19 @@
 - [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
   no longer errors on single-column data frames due to `drop = TRUE`
   subsetting.
+
+- [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
+  now infers the time step from the modal diff of timestamps rather than
+  the first diff, so a single near-duplicate timestamp at the start of a
+  series no longer causes a wrong (often much smaller) step to be
+  inferred (no issue).
+
+- [`flag_z()`](https://connorb.github.io/preMetabolizer/reference/flag_z.md)
+  now uses the canonical Tukey biweight midvariance (Mosteller & Tukey
+  1977; Lax 1985) with tuning constant `c = 9` for the robust scale
+  estimate, instead of a non-canonical MAD-normalized weighted standard
+  deviation. The returned z-scores are now comparable to a Gaussian z
+  for normally distributed data (no issue).
 
 - [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
   now accepts time-series data directly, infers per-site download date

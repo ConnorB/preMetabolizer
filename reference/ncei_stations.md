@@ -68,7 +68,7 @@ with one row per station and the following columns:
   Station identifier (dataset prefix stripped, e.g., `"USW00023183"`
   rather than `"GHCND:USW00023183"`).
 
-- `name`:
+- `station_name`:
 
   Station name.
 
@@ -76,17 +76,9 @@ with one row per station and the following columns:
 
   Decimal-degree coordinates.
 
-- `elevation`:
-
-  Elevation in metres.
-
 - `start_date`,`end_date`:
 
   Period of record as `Date` objects.
-
-- `data_coverage`:
-
-  Fraction of expected observations present (0–1).
 
 ## Details
 

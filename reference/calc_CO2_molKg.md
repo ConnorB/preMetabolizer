@@ -66,5 +66,5 @@ calc_CO2_molKg(
   atmo_press = 101.325,
   press_units = "kPa"
 )
-#> [1] 1.686021e-05
+#> [1] 1.606735e-05
 ```
