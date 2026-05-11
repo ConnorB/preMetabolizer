@@ -1,5 +1,6 @@
 # preMetabolizer 0.0.0.9000
 
+* `cdo_data()`, `cdo_datasets()`, `cdo_datacategories()`, `cdo_datatypes()`, `cdo_locationcategories()`, `cdo_locations()`, and `cdo_stations()` wrap the seven endpoints of the NCEI Climate Data Online (CDO) Web Services v2 API; they auto-paginate, parse date and numeric columns, read the API token from the `API_NCEI_CDO` environment variable, throttle to the per-token limit of 5 requests per second, and abort once the 10,000 requests-per-day limit is reached for the session (use `cdo_request_count()` to inspect and `cdo_reset_request_count()` to clear the session counter) (no issue).
 * `closest_noaa_stations()` now queries the NCEI Search API with a bounding box instead of downloading the full MSHR station archive; the `state` and `clean` arguments have been removed (no issue).
 * `download_ghcnh()` and `read_ghcnh()` have been replaced by `get_ghcnh()`, which downloads GHCNh files and returns a parsed tibble directly (no issue).
 * `get_ghcnh()` now uses the GHCNh v1.1.0 archive with per-year PSV files; it can retrieve data for multiple stations in parallel, accepts a date range instead of individual years, and returns column names in `snake_case` (no issue).

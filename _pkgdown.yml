@@ -18,6 +18,8 @@ reference:
       - ncei_datasets
       - ncei_stations
       - ncei_bbox
+      - cdo
+      - cdo_request_count
       - get_noaa_stations
       - closest_noaa_stations
       - get_ghcnh
