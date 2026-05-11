@@ -100,7 +100,7 @@ convert_solartime_to_UTC(
 
 ## Assign seasons
 
-`get_season()` classifies dates into fixed northern-hemisphere astronomical seasons.
+`get_season()` classifies dates into astronomical seasons using the actual equinox and solstice dates for each year (computed via Meeus's algorithms). It accepts a `hemisphere` argument and returns an ordered factor.
 
 ```{r}
 #| label: seasons

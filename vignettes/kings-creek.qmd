@@ -71,16 +71,13 @@ summary(kings[, c("discharge_cfs", "discharge_cms")])
 
 ## Add season
 
-`get_season()` assigns a meteorological season (Winter, Spring, Summer, Fall) to each date, which is useful for stratified summaries and plots.
+`get_season()` assigns an astronomical season (Spring, Summer, Autumn, Winter) to each date and returns an ordered factor, which is useful for stratified summaries and plots.
 
 ```{r}
 #| label: seasons
 
 kings <- kings |>
-  mutate(season = factor(
-    get_season(time),
-    levels = c("Winter", "Spring", "Summer", "Fall")
-  ))
+  mutate(season = get_season(time))
 
 count(kings, season)
 ```
@@ -162,7 +159,7 @@ kings |>
     Winter = "#4575b4",
     Spring = "#74add1",
     Summer = "#fdae61",
-    Fall   = "#d73027"
+    Autumn = "#d73027"
   )) +
   labs(
     x     = "Exceedance probability",
@@ -208,7 +205,7 @@ ggplot(non_zero_q, aes(discharge_cms, fill = season)) +
     Winter = "#4575b4",
     Spring = "#74add1",
     Summer = "#fdae61",
-    Fall   = "#d73027"
+    Autumn = "#d73027"
   )) +
   labs(
     x    = "Discharge (m³/s)",

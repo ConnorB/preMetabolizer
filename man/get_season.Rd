@@ -2,33 +2,51 @@
 % Please edit documentation in R/get_season.R
 \name{get_season}
 \alias{get_season}
-\title{Determine the season from a date}
+\title{Determine the astronomical season from a date}
 \usage{
-get_season(date)
+get_season(date, hemisphere = c("north", "south"), labels = NULL)
 }
 \arguments{
-\item{date}{Character, Date, or date-time vector coercible with
-\code{\link[base:as.Date]{base::as.Date()}}.}
+\item{date}{A \code{Date}, \code{POSIXct}, or \code{POSIXlt} vector, or anything coercible
+to \code{Date} via \code{\link[base:as.Date]{base::as.Date()}}.}
+
+\item{hemisphere}{One of \code{"north"} (default) or \code{"south"}.}
+
+\item{labels}{Optional named character vector overriding the default
+season names. Allowed names are \code{spring}, \code{summer}, \code{autumn}, and
+\code{winter}. Partial overrides are allowed; unspecified names keep their
+defaults.}
 }
 \value{
-Character vector of season names with one value per input date.
+An ordered factor with levels Spring < Summer < Autumn < Winter
+(or the user-supplied equivalents), the same length as \code{date}. \code{NA}
+in input produces \code{NA} in output.
 }
 \description{
-Classifies dates into astronomical seasons: Winter, Spring, Summer, or Fall.
+Classifies dates into astronomical seasons using the precise dates of
+equinoxes and solstices for each year, computed from Meeus's
+"Astronomical Algorithms" (2nd ed.), chapter 27.
 }
 \details{
-Seasons use fixed northern-hemisphere transition dates: Spring begins
-March 20, Summer begins June 21, Fall begins September 23, and Winter begins
-December 21.
+A mean Julian Ephemeris Day for each equinox and solstice is computed
+from the Table 27.B polynomial and refined by the 24-term periodic
+correction in Table 27.C. The corrected instant is accurate to roughly
+a minute and is then rounded to a calendar date in UTC. The formulas
+are valid for years 1000-3000.
+
+Southern-hemisphere seasons are the northern seasons offset by six
+months. For example, dates after the March equinox and before the June
+solstice are northern spring but southern autumn.
 }
 \examples{
-get_season("2024-12-25")
+get_season(as.Date(c("2024-03-19", "2024-06-20", "2024-09-22", "2024-12-21")))
 
-get_season(as.Date(c(
-  "2024-01-15",
-  "2024-04-15",
-  "2024-07-15",
-  "2024-10-15"
-)))
+get_season(Sys.time())
+
+# Southern hemisphere
+get_season(as.Date("2024-07-15"), hemisphere = "south")
+
+# Custom labels
+get_season(as.Date("2024-09-22"), labels = c(autumn = "Fall"))
 
 }
