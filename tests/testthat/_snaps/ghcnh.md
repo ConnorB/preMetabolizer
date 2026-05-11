@@ -1,3 +1,10 @@
+# ghcnh_build_requests emits informative message when not quiet
+
+    Code
+      reqs <- ghcnh_build_requests("USW00053974", 2024, quiet = FALSE)
+    Message
+      Requesting GHCNh data for station "USW00053974", year 2024.
+
 # get_ghcnh validates inputs
 
     Code

@@ -94,6 +94,13 @@ test_that("get_ghcnh converts -9999 to NA and drops all-NA columns", {
   expect_false("dew_point_temperature" %in% names(result))
 })
 
+test_that("ghcnh_build_requests emits informative message when not quiet", {
+  expect_snapshot({
+    reqs <- ghcnh_build_requests("USW00053974", 2024, quiet = FALSE)
+  })
+  expect_length(reqs, 1)
+})
+
 test_that("get_ghcnh validates inputs", {
   expect_snapshot(error = TRUE, {
     get_ghcnh(

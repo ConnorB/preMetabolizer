@@ -86,9 +86,9 @@ check_numeric <- function(
   invisible(x)
 }
 
-cli_inform_if <- function(condition, message) {
+cli_inform_if <- function(condition, message, .envir = parent.frame()) {
   if (isTRUE(condition)) {
-    cli::cli_inform(message)
+    cli::cli_inform(message, .envir = .envir)
   }
 
   invisible(NULL)

@@ -20,6 +20,7 @@
 * `calc_water_height()` now gives a clear error when `type = "unvented"` is used without providing `atmo_kPa`, rather than silently returning `NA`.
 * `closest_noaa_stations()` no longer accepts the deprecated `lat`, `long`, or `lon` arguments; use `latitude` and `longitude`. The returned tibble uses `station_name` and no longer includes always-`NA` `elevation` or `data_coverage` columns (no issue).
 * `get_ghcnh()` internals now share datetime parsing with the mesonet helpers and use the shared `check_*` input validators (no issue).
+* `get_ghcnh()` no longer errors with `object 'sid' not found` when called with `quiet = FALSE` (no issue).
 * `get_noaa_stations()` returns a tibble with `station_name` and no longer includes always-`NA` `elevation` or `data_coverage` columns (no issue).
 * `ncei_data()` returns a snake_case tibble led by `station_id`, `station_name`, and a parsed `datetime` (or `date`) column; for `dataset = "global-hourly"` the ISD mandatory fields (`WND`, `CIG`, `VIS`, `TMP`, `DEW`, `SLP`, `AA1`–`AA4`) are split into typed numeric columns with units applied and sentinels converted to `NA` (no issue).
 * `ncei_stations()` returns a tibble with `station_name`; the always-`NA` `elevation` and `data_coverage` columns are removed (no issue).
