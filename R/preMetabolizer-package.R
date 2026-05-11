@@ -44,6 +44,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom memoise memoise
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib preMetabolizer, .registration = TRUE
 ## usethis namespace: end

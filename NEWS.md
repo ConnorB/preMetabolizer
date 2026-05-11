@@ -2,7 +2,7 @@
 
 * `closest_noaa_stations()` now queries the NCEI Search API with a bounding box instead of downloading the full MSHR station archive; the `state` and `clean` arguments have been removed (no issue).
 * `download_ghcnh()` and `read_ghcnh()` have been replaced by `get_ghcnh()`, which downloads GHCNh files and returns a parsed tibble directly (no issue).
-* `get_ghcnh()` now uses the GHCNh v1.1.0 archive with per-year PSV files, enabling access to current data including water year 2025; it can retrieve data for multiple stations in parallel, accepts a date range instead of individual years, and returns column names in `snake_case` (no issue).
+* `get_ghcnh()` now uses the GHCNh v1.1.0 archive with per-year PSV files; it can retrieve data for multiple stations in parallel, accepts a date range instead of individual years, and returns column names in `snake_case` (no issue).
 * `get_noaa_stations()` now queries the NCEI Search API for GHCND stations instead of parsing the MSHR fixed-width archive; it accepts `bbox`, `start_date`, `end_date`, `data_types`, and `text` arguments; the `state`, `clean`, and `debug` arguments have been removed (no issue).
 * `ncei_bbox()` computes a bounding box from a centre latitude, longitude, and radius in kilometres (no issue).
 * `ncei_data()` can retrieve data from any NCEI dataset (e.g., `"daily-summaries"`, `"global-hourly"`) via the NCEI Access Data Service API (no issue).

@@ -29,13 +29,13 @@ Imports:
     stringr,
     tibble,
     tools,
-    utils,
     cli,
     Rcpp,
     lifecycle,
     streamMetabolizer
 Suggests:
     ggplot2,
+    jsonlite,
     knitr,
     quarto,
     testthat (>= 3.0.0),
