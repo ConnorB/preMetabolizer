@@ -73,16 +73,18 @@
 
     <section class="level2"><h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>NOAA station metadata are often the first thing you need when preparing meteorological inputs for stream metabolism models. The station table tells you which stations exist near a study site, which station identifiers are available, and whether the station has coordinates that can be used for distance searches.</p>
-<p>preMetabolizer provides two helpers for this workflow:</p>
+<p>Meteorological inputs—temperature, precipitation, and barometric pressure—are essential for computing dissolved oxygen saturation and gas exchange in stream metabolism models. This vignette shows how to find NOAA daily-summary stations near Kings Creek at Konza Prairie Biological Station, Kansas, and download the weather data needed to accompany the built-in <code>kings_discharge</code> dataset (water year 2025: 2024-10-01 through 2025-09-30).</p>
+<p>preMetabolizer provides three helpers for station discovery:</p>
 <ul>
 <li>
-<code><a href="../reference/get_noaa_stations.html">get_noaa_stations()</a></code> downloads and cleans station metadata from NOAA’s Meteorological Station Historical Repository.</li>
+<code><a href="../reference/get_noaa_stations.html">get_noaa_stations()</a></code> searches for GHCND stations via the NCEI Search Service API.</li>
 <li>
-<code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> finds stations within a distance of a target latitude and longitude.</li>
+<code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> finds stations within a distance of a target coordinate and ranks them by geodesic distance.</li>
+<li>
+<code><a href="../reference/ncei_stations.html">ncei_stations()</a></code> is the lower-level function underlying both helpers; it can search any NCEI dataset.</li>
 </ul>
 <blockquote>
-<p><strong>Note:</strong> These functions contact NOAA the first time they need station metadata. The downloaded file is cached locally and reused on later calls. Code chunks marked with <code>#| eval: false</code> are intended to be run interactively.</p>
+<p><strong>Note:</strong> All functions in this vignette contact the NCEI API. Code chunks will not run during package installation if NCEI is unreachable.</p>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -90,99 +92,208 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="download-station-metadata">Download station metadata<a class="anchor" aria-label="anchor" href="#download-station-metadata"></a>
+</section><section class="level2"><h2 id="study-site">Study site<a class="anchor" aria-label="anchor" href="#study-site"></a>
 </h2>
-<p>Use <code><a href="../reference/get_noaa_stations.html">get_noaa_stations()</a></code> to retrieve the cleaned NOAA station table. The cleaned table removes records without usable coordinates, filters out balloon platforms, and groups records by <code>GHCND_ID</code>.</p>
+<p>Kings Creek drains the Konza Prairie Biological Station near Manhattan, Kansas (39.1069°N, 96.6117°W). The USGS monitoring location <code>USGS-06879650</code> records daily discharge, gage height, and water temperature throughout water year 2025.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_noaa_stations.html">get_noaa_stations</a></span><span class="op">(</span>debug <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">stations</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">lat_kings</span>  <span class="op">&lt;-</span> <span class="fl">39.1068806</span></span>
+<span><span class="va">lon_kings</span>  <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">96.6117151</span></span>
+<span><span class="va">wy_start</span>   <span class="op">&lt;-</span> <span class="st">"2024-10-01"</span></span>
+<span><span class="va">wy_end</span>     <span class="op">&lt;-</span> <span class="st">"2025-09-30"</span></span></code></pre></div>
 </div>
-<p>If you only need stations from one U.S. state, use the <code>state</code> argument. State codes are case-insensitive.</p>
+</section><section class="level2"><h2 id="search-for-stations">Search for stations<a class="anchor" aria-label="anchor" href="#search-for-stations"></a>
+</h2>
+<p>Use <code><a href="../reference/ncei_bbox.html">ncei_bbox()</a></code> to build a bounding box from a center point and radius, then pass it to <code><a href="../reference/get_noaa_stations.html">get_noaa_stations()</a></code>:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ks_stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_noaa_stations.html">get_noaa_stations</a></span><span class="op">(</span>state <span class="op">=</span> <span class="st">"KS"</span>, debug <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ncei_bbox.html">ncei_bbox</a></span><span class="op">(</span>latitude <span class="op">=</span> <span class="va">lat_kings</span>, longitude <span class="op">=</span> <span class="va">lon_kings</span>, dist_km <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">bbox</span></span>
+<span><span class="co">#&gt;     north      west     south      east </span></span>
+<span><span class="co">#&gt;  40.00778 -97.77271  38.20598 -95.45072</span></span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ks_stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_noaa_stations.html">get_noaa_stations</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="va">bbox</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ks_stations</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">GHCND_ID</span>, <span class="va">NAME_PRINCIPAL</span>, <span class="va">LAT_DEC</span>, <span class="va">LON_DEC</span>, <span class="va">ELEV_GROUND</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">NAME_PRINCIPAL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">ks_stations</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 634</span></span>
+<span><span class="co">#&gt; Columns: 8</span></span>
+<span><span class="co">#&gt; $ station_id    &lt;chr&gt; "USW00013996", "USW00013984", "USW00003936", "USW0000391…</span></span>
+<span><span class="co">#&gt; $ name          &lt;chr&gt; "TOPEKA ASOS, KS US", "CONCORDIA ASOS, KS US", "MANHATTA…</span></span>
+<span><span class="co">#&gt; $ latitude      &lt;dbl&gt; 39.07246, 39.55127, 39.13456, 38.77996, 38.32906, 38.941…</span></span>
+<span><span class="co">#&gt; $ longitude     &lt;dbl&gt; -95.62602, -97.65077, -96.67894, -97.64444, -96.19453, -…</span></span>
+<span><span class="co">#&gt; $ elevation     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span>
+<span><span class="co">#&gt; $ start_date    &lt;date&gt; 1946-08-01, 1885-05-01, 1960-06-01, 1952-01-01, 1950-10…</span></span>
+<span><span class="co">#&gt; $ end_date      &lt;date&gt; 2026-05-07, 2026-05-07, 2026-05-07, 2026-05-07, 2026-05…</span></span>
+<span><span class="co">#&gt; $ data_coverage &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …</span></span></code></pre></div>
+</div>
+<p>Filter to stations that carry the variables you need and span at least part of water year 2025:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">wx_stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_noaa_stations.html">get_noaa_stations</a></span><span class="op">(</span></span>
+<span>  bbox       <span class="op">=</span> <span class="va">bbox</span>,</span>
+<span>  data_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TMAX"</span>, <span class="st">"TMIN"</span>, <span class="st">"PRCP"</span><span class="op">)</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="va">wy_start</span>,</span>
+<span>  end_date   <span class="op">=</span> <span class="va">wy_end</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">wx_stations</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">name</span>, <span class="va">latitude</span>, <span class="va">longitude</span>, <span class="va">start_date</span>, <span class="va">end_date</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 47 × 6</span></span>
+<span><span class="co">#&gt;    station_id  name                   latitude longitude start_date end_date  </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt; &lt;date&gt;     &lt;date&gt;    </span></span>
+<span><span class="co">#&gt;  1 USC00140010 ABILENE, KS US             38.9     -97.2 1893-01-01 2026-03-31</span></span>
+<span><span class="co">#&gt;  2 USC00140682 BELLEVILLE, KS US          39.8     -97.6 1935-04-01 2026-05-08</span></span>
+<span><span class="co">#&gt;  3 USC00140877 BLAINE, KS US              39.5     -96.4 1955-03-02 2026-04-15</span></span>
+<span><span class="co">#&gt;  4 USC00140911 BLUE RAPIDS, KS US         39.7     -96.7 1905-01-01 2026-05-08</span></span>
+<span><span class="co">#&gt;  5 USC00141435 CHAPMAN, KS US             39.0     -97.0 1904-02-01 2026-05-08</span></span>
+<span><span class="co">#&gt;  6 USC00141559 CLAY CENTER, KS US         39.4     -97.1 1902-04-16 2026-05-08</span></span>
+<span><span class="co">#&gt;  7 USC00141593 CLIFTON, KS US             39.6     -97.3 1931-04-01 2026-04-28</span></span>
+<span><span class="co">#&gt;  8 USC00141761 CONCORDIA 2 SE, KS US      39.6     -97.6 2003-01-01 2026-04-27</span></span>
+<span><span class="co">#&gt;  9 USC00141762 CONCORDIA 2 SSE, KS US     39.5     -97.7 2024-03-21 2026-05-07</span></span>
+<span><span class="co">#&gt; 10 USW00013984 CONCORDIA ASOS, KS US      39.6     -97.7 1885-05-01 2026-05-07</span></span>
+<span><span class="co">#&gt; # ℹ 37 more rows</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="find-nearby-stations">Find nearby stations<a class="anchor" aria-label="anchor" href="#find-nearby-stations"></a>
 </h2>
-<p>For site-level work, it is usually easier to start from a latitude and longitude. <code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> calculates geodesic distance from a target coordinate to each station and returns stations within a search radius.</p>
-<p>This example searches within 50 km of Konza Prairie Biological Station.</p>
+<p><code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> builds the bounding box automatically and returns stations sorted by geodesic distance from the target point:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">konza_noaa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/closest_noaa_stations.html">closest_noaa_stations</a></span><span class="op">(</span></span>
-<span>  latitude <span class="op">=</span> <span class="fl">39.1068806</span>,</span>
-<span>  longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6117151</span>,</span>
-<span>  dist_km <span class="op">=</span> <span class="fl">50</span>,</span>
-<span>  state <span class="op">=</span> <span class="st">"KS"</span></span>
+<span>  latitude   <span class="op">=</span> <span class="va">lat_kings</span>,</span>
+<span>  longitude  <span class="op">=</span> <span class="va">lon_kings</span>,</span>
+<span>  dist_km    <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  data_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TMAX"</span>, <span class="st">"TMIN"</span>, <span class="st">"PRCP"</span><span class="op">)</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="va">wy_start</span>,</span>
+<span>  end_date   <span class="op">=</span> <span class="va">wy_end</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">konza_noaa</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">distance_km</span>, <span class="va">GHCND_ID</span>, <span class="va">NAME_PRINCIPAL</span>, <span class="va">LAT_DEC</span>, <span class="va">LON_DEC</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">distance_km</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">distance_km</span>, <span class="va">station_id</span>, <span class="va">name</span>, <span class="va">latitude</span>, <span class="va">longitude</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 13 × 5</span></span>
+<span><span class="co">#&gt;    distance_km station_id  name                               latitude longitude</span></span>
+<span><span class="co">#&gt;          &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;                                 &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1       0.493 USW00053974 MANHATTAN 6 SSW, KS US                 39.1     -96.6</span></span>
+<span><span class="co">#&gt;  2       6.58  USW00003936 MANHATTAN ASOS, KS US                  39.1     -96.7</span></span>
+<span><span class="co">#&gt;  3      10.4   USC00144972 MANHATTAN, KS US                       39.2     -96.6</span></span>
+<span><span class="co">#&gt;  4      14.4   USC00142827 FORT RILEY, KS US                      39.1     -96.8</span></span>
+<span><span class="co">#&gt;  5      14.8   USW00013947 FORT RILEY MARSHALL ARMY AIR FIEL…     39.0     -96.8</span></span>
+<span><span class="co">#&gt;  6      15.7   USC00148259 TUTTLE CREEK LAKE, KS US               39.2     -96.6</span></span>
+<span><span class="co">#&gt;  7      24.0   USC00148563 WAMEGO 4 W, KS US                      39.2     -96.4</span></span>
+<span><span class="co">#&gt;  8      25.0   USC00145306 MILFORD LAKE, KS US                    39.1     -96.9</span></span>
+<span><span class="co">#&gt;  9      35.9   USC00148802 WHITE CITY, KS US                      38.8     -96.7</span></span>
+<span><span class="co">#&gt; 10      38.4   USC00141435 CHAPMAN, KS US                         39.0     -97.0</span></span>
+<span><span class="co">#&gt; 11      43.5   USC00148503 WAKEFIELD 4 W, KS US                   39.2     -97.1</span></span>
+<span><span class="co">#&gt; 12      47.1   USC00140877 BLAINE, KS US                          39.5     -96.4</span></span>
+<span><span class="co">#&gt; 13      48.7   USC00141867 COUNCIL GROVE LAKE, KS US              38.7     -96.5</span></span></code></pre></div>
 </div>
-<p>The <code>state</code> argument is optional, but it can make searches faster and easier to inspect when you know the site is far from a state border.</p>
-</section><section class="level2"><h2 id="compare-search-radii">Compare search radii<a class="anchor" aria-label="anchor" href="#compare-search-radii"></a>
-</h2>
-<p>A useful pattern is to try a narrow search radius first, then widen it if there are no stations with the variables or time span you need.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">near_25</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/closest_noaa_stations.html">closest_noaa_stations</a></span><span class="op">(</span></span>
-<span>  latitude <span class="op">=</span> <span class="fl">39.1068806</span>,</span>
-<span>  longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6117151</span>,</span>
-<span>  dist_km <span class="op">=</span> <span class="fl">25</span>,</span>
-<span>  state <span class="op">=</span> <span class="st">"KS"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">near_100</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/closest_noaa_stations.html">closest_noaa_stations</a></span><span class="op">(</span></span>
-<span>  latitude <span class="op">=</span> <span class="fl">39.1068806</span>,</span>
-<span>  longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6117151</span>,</span>
-<span>  dist_km <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  state <span class="op">=</span> <span class="st">"KS"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  within_25_km <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">near_25</span><span class="op">)</span>,</span>
-<span>  within_100_km <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">near_100</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<p>You can also map the candidates before choosing a station for download.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">konza_noaa</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">LON_DEC</span>, <span class="va">LAT_DEC</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">distance_km</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"#2c7fb8"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">96.6117151</span>, y <span class="op">=</span> <span class="fl">39.1068806</span><span class="op">)</span>,</span>
-<span>    inherit.aes <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>    color <span class="op">=</span> <span class="st">"#d95f0e"</span>,</span>
-<span>    size <span class="op">=</span> <span class="fl">3</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_map.html" class="external-link">coord_quickmap</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    x <span class="op">=</span> <span class="st">"Longitude"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"Latitude"</span>,</span>
-<span>    size <span class="op">=</span> <span class="st">"Distance (km)"</span>,</span>
-<span>    title <span class="op">=</span> <span class="st">"NOAA stations near Konza Prairie"</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level2"><h2 id="use-station-ids-with-ghcnh-data">Use station IDs with GHCNh data<a class="anchor" aria-label="anchor" href="#use-station-ids-with-ghcnh-data"></a>
-</h2>
-<p>The <code>GHCND_ID</code> column identifies stations in NOAA’s Global Historical Climatology Network. For hourly GHCNh downloads, pass one station ID to <code><a href="../reference/download_ghcnh.html">download_ghcnh()</a></code>.</p>
+<p>Map the candidates before choosing a station:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">konza_noaa</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">longitude</span>, <span class="va">latitude</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>size <span class="op">=</span> <span class="va">distance_km</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"#2c7fb8"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html" class="external-link">annotate</a></span><span class="op">(</span><span class="st">"point"</span>, x <span class="op">=</span> <span class="va">lon_kings</span>, y <span class="op">=</span> <span class="va">lat_kings</span>, color <span class="op">=</span> <span class="st">"#d95f0e"</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_map.html" class="external-link">coord_quickmap</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    x     <span class="op">=</span> <span class="st">"Longitude"</span>,</span>
+<span>    y     <span class="op">=</span> <span class="st">"Latitude"</span>,</span>
+<span>    size  <span class="op">=</span> <span class="st">"Distance (km)"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"NOAA stations near Kings Creek"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="noaa_files/figure-html/map-candidates-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section class="level2"><h2 id="download-daily-weather-data">Download daily weather data<a class="anchor" aria-label="anchor" href="#download-daily-weather-data"></a>
+</h2>
+<p>Pick the nearest station and download daily temperature and precipitation for water year 2025 with <code><a href="../reference/ncei_data.html">ncei_data()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">station_id</span> <span class="op">&lt;-</span> <span class="va">konza_noaa</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">distance_km</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">GHCND_ID</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="va">station_id</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">station_id</span></span></code></pre></div>
+<span><span class="va">station_id</span></span>
+<span><span class="co">#&gt; [1] "USW00053974"</span></span></code></pre></div>
 </div>
-<p>Once you have a station ID, see <code><a href="../articles/ghcnh.html">vignette("ghcnh", package = "preMetabolizer")</a></code> for downloading and reading hourly observations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">daily_wx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ncei_data.html">ncei_data</a></span><span class="op">(</span></span>
+<span>  dataset    <span class="op">=</span> <span class="st">"daily-summaries"</span>,</span>
+<span>  stations   <span class="op">=</span> <span class="va">station_id</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="va">wy_start</span>,</span>
+<span>  end_date   <span class="op">=</span> <span class="va">wy_end</span>,</span>
+<span>  data_types <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TMAX"</span>, <span class="st">"TMIN"</span>, <span class="st">"PRCP"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">daily_wx</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 365</span></span>
+<span><span class="co">#&gt; Columns: 6</span></span>
+<span><span class="co">#&gt; $ STATION &lt;chr&gt; "USW00053974", "USW00053974", "USW00053974", "USW00053974", "U…</span></span>
+<span><span class="co">#&gt; $ NAME    &lt;chr&gt; "MANHATTAN 6 SSW, KS US", "MANHATTAN 6 SSW, KS US", "MANHATTAN…</span></span>
+<span><span class="co">#&gt; $ DATE    &lt;date&gt; 2024-10-01, 2024-10-02, 2024-10-03, 2024-10-04, 2024-10-05, 2…</span></span>
+<span><span class="co">#&gt; $ PRCP    &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.7, 0.0, 0.0, 0.…</span></span>
+<span><span class="co">#&gt; $ TMAX    &lt;dbl&gt; 22.6, 28.4, 34.7, 28.3, 35.4, 26.2, 24.8, 26.5, 30.2, 29.7, 32…</span></span>
+<span><span class="co">#&gt; $ TMIN    &lt;dbl&gt; 5.5, 3.8, 12.5, 13.2, 12.8, 6.4, 2.5, 8.8, 7.0, 12.9, 16.3, 11…</span></span></code></pre></div>
+</div>
+<p>With <code>units = "metric"</code> (the default), <code><a href="../reference/ncei_data.html">ncei_data()</a></code> returns TMAX and TMIN in °C and PRCP in mm. The <code>DATE</code> column is already a <code>Date</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">daily_wx</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">DATE</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="external-link">geom_ribbon</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">TMIN</span>, ymax <span class="op">=</span> <span class="va">TMAX</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.3</span>, fill <span class="op">=</span> <span class="st">"#2c7fb8"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="op">(</span><span class="va">TMAX</span> <span class="op">+</span> <span class="va">TMIN</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"#2c7fb8"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>    x     <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    y     <span class="op">=</span> <span class="st">"Air temperature (°C)"</span>,</span>
+<span>    title <span class="op">=</span> <span class="st">"Daily temperature range near Kings Creek, WY 2025"</span></span>
+<span>  <span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="noaa_files/figure-html/plot-temp-1.png" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section class="level2"><h2 id="barometric-pressure-and-par">Barometric pressure and PAR<a class="anchor" aria-label="anchor" href="#barometric-pressure-and-par"></a>
+</h2>
+<p>GHCND covers temperature and precipitation well, but barometric pressure records are sparse in this region. For pressure and photosynthetically active radiation (PAR), use <code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> to pull modeled values from NASA POWER, or <code><a href="../reference/get_ghcnh.html">get_ghcnh()</a></code> to download observed hourly pressure from the GHCNh archive.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">stream_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  dateTime <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">wy_start</span>, <span class="st">"00:00:00"</span><span class="op">)</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">wy_end</span>, <span class="st">"23:00:00"</span><span class="op">)</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
+<span>    by <span class="op">=</span> <span class="st">"1 hour"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">nasa_wx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_nasa_data.html">get_nasa_data</a></span><span class="op">(</span></span>
+<span>  data      <span class="op">=</span> <span class="va">stream_data</span>,</span>
+<span>  latitude  <span class="op">=</span> <span class="va">lat_kings</span>,</span>
+<span>  longitude <span class="op">=</span> <span class="va">lon_kings</span>,</span>
+<span>  elev_m    <span class="op">=</span> <span class="fl">320</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">nasa_wx</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The <code>PSC</code> column contains elevation-corrected barometric pressure (kPa), <code>light.obs</code> contains PAR (µmol/m²/s), <code>T2M</code> air temperature (°C), and <code>PRECTOTCORR</code> precipitation (mm/hr).</p>
+</section><section class="level2"><h2 id="use-station-ids-with-ghcnh-data">Use station IDs with GHCNh data<a class="anchor" aria-label="anchor" href="#use-station-ids-with-ghcnh-data"></a>
+</h2>
+<p>The <code>station_id</code> values returned by <code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> also identify GHCNh files. Pass them directly to <code><a href="../reference/get_ghcnh.html">get_ghcnh()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">station_id</span></span>
+<span><span class="co">#&gt; [1] "USW00053974"</span></span></code></pre></div>
+</div>
+<p>See <code><a href="https://connorb.github.io/preMetabolizer/articles/ghcnh.html">vignette("ghcnh", package = "preMetabolizer")</a></code> for a full hourly-data workflow.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);

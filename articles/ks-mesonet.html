@@ -76,7 +76,7 @@
 <p>The <a href="https://mesonet.k-state.edu/" class="external-link">Kansas Mesonet</a> is a statewide network of automated weather stations operated by Kansas State University. It provides sub-hourly meteorological data — including air temperature, relative humidity, precipitation, solar radiation, wind, and soil measurements — for more than 60 stations across Kansas.</p>
 <p>This vignette walks through the workflow for discovering stations, browsing the variable catalog, downloading data, and reading cached files using the preMetabolizer Mesonet functions. We use <strong>Konza Prairie</strong>, a long-term ecological research (LTER) site in northeastern Kansas, as our example station.</p>
 <blockquote>
-<p><strong>Note:</strong> Functions that contact the Mesonet API require an internet connection. Code chunks marked with <code>#| eval: false</code> will not run during package installation. Run them interactively in your own session.</p>
+<p><strong>Note:</strong> Functions that contact the Mesonet API require an internet connection. Code chunks that call the API will not run during package installation if the service is unreachable. Run them interactively in your own session.</p>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -84,35 +84,81 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 </div>
+</section><section class="level2"><h2 id="caching-downloaded-data">Caching downloaded data<a class="anchor" aria-label="anchor" href="#caching-downloaded-data"></a>
+</h2>
+<p>Repeated calls to the Kansas Mesonet API download the same data on every run. This vignette saves each result to a local cache directory the first time it is downloaded and reloads from disk on subsequent runs. The cache lives in <code>tools::R_user_dir("preMetabolizer", which = "cache")</code>, a platform-appropriate, user-specific directory that persists across sessions. Each data-fetching chunk below checks for a cached <code>.rds</code> file, downloads and saves on the first run, and reloads from disk on all subsequent runs.</p>
 </section><section class="level2"><h2 id="explore-the-variable-catalog">Explore the variable catalog<a class="anchor" aria-label="anchor" href="#explore-the-variable-catalog"></a>
 </h2>
 <p><code><a href="../reference/ks_meso_vars.html">ks_meso_vars()</a></code> retrieves and parses the current Kansas Mesonet variable metadata, including CSV headings, variable names, units, and descriptions.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">mesonet_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_vars.html">ks_meso_vars</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"ks_meso_vars.rds"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">mesonet_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_vars.html">ks_meso_vars</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">mesonet_vars</span>, <span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">mesonet_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <p>Search the catalog to find variables of interest:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mesonet_vars</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"temp|precip|solar|humidity"</span>, <span class="va">desc</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">var</span>, <span class="va">tidy_name</span>, <span class="va">units</span>, <span class="va">desc</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">var</span>, <span class="va">tidy_name</span>, <span class="va">units</span>, <span class="va">desc</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 44 × 4</span></span>
+<span><span class="co">#&gt;    var                    tidy_name               units desc                    </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                  &lt;chr&gt;                   &lt;chr&gt; &lt;chr&gt;                   </span></span>
+<span><span class="co">#&gt;  1 AirTemperature.avg     air_temperature_avg     °C    Average air temperature…</span></span>
+<span><span class="co">#&gt;  2 AirTemperature.min     air_temperature_min     °C    Min air temperature at …</span></span>
+<span><span class="co">#&gt;  3 AirTemperature.max     air_temperature_max     °C    Max air temperature at …</span></span>
+<span><span class="co">#&gt;  4 AirTemperature.smp     air_temperature_smp     °C    Most recent 5 second sa…</span></span>
+<span><span class="co">#&gt;  5 AirTemperature.10m.avg air_temperature_10m_avg °C    Average air temperature…</span></span>
+<span><span class="co">#&gt;  6 AirTemperature.10m.min air_temperature_10m_min °C    Min air temperature at …</span></span>
+<span><span class="co">#&gt;  7 AirTemperature.10m.max air_temperature_10m_max °C    Max air temperature at …</span></span>
+<span><span class="co">#&gt;  8 RelativeHumidity.avg   relative_humidity_avg   %     Average relative humidi…</span></span>
+<span><span class="co">#&gt;  9 RelativeHumidity.max   relative_humidity_max   %     Max relative humidity a…</span></span>
+<span><span class="co">#&gt; 10 RelativeHumidity.min   relative_humidity_min   %     Min relative humidity a…</span></span>
+<span><span class="co">#&gt; # ℹ 34 more rows</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="discover-stations">Discover stations<a class="anchor" aria-label="anchor" href="#discover-stations"></a>
 </h2>
 <p><code><a href="../reference/ks_meso_stations.html">ks_meso_stations()</a></code> retrieves metadata for all Mesonet stations, including location, network affiliation, and whether the station supports FW13 fire weather reports.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_stations.html">ks_meso_stations</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">stations</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"ks_meso_stations.rds"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_stations.html">ks_meso_stations</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">stations</span>, <span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">stations</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 129</span></span>
+<span><span class="co">#&gt; Columns: 9</span></span>
+<span><span class="co">#&gt; $ station_name &lt;chr&gt; "Alma 5SE", "Ashland 8S", "Ashland Bottoms", "Belleville …</span></span>
+<span><span class="co">#&gt; $ county       &lt;chr&gt; "Waubansee", "Clark", "Riley", "Republic", "Ottawa", "Sed…</span></span>
+<span><span class="co">#&gt; $ latitude     &lt;dbl&gt; 38.96615, 37.06476, 39.12577, 39.81409, 39.07380, 37.8538…</span></span>
+<span><span class="co">#&gt; $ longitude    &lt;dbl&gt; -96.20630, -99.75109, -96.63653, -97.67509, -97.58620, -9…</span></span>
+<span><span class="co">#&gt; $ elevation_m  &lt;dbl&gt; 428.0000, 562.0000, 324.6120, 471.0000, 392.0000, 422.000…</span></span>
+<span><span class="co">#&gt; $ network      &lt;chr&gt; "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "…</span></span>
+<span><span class="co">#&gt; $ station_id   &lt;chr&gt; "Alma 5SE", "ASUK1", "ASBK1", "BVMK1", NA, NA, NA, "EDCK1…</span></span>
+<span><span class="co">#&gt; $ network_name &lt;chr&gt; "Alma 5SE", "Ashland 8S", "Ashland Bottoms", "Belleville …</span></span>
+<span><span class="co">#&gt; $ fw13         &lt;chr&gt; "000000", "140201", "142201", "140301", "000000", "000000…</span></span></code></pre></div>
 </div>
 <p>Filter to find Konza Prairie and confirm the exact station name used by the API:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">konza</span> <span class="op">&lt;-</span> <span class="va">stations</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Konza"</span>, <span class="va">StationName</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Konza"</span>, <span class="va">station_name</span>, ignore.case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">konza</span></span></code></pre></div>
+<span><span class="va">konza</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 9</span></span>
+<span><span class="co">#&gt;   station_name  county latitude longitude elevation_m network station_id</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;         &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;     </span></span>
+<span><span class="co">#&gt; 1 Konza Prairie Riley      39.1     -96.5        436. KSRE    &lt;NA&gt;      </span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: network_name &lt;chr&gt;, fw13 &lt;chr&gt;</span></span></code></pre></div>
 </div>
 <p>The station name recognized by the API is <code>"Konza Prairie"</code>.</p>
 </section><section class="level2"><h2 id="check-station-activity">Check station activity<a class="anchor" aria-label="anchor" href="#check-station-activity"></a>
@@ -120,62 +166,88 @@
 <p><code><a href="../reference/ks_meso_station_activity.html">ks_meso_station_activity()</a></code> shows the observation intervals available at each station and the date range of archived data. This is useful for verifying that a station has data for your study period and identifying the finest available temporal resolution.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">activity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_station_activity.html">ks_meso_station_activity</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"ks_meso_station_activity.rds"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">activity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_station_activity.html">ks_meso_station_activity</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">activity</span>, <span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">activity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">activity</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">station</span> <span class="op">==</span> <span class="st">"Konza Prairie"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">station_name</span> <span class="op">==</span> <span class="st">"Konza Prairie"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 3 × 7</span></span>
+<span><span class="co">#&gt;   station_name interval interval_seconds first_observation   last_observation   </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;        &lt;chr&gt;               &lt;dbl&gt; &lt;dttm&gt;              &lt;dttm&gt;             </span></span>
+<span><span class="co">#&gt; 1 Konza Prair… 5min                  300 2023-10-06 05:25:00 2026-05-10 11:45:00</span></span>
+<span><span class="co">#&gt; 2 Konza Prair… hour                 3600 2023-10-06 07:00:00 2026-05-10 11:00:00</span></span>
+<span><span class="co">#&gt; 3 Konza Prair… day                 86400 2023-10-08 00:00:00 2026-05-10 00:00:00</span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: data_span_days &lt;dbl&gt;, is_current &lt;lgl&gt;</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="check-the-most-recent-observation">Check the most recent observation<a class="anchor" aria-label="anchor" href="#check-the-most-recent-observation"></a>
 </h2>
 <p><code><a href="../reference/ks_meso_most_recent.html">ks_meso_most_recent()</a></code> returns the timestamp of the latest ingested observation for every station at a given interval, which is helpful for monitoring live data pipelines.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">recent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_most_recent.html">ks_meso_most_recent</a></span><span class="op">(</span>interval <span class="op">=</span> <span class="st">"hour"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"ks_meso_most_recent_hour.rds"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">recent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_most_recent.html">ks_meso_most_recent</a></span><span class="op">(</span>interval <span class="op">=</span> <span class="st">"hour"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">recent</span>, <span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">recent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">recent</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">station</span> <span class="op">==</span> <span class="st">"Konza Prairie"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">station_name</span> <span class="op">==</span> <span class="st">"Konza Prairie"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 2</span></span>
+<span><span class="co">#&gt;   station_name  timestamp          </span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;         &lt;dttm&gt;             </span></span>
+<span><span class="co">#&gt; 1 Konza Prairie 2026-05-10 18:00:00</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="download-data">Download data<a class="anchor" aria-label="anchor" href="#download-data"></a>
+</section><section class="level2"><h2 id="retrieve-time-series-data">Retrieve time-series data<a class="anchor" aria-label="anchor" href="#retrieve-time-series-data"></a>
 </h2>
-<p><code><a href="../reference/get_ks_meso.html">get_ks_meso()</a></code> downloads Mesonet data for one or more stations and saves the result to a local cache directory. Large date ranges are split into chunks automatically to stay within the API record limit.</p>
-<p>Here we download hourly data for Konza Prairie for the 2024 calendar year, requesting air temperature, relative humidity, precipitation, and surface pressure.</p>
+<p><code><a href="../reference/ks_meso_timeseries.html">ks_meso_timeseries()</a></code> retrieves Mesonet data for one or more stations and returns a tibble directly. Large date ranges are split into chunks automatically to stay within the API record limit.</p>
+<p>Here we retrieve hourly data for Konza Prairie for the 2024 calendar year, requesting air temperature, relative humidity, precipitation, and surface pressure.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">download_result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ks_meso.html">get_ks_meso</a></span><span class="op">(</span></span>
-<span>  stations   <span class="op">=</span> <span class="st">"Konza Prairie"</span>,</span>
-<span>  start_date <span class="op">=</span> <span class="st">"2024-01-01"</span>,</span>
-<span>  end_date   <span class="op">=</span> <span class="st">"2024-12-31"</span>,</span>
-<span>  interval   <span class="op">=</span> <span class="st">"hour"</span>,</span>
-<span>  vars       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TEMP2MAVG"</span>, <span class="st">"RELHUM2MAVG"</span>, <span class="st">"PRECIP"</span>, <span class="st">"PRESSUREAVG"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"ks_meso_konza_hourly_2024.rds"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">konza_hourly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_timeseries.html">ks_meso_timeseries</a></span><span class="op">(</span></span>
+<span>    stations   <span class="op">=</span> <span class="st">"Konza Prairie"</span>,</span>
+<span>    start_date <span class="op">=</span> <span class="st">"2024-01-01"</span>,</span>
+<span>    end_date   <span class="op">=</span> <span class="st">"2024-12-31"</span>,</span>
+<span>    interval   <span class="op">=</span> <span class="st">"hour"</span>,</span>
+<span>    vars       <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TEMP2MAVG"</span>, <span class="st">"RELHUM2MAVG"</span>, <span class="st">"PRECIP"</span>, <span class="st">"PRESSUREAVG"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">konza_hourly</span>, <span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">konza_hourly</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">download_result</span><span class="op">)</span></span></code></pre></div>
-</div>
-</section><section class="level2"><h2 id="read-cached-data">Read cached data<a class="anchor" aria-label="anchor" href="#read-cached-data"></a>
-</h2>
-<p>Once downloaded, <code><a href="../reference/read_ks_meso.html">read_ks_meso()</a></code> reads the cached file back into R. The <code>TIMESTAMP</code> column is automatically parsed as a <code>POSIXct</code> in the Mesonet timezone (<code>Etc/GMT+6</code>, i.e., CST without daylight saving).</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">konza_hourly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_ks_meso.html">read_ks_meso</a></span><span class="op">(</span></span>
-<span>  station    <span class="op">=</span> <span class="st">"Konza Prairie"</span>,</span>
-<span>  start_date <span class="op">=</span> <span class="st">"2024-01-01"</span>,</span>
-<span>  end_date   <span class="op">=</span> <span class="st">"2024-12-31"</span>,</span>
-<span>  interval   <span class="op">=</span> <span class="st">"hour"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">konza_hourly</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">konza_hourly</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Rows: 8,784</span></span>
+<span><span class="co">#&gt; Columns: 9</span></span>
+<span><span class="co">#&gt; $ station_name &lt;chr&gt; "Konza Prairie", "Konza Prairie", "Konza Prairie", "Konza…</span></span>
+<span><span class="co">#&gt; $ station_id   &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…</span></span>
+<span><span class="co">#&gt; $ network      &lt;chr&gt; "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "…</span></span>
+<span><span class="co">#&gt; $ network_name &lt;chr&gt; "RL.KonzaPrairie", "RL.KonzaPrairie", "RL.KonzaPrairie", …</span></span>
+<span><span class="co">#&gt; $ timestamp    &lt;dttm&gt; 2024-01-01 00:00:00, 2024-01-01 01:00:00, 2024-01-01 02:…</span></span>
+<span><span class="co">#&gt; $ pressureavg  &lt;dbl&gt; 97.52, 97.51, 97.51, 97.55, 97.57, 97.55, 97.54, 97.57, 9…</span></span>
+<span><span class="co">#&gt; $ temp2_mavg   &lt;dbl&gt; -3.67, -3.84, -3.92, -4.12, -3.97, -3.93, -4.17, -4.41, -…</span></span>
+<span><span class="co">#&gt; $ relhum2_mavg &lt;dbl&gt; 87.35, 88.25, 88.72, 84.79, 81.95, 81.69, 81.83, 83.27, 8…</span></span>
+<span><span class="co">#&gt; $ precip       &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, 0, 0, 0, 0, 0, 0,…</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="example-workflow-monthly-precipitation">Example workflow: monthly precipitation<a class="anchor" aria-label="anchor" href="#example-workflow-monthly-precipitation"></a>
 </h2>
 <p>With the data in hand, standard <code>dplyr</code> and <code>ggplot2</code> workflows apply. The example below summarizes monthly precipitation totals and daily temperature ranges.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">monthly_precip</span> <span class="op">&lt;-</span> <span class="va">konza_hourly</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>month <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">TIMESTAMP</span>, <span class="st">"month"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>month <span class="op">=</span> <span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html" class="external-link">floor_date</a></span><span class="op">(</span><span class="va">timestamp</span>, <span class="st">"month"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">month</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
-<span>    precip_mm    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">PRECIP</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
-<span>    temp_mean_C  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">TEMP2MAVG</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    precip_mm    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">precip</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    temp_mean_C  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">temp2_mavg</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    .groups      <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -187,19 +259,30 @@
 <span>    title <span class="op">=</span> <span class="st">"Monthly precipitation — Konza Prairie 2024"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure><p><img src="ks-mesonet_files/figure-html/monthly-ppt-1.png" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 </section><section class="level2"><h2 id="fw13-fire-weather-data">FW13 fire weather data<a class="anchor" aria-label="anchor" href="#fw13-fire-weather-data"></a>
 </h2>
 <p><code><a href="../reference/ks_meso_fw13.html">ks_meso_fw13()</a></code> retrieves fire weather records in the standard FW13 format used by USDA Forest Service fire behavior modeling tools.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fw13_records</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_fw13.html">ks_meso_fw13</a></span><span class="op">(</span></span>
-<span>  station    <span class="op">=</span> <span class="st">"Konza Prairie"</span>,</span>
-<span>  start_date <span class="op">=</span> <span class="st">"2024-04-01"</span>,</span>
-<span>  end_date   <span class="op">=</span> <span class="st">"2024-04-30"</span></span>
-<span><span class="op">)</span></span>
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"ks_meso_fw13_konza_2024-04.rds"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">fw13_records</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_fw13.html">ks_meso_fw13</a></span><span class="op">(</span></span>
+<span>    station    <span class="op">=</span> <span class="st">"Konza Prairie"</span>,</span>
+<span>    start_date <span class="op">=</span> <span class="st">"2024-04-01"</span>,</span>
+<span>    end_date   <span class="op">=</span> <span class="st">"2024-04-30"</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">saveRDS</a></span><span class="op">(</span><span class="va">fw13_records</span>, <span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>  <span class="va">fw13_records</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Each element is one fixed-width FW13 record</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">fw13_records</span>, <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">

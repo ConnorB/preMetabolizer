@@ -11,7 +11,8 @@ ks_meso_stations()
 
 ## Value
 
-A data frame containing station metadata.
+A tibble containing station metadata, including `station_name`,
+`station_id`, `network`, and `network_name`.
 
 ## Details
 
@@ -34,6 +35,6 @@ Kansas Mesonet data usage policy:
 ``` r
 if (FALSE) { # \dontrun{
 stations <- ks_meso_stations()
-subset(stations, grepl("Konza", StationName))
+subset(stations, grepl("Konza", station_name))
 } # }
 ```

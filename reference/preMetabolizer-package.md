@@ -18,10 +18,19 @@ decimal degrees. Latitude ranges from -90 to 90, longitude ranges from
 - Find and download meteorological data with
   [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md),
   [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md),
-  [`download_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/download_ghcnh.md),
+  [`get_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/get_ghcnh.md),
+  [`ncei_data()`](https://connorb.github.io/preMetabolizer/reference/ncei_data.md),
   [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md),
   and
-  [`get_ks_meso()`](https://connorb.github.io/preMetabolizer/reference/get_ks_meso.md).
+  [`ks_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_timeseries.md).
+  Retrieve mesonet station observations with
+  [`iem_networks()`](https://connorb.github.io/preMetabolizer/reference/iem_networks.md),
+  [`iem_current()`](https://connorb.github.io/preMetabolizer/reference/iem_current.md),
+  [`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md),
+  [`tex_meso_stations()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_stations.md),
+  [`tex_meso_current()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_current.md),
+  and
+  [`tex_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_timeseries.md).
 
 - Retrieve or calculate site context with
   [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md),

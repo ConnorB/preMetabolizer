@@ -11,8 +11,8 @@ ks_meso_station_activity()
 
 ## Value
 
-A data frame with station activity details, including start and end
-observation times.
+A tibble with station activity details, including station names in
+`station_name` and start and end observation times.
 
 ## Details
 
@@ -35,6 +35,6 @@ Kansas Mesonet data usage policy:
 ``` r
 if (FALSE) { # \dontrun{
 activity <- ks_meso_station_activity()
-subset(activity, station == "Konza Prairie")
+subset(activity, station_name == "Konza Prairie")
 } # }
 ```

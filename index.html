@@ -66,7 +66,7 @@
 <li>prepare dissolved oxygen, water temperature, depth, light, and pressure inputs for metabolism models;</li>
 <li>fill timestamp gaps so logger data have even time steps;</li>
 <li>convert common hydrology and atmospheric units without adding a units dependency to your workflow;</li>
-<li>retrieve NOAA, NASA POWER, USGS elevation, or Kansas Mesonet data for a study site;</li>
+<li>retrieve NOAA, NASA POWER, USGS elevation, Kansas Mesonet, Iowa Environmental Mesonet, or TexMesonet data for a study site;</li>
 <li>make quick quality-control checks such as moving-window outlier flags, flow-duration curves, and seasonal summaries.</li>
 </ul>
 <div class="section level2">
@@ -236,11 +236,21 @@
 <li>
 <code><a href="articles/kings-creek.html">vignette("kings-creek", package = "preMetabolizer")</a></code> analyzes daily stream discharge, flow duration, and seasonal variability.</li>
 <li>
+<code><a href="articles/chemistry-calculations.html">vignette("chemistry-calculations", package = "preMetabolizer")</a></code> demonstrates dissolved gas and CO2 helper functions.</li>
+<li>
+<code><a href="articles/physical-properties.html">vignette("physical-properties", package = "preMetabolizer")</a></code> demonstrates unit conversions, water height, pressure correction, and modeled light.</li>
+<li>
+<code><a href="articles/time-series-utilities.html">vignette("time-series-utilities", package = "preMetabolizer")</a></code> demonstrates timestamp, season, outlier, summary, and exceedance-probability helpers.</li>
+<li>
 <code><a href="articles/noaa.html">vignette("noaa", package = "preMetabolizer")</a></code> finds candidate NOAA stations.</li>
 <li>
-<code><a href="articles/ghcnh.html">vignette("ghcnh", package = "preMetabolizer")</a></code> downloads and reads NOAA hourly GHCNh files.</li>
+<code><a href="https://connorb.github.io/preMetabolizer/articles/ghcnh.html">vignette("ghcnh", package = "preMetabolizer")</a></code> downloads and reads NOAA hourly GHCNh files.</li>
 <li>
 <code><a href="articles/ks-mesonet.html">vignette("ks-mesonet", package = "preMetabolizer")</a></code> works with Kansas Mesonet station metadata and cached observations.</li>
+<li>
+<code><a href="articles/iem.html">vignette("iem", package = "preMetabolizer")</a></code> works with Iowa Environmental Mesonet network metadata, current observations, observation history, and daily summaries.</li>
+<li>
+<code><a href="articles/tex-mesonet.html">vignette("tex-mesonet", package = "preMetabolizer")</a></code> works with TexMesonet station metadata, current observations, and recent time series.</li>
 </ul>
 </div>
 <div class="section level2">

@@ -41,49 +41,41 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="premetabolizer-0009000">preMetabolizer 0.0.0.9000<a class="anchor" aria-label="anchor" href="#premetabolizer-0009000"></a></h2>
-<ul><li>Added <code>french_creek</code> dataset: 5-minute dissolved oxygen and water temperature records from French Creek, Laramie, WY (Aug–Sep 2012), courtesy of Bob Hall. Source: Hall et al. (2016), .</li>
-<li>Added “Preparing French Creek Data for Stream Metabolism Modeling” vignette demonstrating a complete preMetabolizer workflow: solar time conversion, modeled PAR, elevation-corrected barometric pressure, O2 saturation, and streamMetabolizer input assembly.</li>
-<li>Messages, warnings, and errors now consistently use cli formatting across the package (no issue).</li>
-<li>
-<code><a href="../reference/calc_O2sat.html">calc_O2sat()</a></code> now uses the Benson and Krause umol/kg coefficients from Garcia and Gordon (1992), converts to mg/L with salinity-aware density, and applies the corrected vapor-pressure term for non-standard pressure (no issue).</li>
-<li>
-<code><a href="../reference/calc_vapor_press.html">calc_vapor_press()</a></code> with <code>method = "MIMSY"</code> now returns physically correct values. The Antoine equation constant <code>B</code> was incorrectly set to 140.264 (should be 1435.264), causing vapor pressures that were orders of magnitude too large.</li>
-<li>
-<code><a href="../reference/calc_water_density.html">calc_water_density()</a></code> no longer accepts a <code>.drop_units</code> argument; it always returns a plain numeric vector (no issue).</li>
-<li>
-<code><a href="../reference/calc_water_height.html">calc_water_height()</a></code> now gives a clear error when <code>type = "unvented"</code> is used without providing <code>atmo_kPa</code>, rather than silently returning <code>NA</code>.</li>
-<li>
-<code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> now uses <code>latitude</code> and <code>longitude</code> arguments. The old <code>lat</code>, <code>long</code>, and <code>lon</code> aliases are deprecated (no issue).</li>
-<li>
-<code><a href="../reference/convert_flow.html">convert_flow()</a></code> now requires an explicit <code>from</code> argument specifying the input unit; it always returns a plain numeric vector instead of a <code>units</code> object (no issue).</li>
-<li>
-<code>convert_PAR_to_SW()</code> and <code>convert_SW_to_PAR()</code> are no longer re-exported from preMetabolizer. Call <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html" class="external-link">streamMetabolizer::convert_PAR_to_SW()</a></code> and <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code> directly (no issue).</li>
-<li>
-<code><a href="../reference/convert_pressure.html">convert_pressure()</a></code> now requires an explicit <code>from</code> argument; it always returns a plain numeric vector. Unit-bearing objects are no longer accepted as input. <code><a href="../reference/convert_pressure.html">convert_pressure()</a></code> is now the sole public pressure conversion helper; <code>convert_pressure_to_atm()</code> has been removed (no issue).</li>
-<li>
-<code><a href="../reference/correct_bp.html">correct_bp()</a></code> no longer accepts a <code>drop_units</code> argument; it always returns a plain numeric vector. Elevation inputs must be plain numeric (meters) (no issue).</li>
-<li>
-<code><a href="../reference/download_ghcnh.html">download_ghcnh()</a></code> now validates inputs more clearly, treats existing local files as skipped downloads, and reports skipped files in its summary (no issue).</li>
-<li>
-<code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> no longer errors on single-column data frames due to <code>drop = TRUE</code> subsetting.</li>
-<li>
-<code><a href="../reference/get_ks_meso.html">get_ks_meso()</a></code> now supports Kansas Mesonet network requests with <code>network = "KSRE"</code>, <code>"BBW"</code>, or <code>"EBW"</code>, accepts <code>"all"</code> as a station selector, and correctly reports invalid variable names in the error message (previously reported them as “Invalid stations:” instead of “Invalid variables:”).</li>
-<li>
-<code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site <code>latitude</code> and <code>longitude</code> arguments or per-site <code>latitude</code>, <code>longitude</code>, and <code>elev_m</code> columns, interpolates NASA values to the input timestamps, returns <code>light.obs</code> by converting <code>ALLSKY_SFC_SW_DWN</code> with <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code>, and runs quietly by default. The old <code>lat</code> and <code>lon</code> aliases are deprecated (no issue).</li>
-<li>
-<code><a href="../reference/get_noaa_stations.html">get_noaa_stations()</a></code> now filters cached raw station metadata by <code>state</code>, validates options more clearly, and uses cached station metadata when remote modification times are unavailable (no issue).</li>
-<li>
-<code><a href="../reference/get_usgs_elev.html">get_usgs_elev()</a></code> can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (no issue).</li>
-<li>
-<code>has_units()</code> has been removed. The <code>units</code> package is no longer a dependency (no issue).</li>
-<li>
-<code><a href="../reference/ks_meso_fw13.html">ks_meso_fw13()</a></code> can now retrieve Kansas Mesonet fire weather data in FW13 format for one station and date range (no issue).</li>
-<li>
-<code><a href="../reference/ks_meso_most_recent.html">ks_meso_most_recent()</a></code> can now retrieve the most recently ingested Kansas Mesonet timestamp for each station at a requested interval (no issue).</li>
-<li>
-<code><a href="../reference/rcpp_calc_exceedance_prob.html">rcpp_calc_exceedance_prob()</a></code> now provides a C++ implementation of flow exceedance probability calculations (no issue).</li>
-<li>
-<code><a href="../reference/read_ghcnh.html">read_ghcnh()</a></code> is now exported, validates file inputs, can suppress progress messages with <code>quiet = TRUE</code>, and handles files that lack <code>Station_name</code> or <code>Station_ID</code> columns (no issue).</li>
+<ul><li><p><code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> now queries the NCEI Search API with a bounding box instead of downloading the full MSHR station archive; the <code>state</code> and <code>clean</code> arguments have been removed (no issue).</p></li>
+<li><p><code>download_ghcnh()</code> and <code>read_ghcnh()</code> have been replaced by <code><a href="../reference/get_ghcnh.html">get_ghcnh()</a></code>, which downloads GHCNh files and returns a parsed tibble directly (no issue).</p></li>
+<li><p><code><a href="../reference/get_ghcnh.html">get_ghcnh()</a></code> now uses the GHCNh v1.1.0 archive with per-year PSV files; it can retrieve data for multiple stations in parallel, accepts a date range instead of individual years, and returns column names in <code>snake_case</code> (no issue).</p></li>
+<li><p><code><a href="../reference/get_noaa_stations.html">get_noaa_stations()</a></code> now queries the NCEI Search API for GHCND stations instead of parsing the MSHR fixed-width archive; it accepts <code>bbox</code>, <code>start_date</code>, <code>end_date</code>, <code>data_types</code>, and <code>text</code> arguments; the <code>state</code>, <code>clean</code>, and <code>debug</code> arguments have been removed (no issue).</p></li>
+<li><p><code><a href="../reference/ncei_bbox.html">ncei_bbox()</a></code> computes a bounding box from a centre latitude, longitude, and radius in kilometres (no issue).</p></li>
+<li><p><code><a href="../reference/ncei_data.html">ncei_data()</a></code> can retrieve data from any NCEI dataset (e.g., <code>"daily-summaries"</code>, <code>"global-hourly"</code>) via the NCEI Access Data Service API (no issue).</p></li>
+<li><p><code><a href="../reference/ncei_datasets.html">ncei_datasets()</a></code> retrieves metadata about an NCEI dataset from the Support Service API (no issue).</p></li>
+<li><p><code><a href="../reference/ncei_stations.html">ncei_stations()</a></code> searches for stations across any NCEI dataset via the NCEI Search Service API, with optional bounding box, date range, and data type filters (no issue).</p></li>
+<li><p>Added <code>french_creek</code> dataset: 5-minute dissolved oxygen and water temperature records from French Creek, Laramie, WY (Aug–Sep 2012), courtesy of Bob Hall. Source: Hall et al. (2016), .</p></li>
+<li><p>Added “Preparing French Creek Data for Stream Metabolism Modeling” vignette demonstrating a complete preMetabolizer workflow: solar time conversion, modeled PAR, elevation-corrected barometric pressure, O2 saturation, and streamMetabolizer input assembly.</p></li>
+<li><p>Data-download helpers now throttle HTTP requests and use bounded parallel request execution to avoid sending too many simultaneous requests to remote services (no issue).</p></li>
+<li><p>Mesonet helpers now return snake_case table columns and use consistent station and network identifiers such as <code>station_id</code>, <code>station_name</code>, <code>network</code>, and <code>network_name</code> across Kansas Mesonet, TexMesonet, and IEM results (no issue).</p></li>
+<li><p>Messages, warnings, and errors now consistently use cli formatting across the package (no issue).</p></li>
+<li><p><code><a href="../reference/calc_O2sat.html">calc_O2sat()</a></code> now uses the Benson and Krause umol/kg coefficients from Garcia and Gordon (1992), converts to mg/L with salinity-aware density, and applies the corrected vapor-pressure term for non-standard pressure (no issue).</p></li>
+<li><p><code><a href="../reference/calc_vapor_press.html">calc_vapor_press()</a></code> with <code>method = "MIMSY"</code> now returns physically correct values. The Antoine equation constant <code>B</code> was incorrectly set to 140.264 (should be 1435.264), causing vapor pressures that were orders of magnitude too large.</p></li>
+<li><p><code><a href="../reference/calc_water_density.html">calc_water_density()</a></code> no longer accepts a <code>.drop_units</code> argument; it always returns a plain numeric vector (no issue).</p></li>
+<li><p><code><a href="../reference/calc_water_height.html">calc_water_height()</a></code> now gives a clear error when <code>type = "unvented"</code> is used without providing <code>atmo_kPa</code>, rather than silently returning <code>NA</code>.</p></li>
+<li><p><code><a href="../reference/closest_noaa_stations.html">closest_noaa_stations()</a></code> now uses <code>latitude</code> and <code>longitude</code> arguments. The old <code>lat</code>, <code>long</code>, and <code>lon</code> aliases are deprecated (no issue).</p></li>
+<li><p><code><a href="../reference/convert_flow.html">convert_flow()</a></code> now requires an explicit <code>from</code> argument specifying the input unit; it always returns a plain numeric vector instead of a <code>units</code> object (no issue).</p></li>
+<li><p><code>convert_PAR_to_SW()</code> and <code>convert_SW_to_PAR()</code> are no longer re-exported from preMetabolizer. Call <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html" class="external-link">streamMetabolizer::convert_PAR_to_SW()</a></code> and <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code> directly (no issue).</p></li>
+<li><p><code><a href="../reference/convert_pressure.html">convert_pressure()</a></code> now requires an explicit <code>from</code> argument; it always returns a plain numeric vector. Unit-bearing objects are no longer accepted as input. <code><a href="../reference/convert_pressure.html">convert_pressure()</a></code> is now the sole public pressure conversion helper; <code>convert_pressure_to_atm()</code> has been removed (no issue).</p></li>
+<li><p><code><a href="../reference/correct_bp.html">correct_bp()</a></code> no longer accepts a <code>drop_units</code> argument; it always returns a plain numeric vector. Elevation inputs must be plain numeric (meters) (no issue).</p></li>
+<li><p><code>download_ghcnh()</code> now validates inputs more clearly, treats existing local files as skipped downloads, and reports skipped files in its summary (no issue).</p></li>
+<li><p><code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> no longer errors on single-column data frames due to <code>drop = TRUE</code> subsetting.</p></li>
+<li><p><code><a href="../reference/get_nasa_data.html">get_nasa_data()</a></code> now accepts time-series data directly, infers per-site download date ranges from the data, uses either single-site <code>latitude</code> and <code>longitude</code> arguments or per-site <code>latitude</code>, <code>longitude</code>, and <code>elev_m</code> columns, interpolates NASA values to the input timestamps, returns <code>light.obs</code> by converting <code>ALLSKY_SFC_SW_DWN</code> with <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html" class="external-link">streamMetabolizer::convert_SW_to_PAR()</a></code>, and runs quietly by default. The old <code>lat</code> and <code>lon</code> aliases are deprecated (no issue).</p></li>
+<li><p><code><a href="../reference/get_noaa_stations.html">get_noaa_stations()</a></code> now filters cached raw station metadata by <code>state</code>, validates options more clearly, and uses cached station metadata when remote modification times are unavailable (no issue).</p></li>
+<li><p><code><a href="../reference/get_usgs_elev.html">get_usgs_elev()</a></code> can now retrieve elevation values from the USGS Elevation Point Query Service for one or more coordinate pairs (no issue).</p></li>
+<li><p><code>has_units()</code> has been removed. The <code>units</code> package is no longer a dependency (no issue).</p></li>
+<li><p><code><a href="../reference/iem_current.html">iem_current()</a></code>, <code><a href="../reference/iem_daily.html">iem_daily()</a></code>, <code><a href="../reference/iem_networks.html">iem_networks()</a></code>, <code><a href="../reference/iem_obhistory.html">iem_obhistory()</a></code>, <code><a href="../reference/iem_stations.html">iem_station()</a></code>, and <code><a href="../reference/iem_stations.html">iem_stations()</a></code> can now retrieve Iowa Environmental Mesonet network metadata, station metadata, current observations, one-day observation histories, and daily summaries (no issue).</p></li>
+<li><p><code><a href="../reference/ks_meso_fw13.html">ks_meso_fw13()</a></code> can now retrieve Kansas Mesonet fire weather data in FW13 format for one station and date range (no issue).</p></li>
+<li><p><code><a href="../reference/ks_meso_most_recent.html">ks_meso_most_recent()</a></code> can now retrieve the most recently ingested Kansas Mesonet timestamp for each station at a requested interval (no issue).</p></li>
+<li><p><code><a href="../reference/ks_meso_timeseries.html">ks_meso_timeseries()</a></code> can now retrieve Kansas Mesonet station or network observations directly without writing to or reading from a local cache. The old <code>get_ks_meso()</code> and <code>read_ks_meso()</code> cache-oriented helpers have been removed before production release (no issue).</p></li>
+<li><p><code><a href="../reference/rcpp_calc_exceedance_prob.html">rcpp_calc_exceedance_prob()</a></code> now provides a C++ implementation of flow exceedance probability calculations (no issue).</p></li>
+<li><p><code>read_ghcnh()</code> is now exported, validates file inputs, can suppress progress messages with <code>quiet = TRUE</code>, and handles files that lack <code>Station_name</code> or <code>Station_ID</code> columns (no issue).</p></li>
+<li><p><code><a href="../reference/tex_meso_stations.html">tex_meso_stations()</a></code>, <code><a href="../reference/tex_meso_current.html">tex_meso_current()</a></code>, and <code><a href="../reference/tex_meso_timeseries.html">tex_meso_timeseries()</a></code> can now retrieve Texas Water Development Board station metadata, current observations, and recent station time-series data from TexMesonet (no issue).</p></li>
 </ul></div>
   </main></div>
 

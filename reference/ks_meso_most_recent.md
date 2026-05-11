@@ -18,7 +18,8 @@ ks_meso_most_recent(interval)
 
 ## Value
 
-A data frame with station names and most recent observation times.
+A tibble with station names in `station_name` and most recent
+observation times in `timestamp`.
 
 ## Details
 

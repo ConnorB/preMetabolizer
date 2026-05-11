@@ -11,24 +11,39 @@
 Download and read meteorological and hydrological data from external
 sources.
 
-- [`download_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/download_ghcnh.md)
-  : Download GHCNh CSV files
-- [`read_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/read_ghcnh.md)
-  : Read GHCNh CSV files
-- [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
-  : Download NASA POWER hourly data
-- [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
-  : Get elevation from the USGS Elevation Point Query Service
+- [`ncei_data()`](https://connorb.github.io/preMetabolizer/reference/ncei_data.md)
+  : Get data from the NCEI Data Service API
+- [`ncei_datasets()`](https://connorb.github.io/preMetabolizer/reference/ncei_datasets.md)
+  : List available NCEI datasets
+- [`ncei_stations()`](https://connorb.github.io/preMetabolizer/reference/ncei_stations.md)
+  : Search for NCEI weather stations
+- [`ncei_bbox()`](https://connorb.github.io/preMetabolizer/reference/ncei_bbox.md)
+  : Compute a bounding box around a point
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
   : Get NOAA station information
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
   : Find NOAA stations near a location
+- [`get_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/get_ghcnh.md)
+  : Get GHCNh hourly observations
+- [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
+  : Download NASA POWER hourly data
+- [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
+  : Get elevation from the USGS Elevation Point Query Service
+- [`iem_networks()`](https://connorb.github.io/preMetabolizer/reference/iem_networks.md)
+  : Get Iowa Environmental Mesonet network identifiers
+- [`iem_stations()`](https://connorb.github.io/preMetabolizer/reference/iem_stations.md)
+  [`iem_station()`](https://connorb.github.io/preMetabolizer/reference/iem_stations.md)
+  : Get Iowa Environmental Mesonet station metadata
+- [`iem_current()`](https://connorb.github.io/preMetabolizer/reference/iem_current.md)
+  : Get current Iowa Environmental Mesonet observations
+- [`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md)
+  : Get one day of Iowa Environmental Mesonet observations
+- [`iem_daily()`](https://connorb.github.io/preMetabolizer/reference/iem_daily.md)
+  : Get Iowa Environmental Mesonet daily summaries
 - [`ks_meso_vars()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_vars.md)
   : Fetch Kansas Mesonet variable metadata
-- [`get_ks_meso()`](https://connorb.github.io/preMetabolizer/reference/get_ks_meso.md)
-  : Fetch data from Kansas Mesonet
-- [`read_ks_meso()`](https://connorb.github.io/preMetabolizer/reference/read_ks_meso.md)
-  : Read cached Kansas Mesonet data
+- [`ks_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_timeseries.md)
+  : Get Kansas Mesonet time-series data
 - [`ks_meso_stations()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_stations.md)
   : Get Kansas Mesonet station information
 - [`ks_meso_station_activity()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_station_activity.md)
@@ -37,6 +52,12 @@ sources.
   : Get most recent Kansas Mesonet data timestamp
 - [`ks_meso_fw13()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_fw13.md)
   : Get Kansas Mesonet FW13 data
+- [`tex_meso_stations()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_stations.md)
+  : Get TexMesonet station information
+- [`tex_meso_current()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_current.md)
+  : Get current TexMesonet data
+- [`tex_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_timeseries.md)
+  : Get recent TexMesonet time-series data
 - [`read_shp()`](https://connorb.github.io/preMetabolizer/reference/read_shp.md)
   : Read a shapefile or zipped shapefile
 

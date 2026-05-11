@@ -16,8 +16,8 @@ The package is most useful when you need to:
 - fill timestamp gaps so logger data have even time steps;
 - convert common hydrology and atmospheric units without adding a units
   dependency to your workflow;
-- retrieve NOAA, NASA POWER, USGS elevation, or Kansas Mesonet data for
-  a study site;
+- retrieve NOAA, NASA POWER, USGS elevation, Kansas Mesonet, Iowa
+  Environmental Mesonet, or TexMesonet data for a study site;
 - make quick quality-control checks such as moving-window outlier flags,
   flow-duration curves, and seasonal summaries.
 
@@ -209,12 +209,26 @@ get_nasa_data(
 - [`vignette("kings-creek", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/kings-creek.md)
   analyzes daily stream discharge, flow duration, and seasonal
   variability.
+- [`vignette("chemistry-calculations", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/chemistry-calculations.md)
+  demonstrates dissolved gas and CO2 helper functions.
+- [`vignette("physical-properties", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/physical-properties.md)
+  demonstrates unit conversions, water height, pressure correction, and
+  modeled light.
+- [`vignette("time-series-utilities", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/time-series-utilities.md)
+  demonstrates timestamp, season, outlier, summary, and
+  exceedance-probability helpers.
 - [`vignette("noaa", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/noaa.md)
   finds candidate NOAA stations.
-- [`vignette("ghcnh", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/ghcnh.md)
+- [`vignette("ghcnh", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/ghcnh.html)
   downloads and reads NOAA hourly GHCNh files.
 - [`vignette("ks-mesonet", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/ks-mesonet.md)
   works with Kansas Mesonet station metadata and cached observations.
+- [`vignette("iem", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/iem.md)
+  works with Iowa Environmental Mesonet network metadata, current
+  observations, observation history, and daily summaries.
+- [`vignette("tex-mesonet", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/tex-mesonet.md)
+  works with TexMesonet station metadata, current observations, and
+  recent time series.
 
 ## License
 

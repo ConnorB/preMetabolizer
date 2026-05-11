@@ -1,7 +1,9 @@
 # Find NOAA stations near a location
 
-Identifies NOAA weather stations within a specified radius of a target
-location using geodesic distance calculations.
+Identifies NOAA GHCND weather stations within a specified radius of a
+target location. Station candidates are retrieved via the NCEI Search
+API using a bounding box and then filtered to the exact circular radius
+using geodesic distance.
 
 ## Usage
 
@@ -10,8 +12,9 @@ closest_noaa_stations(
   latitude,
   longitude,
   dist_km,
-  state = NULL,
-  clean = TRUE,
+  start_date = NULL,
+  end_date = NULL,
+  data_types = NULL,
   lat = lifecycle::deprecated(),
   long = lifecycle::deprecated(),
   lon = lifecycle::deprecated()
@@ -28,18 +31,19 @@ closest_noaa_stations(
 
 - dist_km:
 
-  Numeric. Search radius in kilometers.
+  Numeric. Search radius in kilometres.
 
-- state:
+- start_date, end_date:
 
-  Optional two-letter state code used to filter stations before
-  calculating distances.
+  Optional date range. When supplied only stations whose period of
+  record overlaps this range are returned. Accepts `Date` objects or
+  `"YYYY-MM-DD"` strings.
 
-- clean:
+- data_types:
 
-  Logical. If `TRUE`, return cleaned station metadata from
-  [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
-  and drop empty columns from the result.
+  Optional character vector of GHCND data type codes (e.g.,
+  `c("TMAX", "TMIN")`). When supplied only stations carrying all
+  requested types are returned.
 
 - lat, long, lon:
 
@@ -47,34 +51,47 @@ closest_noaa_stations(
 
 ## Value
 
-A data frame of NOAA stations within `dist_km`, sorted by distance. The
-first column is `distance_km`. Returns `NULL` when no stations are found
-in the requested radius or when available station metadata does not
-contain usable coordinates.
+A [tibble](https://tibble.tidyverse.org/reference/tibble-package.html)
+of NOAA stations within `dist_km`, sorted by ascending distance. The
+first column is `distance_km`; remaining columns are those returned by
+[`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md).
+Returns `NULL` when no stations are found within the requested radius.
 
 ## Details
 
 Distances are calculated with
 [`geosphere::distGeo()`](https://rdrr.io/pkg/geosphere/man/distGeo.html)
-using its default WGS84 ellipsoid.
+using the default WGS84 ellipsoid.
+
+The search first queries the NCEI Search API using a square bounding box
+of side `2 * dist_km` centred on the target point, then trims the result
+to the circular radius. This requires one API call and avoids
+downloading the entire station database.
+
+## See also
+
+[`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md),
+[`ncei_bbox()`](https://connorb.github.io/preMetabolizer/reference/ncei_bbox.md),
+[`ncei_stations()`](https://connorb.github.io/preMetabolizer/reference/ncei_stations.md)
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Find stations within 50 km of Konza Prairie Biological Station
+# Stations within 50 km of Konza Prairie Biological Station
 closest_noaa_stations(
   latitude = 39.1068806,
   longitude = -96.6117151,
   dist_km = 50
 )
 
-# Find stations within 100 km of Lawrence, Kansas only
+# Restrict to stations with daily temperature data since 2000
 closest_noaa_stations(
-  latitude = 38.9717,
-  longitude = -95.2353,
+  latitude = 39.1068806,
+  longitude = -96.6117151,
   dist_km = 100,
-  state = "KS"
+  data_types = c("TMAX", "TMIN"),
+  start_date = "2000-01-01"
 )
 } # }
 ```
