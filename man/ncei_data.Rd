@@ -34,17 +34,20 @@ When \code{NULL} all available types are returned.}
 
 \item{units}{Character string. \code{"metric"} (default) or \code{"standard"}.}
 
-\item{include_station_name}{Logical. When \code{TRUE} (default), a \code{NAME}
-column is included in the result.}
+\item{include_station_name}{Logical. When \code{TRUE} (default), a
+\code{station_name} column is included in the result.}
 
-\item{include_station_location}{Logical. When \code{TRUE}, \code{LATITUDE},
-\code{LONGITUDE}, and \code{ELEVATION} columns are added. Default \code{FALSE}.}
+\item{include_station_location}{Logical. When \code{TRUE}, \code{latitude},
+\code{longitude}, and \code{elevation} columns are added. Default \code{FALSE}.}
 }
 \value{
-A data frame with one row per observation. The \code{STATION} column
-identifies the source station and \code{DATE} records the observation
-time. Additional columns depend on the requested \code{dataset} and
-\code{data_types}.
+A \link[tibble:tibble-package]{tibble} with one row per observation
+and snake_case column names. Leading columns (when present) are
+\code{station_id}, \code{station_name}, \code{latitude}, \code{longitude}, \code{elevation},
+and either \code{datetime} (\code{POSIXct} UTC, for sub-daily datasets) or
+\code{date} (\code{Date}, for daily and coarser datasets). Remaining columns
+depend on the requested \code{dataset} and \code{data_types}. Columns that are
+entirely \code{NA} are dropped.
 }
 \description{
 Retrieves weather and climate data from NOAA's National Centers for
@@ -53,13 +56,27 @@ Environmental Information (NCEI) using the Access Data Service API.
 \details{
 This function calls
 \verb{https://www.ncei.noaa.gov/access/services/data/v1}. Data are returned
-in CSV format and read into a data frame with \code{\link[readr:read_csv]{readr::read_csv()}}.
+in CSV format and parsed into a tibble.
 
-The \code{"daily-summaries"} dataset returns one row per station per day
-with columns such as \code{PRCP}, \code{TMAX}, and \code{TMIN}. The \code{"global-hourly"}
-dataset returns ISD records in which several key variables (\code{TMP},
-\code{WND}, \code{DEW}, \code{SLP}) contain comma-separated sub-fields rather than
-simple numeric values.
+For \code{dataset = "global-hourly"} (Integrated Surface Database), the
+mandatory packed fields are expanded into typed numeric columns with
+SI units and missing-value sentinels converted to \code{NA}:
+
+\describe{
+\item{\code{WND}}{\code{wind_direction} (degrees), \code{wind_direction_quality},
+\code{wind_type_code}, \code{wind_speed} (m/s), \code{wind_speed_quality}.}
+\item{\code{CIG}}{\code{ceiling_height} (m), \code{ceiling_quality},
+\code{ceiling_determination_code}, \code{ceiling_cavok}.}
+\item{\code{VIS}}{\code{visibility} (m), \code{visibility_quality},
+\code{visibility_variability_code}, \code{visibility_variability_quality}.}
+\item{\code{TMP}}{\code{temperature} (°C), \code{temperature_quality}.}
+\item{\code{DEW}}{\code{dew_point_temperature} (°C), \code{dew_point_quality}.}
+\item{\code{SLP}}{\code{sea_level_pressure} (hPa),
+\code{sea_level_pressure_quality}.}
+\item{\code{AA1}–\code{AA4}}{\code{precipitation_period_hours} (hr),
+\code{precipitation} (mm), \code{precipitation_condition_code},
+\code{precipitation_quality}.}
+}
 }
 \examples{
 \dontrun{
@@ -72,7 +89,7 @@ ncei_data(
   data_types = c("TMAX", "TMIN", "PRCP")
 )
 
-# Hourly ISD observations
+# Hourly ISD observations with expanded mandatory fields
 ncei_data(
   dataset = "global-hourly",
   stations = "72469023183",

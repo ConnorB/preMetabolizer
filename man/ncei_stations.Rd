@@ -46,12 +46,9 @@ the following columns:
 \describe{
 \item{\code{station_id}}{Station identifier (dataset prefix stripped,
 e.g., \code{"USW00023183"} rather than \code{"GHCND:USW00023183"}).}
-\item{\code{name}}{Station name.}
+\item{\code{station_name}}{Station name.}
 \item{\code{latitude},\code{longitude}}{Decimal-degree coordinates.}
-\item{\code{elevation}}{Elevation in metres.}
 \item{\code{start_date},\code{end_date}}{Period of record as \code{Date} objects.}
-\item{\code{data_coverage}}{Fraction of expected observations present
-(0–1).}
 }
 }
 \description{

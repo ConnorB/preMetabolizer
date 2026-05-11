@@ -16,14 +16,13 @@
 #' @param data_types Optional character vector of GHCND data type codes
 #'   (e.g., `c("TMAX", "TMIN")`). When supplied only stations carrying
 #'   all requested types are returned.
-#' @param lat,long,lon `r lifecycle::badge("deprecated")` Use `latitude`
-#'   and `longitude` instead.
 #'
 #' @return A [tibble][tibble::tibble-package] of NOAA stations within
 #'   `dist_km`, sorted by ascending distance. The first column is
 #'   `distance_km`; remaining columns are those returned by
-#'   [get_noaa_stations()]. Returns `NULL` when no stations are found
-#'   within the requested radius.
+#'   [get_noaa_stations()] (`station_id`, `station_name`, `latitude`,
+#'   `longitude`, `start_date`, `end_date`). Returns `NULL` when no
+#'   stations are found within the requested radius.
 #'
 #' @details
 #' Distances are calculated with [geosphere::distGeo()] using the
@@ -62,93 +61,23 @@ closest_noaa_stations <- function(
   dist_km,
   start_date = NULL,
   end_date = NULL,
-  data_types = NULL,
-  lat = lifecycle::deprecated(),
-  long = lifecycle::deprecated(),
-  lon = lifecycle::deprecated()
+  data_types = NULL
 ) {
-  if (lifecycle::is_present(lat)) {
-    lifecycle::deprecate_warn(
-      "0.1.0",
-      "closest_noaa_stations(lat)",
-      "closest_noaa_stations(latitude)"
+  check_numeric(latitude, allow_na = FALSE, allow_infinite = FALSE)
+  if (length(latitude) != 1 || abs(latitude) > 90) {
+    cli::cli_abort(
+      "{.arg latitude} must be a single number between -90 and 90."
     )
-    if (!missing(latitude)) {
-      cli::cli_abort(
-        "Use only one of {.arg latitude} and deprecated {.arg lat}."
-      )
-    }
-    latitude <- lat
   }
-  if (lifecycle::is_present(long)) {
-    lifecycle::deprecate_warn(
-      "0.1.0",
-      "closest_noaa_stations(long)",
-      "closest_noaa_stations(longitude)"
+  check_numeric(longitude, allow_na = FALSE, allow_infinite = FALSE)
+  if (length(longitude) != 1 || abs(longitude) > 180) {
+    cli::cli_abort(
+      "{.arg longitude} must be a single number between -180 and 180."
     )
-    if (!missing(longitude)) {
-      cli::cli_abort(
-        "Use only one of {.arg longitude} and deprecated {.arg long}."
-      )
-    }
-    longitude <- long
   }
-  if (lifecycle::is_present(lon)) {
-    lifecycle::deprecate_warn(
-      "0.1.0",
-      "closest_noaa_stations(lon)",
-      "closest_noaa_stations(longitude)"
-    )
-    if (!missing(longitude)) {
-      cli::cli_abort(
-        "Use only one of {.arg longitude} and deprecated {.arg lon}."
-      )
-    }
-    longitude <- lon
-  }
-
-  if (missing(latitude)) {
-    cli::cli_abort("{.arg latitude} is required.")
-  }
-  if (missing(longitude)) {
-    cli::cli_abort("{.arg longitude} is required.")
-  }
-  if (missing(dist_km)) {
-    cli::cli_abort("{.arg dist_km} is required.")
-  }
-
-  if (
-    !is.numeric(latitude) ||
-      length(latitude) != 1 ||
-      is.na(latitude) ||
-      !is.finite(latitude)
-  ) {
-    cli::cli_abort("{.arg latitude} must be a single finite number.")
-  }
-  if (
-    !is.numeric(longitude) ||
-      length(longitude) != 1 ||
-      is.na(longitude) ||
-      !is.finite(longitude)
-  ) {
-    cli::cli_abort("{.arg longitude} must be a single finite number.")
-  }
-  if (
-    !is.numeric(dist_km) ||
-      length(dist_km) != 1 ||
-      is.na(dist_km) ||
-      !is.finite(dist_km)
-  ) {
-    cli::cli_abort("{.arg dist_km} must be a single finite number.")
-  }
-  if (abs(latitude) > 90) {
-    cli::cli_abort("{.arg latitude} must be between -90 and 90.")
-  }
-  if (abs(longitude) > 180) {
-    cli::cli_abort("{.arg longitude} must be between -180 and 180.")
-  }
-  if (dist_km <= 0) {
-    cli::cli_abort("{.arg dist_km} must be greater than 0.")
+  check_numeric(dist_km, allow_na = FALSE, allow_infinite = FALSE)
+  if (length(dist_km) != 1 || dist_km <= 0) {
+    cli::cli_abort("{.arg dist_km} must be a single positive number.")
   }
 
   bbox <- ncei_bbox(latitude, longitude, dist_km)
@@ -192,10 +121,9 @@ closest_noaa_stations <- function(
   result <- stations[in_radius, ]
   result$distance_km <- distances[in_radius] / 1000
 
-  result <- result[, c("distance_km", setdiff(names(result), "distance_km"))]
+  result <- dplyr::relocate(result, "distance_km")
   result <- result[order(result$distance_km), ]
-  result <- result[, colSums(!is.na(result)) > 0]
+  result <- result[, colSums(!is.na(result)) > 0, drop = FALSE]
 
-  rownames(result) <- NULL
-  result
+  tibble::as_tibble(result)
 }

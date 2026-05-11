@@ -37,9 +37,9 @@ default 1000).}
 }
 \value{
 A \link[tibble:tibble-package]{tibble} with columns \code{station_id},
-\code{name}, \code{latitude}, \code{longitude}, \code{elevation}, \code{start_date},
-\code{end_date}, and \code{data_coverage}. Returns an empty tibble when no
-stations match the query.
+\code{station_name}, \code{latitude}, \code{longitude}, \code{start_date}, and
+\code{end_date}. Returns an empty tibble when no stations match the
+query.
 }
 \description{
 Searches for NOAA weather stations in the NCEI daily-summaries

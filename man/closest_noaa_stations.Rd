@@ -10,10 +10,7 @@ closest_noaa_stations(
   dist_km,
   start_date = NULL,
   end_date = NULL,
-  data_types = NULL,
-  lat = lifecycle::deprecated(),
-  long = lifecycle::deprecated(),
-  lon = lifecycle::deprecated()
+  data_types = NULL
 )
 }
 \arguments{
@@ -30,16 +27,14 @@ Accepts \code{Date} objects or \code{"YYYY-MM-DD"} strings.}
 \item{data_types}{Optional character vector of GHCND data type codes
 (e.g., \code{c("TMAX", "TMIN")}). When supplied only stations carrying
 all requested types are returned.}
-
-\item{lat, long, lon}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{latitude}
-and \code{longitude} instead.}
 }
 \value{
 A \link[tibble:tibble-package]{tibble} of NOAA stations within
 \code{dist_km}, sorted by ascending distance. The first column is
 \code{distance_km}; remaining columns are those returned by
-\code{\link[=get_noaa_stations]{get_noaa_stations()}}. Returns \code{NULL} when no stations are found
-within the requested radius.
+\code{\link[=get_noaa_stations]{get_noaa_stations()}} (\code{station_id}, \code{station_name}, \code{latitude},
+\code{longitude}, \code{start_date}, \code{end_date}). Returns \code{NULL} when no
+stations are found within the requested radius.
 }
 \description{
 Identifies NOAA GHCND weather stations within a specified radius of a

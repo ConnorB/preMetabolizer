@@ -26,12 +26,9 @@
 #'   \describe{
 #'     \item{`station_id`}{Station identifier (dataset prefix stripped,
 #'       e.g., `"USW00023183"` rather than `"GHCND:USW00023183"`).}
-#'     \item{`name`}{Station name.}
+#'     \item{`station_name`}{Station name.}
 #'     \item{`latitude`,`longitude`}{Decimal-degree coordinates.}
-#'     \item{`elevation`}{Elevation in metres.}
 #'     \item{`start_date`,`end_date`}{Period of record as `Date` objects.}
-#'     \item{`data_coverage`}{Fraction of expected observations present
-#'       (0–1).}
 #'   }
 #'
 #' @details
@@ -73,24 +70,19 @@ ncei_stations <- function(
   limit = 100L,
   offset = 0L
 ) {
-  if (
-    !is.character(dataset) ||
-      length(dataset) != 1 ||
-      is.na(dataset) ||
-      !nzchar(dataset)
-  ) {
-    cli::cli_abort("{.arg dataset} must be a single non-empty string.")
-  }
+  check_string(dataset, allow_empty = FALSE)
   if (!is.null(bbox)) {
-    if (
-      !is.numeric(bbox) ||
-        length(bbox) != 4 ||
-        anyNA(bbox) ||
-        !all(is.finite(bbox))
-    ) {
+    check_numeric(bbox, allow_na = FALSE, allow_infinite = FALSE)
+    if (length(bbox) != 4) {
       cli::cli_abort(
         "{.arg bbox} must be a length-4 numeric vector: c(north, west, south, east)."
       )
+    }
+    if (abs(bbox[1]) > 90 || abs(bbox[3]) > 90) {
+      cli::cli_abort("{.arg bbox} latitudes must be between -90 and 90.")
+    }
+    if (abs(bbox[2]) > 180 || abs(bbox[4]) > 180) {
+      cli::cli_abort("{.arg bbox} longitudes must be between -180 and 180.")
     }
     if (bbox[1] < bbox[3]) {
       cli::cli_abort(
@@ -104,37 +96,15 @@ ncei_stations <- function(
   if (!is.null(end_date)) {
     end_date <- ncei_check_date(end_date)
   }
-  if (!is.null(data_types)) {
-    if (
-      !is.character(data_types) || length(data_types) == 0 || anyNA(data_types)
-    ) {
-      cli::cli_abort("{.arg data_types} must be a character vector or `NULL`.")
-    }
-  }
-  if (!is.null(text)) {
-    if (!is.character(text) || length(text) != 1 || is.na(text)) {
-      cli::cli_abort("{.arg text} must be a single string or `NULL`.")
-    }
-  }
-  if (
-    !is.numeric(limit) ||
-      length(limit) != 1 ||
-      is.na(limit) ||
-      limit < 1 ||
-      limit > 1000 ||
-      limit != as.integer(limit)
-  ) {
-    cli::cli_abort("{.arg limit} must be a whole number between 1 and 1000.")
-  }
-  if (
-    !is.numeric(offset) ||
-      length(offset) != 1 ||
-      is.na(offset) ||
-      offset < 0 ||
-      offset != as.integer(offset)
-  ) {
-    cli::cli_abort("{.arg offset} must be a non-negative whole number.")
-  }
+  check_character(
+    data_types,
+    allow_null = TRUE,
+    allow_empty = FALSE,
+    allow_na = FALSE
+  )
+  check_string(text, allow_null = TRUE, allow_empty = FALSE)
+  limit <- ncei_check_whole_number(limit, min = 1, max = 1000)
+  offset <- ncei_check_whole_number(offset, min = 0)
 
   bbox_str <- if (!is.null(bbox)) {
     sprintf("%.6f,%.6f,%.6f,%.6f", bbox[1], bbox[2], bbox[3], bbox[4])
@@ -145,8 +115,8 @@ ncei_stations <- function(
   req <- ncei_request(ncei_search_url) |>
     httr2::req_url_query(
       dataset = dataset,
-      limit = as.integer(limit),
-      offset = as.integer(offset)
+      limit = limit,
+      offset = offset
     )
 
   if (!is.null(bbox_str)) {
@@ -202,32 +172,20 @@ ncei_stations <- function(
 #'
 #' @export
 ncei_bbox <- function(latitude, longitude, dist_km) {
-  if (
-    !is.numeric(latitude) ||
-      length(latitude) != 1 ||
-      is.na(latitude) ||
-      abs(latitude) > 90
-  ) {
+  check_numeric(latitude, allow_na = FALSE, allow_infinite = FALSE)
+  if (length(latitude) != 1 || abs(latitude) > 90) {
     cli::cli_abort(
       "{.arg latitude} must be a single number between -90 and 90."
     )
   }
-  if (
-    !is.numeric(longitude) ||
-      length(longitude) != 1 ||
-      is.na(longitude) ||
-      abs(longitude) > 180
-  ) {
+  check_numeric(longitude, allow_na = FALSE, allow_infinite = FALSE)
+  if (length(longitude) != 1 || abs(longitude) > 180) {
     cli::cli_abort(
       "{.arg longitude} must be a single number between -180 and 180."
     )
   }
-  if (
-    !is.numeric(dist_km) ||
-      length(dist_km) != 1 ||
-      is.na(dist_km) ||
-      dist_km <= 0
-  ) {
+  check_numeric(dist_km, allow_na = FALSE, allow_infinite = FALSE)
+  if (length(dist_km) != 1 || dist_km <= 0) {
     cli::cli_abort("{.arg dist_km} must be a single positive number.")
   }
 

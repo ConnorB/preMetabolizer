@@ -4,7 +4,7 @@
       ncei_stations(123)
     Condition
       Error in `ncei_stations()`:
-      ! `dataset` must be a single non-empty string.
+      ! `dataset` must be a single string.
 
 ---
 

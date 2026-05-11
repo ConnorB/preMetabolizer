@@ -34,17 +34,15 @@ test_that("get_noaa_stations returns a tibble with expected columns", {
     result,
     c(
       "station_id",
-      "name",
+      "station_name",
       "latitude",
       "longitude",
-      "elevation",
       "start_date",
-      "end_date",
-      "data_coverage"
+      "end_date"
     )
   )
   expect_equal(result$station_id, "USW00023183")
-  expect_equal(result$name, "MANHATTAN KS US")
+  expect_equal(result$station_name, "MANHATTAN KS US")
 })
 
 test_that("get_noaa_stations passes parameters to ncei_stations", {

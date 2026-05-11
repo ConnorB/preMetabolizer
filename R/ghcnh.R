@@ -4,8 +4,8 @@ ghcnh_base_url <-
 #' Get GHCNh hourly observations
 #'
 #' Downloads Global Historical Climatology Network hourly (GHCNh) data
-#' for one or more stations and a date range, returning a parsed data
-#' frame ready for use in stream metabolism modelling.
+#' for one or more stations and a date range, returning a parsed tibble
+#' ready for use in stream metabolism modelling.
 #'
 #' @param stations Character vector of GHCNh station identifiers (e.g.,
 #'   `"USW00023183"`). These match the `station_id` column returned by
@@ -67,23 +67,16 @@ ghcnh_base_url <-
 #' @importFrom rlang .data
 #' @export
 get_ghcnh <- function(stations, start_date, end_date, quiet = FALSE) {
-  if (
-    missing(stations) ||
-      !is.character(stations) ||
-      length(stations) == 0 ||
-      anyNA(stations) ||
-      any(!nzchar(stations))
-  ) {
-    cli::cli_abort("{.arg stations} must be a non-empty character vector.")
+  check_character(stations, allow_empty = FALSE, allow_na = FALSE)
+  if (any(!nzchar(stations))) {
+    cli::cli_abort("{.arg stations} must not contain empty strings.")
   }
   start_date <- as.Date(ncei_check_date(start_date))
   end_date <- as.Date(ncei_check_date(end_date))
   if (start_date > end_date) {
     cli::cli_abort("{.arg start_date} must be on or before {.arg end_date}.")
   }
-  if (!is.logical(quiet) || length(quiet) != 1 || is.na(quiet)) {
-    cli::cli_abort("{.arg quiet} must be `TRUE` or `FALSE`.")
-  }
+  check_bool(quiet)
 
   years <- seq(
     as.integer(format(start_date, "%Y")),
@@ -95,19 +88,7 @@ get_ghcnh <- function(stations, start_date, end_date, quiet = FALSE) {
     stringsAsFactors = FALSE
   )
 
-  reqs <- lapply(seq_len(nrow(combos)), function(i) {
-    sid <- combos$station_id[i]
-    year <- combos$year[i]
-    url <- sprintf("%s/%d/GHCNh_%s_%d.psv", ghcnh_base_url, year, sid, year)
-    if (!quiet) {
-      cli::cli_inform(
-        "Requesting GHCNh data for station {.val {sid}}, year {year}."
-      )
-    }
-    httr2::request(url) |>
-      httr2::req_timeout(120) |>
-      httr2::req_retry(max_tries = 3)
-  })
+  reqs <- ghcnh_build_requests(combos$station_id, combos$year, quiet)
 
   resps <- http_req_perform_parallel(
     reqs,
@@ -131,16 +112,7 @@ get_ghcnh <- function(stations, start_date, end_date, quiet = FALSE) {
     }
 
     tryCatch(
-      {
-        body <- httr2::resp_body_string(resp)
-        df <- readr::read_delim(
-          I(body),
-          delim = "|",
-          show_col_types = FALSE,
-          progress = FALSE
-        )
-        ghcnh_standardize(df)
-      },
+      ghcnh_parse_psv(httr2::resp_body_string(resp)),
       error = function(e) {
         cli::cli_warn(
           c(
@@ -173,7 +145,32 @@ get_ghcnh <- function(stations, start_date, end_date, quiet = FALSE) {
   }
 
   all_na <- vapply(combined, function(x) all(is.na(x)), logical(1))
-  combined[, !all_na]
+  combined[, !all_na, drop = FALSE]
+}
+
+ghcnh_build_requests <- function(stations, years, quiet) {
+  lapply(seq_along(stations), function(i) {
+    sid <- stations[i]
+    year <- years[i]
+    url <- sprintf("%s/%d/GHCNh_%s_%d.psv", ghcnh_base_url, year, sid, year)
+    cli_inform_if(
+      !quiet,
+      "Requesting GHCNh data for station {.val {sid}}, year {year}."
+    )
+    httr2::request(url) |>
+      httr2::req_timeout(120) |>
+      httr2::req_retry(max_tries = 3)
+  })
+}
+
+ghcnh_parse_psv <- function(body) {
+  df <- readr::read_delim(
+    I(body),
+    delim = "|",
+    show_col_types = FALSE,
+    progress = FALSE
+  )
+  ghcnh_standardize(df)
 }
 
 ghcnh_standardize <- function(df) {
@@ -226,21 +223,16 @@ ghcnh_standardize <- function(df) {
       -dplyr::any_of(c("DATE", "Year", "Month", "Day", "Hour", "Minute"))
     )
 
-  name_map <- c(
-    Station_ID = "station_id",
-    Station_name = "station_name"
+  df <- mesonet_rename_columns(
+    df,
+    c(Station_ID = "station_id", Station_name = "station_name")
   )
-  for (old in intersect(names(name_map), names(df))) {
-    names(df)[names(df) == old] <- name_map[[old]]
-  }
 
   lead_cols <- intersect(
     c("station_id", "station_name", "datetime"),
     names(df)
   )
-  df <- dplyr::relocate(df, dplyr::all_of(lead_cols))
-
-  tibble::as_tibble(df)
+  dplyr::relocate(df, dplyr::all_of(lead_cols))
 }
 
 ghcnh_parse_datetime <- function(df) {
@@ -249,11 +241,7 @@ ghcnh_parse_datetime <- function(df) {
     if (inherits(date, "POSIXt")) {
       return(as.POSIXct(date, tz = "UTC"))
     }
-    dt <- suppressWarnings(lubridate::ymd_hms(date, tz = "UTC", quiet = TRUE))
-    if (all(is.na(dt))) {
-      dt <- suppressWarnings(lubridate::ymd_hm(date, tz = "UTC", quiet = TRUE))
-    }
-    return(dt)
+    return(mesonet_parse_utc_datetime(date))
   }
 
   if (all(c("Year", "Month", "Day", "Hour", "Minute") %in% names(df))) {

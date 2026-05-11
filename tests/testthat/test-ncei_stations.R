@@ -38,11 +38,21 @@ test_that("ncei_stations parses Search API response correctly", {
   result <- ncei_stations("daily-summaries")
 
   expect_s3_class(result, "tbl_df")
+  expect_named(
+    result,
+    c(
+      "station_id",
+      "station_name",
+      "latitude",
+      "longitude",
+      "start_date",
+      "end_date"
+    )
+  )
   expect_equal(result$station_id, "USW00023183")
-  expect_equal(result$name, "LAS VEGAS INTL AP")
+  expect_equal(result$station_name, "LAS VEGAS INTL AP")
   expect_equal(result$latitude, 36.085)
   expect_equal(result$longitude, -115.147)
-  expect_true(is.na(result$elevation))
   expect_s3_class(result$start_date, "Date")
   expect_equal(result$start_date, as.Date("1948-01-01"))
 })
@@ -69,6 +79,17 @@ test_that("ncei_stations returns empty tibble when no hits", {
   result <- ncei_stations("daily-summaries")
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
+  expect_named(
+    result,
+    c(
+      "station_id",
+      "station_name",
+      "latitude",
+      "longitude",
+      "start_date",
+      "end_date"
+    )
+  )
 })
 
 test_that("ncei_stations validates inputs", {

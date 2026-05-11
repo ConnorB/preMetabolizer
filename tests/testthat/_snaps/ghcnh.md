@@ -4,7 +4,7 @@
       get_ghcnh(stations = character(), start_date = "2023-01-01", end_date = "2023-01-31")
     Condition
       Error in `get_ghcnh()`:
-      ! `stations` must be a non-empty character vector.
+      ! `stations` must be a character vector.
 
 ---
 

@@ -16,26 +16,43 @@
 #'   include (e.g., `c("TMAX", "TMIN", "PRCP")` for daily summaries).
 #'   When `NULL` all available types are returned.
 #' @param units Character string. `"metric"` (default) or `"standard"`.
-#' @param include_station_name Logical. When `TRUE` (default), a `NAME`
-#'   column is included in the result.
-#' @param include_station_location Logical. When `TRUE`, `LATITUDE`,
-#'   `LONGITUDE`, and `ELEVATION` columns are added. Default `FALSE`.
+#' @param include_station_name Logical. When `TRUE` (default), a
+#'   `station_name` column is included in the result.
+#' @param include_station_location Logical. When `TRUE`, `latitude`,
+#'   `longitude`, and `elevation` columns are added. Default `FALSE`.
 #'
-#' @return A data frame with one row per observation. The `STATION` column
-#'   identifies the source station and `DATE` records the observation
-#'   time. Additional columns depend on the requested `dataset` and
-#'   `data_types`.
+#' @return A [tibble][tibble::tibble-package] with one row per observation
+#'   and snake_case column names. Leading columns (when present) are
+#'   `station_id`, `station_name`, `latitude`, `longitude`, `elevation`,
+#'   and either `datetime` (`POSIXct` UTC, for sub-daily datasets) or
+#'   `date` (`Date`, for daily and coarser datasets). Remaining columns
+#'   depend on the requested `dataset` and `data_types`. Columns that are
+#'   entirely `NA` are dropped.
 #'
 #' @details
 #' This function calls
 #' `https://www.ncei.noaa.gov/access/services/data/v1`. Data are returned
-#' in CSV format and read into a data frame with [readr::read_csv()].
+#' in CSV format and parsed into a tibble.
 #'
-#' The `"daily-summaries"` dataset returns one row per station per day
-#' with columns such as `PRCP`, `TMAX`, and `TMIN`. The `"global-hourly"`
-#' dataset returns ISD records in which several key variables (`TMP`,
-#' `WND`, `DEW`, `SLP`) contain comma-separated sub-fields rather than
-#' simple numeric values.
+#' For `dataset = "global-hourly"` (Integrated Surface Database), the
+#' mandatory packed fields are expanded into typed numeric columns with
+#' SI units and missing-value sentinels converted to `NA`:
+#'
+#' \describe{
+#'   \item{`WND`}{`wind_direction` (degrees), `wind_direction_quality`,
+#'     `wind_type_code`, `wind_speed` (m/s), `wind_speed_quality`.}
+#'   \item{`CIG`}{`ceiling_height` (m), `ceiling_quality`,
+#'     `ceiling_determination_code`, `ceiling_cavok`.}
+#'   \item{`VIS`}{`visibility` (m), `visibility_quality`,
+#'     `visibility_variability_code`, `visibility_variability_quality`.}
+#'   \item{`TMP`}{`temperature` (°C), `temperature_quality`.}
+#'   \item{`DEW`}{`dew_point_temperature` (°C), `dew_point_quality`.}
+#'   \item{`SLP`}{`sea_level_pressure` (hPa),
+#'     `sea_level_pressure_quality`.}
+#'   \item{`AA1`–`AA4`}{`precipitation_period_hours` (hr),
+#'     `precipitation` (mm), `precipitation_condition_code`,
+#'     `precipitation_quality`.}
+#' }
 #'
 #' @seealso [ncei_stations()] to search for station identifiers,
 #'   [ncei_datasets()] to list available datasets.
@@ -51,7 +68,7 @@
 #'   data_types = c("TMAX", "TMIN", "PRCP")
 #' )
 #'
-#' # Hourly ISD observations
+#' # Hourly ISD observations with expanded mandatory fields
 #' ncei_data(
 #'   dataset = "global-hourly",
 #'   stations = "72469023183",
@@ -71,50 +88,22 @@ ncei_data <- function(
   include_station_name = TRUE,
   include_station_location = FALSE
 ) {
-  if (
-    !is.character(dataset) ||
-      length(dataset) != 1 ||
-      is.na(dataset) ||
-      !nzchar(dataset)
-  ) {
-    cli::cli_abort("{.arg dataset} must be a single non-empty string.")
-  }
-  if (
-    !is.character(stations) ||
-      length(stations) == 0 ||
-      anyNA(stations) ||
-      any(!nzchar(stations))
-  ) {
-    cli::cli_abort("{.arg stations} must be a non-empty character vector.")
+  check_string(dataset, allow_empty = FALSE)
+  check_character(stations, allow_empty = FALSE, allow_na = FALSE)
+  if (any(!nzchar(stations))) {
+    cli::cli_abort("{.arg stations} must not contain empty strings.")
   }
   start_date <- ncei_check_date(start_date)
   end_date <- ncei_check_date(end_date)
-  if (!is.null(data_types)) {
-    if (
-      !is.character(data_types) ||
-        length(data_types) == 0 ||
-        anyNA(data_types)
-    ) {
-      cli::cli_abort("{.arg data_types} must be a character vector or `NULL`.")
-    }
-  }
-  units <- match.arg(units, c("metric", "standard"))
-  if (
-    !is.logical(include_station_name) ||
-      length(include_station_name) != 1 ||
-      is.na(include_station_name)
-  ) {
-    cli::cli_abort("{.arg include_station_name} must be `TRUE` or `FALSE`.")
-  }
-  if (
-    !is.logical(include_station_location) ||
-      length(include_station_location) != 1 ||
-      is.na(include_station_location)
-  ) {
-    cli::cli_abort(
-      "{.arg include_station_location} must be `TRUE` or `FALSE`."
-    )
-  }
+  check_character(
+    data_types,
+    allow_null = TRUE,
+    allow_empty = FALSE,
+    allow_na = FALSE
+  )
+  units <- rlang::arg_match(units, c("metric", "standard"))
+  check_bool(include_station_name)
+  check_bool(include_station_location)
 
   req <- ncei_request(ncei_data_url) |>
     httr2::req_url_query(
@@ -137,7 +126,7 @@ ncei_data <- function(
     {
       resp <- req |> http_req_perform()
       body <- httr2::resp_body_string(resp)
-      readr::read_csv(I(body), show_col_types = FALSE, progress = FALSE)
+      ncei_parse_data_csv(body, dataset)
     },
     error = function(e) {
       cli::cli_abort(
@@ -168,14 +157,7 @@ ncei_data <- function(
 #'
 #' @export
 ncei_datasets <- function(dataset) {
-  if (
-    !is.character(dataset) ||
-      length(dataset) != 1 ||
-      is.na(dataset) ||
-      !nzchar(dataset)
-  ) {
-    cli::cli_abort("{.arg dataset} must be a single non-empty string.")
-  }
+  check_string(dataset, allow_empty = FALSE)
 
   url <- paste0(ncei_support_url, "/", dataset, ".json")
 

@@ -18,7 +18,11 @@
 * `calc_vapor_press()` with `method = "MIMSY"` now returns physically correct values. The Antoine equation constant `B` was incorrectly set to 140.264 (should be 1435.264), causing vapor pressures that were orders of magnitude too large.
 * `calc_water_density()` no longer accepts a `.drop_units` argument; it always returns a plain numeric vector (no issue).
 * `calc_water_height()` now gives a clear error when `type = "unvented"` is used without providing `atmo_kPa`, rather than silently returning `NA`.
-* `closest_noaa_stations()` now uses `latitude` and `longitude` arguments. The old `lat`, `long`, and `lon` aliases are deprecated (no issue).
+* `closest_noaa_stations()` no longer accepts the deprecated `lat`, `long`, or `lon` arguments; use `latitude` and `longitude`. The returned tibble uses `station_name` and no longer includes always-`NA` `elevation` or `data_coverage` columns (no issue).
+* `get_ghcnh()` internals now share datetime parsing with the mesonet helpers and use the shared `check_*` input validators (no issue).
+* `get_noaa_stations()` returns a tibble with `station_name` and no longer includes always-`NA` `elevation` or `data_coverage` columns (no issue).
+* `ncei_data()` returns a snake_case tibble led by `station_id`, `station_name`, and a parsed `datetime` (or `date`) column; for `dataset = "global-hourly"` the ISD mandatory fields (`WND`, `CIG`, `VIS`, `TMP`, `DEW`, `SLP`, `AA1`–`AA4`) are split into typed numeric columns with units applied and sentinels converted to `NA` (no issue).
+* `ncei_stations()` returns a tibble with `station_name`; the always-`NA` `elevation` and `data_coverage` columns are removed (no issue).
 * `convert_flow()` now requires an explicit `from` argument specifying the input unit; it always returns a plain numeric vector instead of a `units` object (no issue).
 * `convert_PAR_to_SW()` and `convert_SW_to_PAR()` are no longer re-exported from preMetabolizer. Call `streamMetabolizer::convert_PAR_to_SW()` and `streamMetabolizer::convert_SW_to_PAR()` directly (no issue).
 * `convert_pressure()` now requires an explicit `from` argument; it always returns a plain numeric vector. Unit-bearing objects are no longer accepted as input. `convert_pressure()` is now the sole public pressure conversion helper; `convert_pressure_to_atm()` has been removed (no issue).

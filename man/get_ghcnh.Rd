@@ -38,8 +38,8 @@ dropped from the result.
 }
 \description{
 Downloads Global Historical Climatology Network hourly (GHCNh) data
-for one or more stations and a date range, returning a parsed data
-frame ready for use in stream metabolism modelling.
+for one or more stations and a date range, returning a parsed tibble
+ready for use in stream metabolism modelling.
 }
 \details{
 GHCNh v1.1.0 data are served as pipe-separated (PSV) files from

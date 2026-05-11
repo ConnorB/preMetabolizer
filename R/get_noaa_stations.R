@@ -21,9 +21,9 @@
 #' @param offset Integer. Zero-based pagination offset (default 0).
 #'
 #' @return A [tibble][tibble::tibble-package] with columns `station_id`,
-#'   `name`, `latitude`, `longitude`, `elevation`, `start_date`,
-#'   `end_date`, and `data_coverage`. Returns an empty tibble when no
-#'   stations match the query.
+#'   `station_name`, `latitude`, `longitude`, `start_date`, and
+#'   `end_date`. Returns an empty tibble when no stations match the
+#'   query.
 #'
 #' @details
 #' Station identifiers in `station_id` are bare GHCND IDs (e.g.,

@@ -92,8 +92,8 @@ wx_stations <- get_noaa_stations(
 )
 
 wx_stations |>
-  select(station_id, name, latitude, longitude, start_date, end_date) |>
-  arrange(name)
+  select(station_id, station_name, latitude, longitude, start_date, end_date) |>
+  arrange(station_name)
 ```
 
 ## Find nearby stations
@@ -113,7 +113,7 @@ konza_noaa <- closest_noaa_stations(
 )
 
 konza_noaa |>
-  select(distance_km, station_id, name, latitude, longitude)
+  select(distance_km, station_id, station_name, latitude, longitude)
 ```
 
 Map the candidates before choosing a station:
@@ -163,14 +163,14 @@ daily_wx <- ncei_data(
 glimpse(daily_wx)
 ```
 
-With `units = "metric"` (the default), `ncei_data()` returns TMAX and TMIN in °C and PRCP in mm. The `DATE` column is already a `Date`:
+With `units = "metric"` (the default), `ncei_data()` returns `tmax` and `tmin` in °C and `prcp` in mm. The `date` column is already a `Date`:
 
 ```{r}
 #| label: plot-temp
 
-ggplot(daily_wx, aes(DATE)) +
-  geom_ribbon(aes(ymin = TMIN, ymax = TMAX), alpha = 0.3, fill = "#2c7fb8") +
-  geom_line(aes(y = (TMAX + TMIN) / 2), color = "#2c7fb8") +
+ggplot(daily_wx, aes(date)) +
+  geom_ribbon(aes(ymin = tmin, ymax = tmax), alpha = 0.3, fill = "#2c7fb8") +
+  geom_line(aes(y = (tmax + tmin) / 2), color = "#2c7fb8") +
   labs(
     x     = NULL,
     y     = "Air temperature (°C)",
