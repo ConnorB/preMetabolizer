@@ -10,8 +10,9 @@
 #'   string. Defaults to `Sys.Date()`.
 #' @param full Logical. If `TRUE`, request all available observation fields.
 #'
-#' @return A tibble containing one day of station observations returned by IEM.
-#'   Units and available variables vary by network.
+#' @return A tibble containing one day of station observations returned by IEM,
+#'   with station identifiers in `station_id` when returned. Units and
+#'   available variables vary by network.
 #'
 #' @details
 #' The `date` argument is interpreted by IEM as a local station calendar date.
@@ -47,5 +48,6 @@ iem_obhistory <- function(station, network, date = Sys.Date(), full = FALSE) {
     ) |>
     iem_perform_json("Failed to fetch IEM observation history.") |>
     iem_as_tibble() |>
-    iem_parse_time_columns()
+    iem_parse_time_columns() |>
+    mesonet_rename_columns(c(station = "station_id", name = "station_name"))
 }

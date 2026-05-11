@@ -5,7 +5,8 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @return A data frame containing station metadata.
+#' @return A tibble containing station metadata, including `station_name`,
+#'   `station_id`, `network`, and `network_name`.
 #'
 #' @details
 #' Kansas Mesonet data are preliminary and subject to revision. Cite the Kansas
@@ -22,7 +23,7 @@
 #' @examples
 #' \dontrun{
 #' stations <- ks_meso_stations()
-#' subset(stations, grepl("Konza", StationName))
+#' subset(stations, grepl("Konza", station_name))
 #' }
 #'
 #' @export
@@ -47,7 +48,13 @@ ks_meso_stations <- function() {
       if (ncol(station_names) == length(col_names)) {
         names(station_names) <- col_names
       }
-      station_names
+      station_names |>
+        mesonet_rename_columns(c(
+          StationName = "station_name",
+          Abbreviation = "station_id",
+          Network = "network",
+          OperatorName = "network_name"
+        ))
     },
     error = function(e) {
       cli::cli_abort(

@@ -4,57 +4,75 @@
 \alias{get_noaa_stations}
 \title{Get NOAA station information}
 \usage{
-get_noaa_stations(state = NULL, clean = TRUE, debug = TRUE)
+get_noaa_stations(
+  bbox = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  data_types = NULL,
+  text = NULL,
+  limit = 1000L,
+  offset = 0L
+)
 }
 \arguments{
-\item{state}{Optional character string specifying a two-letter U.S. state
-code to filter stations.}
+\item{bbox}{Optional numeric vector \code{c(north, west, south, east)} in
+decimal degrees. When supplied only stations within this bounding
+box are returned. Use \code{\link[=ncei_bbox]{ncei_bbox()}} to build a bounding box from a
+centre point and radius. When \code{NULL} no geographic filter is applied.}
 
-\item{clean}{Logical. If \code{TRUE} (default), returns processed and cleaned
-data; if \code{FALSE}, returns raw data.}
+\item{start_date, end_date}{Optional date range filter. Accepts \code{Date}
+objects or \code{"YYYY-MM-DD"} strings. When supplied only stations whose
+period of record overlaps this range are returned.}
 
-\item{debug}{Logical. If \code{TRUE} (default), outputs debug messages during
-data download and processing.}
+\item{data_types}{Optional character vector of GHCND data type codes
+(e.g., \code{c("TMAX", "TMIN")}). When supplied only stations carrying
+all requested types are returned.}
+
+\item{text}{Optional character string. Filters stations by name.}
+
+\item{limit}{Integer. Maximum number of stations to return (1–1000,
+default 1000).}
+
+\item{offset}{Integer. Zero-based pagination offset (default 0).}
 }
 \value{
-A data frame containing NOAA station metadata. Columns include
-station identifiers, names, location (latitude, longitude), elevation,
-operational dates, and more.
+A \link[tibble:tibble-package]{tibble} with columns \code{station_id},
+\code{name}, \code{latitude}, \code{longitude}, \code{elevation}, \code{start_date},
+\code{end_date}, and \code{data_coverage}. Returns an empty tibble when no
+stations match the query.
 }
 \description{
-Downloads, processes, and optionally cleans NOAA station metadata from the
-Meteorological Station Historical Repository (MSHR).
+Searches for NOAA weather stations in the NCEI daily-summaries
+(GHCND) dataset using the NCEI Search Service API. This is the
+preferred way to find station identifiers before downloading data
+with \code{\link[=ncei_data]{ncei_data()}} or \code{\link[=get_ghcnh]{get_ghcnh()}}.
 }
 \details{
-This function retrieves and processes data from NOAA's Meteorological Station
-Historical Repository (MSHR). The data include detailed information about
-meteorological stations, including their geographic coordinates, elevation,
-operational status, and identifiers across various systems (e.g., GHCND,
-WBAN, FAA).
+Station identifiers in \code{station_id} are bare GHCND IDs (e.g.,
+\code{"USW00023183"}) stripped of their \code{"GHCND:"} prefix. Pass them
+directly to \code{\link[=ncei_data]{ncei_data()}} or \code{\link[=get_ghcnh]{get_ghcnh()}}.
 
-If the data file already exists in a cached location and is up-to-date, the
-cached data is loaded to improve performance.
+This function replaces the previous MSHR flat-file approach. Station
+metadata is now retrieved on demand from the NCEI Search Service API
+rather than downloaded as a large fixed-width archive.
 
-When \code{clean = TRUE}, the function processes the raw data by:
-\itemize{
-\item Parsing dates and filtering invalid or missing coordinate values.
-\item Filtering out balloon platforms.
-\item Aggregating station data to consolidate records by station identifier (\code{GHCND_ID}).
-}
-
-If a state code is provided via the \code{state} parameter, the returned data will
-be limited to stations located within that state.
+For distance-based searches use \code{\link[=closest_noaa_stations]{closest_noaa_stations()}}, which
+builds the bounding box from a latitude, longitude, and search radius.
 }
 \examples{
 \dontrun{
-# Retrieve and clean all NOAA stations
-all_stations <- get_noaa_stations()
+# All GHCND stations in a region
+get_noaa_stations(bbox = c(40, -100, 38, -98))
 
-# Retrieve raw data for stations in California
-ca_stations_raw <- get_noaa_stations(state = "CA", clean = FALSE)
-
-# Retrieve cleaned data for stations in Texas with debug messages
-tx_stations <- get_noaa_stations(state = "TX", debug = TRUE)
+# Stations with at least temperature data since 2000
+get_noaa_stations(
+  data_types = c("TMAX", "TMIN"),
+  start_date = "2000-01-01"
+)
 }
 
+}
+\seealso{
+\code{\link[=closest_noaa_stations]{closest_noaa_stations()}}, \code{\link[=ncei_bbox]{ncei_bbox()}}, \code{\link[=ncei_stations]{ncei_stations()}},
+\code{\link[=ncei_data]{ncei_data()}}, \code{\link[=get_ghcnh]{get_ghcnh()}}
 }

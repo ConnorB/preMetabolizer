@@ -15,26 +15,28 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+.run <- tryCatch({
+  httr2::request("https://www.ncei.noaa.gov") |>
+    httr2::req_timeout(5) |>
+    httr2::req_perform()
+  TRUE
+}, error = function(e) FALSE)
+
+knitr::opts_chunk$set(eval = .run)
 ```
 
 ## Introduction
 
-NOAA station metadata are often the first thing you need when preparing
-meteorological inputs for stream metabolism models. The station table tells you
-which stations exist near a study site, which station identifiers are available,
-and whether the station has coordinates that can be used for distance searches.
+Meteorological inputs—temperature, precipitation, and barometric pressure—are essential for computing dissolved oxygen saturation and gas exchange in stream metabolism models. This vignette shows how to find NOAA daily-summary stations near Kings Creek at Konza Prairie Biological Station, Kansas, and download the weather data needed to accompany the built-in `kings_discharge` dataset (water year 2025: 2024-10-01 through 2025-09-30).
 
-preMetabolizer provides two helpers for this workflow:
+preMetabolizer provides three helpers for station discovery:
 
-- `get_noaa_stations()` downloads and cleans station metadata from NOAA's
-  Meteorological Station Historical Repository.
-- `closest_noaa_stations()` finds stations within a distance of a target
-  latitude and longitude.
+- `get_noaa_stations()` searches for GHCND stations via the NCEI Search Service API.
+- `closest_noaa_stations()` finds stations within a distance of a target coordinate and ranks them by geodesic distance.
+- `ncei_stations()` is the lower-level function underlying both helpers; it can search any NCEI dataset.
 
-> **Note:** These functions contact NOAA the first time they need station
-> metadata. The downloaded file is cached locally and reused on later calls.
-> Code chunks marked with `#| eval: false` are intended to be run
-> interactively.
+> **Note:** All functions in this vignette contact the NCEI API. Code chunks will not run during package installation if NCEI is unreachable.
 
 ```{r}
 #| label: libraries
@@ -45,132 +47,174 @@ library(dplyr)
 library(ggplot2)
 ```
 
-## Download station metadata
+## Study site
 
-Use `get_noaa_stations()` to retrieve the cleaned NOAA station table. The
-cleaned table removes records without usable coordinates, filters out balloon
-platforms, and groups records by `GHCND_ID`.
+Kings Creek drains the Konza Prairie Biological Station near Manhattan, Kansas (39.1069°N, 96.6117°W). The USGS monitoring location `USGS-06879650` records daily discharge, gage height, and water temperature throughout water year 2025.
+
+```{r}
+#| label: study-site
+
+lat_kings  <- 39.1068806
+lon_kings  <- -96.6117151
+wy_start   <- "2024-10-01"
+wy_end     <- "2025-09-30"
+```
+
+## Search for stations
+
+Use `ncei_bbox()` to build a bounding box from a center point and radius, then pass it to `get_noaa_stations()`:
+
+```{r}
+#| label: bbox
+
+bbox <- ncei_bbox(latitude = lat_kings, longitude = lon_kings, dist_km = 100)
+bbox
+```
 
 ```{r}
 #| label: get-stations
-#| eval: false
 
-stations <- get_noaa_stations(debug = FALSE)
+ks_stations <- get_noaa_stations(bbox = bbox)
 
-glimpse(stations)
+glimpse(ks_stations)
 ```
 
-If you only need stations from one U.S. state, use the `state` argument. State
-codes are case-insensitive.
+Filter to stations that carry the variables you need and span at least part of water year 2025:
 
 ```{r}
-#| label: kansas-stations
-#| eval: false
+#| label: filter-stations
 
-ks_stations <- get_noaa_stations(state = "KS", debug = FALSE)
+wx_stations <- get_noaa_stations(
+  bbox       = bbox,
+  data_types = c("TMAX", "TMIN", "PRCP"),
+  start_date = wy_start,
+  end_date   = wy_end
+)
 
-ks_stations |>
-  select(GHCND_ID, NAME_PRINCIPAL, LAT_DEC, LON_DEC, ELEV_GROUND) |>
-  arrange(NAME_PRINCIPAL)
+wx_stations |>
+  select(station_id, name, latitude, longitude, start_date, end_date) |>
+  arrange(name)
 ```
 
 ## Find nearby stations
 
-For site-level work, it is usually easier to start from a latitude and longitude.
-`closest_noaa_stations()` calculates geodesic distance from a target coordinate
-to each station and returns stations within a search radius.
-
-This example searches within 50 km of Konza Prairie Biological Station.
+`closest_noaa_stations()` builds the bounding box automatically and returns stations sorted by geodesic distance from the target point:
 
 ```{r}
 #| label: nearest-konza
-#| eval: false
 
 konza_noaa <- closest_noaa_stations(
-  latitude = 39.1068806,
-  longitude = -96.6117151,
-  dist_km = 50,
-  state = "KS"
+  latitude   = lat_kings,
+  longitude  = lon_kings,
+  dist_km    = 50,
+  data_types = c("TMAX", "TMIN", "PRCP"),
+  start_date = wy_start,
+  end_date   = wy_end
 )
 
 konza_noaa |>
-  select(distance_km, GHCND_ID, NAME_PRINCIPAL, LAT_DEC, LON_DEC) |>
-  arrange(distance_km)
+  select(distance_km, station_id, name, latitude, longitude)
 ```
 
-The `state` argument is optional, but it can make searches faster and easier to
-inspect when you know the site is far from a state border.
-
-## Compare search radii
-
-A useful pattern is to try a narrow search radius first, then widen it if there
-are no stations with the variables or time span you need.
-
-```{r}
-#| label: compare-radius
-#| eval: false
-
-near_25 <- closest_noaa_stations(
-  latitude = 39.1068806,
-  longitude = -96.6117151,
-  dist_km = 25,
-  state = "KS"
-)
-
-near_100 <- closest_noaa_stations(
-  latitude = 39.1068806,
-  longitude = -96.6117151,
-  dist_km = 100,
-  state = "KS"
-)
-
-list(
-  within_25_km = nrow(near_25),
-  within_100_km = nrow(near_100)
-)
-```
-
-You can also map the candidates before choosing a station for download.
+Map the candidates before choosing a station:
 
 ```{r}
 #| label: map-candidates
-#| eval: false
 
-ggplot(konza_noaa, aes(LON_DEC, LAT_DEC)) +
+ggplot(konza_noaa, aes(longitude, latitude)) +
   geom_point(aes(size = distance_km), color = "#2c7fb8") +
-  geom_point(
-    aes(x = -96.6117151, y = 39.1068806),
-    inherit.aes = FALSE,
-    color = "#d95f0e",
-    size = 3
-  ) +
+  annotate("point", x = lon_kings, y = lat_kings, color = "#d95f0e", size = 3) +
   coord_quickmap() +
   labs(
-    x = "Longitude",
-    y = "Latitude",
-    size = "Distance (km)",
-    title = "NOAA stations near Konza Prairie"
+    x     = "Longitude",
+    y     = "Latitude",
+    size  = "Distance (km)",
+    title = "NOAA stations near Kings Creek"
   ) +
   theme_bw()
 ```
 
-## Use station IDs with GHCNh data
+## Download daily weather data
 
-The `GHCND_ID` column identifies stations in NOAA's Global Historical Climatology
-Network. For hourly GHCNh downloads, pass one station ID to `download_ghcnh()`.
+Pick the nearest station and download daily temperature and precipitation for water year 2025 with `ncei_data()`:
 
 ```{r}
-#| label: station-id
-#| eval: false
+#| label: pick-station
 
 station_id <- konza_noaa |>
   arrange(distance_km) |>
-  pull(GHCND_ID) |>
+  pull(station_id) |>
   first()
 
 station_id
 ```
 
-Once you have a station ID, see `vignette("ghcnh", package = "preMetabolizer")`
-for downloading and reading hourly observations.
+```{r}
+#| label: ncei-data
 
+daily_wx <- ncei_data(
+  dataset    = "daily-summaries",
+  stations   = station_id,
+  start_date = wy_start,
+  end_date   = wy_end,
+  data_types = c("TMAX", "TMIN", "PRCP")
+)
+
+glimpse(daily_wx)
+```
+
+With `units = "metric"` (the default), `ncei_data()` returns TMAX and TMIN in °C and PRCP in mm. The `DATE` column is already a `Date`:
+
+```{r}
+#| label: plot-temp
+
+ggplot(daily_wx, aes(DATE)) +
+  geom_ribbon(aes(ymin = TMIN, ymax = TMAX), alpha = 0.3, fill = "#2c7fb8") +
+  geom_line(aes(y = (TMAX + TMIN) / 2), color = "#2c7fb8") +
+  labs(
+    x     = NULL,
+    y     = "Air temperature (°C)",
+    title = "Daily temperature range near Kings Creek, WY 2025"
+  ) +
+  theme_bw()
+```
+
+## Barometric pressure and PAR
+
+GHCND covers temperature and precipitation well, but barometric pressure records are sparse in this region. For pressure and photosynthetically active radiation (PAR), use `get_nasa_data()` to pull modeled values from NASA POWER, or `get_ghcnh()` to download observed hourly pressure from the GHCNh archive.
+
+```{r}
+#| label: nasa-power
+#| eval: false
+
+stream_data <- tibble(
+  dateTime = seq(
+    as.POSIXct(paste(wy_start, "00:00:00"), tz = "UTC"),
+    as.POSIXct(paste(wy_end, "23:00:00"), tz = "UTC"),
+    by = "1 hour"
+  )
+)
+
+nasa_wx <- get_nasa_data(
+  data      = stream_data,
+  latitude  = lat_kings,
+  longitude = lon_kings,
+  elev_m    = 320
+)
+
+glimpse(nasa_wx)
+```
+
+The `PSC` column contains elevation-corrected barometric pressure (kPa), `light.obs` contains PAR (µmol/m²/s), `T2M` air temperature (°C), and `PRECTOTCORR` precipitation (mm/hr).
+
+## Use station IDs with GHCNh data
+
+The `station_id` values returned by `closest_noaa_stations()` also identify GHCNh files. Pass them directly to `get_ghcnh()`:
+
+```{r}
+#| label: station-id-note
+
+station_id
+```
+
+See `vignette("ghcnh", package = "preMetabolizer")` for a full hourly-data workflow.

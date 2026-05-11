@@ -1,34 +1,57 @@
 fake_noaa_stations <- function() {
-  data.frame(
+  tibble::tibble(
     station_id = c("near", "far"),
-    LAT_DEC = c(39.1, 42),
-    LON_DEC = c(-96.6, -100),
-    empty = c(NA, NA)
+    name = c("Near Station", "Far Station"),
+    latitude = c(39.1, 42.0),
+    longitude = c(-96.6, -100.0),
+    elevation = c(300.0, NA_real_),
+    start_date = as.Date(c("1990-01-01", "1995-01-01")),
+    end_date = as.Date(c("2024-01-01", "2024-01-01")),
+    data_coverage = c(0.99, 0.85)
   )
 }
 
 test_that("closest_noaa_stations finds stations using standard coordinates", {
-  calls <- list()
-
   local_mocked_bindings(
-    get_noaa_stations = function(state = NULL, clean = TRUE) {
-      calls[[length(calls) + 1]] <<- list(state = state, clean = clean)
-      fake_noaa_stations()
-    }
+    get_noaa_stations = function(...) fake_noaa_stations()
   )
 
   result <- closest_noaa_stations(
     latitude = 39.1,
     longitude = -96.6,
-    dist_km = 25,
-    state = "KS"
+    dist_km = 25
   )
 
   expect_s3_class(result, "data.frame")
   expect_equal(result$station_id, "near")
   expect_equal(result$distance_km, 0)
-  expect_named(result, c("distance_km", "station_id", "LAT_DEC", "LON_DEC"))
-  expect_equal(calls[[1]], list(state = "KS", clean = TRUE))
+  expect_true("distance_km" %in% names(result))
+})
+
+test_that("closest_noaa_stations returns NULL when no stations in radius", {
+  local_mocked_bindings(
+    get_noaa_stations = function(...) {
+      tibble::tibble(
+        station_id = "far",
+        name = "Far",
+        latitude = 50.0,
+        longitude = -96.6,
+        elevation = NA_real_,
+        start_date = as.Date(NA),
+        end_date = as.Date(NA),
+        data_coverage = NA_real_
+      )
+    }
+  )
+
+  expect_message(
+    result <- closest_noaa_stations(
+      latitude = 39.1,
+      longitude = -96.6,
+      dist_km = 25
+    )
+  )
+  expect_null(result)
 })
 
 test_that("closest_noaa_stations warns about deprecated coordinate arguments", {
@@ -36,9 +59,7 @@ test_that("closest_noaa_stations warns about deprecated coordinate arguments", {
   on.exit(options(old_options), add = TRUE)
 
   local_mocked_bindings(
-    get_noaa_stations = function(state = NULL, clean = TRUE) {
-      fake_noaa_stations()
-    }
+    get_noaa_stations = function(...) fake_noaa_stations()
   )
 
   expect_snapshot({
@@ -56,9 +77,7 @@ test_that("closest_noaa_stations warns about deprecated lon alias", {
   on.exit(options(old_options), add = TRUE)
 
   local_mocked_bindings(
-    get_noaa_stations = function(state = NULL, clean = TRUE) {
-      fake_noaa_stations()
-    }
+    get_noaa_stations = function(...) fake_noaa_stations()
   )
 
   expect_snapshot({
@@ -73,9 +92,7 @@ test_that("closest_noaa_stations warns about deprecated lon alias", {
 
 test_that("closest_noaa_stations validates metadata shape", {
   local_mocked_bindings(
-    get_noaa_stations = function(state = NULL, clean = TRUE) {
-      data.frame(station_id = "bad")
-    }
+    get_noaa_stations = function(...) tibble::tibble(station_id = "bad")
   )
 
   expect_snapshot(error = TRUE, {
@@ -87,13 +104,11 @@ test_that("closest_noaa_stations validates metadata shape", {
   })
 })
 
-test_that("closest_noaa_stations validates clean", {
+test_that("closest_noaa_stations validates numeric inputs", {
   expect_snapshot(error = TRUE, {
-    closest_noaa_stations(
-      latitude = 39.1,
-      longitude = -96.6,
-      dist_km = 25,
-      clean = NA
-    )
+    closest_noaa_stations(latitude = "a", longitude = -96.6, dist_km = 25)
+  })
+  expect_snapshot(error = TRUE, {
+    closest_noaa_stations(latitude = 39.1, longitude = -96.6, dist_km = -1)
   })
 })

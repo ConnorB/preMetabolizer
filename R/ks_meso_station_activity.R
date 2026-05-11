@@ -5,7 +5,8 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @return A data frame with station activity details, including start and end observation times.
+#' @return A tibble with station activity details, including station names in
+#'   `station_name` and start and end observation times.
 #'
 #' @details
 #' Kansas Mesonet data are preliminary and subject to revision. Cite the Kansas
@@ -22,7 +23,7 @@
 #' @examples
 #' \dontrun{
 #' activity <- ks_meso_station_activity()
-#' subset(activity, station == "Konza Prairie")
+#' subset(activity, station_name == "Konza Prairie")
 #' }
 #'
 #' @export
@@ -54,17 +55,11 @@ ks_meso_station_activity <- function() {
         show_col_types = FALSE
       ) |>
         dplyr::transmute(
-          station = .data$STATION,
+          station_name = .data$STATION,
           interval = interval_map[as.character(.data$OBS_INTERVAL)],
           interval_seconds = .data$OBS_INTERVAL,
-          first_observation = as.POSIXct(
-            .data$START,
-            tz = ks_meso_tz()
-          ),
-          last_observation = as.POSIXct(
-            .data$END,
-            tz = ks_meso_tz()
-          ),
+          first_observation = parse_ks_meso_timestamp(.data$START),
+          last_observation = parse_ks_meso_timestamp(.data$END),
           data_span_days = as.numeric(
             difftime(
               .data$last_observation,
@@ -77,10 +72,15 @@ ks_meso_station_activity <- function() {
           ) <
             24
         ) |>
-        dplyr::arrange(.data$station, .data$interval_seconds)
+        dplyr::arrange(.data$station_name, .data$interval_seconds)
 
       # Add class for potential method dispatch
-      class(station_activity) <- c("ks_meso_station_activity", "data.frame")
+      class(station_activity) <- c(
+        "ks_meso_station_activity",
+        "tbl_df",
+        "tbl",
+        "data.frame"
+      )
 
       return(station_activity)
     },

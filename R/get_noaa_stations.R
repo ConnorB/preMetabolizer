@@ -1,449 +1,75 @@
 #' Get NOAA station information
 #'
-#' Downloads, processes, and optionally cleans NOAA station metadata from the
-#' Meteorological Station Historical Repository (MSHR).
+#' Searches for NOAA weather stations in the NCEI daily-summaries
+#' (GHCND) dataset using the NCEI Search Service API. This is the
+#' preferred way to find station identifiers before downloading data
+#' with [ncei_data()] or [get_ghcnh()].
 #'
-#' @param state Optional character string specifying a two-letter U.S. state
-#'   code to filter stations.
-#' @param clean Logical. If `TRUE` (default), returns processed and cleaned
-#'   data; if `FALSE`, returns raw data.
-#' @param debug Logical. If `TRUE` (default), outputs debug messages during
-#'   data download and processing.
+#' @param bbox Optional numeric vector `c(north, west, south, east)` in
+#'   decimal degrees. When supplied only stations within this bounding
+#'   box are returned. Use [ncei_bbox()] to build a bounding box from a
+#'   centre point and radius. When `NULL` no geographic filter is applied.
+#' @param start_date,end_date Optional date range filter. Accepts `Date`
+#'   objects or `"YYYY-MM-DD"` strings. When supplied only stations whose
+#'   period of record overlaps this range are returned.
+#' @param data_types Optional character vector of GHCND data type codes
+#'   (e.g., `c("TMAX", "TMIN")`). When supplied only stations carrying
+#'   all requested types are returned.
+#' @param text Optional character string. Filters stations by name.
+#' @param limit Integer. Maximum number of stations to return (1–1000,
+#'   default 1000).
+#' @param offset Integer. Zero-based pagination offset (default 0).
 #'
-#' @return A data frame containing NOAA station metadata. Columns include
-#'   station identifiers, names, location (latitude, longitude), elevation,
-#'   operational dates, and more.
+#' @return A [tibble][tibble::tibble-package] with columns `station_id`,
+#'   `name`, `latitude`, `longitude`, `elevation`, `start_date`,
+#'   `end_date`, and `data_coverage`. Returns an empty tibble when no
+#'   stations match the query.
 #'
 #' @details
-#' This function retrieves and processes data from NOAA's Meteorological Station
-#' Historical Repository (MSHR). The data include detailed information about
-#' meteorological stations, including their geographic coordinates, elevation,
-#' operational status, and identifiers across various systems (e.g., GHCND,
-#' WBAN, FAA).
+#' Station identifiers in `station_id` are bare GHCND IDs (e.g.,
+#' `"USW00023183"`) stripped of their `"GHCND:"` prefix. Pass them
+#' directly to [ncei_data()] or [get_ghcnh()].
 #'
-#' If the data file already exists in a cached location and is up-to-date, the
-#' cached data is loaded to improve performance.
+#' This function replaces the previous MSHR flat-file approach. Station
+#' metadata is now retrieved on demand from the NCEI Search Service API
+#' rather than downloaded as a large fixed-width archive.
 #'
-#' When `clean = TRUE`, the function processes the raw data by:
-#' \itemize{
-#'   \item Parsing dates and filtering invalid or missing coordinate values.
-#'   \item Filtering out balloon platforms.
-#'   \item Aggregating station data to consolidate records by station identifier (`GHCND_ID`).
-#' }
+#' For distance-based searches use [closest_noaa_stations()], which
+#' builds the bounding box from a latitude, longitude, and search radius.
 #'
-#' If a state code is provided via the `state` parameter, the returned data will
-#' be limited to stations located within that state.
+#' @seealso [closest_noaa_stations()], [ncei_bbox()], [ncei_stations()],
+#'   [ncei_data()], [get_ghcnh()]
 #'
 #' @examples
 #' \dontrun{
-#' # Retrieve and clean all NOAA stations
-#' all_stations <- get_noaa_stations()
+#' # All GHCND stations in a region
+#' get_noaa_stations(bbox = c(40, -100, 38, -98))
 #'
-#' # Retrieve raw data for stations in California
-#' ca_stations_raw <- get_noaa_stations(state = "CA", clean = FALSE)
-#'
-#' # Retrieve cleaned data for stations in Texas with debug messages
-#' tx_stations <- get_noaa_stations(state = "TX", debug = TRUE)
+#' # Stations with at least temperature data since 2000
+#' get_noaa_stations(
+#'   data_types = c("TMAX", "TMIN"),
+#'   start_date = "2000-01-01"
+#' )
 #' }
 #'
 #' @export
-get_noaa_stations <- function(state = NULL, clean = TRUE, debug = TRUE) {
-  BEGIN_DATE <- END_DATE <- LAT_DEC <- LON_DEC <- PLATFORM <- STATE_PROV <- GHCND_ID <- NULL
-  ..cols_to_keep <- NULL
-
-  if (!is.null(state)) {
-    if (!is.character(state) || length(state) != 1 || is.na(state)) {
-      cli::cli_abort("{.arg state} must be a single two-letter state code.")
-    }
-    state <- toupper(trimws(state))
-    if (!grepl("^[A-Z]{2}$", state)) {
-      cli::cli_abort("{.arg state} must be a single two-letter state code.")
-    }
-  }
-  if (!is.logical(clean) || length(clean) != 1 || is.na(clean)) {
-    cli::cli_abort("{.arg clean} must be `TRUE` or `FALSE`.")
-  }
-  if (!is.logical(debug) || length(debug) != 1 || is.na(debug)) {
-    cli::cli_abort("{.arg debug} must be `TRUE` or `FALSE`.")
-  }
-
-  mshr_url <- "https://www.ncei.noaa.gov/access/homr/file/mshr_enhanced.txt.zip"
-
-  mshr_zip <- file.path(noaa_cache(), "mshr_enhanced.txt.zip")
-  mshr_txt <- file.path(noaa_cache(), "mshr_enhanced.txt")
-  mshr_rds <- file.path(noaa_cache(), "mshr_enhanced.rds")
-
-  # Define column specs
-  spec <- readr::fwf_positions(
-    start = c(
-      1,
-      22,
-      33,
-      42,
-      51,
-      72,
-      93,
-      114,
-      135,
-      156,
-      177,
-      198,
-      219,
-      240,
-      261,
-      362,
-      393,
-      494,
-      525,
-      626,
-      727,
-      738,
-      779,
-      790,
-      841,
-      844,
-      847,
-      948,
-      979,
-      990,
-      1031,
-      1052,
-      1093,
-      1114,
-      1155,
-      1176,
-      1217,
-      1238,
-      1279,
-      1300,
-      1321,
-      1342,
-      1353,
-      1416,
-      1433,
-      1474,
-      1575,
-      1596,
-      1602,
-      1633,
-      1664,
-      1765,
-      1786,
-      1807
-    ),
-    end = c(
-      20,
-      31,
-      40,
-      49,
-      70,
-      91,
-      112,
-      133,
-      154,
-      175,
-      196,
-      217,
-      238,
-      259,
-      360,
-      391,
-      492,
-      523,
-      624,
-      725,
-      736,
-      777,
-      788,
-      839,
-      842,
-      845,
-      946,
-      977,
-      988,
-      1029,
-      1050,
-      1091,
-      1112,
-      1153,
-      1174,
-      1215,
-      1236,
-      1277,
-      1298,
-      1319,
-      1340,
-      1351,
-      1414,
-      1431,
-      1472,
-      1573,
-      1594,
-      1600,
-      1631,
-      1662,
-      1763,
-      1784,
-      1805,
-      1826
-    ),
-    col_names = c(
-      "SOURCE_ID",
-      "SOURCE",
-      "BEGIN_DATE",
-      "END_DATE",
-      "STATION_STATUS",
-      "NCDCSTN_ID",
-      "ICAO_ID",
-      "WBAN_ID",
-      "FAA_ID",
-      "NWSLI_ID",
-      "WMO_ID",
-      "COOP_ID",
-      "TRANSMITTAL_ID",
-      "GHCND_ID",
-      "NAME_PRINCIPAL",
-      "NAME_PRINCIPAL_SHORT",
-      "NAME_COOP",
-      "NAME_COOP_SHORT",
-      "NAME_PUBLICATION",
-      "NAME_ALIAS",
-      "NWS_CLIM_DIV",
-      "NWS_CLIM_DIV_NAME",
-      "STATE_PROV",
-      "COUNTY",
-      "NWS_ST_CODE",
-      "FIPS_COUNTRY_CODE",
-      "FIPS_COUNTRY_NAME",
-      "NWS_REGION",
-      "NWS_WFO",
-      "ELEV_GROUND",
-      "ELEV_GROUND_UNIT",
-      "ELEV_BAROM",
-      "ELEV_BAROM_UNIT",
-      "ELEV_AIR",
-      "ELEV_AIR_UNIT",
-      "ELEV_ZERODAT",
-      "ELEV_ZERODAT_UNIT",
-      "ELEV_UNK",
-      "ELEV_UNK_UNIT",
-      "LAT_DEC",
-      "LON_DEC",
-      "LAT_LON_PRECISION",
-      "RELOCATION",
-      "UTC_OFFSET",
-      "OBS_ENV",
-      "PLATFORM",
-      "GHCNMLT_ID",
-      "COUNTY_FIPS_CODE",
-      "DATUM_HORIZONTAL",
-      "DATUM_VERTICAL",
-      "LAT_LON_SOURCE",
-      "IGRA_ID",
-      "HPD_ID",
-      "GHCNH_ID"
-    )
-  )
-
-  # Process data function
-  process_data <- memoise::memoise(
-    function(df, state, debug) {
-      if (debug) {
-        cli::cli_inform("Processing NOAA station metadata.")
-      }
-
-      cols_to_keep <- c(
-        "GHCND_ID",
-        "NCDCSTN_ID",
-        "WBAN_ID",
-        "FAA_ID",
-        "COOP_ID",
-        "BEGIN_DATE",
-        "END_DATE",
-        "NAME_PRINCIPAL",
-        "NAME_ALIAS",
-        "STATE_PROV",
-        "FIPS_COUNTRY_CODE",
-        "FIPS_COUNTRY_NAME",
-        "ELEV_GROUND",
-        "ELEV_GROUND_UNIT",
-        "ELEV_BAROM",
-        "ELEV_BAROM_UNIT",
-        "ELEV_AIR",
-        "ELEV_AIR_UNIT",
-        "ELEV_ZERODAT",
-        "ELEV_ZERODAT_UNIT",
-        "ELEV_UNK",
-        "ELEV_UNK_UNIT",
-        "LAT_DEC",
-        "LON_DEC",
-        "UTC_OFFSET",
-        "PLATFORM",
-        "GHCNMLT_ID",
-        "GHCNH_ID"
-      )
-
-      noaa_data <- df |>
-        dplyr::mutate(
-          BEGIN_DATE = dplyr::if_else(
-            .data$BEGIN_DATE == "00010101",
-            NA_character_,
-            .data$BEGIN_DATE
-          ),
-          END_DATE = dplyr::if_else(
-            .data$END_DATE == "99991231",
-            format(Sys.Date(), "%Y%m%d"),
-            .data$END_DATE
-          ),
-          BEGIN_DATE = as.Date(.data$BEGIN_DATE, format = "%Y%m%d"),
-          END_DATE = as.Date(.data$END_DATE, format = "%Y%m%d"),
-          LAT_DEC = as.numeric(gsub("[^0-9.-]", "", .data$LAT_DEC)),
-          LON_DEC = as.numeric(gsub("[^0-9.-]", "", .data$LON_DEC))
-        ) |>
-        dplyr::filter(
-          !is.na(.data$LAT_DEC),
-          !is.na(.data$LON_DEC),
-          abs(.data$LAT_DEC) >= 0.1,
-          abs(.data$LAT_DEC) <= 90,
-          abs(.data$LON_DEC) >= 0.1,
-          abs(.data$LON_DEC) <= 180,
-          .data$PLATFORM != "UPPERAIR,BALLOON"
-        )
-
-      if (!is.null(state)) {
-        noaa_data <- noaa_data |>
-          dplyr::filter(toupper(trimws(.data$STATE_PROV)) == state)
-        if (nrow(noaa_data) == 0) {
-          cli::cli_warn("No NOAA stations found for state code {.val {state}}.")
-        }
-      }
-
-      id_cols <- "GHCND_ID"
-      special_cols <- c("BEGIN_DATE", "END_DATE")
-      other_cols <- setdiff(cols_to_keep, c(id_cols, special_cols))
-
-      result <- noaa_data |>
-        dplyr::arrange(.data$GHCND_ID) |>
-        dplyr::group_by(.data$GHCND_ID) |>
-        dplyr::summarise(
-          dplyr::across(dplyr::all_of(other_cols), dplyr::first),
-          BEGIN_DATE = if (all(is.na(.data$BEGIN_DATE))) {
-            as.Date(NA)
-          } else {
-            min(.data$BEGIN_DATE, na.rm = TRUE)
-          },
-          END_DATE = if (all(is.na(.data$END_DATE))) {
-            as.Date(NA)
-          } else {
-            max(.data$END_DATE, na.rm = TRUE)
-          },
-          .groups = "drop"
-        ) |>
-        dplyr::select(dplyr::all_of(cols_to_keep))
-
-      result |>
-        dplyr::select(dplyr::where(\(x) !all(is.na(x)))) |>
-        as.data.frame()
-    },
-    cache = memoise::cache_filesystem(getOption("preMetabolizer.noaa_cache"))
-  )
-
-  filter_raw_state <- function(raw_data, state) {
-    if (is.null(state)) {
-      return(raw_data)
-    }
-
-    raw_data <- raw_data[toupper(trimws(raw_data$STATE_PROV)) == state, ]
-    if (nrow(raw_data) == 0) {
-      cli::cli_warn("No NOAA stations found for state code {.val {state}}.")
-    }
-    raw_data
-  }
-
-  # Check if RDS exists and is up to date
-  needs_update <- TRUE
-  if (file.exists(mshr_rds)) {
-    remote_time <- get_remote_mtime(mshr_url)
-    if (!is.null(remote_time)) {
-      rds_time <- file.info(mshr_rds)$mtime
-      needs_update <- remote_time > rds_time
-    } else {
-      needs_update <- FALSE
-    }
-    if (!needs_update) {
-      if (debug) {
-        cli::cli_inform("Loading cached NOAA station metadata.")
-      }
-      raw_data <- readRDS(mshr_rds)
-      return(
-        if (clean) {
-          process_data(raw_data, state, debug)
-        } else {
-          filter_raw_state(raw_data, state)
-        }
-      )
-    }
-  }
-
-  # If RDS doesn't exist or needs update, download and process the data
-  tryCatch(
-    {
-      if (debug) {
-        cli::cli_inform("Downloading and processing NOAA station metadata.")
-      }
-
-      # Download zip file
-      utils::download.file(mshr_url, mshr_zip, mode = "wb", quiet = !debug)
-
-      # Unzip file
-      utils::unzip(mshr_zip, exdir = dirname(mshr_txt))
-      mshr_txt <- list.files(
-        noaa_cache(),
-        pattern = "^mshr_enhanced.*\\.txt$",
-        full.names = TRUE
-      )
-      if (length(mshr_txt) != 1) {
-        cli::cli_abort("Could not find the unzipped MSHR text file.")
-      }
-      if (debug) {
-        cli::cli_inform(
-          "Reading NOAA station metadata from {.path {mshr_txt}}."
-        )
-      }
-
-      # Read the file using read_fwf
-      raw_data <- readr::read_fwf(
-        mshr_txt,
-        readr::fwf_positions(
-          start = spec$begin,
-          end = spec$end,
-          col_names = spec$col_names
-        ),
-        col_types = readr::cols(.default = "c"),
-        progress = debug,
-        trim_ws = TRUE,
-        na = c("", "NA")
-      )
-
-      # Save raw data to RDS
-      saveRDS(raw_data, mshr_rds)
-
-      # Clean up temporary files
-      unlink(mshr_zip)
-      unlink(mshr_txt)
-
-      # Return either raw or processed data based on clean parameter
-      if (!clean) {
-        return(filter_raw_state(raw_data, state))
-      } else {
-        return(process_data(raw_data, state, debug))
-      }
-    },
-    error = function(e) {
-      # Clean up any temporary files in case of error
-      unlink(mshr_zip)
-      unlink(mshr_txt)
-      cli::cli_abort("Processing NOAA station metadata failed.", parent = e)
-    }
+get_noaa_stations <- function(
+  bbox = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  data_types = NULL,
+  text = NULL,
+  limit = 1000L,
+  offset = 0L
+) {
+  ncei_stations(
+    dataset = "daily-summaries",
+    bbox = bbox,
+    start_date = start_date,
+    end_date = end_date,
+    data_types = data_types,
+    text = text,
+    limit = limit,
+    offset = offset
   )
 }

@@ -12,8 +12,9 @@
 #' @param year Optional whole number year.
 #' @param month Optional whole number month from 1 to 12. Requires `year`.
 #'
-#' @return A tibble containing daily summary observations returned by IEM.
-#'   Units and available variables vary by network.
+#' @return A tibble containing daily summary observations returned by IEM, with
+#'   station identifiers in `station_id` when returned. Units and available
+#'   variables vary by network.
 #'
 #' @details
 #' Use either `date` for all stations in a network on one local date, or `year`
@@ -87,5 +88,6 @@ iem_daily <- function(
   request |>
     iem_perform_json("Failed to fetch IEM daily summaries.") |>
     iem_as_tibble() |>
-    iem_parse_time_columns()
+    iem_parse_time_columns() |>
+    mesonet_rename_columns(c(station = "station_id", name = "station_name"))
 }

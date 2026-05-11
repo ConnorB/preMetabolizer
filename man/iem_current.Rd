@@ -34,7 +34,8 @@ minutes.}
 }
 \value{
 A tibble containing current station metadata and observations
-returned by IEM. Units and available variables vary by network.
+returned by IEM, with station identifiers in \code{station_id}. Units and
+available variables vary by network.
 }
 \description{
 Retrieves current observations from the Iowa Environmental Mesonet (IEM).

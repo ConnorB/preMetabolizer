@@ -24,8 +24,9 @@ and western longitudes are negative.
 
 \itemize{
 \item Find and download meteorological data with \code{\link[=get_noaa_stations]{get_noaa_stations()}},
-\code{\link[=closest_noaa_stations]{closest_noaa_stations()}}, \code{\link[=download_ghcnh]{download_ghcnh()}}, \code{\link[=get_nasa_data]{get_nasa_data()}}, and
-\code{\link[=get_ks_meso]{get_ks_meso()}}. Retrieve mesonet station observations with
+\code{\link[=closest_noaa_stations]{closest_noaa_stations()}}, \code{\link[=get_ghcnh]{get_ghcnh()}}, \code{\link[=ncei_data]{ncei_data()}},
+\code{\link[=get_nasa_data]{get_nasa_data()}}, and
+\code{\link[=ks_meso_timeseries]{ks_meso_timeseries()}}. Retrieve mesonet station observations with
 \code{\link[=iem_networks]{iem_networks()}}, \code{\link[=iem_current]{iem_current()}}, \code{\link[=iem_obhistory]{iem_obhistory()}},
 \code{\link[=tex_meso_stations]{tex_meso_stations()}}, \code{\link[=tex_meso_current]{tex_meso_current()}}, and
 \code{\link[=tex_meso_timeseries]{tex_meso_timeseries()}}.

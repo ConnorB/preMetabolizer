@@ -11,7 +11,8 @@ ks_meso_most_recent(interval)
 \code{"day"}.}
 }
 \value{
-A data frame with station names and most recent observation times.
+A tibble with station names in \code{station_name} and most recent
+observation times in \code{timestamp}.
 }
 \description{
 Retrieves the timestamp of the most recently ingested data for each station

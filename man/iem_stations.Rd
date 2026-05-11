@@ -16,8 +16,9 @@ iem_station(station_id)
 }
 \value{
 A tibble containing station metadata returned by IEM, including
-station identifiers, names, network identifiers, time zones, archive dates,
-and longitude and latitude when available.
+station identifiers in \code{station_id}, names in \code{station_name}, network
+identifiers, time zones, archive dates, and longitude and latitude when
+available.
 }
 \description{
 Retrieves station metadata for one IEM network or one station identifier.

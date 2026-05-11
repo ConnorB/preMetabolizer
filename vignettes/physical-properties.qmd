@@ -19,10 +19,7 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-preMetabolizer includes small physical-property and unit-conversion helpers for
-common hydrology and atmospheric science tasks. These functions return plain
-numeric vectors, making them easy to use in base R, dplyr pipelines, and model
-input tables.
+preMetabolizer includes small physical-property and unit-conversion helpers for common hydrology and atmospheric science tasks. These functions return plain numeric vectors, making them easy to use in base R, dplyr pipelines, and model input tables.
 
 ```{r}
 #| label: libraries
@@ -35,8 +32,7 @@ library(ggplot2)
 
 ## Flow conversions
 
-`convert_flow()` converts discharge between cubic feet per second (`"cfs"`),
-cubic meters per second (`"cms"`), and liters per second (`"lps"`).
+`convert_flow()` converts discharge between cubic feet per second (`"cfs"`), cubic meters per second (`"cms"`), and liters per second (`"lps"`).
 
 ```{r}
 #| label: flow-conversions
@@ -52,9 +48,7 @@ flow
 
 ## Pressure conversions and elevation correction
 
-`convert_pressure()` converts barometric pressure between common units.
-`correct_bp()` adjusts pressure from a weather station elevation to a site
-elevation.
+`convert_pressure()` converts barometric pressure between common units. `correct_bp()` adjusts pressure from a weather station elevation to a site elevation.
 
 ```{r}
 #| label: pressure
@@ -72,8 +66,7 @@ correct_bp(
 )
 ```
 
-Elevation correction is useful when a nearby weather station is not at the same
-elevation as a stream site.
+Elevation correction is useful when a nearby weather station is not at the same elevation as a stream site.
 
 ```{r}
 #| label: pressure-table
@@ -98,8 +91,7 @@ site_pressure
 
 ## Water density and water height
 
-`calc_water_density()` calculates pure-water density from temperature.
-`calc_water_height()` converts pressure-sensor readings into water height.
+`calc_water_density()` calculates pure-water density from temperature. `calc_water_height()` converts pressure-sensor readings into water height.
 
 ```{r}
 #| label: water-density
@@ -110,9 +102,7 @@ temps <- tibble::tibble(water_temp = seq(0, 30, by = 5)) |>
 temps
 ```
 
-For vented sensors, `sensor_kPa` is already the pressure from the water column.
-For unvented sensors, provide atmospheric pressure so it can be subtracted from
-the absolute sensor pressure.
+For vented sensors, `sensor_kPa` is already the pressure from the water column. For unvented sensors, provide atmospheric pressure so it can be subtracted from the absolute sensor pressure.
 
 ```{r}
 #| label: water-height
@@ -141,8 +131,7 @@ water_level
 
 ## Modeled light
 
-`calc_light()` estimates photosynthetically active radiation (PAR) from solar
-time and site coordinates. Input times should be mean solar time.
+`calc_light()` estimates photosynthetically active radiation (PAR) from solar time and site coordinates. Input times should be mean solar time.
 
 ```{r}
 #| label: modeled-light

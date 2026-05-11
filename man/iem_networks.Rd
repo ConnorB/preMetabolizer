@@ -7,8 +7,9 @@
 iem_networks()
 }
 \value{
-A tibble containing IEM network identifiers, network names, time
-zones, geographic extents, and windrose update timestamps when available.
+A tibble containing IEM network identifiers in \code{network}, network
+names in \code{network_name}, time zones, geographic extents, and windrose
+update timestamps when available.
 }
 \description{
 Retrieves the network table from the Iowa Environmental Mesonet (IEM) API.

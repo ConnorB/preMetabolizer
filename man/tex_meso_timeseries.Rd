@@ -22,11 +22,11 @@ endpoint, or one of \code{"temperature"}, \code{"humidity"},
 single-variable endpoints.}
 }
 \value{
-A tibble of observations with UTC \code{dateTime} values. Single-variable
-requests return \code{value} and \code{dateTime} columns and have \code{"field_name"},
-\code{"station_name"}, \code{"twdb_station_id"}, and \code{"units"} attributes. Requests
-with \code{variable = "all"} return one column per charting field and have
-\code{"station_name"} and \code{"twdb_station_id"} attributes.
+A tibble of observations with UTC \code{date_time} values.
+Single-variable requests return \code{value} and \code{date_time} columns and have
+\code{"field_name"}, \code{"station_name"}, \code{"station_id"}, and \code{"units"}
+attributes. Requests with \code{variable = "all"} return one column per
+charting field and have \code{"station_name"} and \code{"station_id"} attributes.
 }
 \description{
 Retrieves recent time-series observations for a single TWDB TexMesonet

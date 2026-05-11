@@ -7,10 +7,11 @@
 tex_meso_current()
 }
 \value{
-A tibble containing the most recent station observations. The API
-returns availability by station, so some measurement columns may contain
-missing values. The returned tibble has a \code{"units"} attribute containing
-units reported by the API.
+A tibble containing the most recent station observations, including
+\code{station_id}, \code{station_name}, and UTC \code{recorded_time}. The API returns
+availability by station, so some measurement columns may contain missing
+values. The returned tibble has a \code{"units"} attribute containing units
+reported by the API.
 }
 \description{
 Retrieves the most recent observation from each TWDB TexMesonet station.

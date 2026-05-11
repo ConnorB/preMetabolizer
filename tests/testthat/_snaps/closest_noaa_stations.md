@@ -27,13 +27,21 @@
       closest_noaa_stations(latitude = 39.1, longitude = -96.6, dist_km = 25)
     Condition
       Error in `closest_noaa_stations()`:
-      ! `get_noaa_stations()` must return LAT_DEC and LON_DEC columns.
+      ! `get_noaa_stations()` must return latitude and longitude columns.
 
-# closest_noaa_stations validates clean
+# closest_noaa_stations validates numeric inputs
 
     Code
-      closest_noaa_stations(latitude = 39.1, longitude = -96.6, dist_km = 25, clean = NA)
+      closest_noaa_stations(latitude = "a", longitude = -96.6, dist_km = 25)
     Condition
       Error in `closest_noaa_stations()`:
-      ! `clean` must be `TRUE` or `FALSE`.
+      ! `latitude` must be a single finite number.
+
+---
+
+    Code
+      closest_noaa_stations(latitude = 39.1, longitude = -96.6, dist_km = -1)
+    Condition
+      Error in `closest_noaa_stations()`:
+      ! `dist_km` must be greater than 0.
 

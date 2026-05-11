@@ -7,7 +7,8 @@
 ks_meso_stations()
 }
 \value{
-A data frame containing station metadata.
+A tibble containing station metadata, including \code{station_name},
+\code{station_id}, \code{network}, and \code{network_name}.
 }
 \description{
 Fetches metadata about Kansas Mesonet stations, including location and
@@ -26,7 +27,7 @@ without written consent is not permitted.
 \examples{
 \dontrun{
 stations <- ks_meso_stations()
-subset(stations, grepl("Konza", StationName))
+subset(stations, grepl("Konza", station_name))
 }
 
 }

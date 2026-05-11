@@ -7,7 +7,8 @@
 ks_meso_station_activity()
 }
 \value{
-A data frame with station activity details, including start and end observation times.
+A tibble with station activity details, including station names in
+\code{station_name} and start and end observation times.
 }
 \description{
 Retrieves activity data for Kansas Mesonet stations, including observation
@@ -26,7 +27,7 @@ without written consent is not permitted.
 \examples{
 \dontrun{
 activity <- ks_meso_station_activity()
-subset(activity, station == "Konza Prairie")
+subset(activity, station_name == "Konza Prairie")
 }
 
 }

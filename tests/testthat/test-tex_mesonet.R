@@ -25,9 +25,9 @@ test_that("tex_meso_stations reads and filters station metadata", {
   result <- tex_meso_stations(active = TRUE, displayed = TRUE)
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(result$stationId, 2)
-  expect_equal(result$stationName, "Altwein Rd")
-  expect_equal(result$onlineDate, as.Date("2016-04-28"))
+  expect_equal(result$station_id, 2)
+  expect_equal(result$station_name, "Altwein Rd")
+  expect_equal(result$online_date, as.Date("2016-04-28"))
 })
 
 test_that("tex_meso_current reads data and units", {
@@ -43,11 +43,11 @@ test_that("tex_meso_current reads data and units", {
   result <- tex_meso_current()
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(result$airTemp, 29.69)
+  expect_equal(result$air_temp, 29.69)
   expect_equal(result$precip, NA_real_)
-  expect_equal(result$name, "Altwein Rd")
-  expect_equal(attr(result$recordedTime, "tzone"), "UTC")
-  expect_equal(attr(result, "units")$airTemp, "Celsius")
+  expect_equal(result$station_name, "Altwein Rd")
+  expect_equal(attr(result$recorded_time, "tzone"), "UTC")
+  expect_equal(attr(result, "units")$air_temp, "Celsius")
 })
 
 test_that("tex_meso_timeseries reads all charting fields", {
@@ -65,11 +65,11 @@ test_that("tex_meso_timeseries reads all charting fields", {
   result <- tex_meso_timeseries(2, prior_minutes = 60)
 
   expect_match(env$path, "/api/AllChartingFieldsById/2/60$")
-  expect_equal(result$airTemp, 29.69)
-  expect_equal(result$airPressure, NA_real_)
+  expect_equal(result$air_temp, 29.69)
+  expect_equal(result$air_pressure, NA_real_)
   expect_equal(attr(result, "station_name"), "Altwein Rd")
-  expect_equal(attr(result, "twdb_station_id"), 2)
-  expect_equal(attr(result$dateTime, "tzone"), "UTC")
+  expect_equal(attr(result, "station_id"), 2)
+  expect_equal(attr(result$date_time, "tzone"), "UTC")
 })
 
 test_that("tex_meso_timeseries reads single-variable fields", {

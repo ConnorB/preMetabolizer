@@ -22,7 +22,7 @@ tex_meso_perform_json <- function(request, error_message) {
 }
 
 tex_meso_parse_datetime <- function(x) {
-  lubridate::ymd_hms(x, tz = "UTC", quiet = TRUE)
+  mesonet_parse_utc_datetime(x)
 }
 
 tex_meso_parse_numeric_columns <- function(data, exclude = character()) {
@@ -44,10 +44,15 @@ tex_meso_parse_numeric_columns <- function(data, exclude = character()) {
   data
 }
 
-tex_meso_as_tibble <- function(data, numeric_exclude = character()) {
+tex_meso_as_tibble <- function(
+  data,
+  numeric_exclude = character(),
+  names = character()
+) {
   data |>
     tibble::as_tibble() |>
-    tex_meso_parse_numeric_columns(exclude = numeric_exclude)
+    tex_meso_parse_numeric_columns(exclude = numeric_exclude) |>
+    mesonet_rename_columns(names)
 }
 
 tex_meso_check_positive_int <- function(

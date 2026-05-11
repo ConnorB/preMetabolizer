@@ -14,12 +14,15 @@ reference:
   - title: Data access
     desc: Download and read meteorological and hydrological data from external sources.
     contents:
-      - download_ghcnh
-      - read_ghcnh
-      - get_nasa_data
-      - get_usgs_elev
+      - ncei_data
+      - ncei_datasets
+      - ncei_stations
+      - ncei_bbox
       - get_noaa_stations
       - closest_noaa_stations
+      - get_ghcnh
+      - get_nasa_data
+      - get_usgs_elev
       - iem_networks
       - iem_stations
       - iem_station
@@ -27,8 +30,7 @@ reference:
       - iem_obhistory
       - iem_daily
       - ks_meso_vars
-      - get_ks_meso
-      - read_ks_meso
+      - ks_meso_timeseries
       - ks_meso_stations
       - ks_meso_station_activity
       - ks_meso_most_recent

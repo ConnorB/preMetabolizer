@@ -1,44 +1,57 @@
 #' Find NOAA stations near a location
 #'
 #' @description
-#' Identifies NOAA weather stations within a specified radius of a target
-#' location using geodesic distance calculations.
+#' Identifies NOAA GHCND weather stations within a specified radius of a
+#' target location. Station candidates are retrieved via the NCEI Search
+#' API using a bounding box and then filtered to the exact circular
+#' radius using geodesic distance.
 #'
-#' @param latitude,longitude Numeric. Target coordinates in decimal degrees.
-#'   Latitude must be between -90 and 90; longitude must be between -180 and
-#'   180. Western longitudes are negative.
-#' @param dist_km Numeric. Search radius in kilometers.
-#' @param state Optional two-letter state code used to filter stations before
-#'   calculating distances.
-#' @param clean Logical. If `TRUE`, return cleaned station metadata from
-#'   [get_noaa_stations()] and drop empty columns from the result.
-#' @param lat,long,lon `r lifecycle::badge("deprecated")` Use `latitude` and
-#'   `longitude` instead.
+#' @param latitude,longitude Numeric. Target coordinates in decimal
+#'   degrees. Latitude must be between -90 and 90; longitude must be
+#'   between -180 and 180. Western longitudes are negative.
+#' @param dist_km Numeric. Search radius in kilometres.
+#' @param start_date,end_date Optional date range. When supplied only
+#'   stations whose period of record overlaps this range are returned.
+#'   Accepts `Date` objects or `"YYYY-MM-DD"` strings.
+#' @param data_types Optional character vector of GHCND data type codes
+#'   (e.g., `c("TMAX", "TMIN")`). When supplied only stations carrying
+#'   all requested types are returned.
+#' @param lat,long,lon `r lifecycle::badge("deprecated")` Use `latitude`
+#'   and `longitude` instead.
 #'
-#' @return A data frame of NOAA stations within `dist_km`, sorted by distance.
-#'   The first column is `distance_km`. Returns `NULL` when no stations are
-#'   found in the requested radius or when available station metadata does not
-#'   contain usable coordinates.
+#' @return A [tibble][tibble::tibble-package] of NOAA stations within
+#'   `dist_km`, sorted by ascending distance. The first column is
+#'   `distance_km`; remaining columns are those returned by
+#'   [get_noaa_stations()]. Returns `NULL` when no stations are found
+#'   within the requested radius.
 #'
 #' @details
-#' Distances are calculated with [geosphere::distGeo()] using its default WGS84
-#' ellipsoid.
+#' Distances are calculated with [geosphere::distGeo()] using the
+#' default WGS84 ellipsoid.
+#'
+#' The search first queries the NCEI Search API using a square bounding
+#' box of side `2 * dist_km` centred on the target point, then trims the
+#' result to the circular radius. This requires one API call and avoids
+#' downloading the entire station database.
+#'
+#' @seealso [get_noaa_stations()], [ncei_bbox()], [ncei_stations()]
 #'
 #' @examples
 #' \dontrun{
-#' # Find stations within 50 km of Konza Prairie Biological Station
+#' # Stations within 50 km of Konza Prairie Biological Station
 #' closest_noaa_stations(
 #'   latitude = 39.1068806,
 #'   longitude = -96.6117151,
 #'   dist_km = 50
 #' )
 #'
-#' # Find stations within 100 km of Lawrence, Kansas only
+#' # Restrict to stations with daily temperature data since 2000
 #' closest_noaa_stations(
-#'   latitude = 38.9717,
-#'   longitude = -95.2353,
+#'   latitude = 39.1068806,
+#'   longitude = -96.6117151,
 #'   dist_km = 100,
-#'   state = "KS"
+#'   data_types = c("TMAX", "TMIN"),
+#'   start_date = "2000-01-01"
 #' )
 #' }
 #'
@@ -47,8 +60,9 @@ closest_noaa_stations <- function(
   latitude,
   longitude,
   dist_km,
-  state = NULL,
-  clean = TRUE,
+  start_date = NULL,
+  end_date = NULL,
+  data_types = NULL,
   lat = lifecycle::deprecated(),
   long = lifecycle::deprecated(),
   lon = lifecycle::deprecated()
@@ -136,61 +150,52 @@ closest_noaa_stations <- function(
   if (dist_km <= 0) {
     cli::cli_abort("{.arg dist_km} must be greater than 0.")
   }
-  if (!is.logical(clean) || length(clean) != 1 || is.na(clean)) {
-    cli::cli_abort("{.arg clean} must be `TRUE` or `FALSE`.")
-  }
 
-  # Load station data
-  stations <- get_noaa_stations(state = state, clean = clean)
-  if (!all(c("LAT_DEC", "LON_DEC") %in% names(stations))) {
-    cli::cli_abort(
-      "{.fn get_noaa_stations} must return {.field LAT_DEC} and {.field LON_DEC} columns."
-    )
-  }
+  bbox <- ncei_bbox(latitude, longitude, dist_km)
+
+  stations <- get_noaa_stations(
+    bbox = bbox,
+    start_date = start_date,
+    end_date = end_date,
+    data_types = data_types
+  )
+
   if (nrow(stations) == 0) {
-    cli::cli_inform("No NOAA stations found.")
+    cli::cli_inform("No NOAA stations found within {dist_km} km.")
     return(NULL)
   }
 
-  # Check for stations with valid coordinates
-  valid_coords <- stats::complete.cases(stations[, c("LAT_DEC", "LON_DEC")])
+  if (!all(c("latitude", "longitude") %in% names(stations))) {
+    cli::cli_abort(
+      "{.fn get_noaa_stations} must return {.field latitude} and {.field longitude} columns."
+    )
+  }
+
+  valid_coords <- stats::complete.cases(stations[, c("latitude", "longitude")])
   if (!any(valid_coords)) {
     cli::cli_inform("No NOAA stations with valid coordinates found.")
     return(NULL)
   }
   stations <- stations[valid_coords, ]
 
-  # Convert km to meters (for distGeo)
-  dist_m <- dist_km * 1000
-
-  # Calculate distances using distGeo (WGS84 by default)
   distances <- geosphere::distGeo(
     p1 = matrix(c(longitude, latitude), ncol = 2),
-    p2 = matrix(c(stations$LON_DEC, stations$LAT_DEC), ncol = 2)
+    p2 = matrix(c(stations$longitude, stations$latitude), ncol = 2)
   )
 
-  # Filter stations within radius
-  in_radius <- distances <= dist_m
+  in_radius <- distances <= dist_km * 1000
   if (!any(in_radius)) {
     cli::cli_inform("No NOAA stations found within {dist_km} km.")
     return(NULL)
   }
 
-  # Create output dataframe
   result <- stations[in_radius, ]
   result$distance_km <- distances[in_radius] / 1000
 
-  # Reorder columns with distance first
   result <- result[, c("distance_km", setdiff(names(result), "distance_km"))]
-
-  # Sort by distance
   result <- result[order(result$distance_km), ]
-
-  # Remove empty columns if cleaned
-  if (clean) {
-    result <- result[, colSums(!is.na(result)) > 0]
-  }
+  result <- result[, colSums(!is.na(result)) > 0]
 
   rownames(result) <- NULL
-  return(result)
+  result
 }

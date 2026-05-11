@@ -8,59 +8,74 @@ closest_noaa_stations(
   latitude,
   longitude,
   dist_km,
-  state = NULL,
-  clean = TRUE,
+  start_date = NULL,
+  end_date = NULL,
+  data_types = NULL,
   lat = lifecycle::deprecated(),
   long = lifecycle::deprecated(),
   lon = lifecycle::deprecated()
 )
 }
 \arguments{
-\item{latitude, longitude}{Numeric. Target coordinates in decimal degrees.
-Latitude must be between -90 and 90; longitude must be between -180 and
-180. Western longitudes are negative.}
+\item{latitude, longitude}{Numeric. Target coordinates in decimal
+degrees. Latitude must be between -90 and 90; longitude must be
+between -180 and 180. Western longitudes are negative.}
 
-\item{dist_km}{Numeric. Search radius in kilometers.}
+\item{dist_km}{Numeric. Search radius in kilometres.}
 
-\item{state}{Optional two-letter state code used to filter stations before
-calculating distances.}
+\item{start_date, end_date}{Optional date range. When supplied only
+stations whose period of record overlaps this range are returned.
+Accepts \code{Date} objects or \code{"YYYY-MM-DD"} strings.}
 
-\item{clean}{Logical. If \code{TRUE}, return cleaned station metadata from
-\code{\link[=get_noaa_stations]{get_noaa_stations()}} and drop empty columns from the result.}
+\item{data_types}{Optional character vector of GHCND data type codes
+(e.g., \code{c("TMAX", "TMIN")}). When supplied only stations carrying
+all requested types are returned.}
 
-\item{lat, long, lon}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{latitude} and
-\code{longitude} instead.}
+\item{lat, long, lon}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{latitude}
+and \code{longitude} instead.}
 }
 \value{
-A data frame of NOAA stations within \code{dist_km}, sorted by distance.
-The first column is \code{distance_km}. Returns \code{NULL} when no stations are
-found in the requested radius or when available station metadata does not
-contain usable coordinates.
+A \link[tibble:tibble-package]{tibble} of NOAA stations within
+\code{dist_km}, sorted by ascending distance. The first column is
+\code{distance_km}; remaining columns are those returned by
+\code{\link[=get_noaa_stations]{get_noaa_stations()}}. Returns \code{NULL} when no stations are found
+within the requested radius.
 }
 \description{
-Identifies NOAA weather stations within a specified radius of a target
-location using geodesic distance calculations.
+Identifies NOAA GHCND weather stations within a specified radius of a
+target location. Station candidates are retrieved via the NCEI Search
+API using a bounding box and then filtered to the exact circular
+radius using geodesic distance.
 }
 \details{
-Distances are calculated with \code{\link[geosphere:distGeo]{geosphere::distGeo()}} using its default WGS84
-ellipsoid.
+Distances are calculated with \code{\link[geosphere:distGeo]{geosphere::distGeo()}} using the
+default WGS84 ellipsoid.
+
+The search first queries the NCEI Search API using a square bounding
+box of side \code{2 * dist_km} centred on the target point, then trims the
+result to the circular radius. This requires one API call and avoids
+downloading the entire station database.
 }
 \examples{
 \dontrun{
-# Find stations within 50 km of Konza Prairie Biological Station
+# Stations within 50 km of Konza Prairie Biological Station
 closest_noaa_stations(
   latitude = 39.1068806,
   longitude = -96.6117151,
   dist_km = 50
 )
 
-# Find stations within 100 km of Lawrence, Kansas only
+# Restrict to stations with daily temperature data since 2000
 closest_noaa_stations(
-  latitude = 38.9717,
-  longitude = -95.2353,
+  latitude = 39.1068806,
+  longitude = -96.6117151,
   dist_km = 100,
-  state = "KS"
+  data_types = c("TMAX", "TMIN"),
+  start_date = "2000-01-01"
 )
 }
 
+}
+\seealso{
+\code{\link[=get_noaa_stations]{get_noaa_stations()}}, \code{\link[=ncei_bbox]{ncei_bbox()}}, \code{\link[=ncei_stations]{ncei_stations()}}
 }

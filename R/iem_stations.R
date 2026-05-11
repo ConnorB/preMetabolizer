@@ -8,8 +8,9 @@
 #' @param station_id A single station identifier, such as `"DSM"`.
 #'
 #' @return A tibble containing station metadata returned by IEM, including
-#'   station identifiers, names, network identifiers, time zones, archive dates,
-#'   and longitude and latitude when available.
+#'   station identifiers in `station_id`, names in `station_name`, network
+#'   identifiers, time zones, archive dates, and longitude and latitude when
+#'   available.
 #'
 #' @details
 #' `iem_stations()` returns all stations in one network. `iem_station()` looks
@@ -37,7 +38,8 @@ iem_stations <- function(network) {
     httr2::req_url_path_append(paste0(network, ".json")) |>
     iem_perform_json("Failed to fetch IEM station metadata.") |>
     iem_as_tibble() |>
-    iem_parse_time_columns()
+    iem_parse_time_columns() |>
+    mesonet_rename_columns(c(id = "station_id", name = "station_name"))
 }
 
 #' @rdname iem_stations
@@ -49,5 +51,6 @@ iem_station <- function(station_id) {
     httr2::req_url_path_append(paste0(station_id, ".json")) |>
     iem_perform_json("Failed to fetch IEM station metadata.") |>
     iem_as_tibble() |>
-    iem_parse_time_columns()
+    iem_parse_time_columns() |>
+    mesonet_rename_columns(c(id = "station_id", name = "station_name"))
 }

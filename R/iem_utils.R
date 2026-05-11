@@ -33,14 +33,7 @@ iem_as_tibble <- function(response) {
 }
 
 iem_parse_datetime <- function(x) {
-  if (inherits(x, "POSIXct")) {
-    return(x)
-  }
-
-  parsed <- lubridate::ymd_hms(x, tz = "UTC", quiet = TRUE)
-  missing <- is.na(parsed) & !is.na(x)
-  parsed[missing] <- lubridate::ymd_hm(x[missing], tz = "UTC", quiet = TRUE)
-  parsed
+  mesonet_parse_utc_datetime(x)
 }
 
 iem_parse_time_columns <- function(data) {
@@ -59,7 +52,7 @@ iem_parse_time_columns <- function(data) {
     data[[col]] <- iem_parse_datetime(data[[col]])
   }
 
-  date_cols <- intersect(names(data), "local_date")
+  date_cols <- intersect(names(data), c("day", "date", "local_date"))
   for (col in date_cols) {
     data[[col]] <- as.Date(data[[col]])
   }

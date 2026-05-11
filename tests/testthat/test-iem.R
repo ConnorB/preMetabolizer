@@ -18,8 +18,8 @@ test_that("iem_networks reads network metadata", {
   result <- iem_networks()
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(result$id, "IA_ASOS")
-  expect_equal(result$name, "Iowa ASOS")
+  expect_equal(result$network, "IA_ASOS")
+  expect_equal(result$network_name, "Iowa ASOS")
   expect_equal(attr(result$windrose_update, "tzone"), "UTC")
   expect_named(attr(result, "schema"), "fields")
 })
@@ -41,7 +41,8 @@ test_that("iem_stations reads network station metadata", {
   result <- iem_stations("IA_ASOS")
 
   expect_match(env$path, "/api/1/network/IA_ASOS.json$")
-  expect_equal(result$id, "DSM")
+  expect_equal(result$station_id, "DSM")
+  expect_equal(result$station_name, "Des Moines")
   expect_equal(result$network, "IA_ASOS")
   expect_equal(attr(result$archive_begin, "tzone"), "UTC")
   expect_equal(attr(result$modified, "tzone"), "UTC")
@@ -62,6 +63,8 @@ test_that("iem_station reads station metadata across networks", {
   result <- iem_station("AMW")
 
   expect_match(env$path, "/api/1/station/AMW.json$")
+  expect_equal(result$station_id, c("AMW", "AMW"))
+  expect_equal(result$station_name, c("Ames", "Ames"))
   expect_equal(result$network, c("IA_ASOS", "IA_DCP"))
 })
 
@@ -75,9 +78,10 @@ test_that("iem_current builds filtered current observation requests", {
     iem_json_response(paste0(
       '{"schema":{"fields":[{"name":"station"}]},',
       '"data":[{"station":"DSM","network":"IA_ASOS",',
-      '"utc_valid":"2026-05-10T19:05Z","local_date":"2026-05-10",',
+      '"name":"Des Moines","utc_valid":"2026-05-10T19:05Z",',
+      '"local_date":"2026-05-10",',
       '"tmpf":84.2},{"station":"AMW","network":"IA_ASOS",',
-      '"utc_valid":"2026-05-10T19:05:30Z",',
+      '"name":"Ames","utc_valid":"2026-05-10T19:05:30Z",',
       '"local_date":"2026-05-10","tmpf":82.1}]}'
     ))
   })
@@ -93,7 +97,8 @@ test_that("iem_current builds filtered current observation requests", {
   expect_match(env$url, "station=DSM")
   expect_match(env$url, "station=AMW")
   expect_equal(env$query$minutes, "120")
-  expect_equal(result$station, c("DSM", "AMW"))
+  expect_equal(result$station_id, c("DSM", "AMW"))
+  expect_equal(result$station_name, c("Des Moines", "Ames"))
   expect_equal(result$tmpf, c(84.2, 82.1))
   expect_equal(result$local_date, as.Date(c("2026-05-10", "2026-05-10")))
   expect_equal(attr(result$utc_valid, "tzone"), "UTC")
@@ -137,8 +142,8 @@ test_that("iem_daily reads daily summaries", {
     env$query <- parsed$query
     iem_json_response(paste0(
       '{"schema":{"fields":[{"name":"station"}]},',
-      '"data":[{"station":"DSM","day":"2024-06-01",',
-      '"high":87,"low":64,"precip":0.12}]}'
+      '"data":[{"station":"DSM","date":"2024-06-01",',
+      '"max_tmpf":87,"min_tmpf":64,"precip":0.12}]}'
     ))
   })
 
@@ -149,6 +154,8 @@ test_that("iem_daily reads daily summaries", {
   expect_equal(env$query$station, "DSM")
   expect_equal(env$query$year, "2024")
   expect_equal(env$query$month, "6")
+  expect_equal(result$station_id, "DSM")
+  expect_equal(result$date, as.Date("2024-06-01"))
   expect_equal(result$precip, 0.12)
 })
 

@@ -15,18 +15,29 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+cache_dir <- tools::R_user_dir("preMetabolizer", which = "cache")
+dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+
+.run <- tryCatch({
+  httr2::request("https://mesonet.k-state.edu") |>
+    httr2::req_timeout(5) |>
+    httr2::req_perform()
+  TRUE
+}, error = function(e) {
+  length(list.files(cache_dir, pattern = "^ks_meso_")) > 0
+})
+
+knitr::opts_chunk$set(eval = .run)
 ```
 
 ## Introduction
 
 The [Kansas Mesonet](https://mesonet.k-state.edu/) is a statewide network of automated weather stations operated by Kansas State University. It provides sub-hourly meteorological data — including air temperature, relative humidity, precipitation, solar radiation, wind, and soil measurements — for more than 60 stations across Kansas.
 
-This vignette walks through the workflow for discovering stations, browsing the
-variable catalog, downloading data, and reading cached files using the
-preMetabolizer Mesonet functions. We use **Konza Prairie**, a long-term
-ecological research (LTER) site in northeastern Kansas, as our example station.
+This vignette walks through the workflow for discovering stations, browsing the variable catalog, downloading data, and reading cached files using the preMetabolizer Mesonet functions. We use **Konza Prairie**, a long-term ecological research (LTER) site in northeastern Kansas, as our example station.
 
-> **Note:** Functions that contact the Mesonet API require an internet connection. Code chunks marked with `#| eval: false` will not run during package installation. Run them interactively in your own session.
+> **Note:** Functions that contact the Mesonet API require an internet connection. Code chunks that call the API will not run during package installation if the service is unreachable. Run them interactively in your own session.
 
 ```{r}
 #| label: libraries
@@ -37,22 +48,30 @@ library(dplyr)
 library(ggplot2)
 ```
 
+## Caching downloaded data
+
+Repeated calls to the Kansas Mesonet API download the same data on every run. This vignette saves each result to a local cache directory the first time it is downloaded and reloads from disk on subsequent runs. The cache lives in `tools::R_user_dir("preMetabolizer", which = "cache")`, a platform-appropriate, user-specific directory that persists across sessions. Each data-fetching chunk below checks for a cached `.rds` file, downloads and saves on the first run, and reloads from disk on all subsequent runs.
+
 ## Explore the variable catalog
 
 `ks_meso_vars()` retrieves and parses the current Kansas Mesonet variable metadata, including CSV headings, variable names, units, and descriptions.
 
 ```{r}
 #| label: var-catalog
-#| eval: false
 
-mesonet_vars <- ks_meso_vars()
+cache_file <- file.path(cache_dir, "ks_meso_vars.rds")
+if (!file.exists(cache_file)) {
+  mesonet_vars <- ks_meso_vars()
+  saveRDS(mesonet_vars, cache_file)
+} else {
+  mesonet_vars <- readRDS(cache_file)
+}
 ```
 
 Search the catalog to find variables of interest:
 
 ```{r}
 #| label: search-vars
-#| eval: false
 
 mesonet_vars |>
   filter(grepl("temp|precip|solar|humidity", desc, ignore.case = TRUE)) |>
@@ -65,9 +84,15 @@ mesonet_vars |>
 
 ```{r}
 #| label: stations
-#| eval: false
 
-stations <- ks_meso_stations()
+cache_file <- file.path(cache_dir, "ks_meso_stations.rds")
+if (!file.exists(cache_file)) {
+  stations <- ks_meso_stations()
+  saveRDS(stations, cache_file)
+} else {
+  stations <- readRDS(cache_file)
+}
+
 glimpse(stations)
 ```
 
@@ -75,10 +100,9 @@ Filter to find Konza Prairie and confirm the exact station name used by the API:
 
 ```{r}
 #| label: get-konza
-#| eval: false
 
 konza <- stations |>
-  filter(grepl("Konza", StationName, ignore.case = TRUE))
+  filter(grepl("Konza", station_name, ignore.case = TRUE))
 
 konza
 ```
@@ -91,12 +115,17 @@ The station name recognized by the API is `"Konza Prairie"`.
 
 ```{r}
 #| label: check-activity
-#| eval: false
 
-activity <- ks_meso_station_activity()
+cache_file <- file.path(cache_dir, "ks_meso_station_activity.rds")
+if (!file.exists(cache_file)) {
+  activity <- ks_meso_station_activity()
+  saveRDS(activity, cache_file)
+} else {
+  activity <- readRDS(cache_file)
+}
 
 activity |>
-  filter(station == "Konza Prairie")
+  filter(station_name == "Konza Prairie")
 ```
 
 ## Check the most recent observation
@@ -105,49 +134,41 @@ activity |>
 
 ```{r}
 #| label: check-most-recent
-#| eval: false
 
-recent <- ks_meso_most_recent(interval = "hour")
+cache_file <- file.path(cache_dir, "ks_meso_most_recent_hour.rds")
+if (!file.exists(cache_file)) {
+  recent <- ks_meso_most_recent(interval = "hour")
+  saveRDS(recent, cache_file)
+} else {
+  recent <- readRDS(cache_file)
+}
 
 recent |>
-  filter(station == "Konza Prairie")
+  filter(station_name == "Konza Prairie")
 ```
 
-## Download data
+## Retrieve time-series data
 
-`get_ks_meso()` downloads Mesonet data for one or more stations and saves the result to a local cache directory. Large date ranges are split into chunks automatically to stay within the API record limit.
+`ks_meso_timeseries()` retrieves Mesonet data for one or more stations and returns a tibble directly. Large date ranges are split into chunks automatically to stay within the API record limit.
 
-Here we download hourly data for Konza Prairie for the 2024 calendar year, requesting air temperature, relative humidity, precipitation, and surface pressure.
-
-```{r}
-#| label: download-data
-#| eval: false
-
-download_result <- get_ks_meso(
-  stations   = "Konza Prairie",
-  start_date = "2024-01-01",
-  end_date   = "2024-12-31",
-  interval   = "hour",
-  vars       = c("TEMP2MAVG", "RELHUM2MAVG", "PRECIP", "PRESSUREAVG")
-)
-
-str(download_result)
-```
-
-## Read cached data
-
-Once downloaded, `read_ks_meso()` reads the cached file back into R. The `TIMESTAMP` column is automatically parsed as a `POSIXct` in the Mesonet timezone (`Etc/GMT+6`, i.e., CST without daylight saving).
+Here we retrieve hourly data for Konza Prairie for the 2024 calendar year, requesting air temperature, relative humidity, precipitation, and surface pressure.
 
 ```{r}
-#| label: cached
-#| eval: false
+#| label: timeseries-data
 
-konza_hourly <- read_ks_meso(
-  station    = "Konza Prairie",
-  start_date = "2024-01-01",
-  end_date   = "2024-12-31",
-  interval   = "hour"
-)
+cache_file <- file.path(cache_dir, "ks_meso_konza_hourly_2024.rds")
+if (!file.exists(cache_file)) {
+  konza_hourly <- ks_meso_timeseries(
+    stations   = "Konza Prairie",
+    start_date = "2024-01-01",
+    end_date   = "2024-12-31",
+    interval   = "hour",
+    vars       = c("TEMP2MAVG", "RELHUM2MAVG", "PRECIP", "PRESSUREAVG")
+  )
+  saveRDS(konza_hourly, cache_file)
+} else {
+  konza_hourly <- readRDS(cache_file)
+}
 
 glimpse(konza_hourly)
 ```
@@ -158,14 +179,13 @@ With the data in hand, standard `dplyr` and `ggplot2` workflows apply. The examp
 
 ```{r}
 #| label: monthly-ppt
-#| eval: false
 
 monthly_precip <- konza_hourly |>
-  mutate(month = lubridate::floor_date(TIMESTAMP, "month")) |>
+  mutate(month = lubridate::floor_date(timestamp, "month")) |>
   group_by(month) |>
   summarise(
-    precip_mm    = sum(PRECIP, na.rm = TRUE),
-    temp_mean_C  = mean(TEMP2MAVG, na.rm = TRUE),
+    precip_mm    = sum(precip, na.rm = TRUE),
+    temp_mean_C  = mean(temp2_mavg, na.rm = TRUE),
     .groups      = "drop"
   )
 
@@ -187,12 +207,17 @@ ggplot(monthly_precip, aes(month, precip_mm)) +
 #| label: fire-weather
 #| eval: false
 
-fw13_records <- ks_meso_fw13(
-  station    = "Konza Prairie",
-  start_date = "2024-04-01",
-  end_date   = "2024-04-30"
-)
+cache_file <- file.path(cache_dir, "ks_meso_fw13_konza_2024-04.rds")
+if (!file.exists(cache_file)) {
+  fw13_records <- ks_meso_fw13(
+    station    = "Konza Prairie",
+    start_date = "2024-04-01",
+    end_date   = "2024-04-30"
+  )
+  saveRDS(fw13_records, cache_file)
+} else {
+  fw13_records <- readRDS(cache_file)
+}
 
-# Each element is one fixed-width FW13 record
 head(fw13_records, 3)
 ```

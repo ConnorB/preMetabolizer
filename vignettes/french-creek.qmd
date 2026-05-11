@@ -20,16 +20,9 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-Stream metabolism models estimate gross primary production and ecosystem
-respiration from continuous sensor records. The
-[streamMetabolizer](https://github.com/ConnorB/streamMetabolizer) package fits
-these models, but the input data usually need a fair amount of preparation
-first: timestamps must be regular, times must be converted to mean solar time,
-site pressure must be realistic, and dissolved oxygen saturation must be
-calculated from the actual water temperature and pressure.
+Stream metabolism models estimate gross primary production and ecosystem respiration from continuous sensor records. The [streamMetabolizer](https://github.com/ConnorB/streamMetabolizer) package fits these models, but the input data usually need a fair amount of preparation first: timestamps must be regular, times must be converted to mean solar time, site pressure must be realistic, and dissolved oxygen saturation must be calculated from the actual water temperature and pressure.
 
-This vignette shows that preparation step by step using the built-in
-`french_creek` dataset.
+This vignette shows that preparation step by step using the built-in `french_creek` dataset.
 
 | Column       | Description                                     |
 |--------------|-------------------------------------------------|
@@ -40,11 +33,7 @@ This vignette shows that preparation step by step using the built-in
 | `temp.water` | Water temperature (°C)                          |
 | `light`      | Photosynthetically active radiation (µmol/m²/s) |
 
-The data come from a field study on French Creek near Laramie, Wyoming, USA
-[@hotchkiss2015whole]. The runnable workflow uses modeled PAR from
-`calc_light()`. An optional chunk also shows how to retrieve observed light and
-surface pressure from NASA POWER when you are working interactively with an
-internet connection.
+The data come from a field study on French Creek near Laramie, Wyoming, USA [@hotchkiss2015whole]. The runnable workflow uses modeled PAR from `calc_light()`. An optional chunk also shows how to retrieve observed light and surface pressure from NASA POWER when you are working interactively with an internet connection.
 
 ```{r}
 #| label: libraries
@@ -165,9 +154,7 @@ french_creek <- french_creek |>
 
 ## Estimate barometric pressure
 
-French Creek sits at roughly 3,205 m above sea level. Using standard sea-level
-pressure (101.325 kPa) would overpredict O~2~ saturation, so we adjust sea-level
-pressure to the site elevation with `correct_bp()`.
+French Creek sits at roughly 3,205 m above sea level. Using standard sea-level pressure (101.325 kPa) would overpredict O~2~ saturation, so we adjust sea-level pressure to the site elevation with `correct_bp()`.
 
 ```{r}
 #| label: pressure
@@ -188,10 +175,7 @@ french_data <- french_creek |>
 
 ### Optional: get pressure and observed light from NASA POWER
 
-`get_nasa_data()` can download NASA POWER surface pressure (`PSC`) and
-shortwave irradiance (`ALLSKY_SFC_SW_DWN`) for the site. It converts shortwave
-irradiance to observed PAR as `light.obs` and interpolates the NASA fields to
-the same timestamps as the logger data.
+`get_nasa_data()` can download NASA POWER surface pressure (`PSC`) and shortwave irradiance (`ALLSKY_SFC_SW_DWN`) for the site. It converts shortwave irradiance to observed PAR as `light.obs` and interpolates the NASA fields to the same timestamps as the logger data.
 
 ```{r}
 #| label: NASA-data
@@ -212,8 +196,7 @@ french_data <- french_data |>
   left_join(nasa_dat, by = "datetime")
 ```
 
-You can retrieve the elevation directly from the USGS Elevation Point Query
-Service when you do not already know it:
+You can retrieve the elevation directly from the USGS Elevation Point Query Service when you do not already know it:
 
 ```{r}
 #| label: usgs-elevation
@@ -327,9 +310,6 @@ sm_input |>
   theme_bw()
 ```
 
-To fit a model with `streamMetabolizer::metab()`, choose either `light.obs` or
-`light.calc` and rename that column to `light`. See the
-[streamMetabolizer documentation](https://github.com/ConnorB/streamMetabolizer)
-for details on model fitting and interpreting metabolism estimates.
+To fit a model with `streamMetabolizer::metab()`, choose either `light.obs` or `light.calc` and rename that column to `light`. See the [streamMetabolizer documentation](https://github.com/ConnorB/streamMetabolizer) for details on model fitting and interpreting metabolism estimates.
 
 ## References

@@ -4,8 +4,9 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @return A tibble containing IEM network identifiers, network names, time
-#'   zones, geographic extents, and windrose update timestamps when available.
+#' @return A tibble containing IEM network identifiers in `network`, network
+#'   names in `network_name`, time zones, geographic extents, and windrose
+#'   update timestamps when available.
 #'
 #' @details
 #' The Iowa Environmental Mesonet groups stations into networks such as
@@ -31,5 +32,6 @@ iem_networks <- function() {
   iem_request("networks.json") |>
     iem_perform_json("Failed to fetch IEM network metadata.") |>
     iem_as_tibble() |>
-    iem_parse_time_columns()
+    iem_parse_time_columns() |>
+    mesonet_rename_columns(c(id = "network", name = "network_name"))
 }

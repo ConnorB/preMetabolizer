@@ -1,31 +1,66 @@
-test_that("get_noaa_stations filters cached raw data by state", {
-  cache <- tempfile()
-  dir.create(cache)
-  old_options <- options(preMetabolizer.noaa_cache = cache)
-  on.exit(options(old_options), add = TRUE)
-  on.exit(unlink(cache, recursive = TRUE), add = TRUE)
-
-  raw_data <- data.frame(
-    STATE_PROV = c("KS", "CA"),
-    GHCND_ID = c("USC001", "USC002")
+fake_ncei_stations_response <- function(station_id = "USW00023183") {
+  body <- list(
+    totalCount = 1L,
+    results = list(list(
+      id = paste0("daily-summaries-latest.tar.gz:", station_id, ".csv"),
+      name = paste0(station_id, ".csv"),
+      startDate = "1988-01-01T00:00:00",
+      endDate = "2024-12-31T23:59:59",
+      centroid = list(point = list(-96.59, 39.19)),
+      stations = list(list(
+        id = station_id,
+        name = "MANHATTAN KS US",
+        dataTypes = list(),
+        platforms = list()
+      ))
+    ))
   )
-  saveRDS(raw_data, file.path(cache, "mshr_enhanced.rds"))
-
-  local_mocked_bindings(
-    get_remote_mtime = function(url) NULL
+  httr2::response(
+    200,
+    headers = list(`Content-Type` = "application/json"),
+    body = charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
   )
+}
 
-  result <- get_noaa_stations(state = "ks", clean = FALSE, debug = FALSE)
+test_that("get_noaa_stations returns a tibble with expected columns", {
+  httr2::local_mocked_responses(function(req) {
+    fake_ncei_stations_response()
+  })
 
-  expect_equal(result$STATE_PROV, "KS")
-  expect_equal(result$GHCND_ID, "USC001")
+  result <- get_noaa_stations(bbox = c(40, -100, 38, -98))
+
+  expect_s3_class(result, "tbl_df")
+  expect_named(
+    result,
+    c(
+      "station_id",
+      "name",
+      "latitude",
+      "longitude",
+      "elevation",
+      "start_date",
+      "end_date",
+      "data_coverage"
+    )
+  )
+  expect_equal(result$station_id, "USW00023183")
+  expect_equal(result$name, "MANHATTAN KS US")
 })
 
-test_that("get_noaa_stations validates state and logical inputs", {
-  expect_snapshot(error = TRUE, {
-    get_noaa_stations(state = "Kansas", debug = FALSE)
+test_that("get_noaa_stations passes parameters to ncei_stations", {
+  env <- new.env()
+  httr2::local_mocked_responses(function(req) {
+    env$url <- req$url
+    fake_ncei_stations_response()
   })
-  expect_snapshot(error = TRUE, {
-    get_noaa_stations(clean = c(TRUE, FALSE), debug = FALSE)
-  })
+
+  get_noaa_stations(
+    bbox = c(40, -98, 38, -96),
+    start_date = "2000-01-01",
+    data_types = "TMAX"
+  )
+
+  expect_match(env$url, "daily-summaries")
+  expect_match(env$url, "2000-01-01")
+  expect_match(env$url, "TMAX")
 })

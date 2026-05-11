@@ -12,8 +12,8 @@
 #'   stations are returned.
 #'
 #' @return A tibble containing station metadata returned by TexMesonet,
-#'   including station ID, station name, display ID, state, county, latitude,
-#'   longitude, elevation in feet, active status, and online date.
+#'   including `station_id`, `station_name`, display ID, state, county,
+#'   latitude, longitude, elevation in feet, active status, and online date.
 #'
 #' @details
 #' TexMesonet is managed by the Texas Water Development Board. Its public API
@@ -46,17 +46,26 @@ tex_meso_stations <- function(active = NULL, displayed = NULL) {
     tex_meso_perform_json(
       "Failed to fetch TexMesonet station metadata."
     ) |>
-    tex_meso_as_tibble()
+    tex_meso_as_tibble(
+      names = c(
+        stationId = "station_id",
+        stationName = "station_name"
+      )
+    )
 
-  if ("onlineDate" %in% names(stations)) {
-    stations$onlineDate <- as.Date(stations$onlineDate, format = "%m/%d/%Y")
+  if ("online_date" %in% names(stations)) {
+    stations$online_date <- as.Date(stations$online_date, format = "%m/%d/%Y")
   }
 
   if (!is.null(active)) {
     stations <- stations[stations$active %in% active, , drop = FALSE]
   }
   if (!is.null(displayed)) {
-    stations <- stations[stations$stationDisplay %in% displayed, , drop = FALSE]
+    stations <- stations[
+      stations$station_display %in% displayed,
+      ,
+      drop = FALSE
+    ]
   }
 
   tibble::as_tibble(stations)

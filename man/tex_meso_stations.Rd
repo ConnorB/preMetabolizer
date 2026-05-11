@@ -16,8 +16,8 @@ stations are returned.}
 }
 \value{
 A tibble containing station metadata returned by TexMesonet,
-including station ID, station name, display ID, state, county, latitude,
-longitude, elevation in feet, active status, and online date.
+including \code{station_id}, \code{station_name}, display ID, state, county,
+latitude, longitude, elevation in feet, active status, and online date.
 }
 \description{
 Retrieves name, location, and status metadata for Texas Water Development

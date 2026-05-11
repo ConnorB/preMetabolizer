@@ -9,7 +9,8 @@
 #' @param interval Data interval. Must be one of `"hour"`, `"5min"`, or
 #'   `"day"`.
 #'
-#' @return A data frame with station names and most recent observation times.
+#' @return A tibble with station names in `station_name` and most recent
+#'   observation times in `timestamp`.
 #'
 #' @details
 #' Kansas Mesonet data are preliminary and subject to revision. Cite the Kansas
@@ -42,10 +43,10 @@ ks_meso_most_recent <- function(interval) {
         http_req_perform()
       content <- httr2::resp_body_string(response)
 
-      read_ks_meso_csv(I(content)) |>
+      ks_meso_read_csv(I(content)) |>
         dplyr::transmute(
-          station = .data$STATION,
-          timestamp = .data$TIMESTAMP
+          station_name = .data$station_name,
+          timestamp = .data$timestamp
         )
     },
     error = function(e) {

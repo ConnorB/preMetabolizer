@@ -4,10 +4,11 @@
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @return A tibble containing the most recent station observations. The API
-#'   returns availability by station, so some measurement columns may contain
-#'   missing values. The returned tibble has a `"units"` attribute containing
-#'   units reported by the API.
+#' @return A tibble containing the most recent station observations, including
+#'   `station_id`, `station_name`, and UTC `recorded_time`. The API returns
+#'   availability by station, so some measurement columns may contain missing
+#'   values. The returned tibble has a `"units"` attribute containing units
+#'   reported by the API.
 #'
 #' @details
 #' Current data are near-real-time observations. TexMesonet reports values in
@@ -32,13 +33,14 @@ tex_meso_current <- function() {
 
   current <- tex_meso_as_tibble(
     response$data,
-    numeric_exclude = c("name", "displayId", "recordedTime")
+    numeric_exclude = c("name", "displayId", "recordedTime"),
+    names = c(stationId = "station_id", name = "station_name")
   )
 
-  if ("recordedTime" %in% names(current)) {
-    current$recordedTime <- tex_meso_parse_datetime(current$recordedTime)
+  if ("recorded_time" %in% names(current)) {
+    current$recorded_time <- tex_meso_parse_datetime(current$recorded_time)
   }
 
-  attr(current, "units") <- response$units
+  attr(current, "units") <- mesonet_clean_named(response$units)
   current
 }

@@ -19,32 +19,18 @@ mesonet_vars_response <- function() {
   )
 }
 
-test_that("read_ks_meso reads cached CSV data", {
-  output_dir <- tempfile()
-  dir.create(output_dir)
-  on.exit(unlink(output_dir, recursive = TRUE), add = TRUE)
-  path <- file.path(
-    output_dir,
-    "Mesonet_Manhattan_hour_2024-01-01_to_2024-01-02.csv"
-  )
-  readr::write_csv(
-    tibble::tibble(
-      TIMESTAMP = as.POSIXct("2024-01-01 00:00:00", tz = "Etc/GMT+6"),
-      TEMP2MAVG = 10
-    ),
-    path
-  )
-
-  result <- read_ks_meso(
-    station = "Manhattan",
-    start_date = "2024-01-01",
-    end_date = "2024-01-02",
-    interval = "hour",
-    output_dir = output_dir
+test_that("ks_meso_read_csv normalizes raw CSV data", {
+  result <- ks_meso_read_csv(
+    I(paste(
+      "STATION,TIMESTAMP,TEMP2MAVG",
+      "Manhattan,2024-01-01 00:00:00,10",
+      sep = "\n"
+    ))
   )
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(result$TEMP2MAVG, 10)
+  expect_equal(result$station_name, "Manhattan")
+  expect_equal(result$temp2_mavg, 10)
 })
 
 test_that("ks_meso_stations reads station metadata", {
@@ -61,8 +47,10 @@ test_that("ks_meso_stations reads station metadata", {
   result <- ks_meso_stations()
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(result$StationName, "Manhattan")
-  expect_equal(result$Network, "KSRE")
+  expect_equal(result$station_name, "Manhattan")
+  expect_equal(result$station_id, "MHK")
+  expect_equal(result$network, "KSRE")
+  expect_equal(result$network_name, "Kansas Mesonet")
 })
 
 test_that("ks_meso_most_recent requests the selected interval", {
@@ -82,7 +70,7 @@ test_that("ks_meso_most_recent requests the selected interval", {
   result <- ks_meso_most_recent("5min")
 
   expect_equal(env$query$int, "5min")
-  expect_equal(result$station, c("--all--", "Manhattan"))
+  expect_equal(result$station_name, c("--all--", "Manhattan"))
   expect_s3_class(result$timestamp, "POSIXct")
   expect_equal(attr(result$timestamp, "tzone"), "Etc/GMT+6")
 })
@@ -102,11 +90,7 @@ test_that("ks_meso_fw13 requests station and compact dates", {
   expect_equal(result[1:2], c("FW13 line 1", "FW13 line 2"))
 })
 
-test_that("get_ks_meso can request stations or networks", {
-  output_dir <- tempfile()
-  dir.create(output_dir)
-  on.exit(unlink(output_dir, recursive = TRUE), add = TRUE)
-
+test_that("ks_meso_timeseries can request stations or networks", {
   queries <- list()
   httr2::local_mocked_responses(function(req) {
     parsed <- httr2::url_parse(req$url)
@@ -135,24 +119,20 @@ test_that("get_ks_meso can request stations or networks", {
     )
   })
 
-  station_result <- get_ks_meso(
+  station_result <- ks_meso_timeseries(
     stations = "Ashland Bottoms",
     start_date = "2024-01-01",
     end_date = "2024-01-01",
     interval = "day",
-    vars = c("TEMP2MAVG", "PRECIP"),
-    output_dir = output_dir,
-    debug = FALSE
+    vars = c("TEMP2MAVG", "PRECIP")
   )
 
-  network_result <- get_ks_meso(
+  network_result <- ks_meso_timeseries(
     network = "KSRE",
     start_date = "2024-01-01",
     end_date = "2024-01-01",
     interval = "day",
-    vars = c("TEMP2MAVG", "PRECIP"),
-    output_dir = output_dir,
-    debug = FALSE
+    vars = c("TEMP2MAVG", "PRECIP")
   )
 
   station_query <- queries[[1]]
@@ -160,15 +140,14 @@ test_that("get_ks_meso can request stations or networks", {
   expect_equal(station_query$stn, "Ashland Bottoms")
   expect_equal(network_query$net, "KSRE")
   expect_equal(station_query$vars, "TEMP2MAVG,PRECIP")
-  expect_equal(station_result$total_successful, 1)
-  expect_equal(network_result$total_successful, 1)
+  expect_equal(station_result$station_name, "Ashland Bottoms")
+  expect_equal(station_result$station_id, "ASH")
+  expect_equal(station_result$temp2_mavg, 4)
+  expect_equal(network_result$network, "KSRE")
+  expect_equal(network_result$precip, 0)
 })
 
 test_that("Mesonet timestamps are parsed as fixed Central Standard Time", {
-  output_dir <- tempfile()
-  dir.create(output_dir)
-  on.exit(unlink(output_dir, recursive = TRUE), add = TRUE)
-
   httr2::local_mocked_responses(function(req) {
     parsed <- httr2::url_parse(req$url)
 
@@ -195,26 +174,17 @@ test_that("Mesonet timestamps are parsed as fixed Central Standard Time", {
     )
   })
 
-  get_ks_meso(
+  result <- ks_meso_timeseries(
     stations = "Manhattan",
     start_date = "2024-07-01",
     end_date = "2024-07-01",
     interval = "day",
-    vars = "TEMP2MAVG",
-    output_dir = output_dir,
-    debug = FALSE
-  )
-  result <- read_ks_meso(
-    station = "Manhattan",
-    start_date = "2024-07-01",
-    end_date = "2024-07-01",
-    interval = "day",
-    output_dir = output_dir
+    vars = "TEMP2MAVG"
   )
 
-  expect_equal(attr(result$TIMESTAMP, "tzone"), "Etc/GMT+6")
+  expect_equal(attr(result$timestamp, "tzone"), "Etc/GMT+6")
   expect_equal(
-    as.numeric(result$TIMESTAMP),
+    as.numeric(result$timestamp),
     as.numeric(as.POSIXct("2024-07-01 18:00:00", tz = "UTC"))
   )
 })

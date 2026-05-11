@@ -19,8 +19,9 @@ iem_daily(network, station = NULL, date = NULL, year = NULL, month = NULL)
 \item{month}{Optional whole number month from 1 to 12. Requires \code{year}.}
 }
 \value{
-A tibble containing daily summary observations returned by IEM.
-Units and available variables vary by network.
+A tibble containing daily summary observations returned by IEM, with
+station identifiers in \code{station_id} when returned. Units and available
+variables vary by network.
 }
 \description{
 Retrieves daily summary observations from the Iowa Environmental Mesonet

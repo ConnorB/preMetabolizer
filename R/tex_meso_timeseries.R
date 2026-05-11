@@ -12,11 +12,11 @@
 #'   `"barometric_pressure"`, `"precip"`, or `"wind_speed"` for the
 #'   single-variable endpoints.
 #'
-#' @return A tibble of observations with UTC `dateTime` values. Single-variable
-#'   requests return `value` and `dateTime` columns and have `"field_name"`,
-#'   `"station_name"`, `"twdb_station_id"`, and `"units"` attributes. Requests
-#'   with `variable = "all"` return one column per charting field and have
-#'   `"station_name"` and `"twdb_station_id"` attributes.
+#' @return A tibble of observations with UTC `date_time` values.
+#'   Single-variable requests return `value` and `date_time` columns and have
+#'   `"field_name"`, `"station_name"`, `"station_id"`, and `"units"`
+#'   attributes. Requests with `variable = "all"` return one column per
+#'   charting field and have `"station_name"` and `"station_id"` attributes.
 #'
 #' @details
 #' TexMesonet's public time-series API retrieves recent observations by station
@@ -67,11 +67,11 @@ tex_meso_timeseries <- function(
     )
 
   values <- tex_meso_as_tibble(response$values, numeric_exclude = "dateTime")
-  if ("dateTime" %in% names(values)) {
-    values$dateTime <- tex_meso_parse_datetime(values$dateTime)
+  if ("date_time" %in% names(values)) {
+    values$date_time <- tex_meso_parse_datetime(values$date_time)
   }
 
-  attr(values, "twdb_station_id") <- response$twdbStationId
+  attr(values, "station_id") <- response$twdbStationId
   attr(values, "station_name") <- response$stationName
   if (!is.null(response$fieldName)) {
     attr(values, "field_name") <- response$fieldName

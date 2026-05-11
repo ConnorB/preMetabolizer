@@ -17,8 +17,9 @@ string. Defaults to \code{Sys.Date()}.}
 \item{full}{Logical. If \code{TRUE}, request all available observation fields.}
 }
 \value{
-A tibble containing one day of station observations returned by IEM.
-Units and available variables vary by network.
+A tibble containing one day of station observations returned by IEM,
+with station identifiers in \code{station_id} when returned. Units and
+available variables vary by network.
 }
 \description{
 Retrieves one local calendar day of observations for one IEM station.

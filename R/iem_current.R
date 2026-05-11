@@ -16,7 +16,8 @@
 #'   minutes.
 #'
 #' @return A tibble containing current station metadata and observations
-#'   returned by IEM. Units and available variables vary by network.
+#'   returned by IEM, with station identifiers in `station_id`. Units and
+#'   available variables vary by network.
 #'
 #' @details
 #' At least one filter must be supplied. Station identifiers may be shared
@@ -114,5 +115,6 @@ iem_current <- function(
   request |>
     iem_perform_json("Failed to fetch current IEM observations.") |>
     iem_as_tibble() |>
-    iem_parse_time_columns()
+    iem_parse_time_columns() |>
+    mesonet_rename_columns(c(station = "station_id", name = "station_name"))
 }
