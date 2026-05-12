@@ -26,7 +26,7 @@ This vignette shows that preparation step by step using the built-in
 The data come from a field study on French Creek near Laramie, Wyoming,
 USA ([Hotchkiss and Hall 2015](#ref-hotchkiss2015whole)). The runnable
 workflow uses modeled PAR from
-[`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md).
+[`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md).
 An optional chunk also shows how to retrieve observed light and surface
 pressure from NASA POWER when you are working interactively with an
 internet connection.
@@ -144,10 +144,9 @@ site_longitude <- -106.359058
 
 french_creek <- french_creek |>
   mutate(
-    solar.time = convert_UTC_to_solartime(
+    solar.time = convert_to_solar_time(
       datetime,
-      longitude = site_longitude,
-      time.type = "mean solar"
+      longitude = site_longitude
     )
   ) |> 
   filter(solar.time >= as.POSIXct("2012-09-18 04:05:58") &
@@ -156,7 +155,7 @@ french_creek <- french_creek |>
 
 ## Calculate modeled light (PAR)
 
-[`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md)
+[`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
 returns photosynthetically active radiation in µmol/m²/s based on the
 solar geometry at the site. It takes mean solar time as input.
 
@@ -164,7 +163,7 @@ solar geometry at the site. It takes mean solar time as input.
 
 french_creek <- french_creek |>
   mutate(
-    light.calc = calc_light(
+    light.calc = calc_par(
       solar.time,
       latitude = site_latitude,
       longitude = site_longitude
@@ -275,13 +274,13 @@ sm_input <- french_data |>
 head(sm_input)
 #> # A tibble: 6 × 7
 #>   solar.time          DO.obs DO.sat depth temp.water light.obs light.calc
-#>   <dttm>               <dbl>  <dbl> <dbl>      <dbl>     <dbl>      <dbl>
-#> 1 2012-09-18 04:10:44   8.4    8.89  0.16       3.58         0          0
-#> 2 2012-09-18 04:25:44   8.42   8.90  0.16       3.54         0          0
-#> 3 2012-09-18 04:40:44   8.42   8.91  0.16       3.5          0          0
-#> 4 2012-09-18 04:55:44   8.42   8.92  0.16       3.46         0          0
-#> 5 2012-09-18 05:10:44   8.44   8.93  0.16       3.42         0          0
-#> 6 2012-09-18 05:25:44   8.47   8.94  0.16       3.37         0          0
+#>   <solar_dt>           <dbl>  <dbl> <dbl>      <dbl>     <dbl>      <dbl>
+#> 1 2012-09-18 04:09:33   8.4    8.89  0.16       3.58         0          0
+#> 2 2012-09-18 04:24:33   8.42   8.90  0.16       3.54         0          0
+#> 3 2012-09-18 04:39:33   8.42   8.91  0.16       3.5          0          0
+#> 4 2012-09-18 04:54:33   8.42   8.92  0.16       3.46         0          0
+#> 5 2012-09-18 05:09:33   8.44   8.93  0.16       3.42         0          0
+#> 6 2012-09-18 05:24:33   8.47   8.94  0.16       3.37         0          0
 ```
 
 ``` r

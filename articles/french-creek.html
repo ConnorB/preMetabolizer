@@ -107,7 +107,7 @@
 </tr>
 </tbody>
 </table>
-<p>The data come from a field study on French Creek near Laramie, Wyoming, USA <span class="citation" data-cites="hotchkiss2015whole">(<a href="#ref-hotchkiss2015whole" role="doc-biblioref">Hotchkiss and Hall 2015</a>)</span>. The runnable workflow uses modeled PAR from <code><a href="../reference/calc_light.html">calc_light()</a></code>. An optional chunk also shows how to retrieve observed light and surface pressure from NASA POWER when you are working interactively with an internet connection.</p>
+<p>The data come from a field study on French Creek near Laramie, Wyoming, USA <span class="citation" data-cites="hotchkiss2015whole">(<a href="#ref-hotchkiss2015whole" role="doc-biblioref">Hotchkiss and Hall 2015</a>)</span>. The runnable workflow uses modeled PAR from <code><a href="../reference/calc_par.html">calc_par()</a></code>. An optional chunk also shows how to retrieve observed light and surface pressure from NASA POWER when you are working interactively with an internet connection.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://connorb.github.io/preMetabolizer/">preMetabolizer</a></span><span class="op">)</span></span>
@@ -201,10 +201,9 @@
 <span></span>
 <span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    solar.time <span class="op">=</span> <span class="fu"><a href="../reference/convert_UTC_to_solartime.html">convert_UTC_to_solartime</a></span><span class="op">(</span></span>
+<span>    solar.time <span class="op">=</span> <span class="fu"><a href="../reference/convert_to_solar_time.html">convert_to_solar_time</a></span><span class="op">(</span></span>
 <span>      <span class="va">datetime</span>,</span>
-<span>      longitude <span class="op">=</span> <span class="va">site_longitude</span>,</span>
-<span>      time.type <span class="op">=</span> <span class="st">"mean solar"</span></span>
+<span>      longitude <span class="op">=</span> <span class="va">site_longitude</span></span>
 <span>    <span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">solar.time</span> <span class="op">&gt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2012-09-18 04:05:58"</span><span class="op">)</span> <span class="op">&amp;</span></span>
@@ -212,12 +211,12 @@
 </div>
 </section><section class="level2"><h2 id="calculate-modeled-light-par">Calculate modeled light (PAR)<a class="anchor" aria-label="anchor" href="#calculate-modeled-light-par"></a>
 </h2>
-<p><code><a href="../reference/calc_light.html">calc_light()</a></code> returns photosynthetically active radiation in µmol/m²/s based on the solar geometry at the site. It takes mean solar time as input.</p>
+<p><code><a href="../reference/calc_par.html">calc_par()</a></code> returns photosynthetically active radiation in µmol/m²/s based on the solar geometry at the site. It takes mean solar time as input.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="va">french_creek</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    light.calc <span class="op">=</span> <span class="fu"><a href="../reference/calc_light.html">calc_light</a></span><span class="op">(</span></span>
+<span>    light.calc <span class="op">=</span> <span class="fu"><a href="../reference/calc_par.html">calc_par</a></span><span class="op">(</span></span>
 <span>      <span class="va">solar.time</span>,</span>
 <span>      latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
 <span>      longitude <span class="op">=</span> <span class="va">site_longitude</span></span>
@@ -307,13 +306,13 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sm_input</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 6 × 7</span></span>
 <span><span class="co">#&gt;   solar.time          DO.obs DO.sat depth temp.water light.obs light.calc</span></span>
-<span><span class="co">#&gt;   &lt;dttm&gt;               &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 2012-09-18 04:10:44   8.4    8.89  0.16       3.58         0          0</span></span>
-<span><span class="co">#&gt; 2 2012-09-18 04:25:44   8.42   8.90  0.16       3.54         0          0</span></span>
-<span><span class="co">#&gt; 3 2012-09-18 04:40:44   8.42   8.91  0.16       3.5          0          0</span></span>
-<span><span class="co">#&gt; 4 2012-09-18 04:55:44   8.42   8.92  0.16       3.46         0          0</span></span>
-<span><span class="co">#&gt; 5 2012-09-18 05:10:44   8.44   8.93  0.16       3.42         0          0</span></span>
-<span><span class="co">#&gt; 6 2012-09-18 05:25:44   8.47   8.94  0.16       3.37         0          0</span></span></code></pre></div>
+<span><span class="co">#&gt;   &lt;solar_dt&gt;           &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 2012-09-18 04:09:33   8.4    8.89  0.16       3.58         0          0</span></span>
+<span><span class="co">#&gt; 2 2012-09-18 04:24:33   8.42   8.90  0.16       3.54         0          0</span></span>
+<span><span class="co">#&gt; 3 2012-09-18 04:39:33   8.42   8.91  0.16       3.5          0          0</span></span>
+<span><span class="co">#&gt; 4 2012-09-18 04:54:33   8.42   8.92  0.16       3.46         0          0</span></span>
+<span><span class="co">#&gt; 5 2012-09-18 05:09:33   8.44   8.93  0.16       3.42         0          0</span></span>
+<span><span class="co">#&gt; 6 2012-09-18 05:24:33   8.47   8.94  0.16       3.37         0          0</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">

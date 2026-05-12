@@ -159,16 +159,16 @@ current |>
 #> # A tibble: 60 × 8
 #>    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp
 #>    <chr>      <chr>          <dttm>              <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1 ADU        AUDUBON        2026-05-11 03:55:00  55.4  35.6     5   360   NA 
-#>  2 AIO        ATLANTIC       2026-05-11 03:55:00  53.6  35.6     4   360   NA 
-#>  3 ALO        Waterloo       2026-05-11 03:54:00  45    29       5   360 1022.
-#>  4 AMW        Ames           2026-05-11 03:53:00  57    26       8    10 1021.
-#>  5 AWG        WASHINGTON     2026-05-11 03:55:00  57.2  32       6   290   NA 
-#>  6 AXA        Algona         2026-05-11 03:55:00  46.4  23       9   360   NA 
-#>  7 BNW        BOONE MUNI     2026-05-11 03:55:00  53.6  26.6     8    20   NA 
-#>  8 BRL        BURLINGTON     2026-05-11 03:53:00  52    36       7   220 1020 
-#>  9 CAV        CLARION        2026-05-11 03:55:00  44.6  21.2     8    20   NA 
-#> 10 CBF        COUNCIL BLUFFS 2026-05-11 03:55:00  59    35.6     6    30   NA 
+#>  1 ADU        AUDUBON        2026-05-12 03:55:00  68    35.6    10   200   NA 
+#>  2 AIO        ATLANTIC       2026-05-12 03:55:00  68    39.2    10   200   NA 
+#>  3 ALO        Waterloo       2026-05-12 03:54:00  59    28      14   130 1017.
+#>  4 AMW        Ames           2026-05-12 03:53:00  63    40      12   150 1016.
+#>  5 AWG        WASHINGTON     2026-05-12 03:55:00  57.2  32       9   130   NA 
+#>  6 AXA        Algona         2026-05-12 03:55:00  64.4  35.6    18   150   NA 
+#>  7 BNW        BOONE MUNI     2026-05-12 03:55:00  62.6  41      11   160   NA 
+#>  8 BRL        BURLINGTON     2026-05-12 03:53:00  61    31       6   130 1020.
+#>  9 CAV        CLARION        2026-05-12 03:55:00  60.8  30.2    15   140   NA 
+#> 10 CBF        COUNCIL BLUFFS 2026-05-12 03:55:00  71.6  39.2    13   200   NA 
 #> # ℹ 50 more rows
 ```
 
@@ -194,8 +194,8 @@ dsm_current |>
 #> # A tibble: 2 × 7
 #>   station_id station_name utc_valid            tmpf  relh  sknt pres 
 #>   <chr>      <chr>        <dttm>              <dbl> <dbl> <dbl> <lgl>
-#> 1 AMW        Ames         2026-05-11 03:53:00    57  30.1     8 NA   
-#> 2 DSM        Des Moines   2026-05-11 03:54:00    61  28.4    12 NA
+#> 1 AMW        Ames         2026-05-12 03:53:00    63  42.7    12 NA   
+#> 2 DSM        Des Moines   2026-05-12 03:54:00    65  44.7    15 NA
 ```
 
 ## Retrieve one day of observations

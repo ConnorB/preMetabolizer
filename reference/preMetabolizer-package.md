@@ -35,9 +35,9 @@ decimal degrees. Latitude ranges from -90 to 90, longitude ranges from
 - Retrieve or calculate site context with
   [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md),
   [`correct_bp()`](https://connorb.github.io/preMetabolizer/reference/correct_bp.md),
-  [`convert_UTC_to_solartime()`](https://connorb.github.io/preMetabolizer/reference/convert_UTC_to_solartime.md),
+  [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md),
   and
-  [`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md).
+  [`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md).
 
 - Prepare model inputs with
   [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md),

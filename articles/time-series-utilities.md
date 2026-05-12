@@ -76,37 +76,33 @@ even_timesteps(multi_site, site_col = "Site")
 
 ## Convert UTC and solar time
 
-[`convert_UTC_to_solartime()`](https://connorb.github.io/preMetabolizer/reference/convert_UTC_to_solartime.md)
+[`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
 and
-[`convert_solartime_to_UTC()`](https://connorb.github.io/preMetabolizer/reference/convert_solartime_to_UTC.md)
+[`convert_from_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
 move between UTC and local solar time at a site longitude. Mean solar
-time is the time basis expected by stream metabolism models.
+time is the time basis expected by stream metabolism models. Use
+`type = "apparent"` to additionally apply the equation of time (via
+[`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html)).
 
 ``` r
 
 utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
 
-solar <- convert_UTC_to_solartime(
-  utc,
-  longitude = -96.6,
-  time.type = "mean solar"
-)
+solar <- convert_to_solar_time(utc, longitude = -96.6)
 
 solar
-#> [1] "2024-06-21 11:34:39 UTC"
+#> [1] "2024-06-21 11:33:36 UTC"
 
-convert_solartime_to_UTC(
-  solar,
-  longitude = -96.6,
-  time.type = "mean solar"
-)
+convert_from_solar_time(solar, longitude = -96.6)
 #> [1] "2024-06-21 18:00:00 UTC"
 ```
 
 ## Assign seasons
 
 [`get_season()`](https://connorb.github.io/preMetabolizer/reference/get_season.md)
-classifies dates into fixed northern-hemisphere astronomical seasons.
+classifies dates into astronomical seasons using the actual equinox and
+solstice dates for each year (computed via Meeus’s algorithms). It
+accepts a `hemisphere` argument and returns an ordered factor.
 
 ``` r
 
@@ -123,11 +119,11 @@ tibble::tibble(
 )
 #> # A tibble: 4 × 2
 #>   date       season
-#>   <date>     <chr> 
+#>   <date>     <ord> 
 #> 1 2024-01-15 Winter
 #> 2 2024-04-15 Spring
 #> 3 2024-07-15 Summer
-#> 4 2024-10-15 Fall
+#> 4 2024-10-15 Autumn
 ```
 
 ## Flag potential outliers

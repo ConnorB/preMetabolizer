@@ -80,7 +80,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ConnorB/preMetabolizer"</span><span class="op">)</span></span></code></pre></div>
-<p>The package requires R (&gt;= 4.1.0). A companion fork of <code>streamMetabolizer</code> is listed under <code>Remotes:</code> and will be installed automatically.</p>
+<p>The package requires R (&gt;= 4.1.0). <code>streamMetabolizer</code> is no longer a hard dependency; install it separately if you intend to fit metabolism models on the prepared data.</p>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
@@ -101,11 +101,11 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="va">DO_mgL</span>, <span class="va">temp_C</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/even_timesteps.html">even_timesteps</a></span><span class="op">(</span>datetime_col <span class="op">=</span> <span class="st">"datetime"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    solar.time <span class="op">=</span> <span class="fu"><a href="reference/convert_UTC_to_solartime.html">convert_UTC_to_solartime</a></span><span class="op">(</span></span>
+<span>    solar.time <span class="op">=</span> <span class="fu"><a href="reference/convert_to_solar_time.html">convert_to_solar_time</a></span><span class="op">(</span></span>
 <span>      <span class="va">datetime</span>,</span>
 <span>      longitude <span class="op">=</span> <span class="va">site_longitude</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    light <span class="op">=</span> <span class="fu"><a href="reference/calc_light.html">calc_light</a></span><span class="op">(</span></span>
+<span>    light <span class="op">=</span> <span class="fu"><a href="reference/calc_par.html">calc_par</a></span><span class="op">(</span></span>
 <span>      <span class="va">solar.time</span>,</span>
 <span>      latitude <span class="op">=</span> <span class="va">site_latitude</span>,</span>
 <span>      longitude <span class="op">=</span> <span class="va">site_longitude</span></span>
@@ -178,15 +178,14 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Convert a UTC timestamp to mean solar time at a site in Kansas</span></span>
 <span><span class="va">utc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-21 18:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
-<span><span class="va">solar</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/convert_UTC_to_solartime.html">convert_UTC_to_solartime</a></span><span class="op">(</span><span class="va">utc</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span>, time.type <span class="op">=</span> <span class="st">"mean solar"</span><span class="op">)</span></span>
+<span><span class="va">solar</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/convert_to_solar_time.html">convert_to_solar_time</a></span><span class="op">(</span><span class="va">utc</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Model PAR near local solar noon on the summer solstice</span></span>
-<span><span class="va">noon_solar</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/convert_UTC_to_solartime.html">convert_UTC_to_solartime</a></span><span class="op">(</span></span>
+<span><span class="va">noon_solar</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/convert_to_solar_time.html">convert_to_solar_time</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-21 18:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span>,</span>
 <span>  longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/calc_light.html">calc_light</a></span><span class="op">(</span><span class="va">noon_solar</span>, latitude <span class="op">=</span> <span class="fl">39.1</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 2228.291</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/calc_par.html">calc_par</a></span><span class="op">(</span><span class="va">noon_solar</span>, latitude <span class="op">=</span> <span class="fl">39.1</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="time-series-utilities">Time series utilities<a class="anchor" aria-label="anchor" href="#time-series-utilities"></a>

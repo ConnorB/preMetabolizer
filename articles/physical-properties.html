@@ -198,7 +198,7 @@
 </div>
 </section><section class="level2"><h2 id="modeled-light">Modeled light<a class="anchor" aria-label="anchor" href="#modeled-light"></a>
 </h2>
-<p><code><a href="../reference/calc_light.html">calc_light()</a></code> estimates photosynthetically active radiation (PAR) from solar time and site coordinates. Input times should be mean solar time.</p>
+<p><code><a href="../reference/calc_par.html">calc_par()</a></code> estimates photosynthetically active radiation (PAR) from solar time and site coordinates. Input times should be mean solar time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">utc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span></span>
@@ -209,11 +209,11 @@
 <span></span>
 <span><span class="va">light</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  dateTime_UTC <span class="op">=</span> <span class="va">utc</span>,</span>
-<span>  solar_time <span class="op">=</span> <span class="fu"><a href="../reference/convert_UTC_to_solartime.html">convert_UTC_to_solartime</a></span><span class="op">(</span><span class="va">utc</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span><span class="op">)</span></span>
+<span>  solar_time <span class="op">=</span> <span class="fu"><a href="../reference/convert_to_solar_time.html">convert_to_solar_time</a></span><span class="op">(</span><span class="va">utc</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    light_PAR <span class="op">=</span> <span class="fu"><a href="../reference/calc_light.html">calc_light</a></span><span class="op">(</span></span>
-<span>      solar.time <span class="op">=</span> <span class="va">solar_time</span>,</span>
+<span>    light_PAR <span class="op">=</span> <span class="fu"><a href="../reference/calc_par.html">calc_par</a></span><span class="op">(</span></span>
+<span>      solar_time <span class="op">=</span> <span class="va">solar_time</span>,</span>
 <span>      latitude <span class="op">=</span> <span class="fl">39.1</span>,</span>
 <span>      longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span></span>
 <span>    <span class="op">)</span></span>
@@ -222,13 +222,13 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">light</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 6 × 3</span></span>
 <span><span class="co">#&gt;   dateTime_UTC        solar_time          light_PAR</span></span>
-<span><span class="co">#&gt;   &lt;dttm&gt;              &lt;dttm&gt;                  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 2024-06-21 00:00:00 2024-06-20 17:34:39      775.</span></span>
-<span><span class="co">#&gt; 2 2024-06-21 01:00:00 2024-06-20 18:34:39      342.</span></span>
-<span><span class="co">#&gt; 3 2024-06-21 02:00:00 2024-06-20 19:34:39        0 </span></span>
-<span><span class="co">#&gt; 4 2024-06-21 03:00:00 2024-06-20 20:34:39        0 </span></span>
-<span><span class="co">#&gt; 5 2024-06-21 04:00:00 2024-06-20 21:34:39        0 </span></span>
-<span><span class="co">#&gt; 6 2024-06-21 05:00:00 2024-06-20 22:34:39        0</span></span></code></pre></div>
+<span><span class="co">#&gt;   &lt;dttm&gt;              &lt;solar_dt&gt;              &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 2024-06-21 00:00:00 2024-06-20 17:33:36      787.</span></span>
+<span><span class="co">#&gt; 2 2024-06-21 01:00:00 2024-06-20 18:33:36      355.</span></span>
+<span><span class="co">#&gt; 3 2024-06-21 02:00:00 2024-06-20 19:33:36        0 </span></span>
+<span><span class="co">#&gt; 4 2024-06-21 03:00:00 2024-06-20 20:33:36        0 </span></span>
+<span><span class="co">#&gt; 5 2024-06-21 04:00:00 2024-06-20 21:33:36        0 </span></span>
+<span><span class="co">#&gt; 6 2024-06-21 05:00:00 2024-06-20 22:33:36        0</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">

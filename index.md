@@ -40,9 +40,9 @@ Or with `remotes`:
 remotes::install_github("ConnorB/preMetabolizer")
 ```
 
-The package requires R (\>= 4.1.0). A companion fork of
-`streamMetabolizer` is listed under `Remotes:` and will be installed
-automatically.
+The package requires R (\>= 4.1.0). `streamMetabolizer` is no longer a
+hard dependency; install it separately if you intend to fit metabolism
+models on the prepared data.
 
 ## Quick start
 
@@ -67,11 +67,11 @@ metab_input <- french_creek |>
   select(datetime, DO_mgL, temp_C) |>
   even_timesteps(datetime_col = "datetime") |>
   mutate(
-    solar.time = convert_UTC_to_solartime(
+    solar.time = convert_to_solar_time(
       datetime,
       longitude = site_longitude
     ),
-    light = calc_light(
+    light = calc_par(
       solar.time,
       latitude = site_latitude,
       longitude = site_longitude
@@ -149,15 +149,14 @@ convert_pressure(101.325, from = "kPa", to = "atm")
 
 # Convert a UTC timestamp to mean solar time at a site in Kansas
 utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
-solar <- convert_UTC_to_solartime(utc, longitude = -96.6, time.type = "mean solar")
+solar <- convert_to_solar_time(utc, longitude = -96.6)
 
 # Model PAR near local solar noon on the summer solstice
-noon_solar <- convert_UTC_to_solartime(
+noon_solar <- convert_to_solar_time(
   as.POSIXct("2024-06-21 18:00:00", tz = "UTC"),
   longitude = -96.6
 )
-calc_light(noon_solar, latitude = 39.1, longitude = -96.6)
-#> [1] 2228.291
+calc_par(noon_solar, latitude = 39.1, longitude = -96.6)
 ```
 
 ### Time series utilities

@@ -92,25 +92,23 @@ summary(kings[, c("discharge_cfs", "discharge_cms")])
 ## Add season
 
 [`get_season()`](https://connorb.github.io/preMetabolizer/reference/get_season.md)
-assigns a meteorological season (Winter, Spring, Summer, Fall) to each
-date, which is useful for stratified summaries and plots.
+assigns an astronomical season (Spring, Summer, Autumn, Winter) to each
+date and returns an ordered factor, which is useful for stratified
+summaries and plots.
 
 ``` r
 
 kings <- kings |>
-  mutate(season = factor(
-    get_season(time),
-    levels = c("Winter", "Spring", "Summer", "Fall")
-  ))
+  mutate(season = get_season(time))
 
 count(kings, season)
 #> # A tibble: 4 × 2
 #>   season     n
-#>   <fct>  <int>
-#> 1 Winter    89
-#> 2 Spring    93
-#> 3 Summer    94
-#> 4 Fall      89
+#>   <ord>  <int>
+#> 1 Spring    93
+#> 2 Summer    93
+#> 3 Autumn    90
+#> 4 Winter    89
 ```
 
 ## Time series overview
@@ -198,7 +196,7 @@ kings |>
     Winter = "#4575b4",
     Spring = "#74add1",
     Summer = "#fdae61",
-    Fall   = "#d73027"
+    Autumn = "#d73027"
   )) +
   labs(
     x     = "Exceedance probability",
@@ -232,7 +230,7 @@ kings |>
   )
 #> # A tibble: 1 × 4
 #>   season n_days mean_cms cv_pct
-#>   <fct>   <int>    <dbl>  <dbl>
+#>   <ord>   <int>    <dbl>  <dbl>
 #> 1 Summer     18   0.0503   328.
 ```
 
@@ -255,7 +253,7 @@ ggplot(non_zero_q, aes(discharge_cms, fill = season)) +
     Winter = "#4575b4",
     Spring = "#74add1",
     Summer = "#fdae61",
-    Fall   = "#d73027"
+    Autumn = "#d73027"
   )) +
   labs(
     x    = "Discharge (m³/s)",

@@ -100,7 +100,7 @@ Calculate water density, depth from pressure, and solar radiation.
   : Calculate water density
 - [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md)
   : Calculate water height from pressure
-- [`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md)
+- [`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
   : Calculate modeled photosynthetically active radiation
 
 ## Statistical utilities
@@ -136,13 +136,12 @@ Convert between common units used in hydrology and atmospheric science.
 Work with meteorological seasons and solar time.
 
 - [`get_season()`](https://connorb.github.io/preMetabolizer/reference/get_season.md)
-  : Determine the season from a date
+  : Determine the astronomical season from a date
 - [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
   : Fill missing rows in an even time series
-- [`convert_UTC_to_solartime()`](https://connorb.github.io/preMetabolizer/reference/convert_UTC_to_solartime.md)
-  : Convert UTC time to solar time
-- [`convert_solartime_to_UTC()`](https://connorb.github.io/preMetabolizer/reference/convert_solartime_to_UTC.md)
-  : Convert solar time to UTC
+- [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
+  [`convert_from_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
+  : Convert a datetime to local solar time
 
 ## Data
 

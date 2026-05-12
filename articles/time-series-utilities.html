@@ -136,30 +136,22 @@
 </div>
 </section><section class="level2"><h2 id="convert-utc-and-solar-time">Convert UTC and solar time<a class="anchor" aria-label="anchor" href="#convert-utc-and-solar-time"></a>
 </h2>
-<p><code><a href="../reference/convert_UTC_to_solartime.html">convert_UTC_to_solartime()</a></code> and <code><a href="../reference/convert_solartime_to_UTC.html">convert_solartime_to_UTC()</a></code> move between UTC and local solar time at a site longitude. Mean solar time is the time basis expected by stream metabolism models.</p>
+<p><code><a href="../reference/convert_to_solar_time.html">convert_to_solar_time()</a></code> and <code><a href="../reference/convert_to_solar_time.html">convert_from_solar_time()</a></code> move between UTC and local solar time at a site longitude. Mean solar time is the time basis expected by stream metabolism models. Use <code>type = "apparent"</code> to additionally apply the equation of time (via <code><a href="https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">utc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-21 18:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">solar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convert_UTC_to_solartime.html">convert_UTC_to_solartime</a></span><span class="op">(</span></span>
-<span>  <span class="va">utc</span>,</span>
-<span>  longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span>,</span>
-<span>  time.type <span class="op">=</span> <span class="st">"mean solar"</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">solar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/convert_to_solar_time.html">convert_to_solar_time</a></span><span class="op">(</span><span class="va">utc</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">solar</span></span>
-<span><span class="co">#&gt; [1] "2024-06-21 11:34:39 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2024-06-21 11:33:36 UTC"</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/convert_solartime_to_UTC.html">convert_solartime_to_UTC</a></span><span class="op">(</span></span>
-<span>  <span class="va">solar</span>,</span>
-<span>  longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span>,</span>
-<span>  time.type <span class="op">=</span> <span class="st">"mean solar"</span></span>
-<span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/convert_to_solar_time.html">convert_from_solar_time</a></span><span class="op">(</span><span class="va">solar</span>, longitude <span class="op">=</span> <span class="op">-</span><span class="fl">96.6</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "2024-06-21 18:00:00 UTC"</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="assign-seasons">Assign seasons<a class="anchor" aria-label="anchor" href="#assign-seasons"></a>
 </h2>
-<p><code><a href="../reference/get_season.html">get_season()</a></code> classifies dates into fixed northern-hemisphere astronomical seasons.</p>
+<p><code><a href="../reference/get_season.html">get_season()</a></code> classifies dates into astronomical seasons using the actual equinox and solstice dates for each year (computed via Meeus’s algorithms). It accepts a <code>hemisphere</code> argument and returns an ordered factor.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -175,11 +167,11 @@
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 4 × 2</span></span>
 <span><span class="co">#&gt;   date       season</span></span>
-<span><span class="co">#&gt;   &lt;date&gt;     &lt;chr&gt; </span></span>
+<span><span class="co">#&gt;   &lt;date&gt;     &lt;ord&gt; </span></span>
 <span><span class="co">#&gt; 1 2024-01-15 Winter</span></span>
 <span><span class="co">#&gt; 2 2024-04-15 Spring</span></span>
 <span><span class="co">#&gt; 3 2024-07-15 Summer</span></span>
-<span><span class="co">#&gt; 4 2024-10-15 Fall</span></span></code></pre></div>
+<span><span class="co">#&gt; 4 2024-10-15 Autumn</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="flag-potential-outliers">Flag potential outliers<a class="anchor" aria-label="anchor" href="#flag-potential-outliers"></a>
 </h2>

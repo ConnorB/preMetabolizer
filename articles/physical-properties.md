@@ -153,7 +153,7 @@ water_level
 
 ## Modeled light
 
-[`calc_light()`](https://connorb.github.io/preMetabolizer/reference/calc_light.md)
+[`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
 estimates photosynthetically active radiation (PAR) from solar time and
 site coordinates. Input times should be mean solar time.
 
@@ -167,11 +167,11 @@ utc <- seq(
 
 light <- tibble::tibble(
   dateTime_UTC = utc,
-  solar_time = convert_UTC_to_solartime(utc, longitude = -96.6)
+  solar_time = convert_to_solar_time(utc, longitude = -96.6)
 ) |>
   mutate(
-    light_PAR = calc_light(
-      solar.time = solar_time,
+    light_PAR = calc_par(
+      solar_time = solar_time,
       latitude = 39.1,
       longitude = -96.6
     )
@@ -180,13 +180,13 @@ light <- tibble::tibble(
 head(light)
 #> # A tibble: 6 × 3
 #>   dateTime_UTC        solar_time          light_PAR
-#>   <dttm>              <dttm>                  <dbl>
-#> 1 2024-06-21 00:00:00 2024-06-20 17:34:39      775.
-#> 2 2024-06-21 01:00:00 2024-06-20 18:34:39      342.
-#> 3 2024-06-21 02:00:00 2024-06-20 19:34:39        0 
-#> 4 2024-06-21 03:00:00 2024-06-20 20:34:39        0 
-#> 5 2024-06-21 04:00:00 2024-06-20 21:34:39        0 
-#> 6 2024-06-21 05:00:00 2024-06-20 22:34:39        0
+#>   <dttm>              <solar_dt>              <dbl>
+#> 1 2024-06-21 00:00:00 2024-06-20 17:33:36      787.
+#> 2 2024-06-21 01:00:00 2024-06-20 18:33:36      355.
+#> 3 2024-06-21 02:00:00 2024-06-20 19:33:36        0 
+#> 4 2024-06-21 03:00:00 2024-06-20 20:33:36        0 
+#> 5 2024-06-21 04:00:00 2024-06-20 21:33:36        0 
+#> 6 2024-06-21 05:00:00 2024-06-20 22:33:36        0
 ```
 
 ``` r

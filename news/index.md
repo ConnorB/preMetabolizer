@@ -150,6 +150,57 @@
   [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html)
   directly (no issue).
 
+- [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
+  and
+  [`convert_from_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
+  replace `convert_UTC_to_solartime()` and `convert_solartime_to_UTC()`.
+  The new functions use the standard 15 deg/hour longitude offset for
+  mean solar time and delegate to
+  [`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html)
+  for apparent solar time. They are renamed to avoid shadowing the
+  originals in `streamMetabolizer`, which can still be called directly
+  when needed (no issue).
+
+- `calc_light()` now computes the solar zenith angle via
+  [`SunCalcMeeus::sun_zenith_angle()`](https://rdrr.io/pkg/SunCalcMeeus/man/sun_angles.html)
+  (full Meeus algorithms) instead of an internal first-order declination
+  approximation. The public signature is unchanged; PAR values shift by
+  less than ~0.03 percent. The internal helpers
+  `calc_solar_insolation()`, `calc_declination_angle()`,
+  `calc_hour_angle()`, `calc_zenith_angle()`, `to_radians()`, and
+  `to_degrees()` have been removed (no issue).
+
+- `calc_light()` no longer routes PAR through
+  [`streamMetabolizer::convert_PAR_to_SW()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html)
+  and
+  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html).
+  Those wrappers ultimately call
+  [`LakeMetabolizer::par.to.sw.base()`](https://rdrr.io/pkg/LakeMetabolizer/man/par.to.sw.html)
+  and `sw.to.par.base()`, which are constant-factor multiplications by
+  0.473 and 2.114 respectively; because the factors are reciprocals the
+  round-trip cancels exactly, so the conversion has been inlined as
+  `max.PAR * cos(zenith)` (no issue).
+
+- [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
+  inlines the SW-to-PAR conversion (`SW * 2.114`, Britton and Dodd 1976)
+  instead of calling
+  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html).
+  Output values are unchanged (no issue).
+
+- `streamMetabolizer` is no longer a hard dependency of preMetabolizer.
+  It has been removed from `Imports:` and `Remotes:`, and install it
+  separately if you intend to fit metabolism models on the prepared
+  data. Its `convert_UTC_to_solartime()` and
+  `convert_solartime_to_UTC()` are still callable via the
+  `streamMetabolizer::` prefix (no issue).
+
+- [`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
+  replaces `calc_light()` to avoid shadowing
+  [`streamMetabolizer::calc_light()`](https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html).
+  The function body and behaviour are unchanged; parameters `solar.time`
+  and `max.PAR` were renamed to `solar_time` and `max_par` to use the
+  package’s underscore convention (no issue).
+
 - [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
   now requires an explicit `from` argument; it always returns a plain
   numeric vector. Unit-bearing objects are no longer accepted as input.
@@ -197,6 +248,14 @@
   now filters cached raw station metadata by `state`, validates options
   more clearly, and uses cached station metadata when remote
   modification times are unavailable (no issue).
+
+- [`get_season()`](https://connorb.github.io/preMetabolizer/reference/get_season.md)
+  now uses the per-year astronomical equinox and solstice dates
+  (computed via Meeus, Astronomical Algorithms, 1991, chapter 26)
+  instead of fixed month-day breakpoints, gains `hemisphere` and
+  `labels` arguments, returns an ordered factor with levels Spring \<
+  Summer \< Autumn \< Winter, and uses “Autumn” instead of “Fall” as the
+  default label (no issue).
 
 - [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
   can now retrieve elevation values from the USGS Elevation Point Query
