@@ -131,7 +131,7 @@ water_level
 
 ## Modeled light
 
-`calc_light()` estimates photosynthetically active radiation (PAR) from solar time and site coordinates. Input times should be mean solar time.
+`calc_par()` estimates photosynthetically active radiation (PAR) from solar time and site coordinates. Input times should be mean solar time.
 
 ```{r}
 #| label: modeled-light
@@ -144,11 +144,11 @@ utc <- seq(
 
 light <- tibble::tibble(
   dateTime_UTC = utc,
-  solar_time = convert_UTC_to_solartime(utc, longitude = -96.6)
+  solar_time = convert_to_solar_time(utc, longitude = -96.6)
 ) |>
   mutate(
-    light_PAR = calc_light(
-      solar.time = solar_time,
+    light_PAR = calc_par(
+      solar_time = solar_time,
       latitude = 39.1,
       longitude = -96.6
     )

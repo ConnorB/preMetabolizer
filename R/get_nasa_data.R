@@ -570,11 +570,10 @@ get_nasa_data <- function(
     dplyr::select(-dplyr::any_of(c("HR", "YYYYMMDD", "LON", "LAT", "YEAR")))
 
   if ("ALLSKY_SFC_SW_DWN" %in% names(nasa_data)) {
+    # Britton and Dodd (1976): PAR (umol m^-2 s^-1) = SW (W m^-2) * 2.114.
     nasa_data <- nasa_data |>
       dplyr::mutate(
-        light.obs = streamMetabolizer::convert_SW_to_PAR(
-          .data$ALLSKY_SFC_SW_DWN
-        )
+        light.obs = .data$ALLSKY_SFC_SW_DWN * 2.114
       )
   }
 

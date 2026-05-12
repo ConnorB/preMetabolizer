@@ -25,12 +25,12 @@ in input produces \code{NA} in output.
 \description{
 Classifies dates into astronomical seasons using the precise dates of
 equinoxes and solstices for each year, computed from Meeus's
-"Astronomical Algorithms" (2nd ed.), chapter 27.
+"Astronomical Algorithms" (Willmann-Bell, 1991), chapter 26.
 }
 \details{
 A mean Julian Ephemeris Day for each equinox and solstice is computed
-from the Table 27.B polynomial and refined by the 24-term periodic
-correction in Table 27.C. The corrected instant is accurate to roughly
+from the Table 26.B polynomial and refined by the 24-term periodic
+correction in Table 26.C. The corrected instant is accurate to roughly
 a minute and is then rounded to a calendar date in UTC. The formulas
 are valid for years 1000-3000.
 

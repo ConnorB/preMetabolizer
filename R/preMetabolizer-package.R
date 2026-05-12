@@ -22,7 +22,7 @@
 #'     [tex_meso_stations()], [tex_meso_current()], and
 #'     [tex_meso_timeseries()].
 #'   \item Retrieve or calculate site context with [get_usgs_elev()],
-#'     [correct_bp()], [convert_UTC_to_solartime()], and [calc_light()].
+#'     [correct_bp()], [convert_to_solar_time()], and [calc_par()].
 #'   \item Prepare model inputs with [even_timesteps()], [calc_O2sat()],
 #'     [calc_water_height()], and the built-in example datasets.
 #'   \item Summarize and check data with [flag_z()],

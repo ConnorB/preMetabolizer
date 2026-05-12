@@ -60,7 +60,7 @@ reference:
     contents:
       - calc_water_density
       - calc_water_height
-      - calc_light
+      - calc_par
 
   - title: Statistical utilities
     desc: Descriptive statistics and outlier detection for time series data.
@@ -84,8 +84,7 @@ reference:
     contents:
       - get_season
       - even_timesteps
-      - convert_UTC_to_solartime
-      - convert_solartime_to_UTC
+      - convert_to_solar_time
 
   - title: Data
     desc: Built-in reference datasets.

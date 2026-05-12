@@ -76,26 +76,18 @@ even_timesteps(multi_site, site_col = "Site")
 
 ## Convert UTC and solar time
 
-`convert_UTC_to_solartime()` and `convert_solartime_to_UTC()` move between UTC and local solar time at a site longitude. Mean solar time is the time basis expected by stream metabolism models.
+`convert_to_solar_time()` and `convert_from_solar_time()` move between UTC and local solar time at a site longitude. Mean solar time is the time basis expected by stream metabolism models. Use `type = "apparent"` to additionally apply the equation of time (via `SunCalcMeeus::solar_time()`).
 
 ```{r}
 #| label: solar-time
 
 utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
 
-solar <- convert_UTC_to_solartime(
-  utc,
-  longitude = -96.6,
-  time.type = "mean solar"
-)
+solar <- convert_to_solar_time(utc, longitude = -96.6)
 
 solar
 
-convert_solartime_to_UTC(
-  solar,
-  longitude = -96.6,
-  time.type = "mean solar"
-)
+convert_from_solar_time(solar, longitude = -96.6)
 ```
 
 ## Assign seasons

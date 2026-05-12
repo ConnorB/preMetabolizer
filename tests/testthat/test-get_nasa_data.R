@@ -59,7 +59,7 @@ test_that("get_nasa_data uses single-site coordinates and inferred dates", {
   )
   expect_equal(
     result$light.obs,
-    streamMetabolizer::convert_SW_to_PAR(result$ALLSKY_SFC_SW_DWN)
+    result$ALLSKY_SFC_SW_DWN * 2.114
   )
 })
 
@@ -182,7 +182,7 @@ test_that("get_nasa_data interpolates to input timestamps and converts shortwave
   expect_equal(result$ALLSKY_SFC_SW_DWN, c(0.25, 0.75, 1.25))
   expect_equal(
     result$light.obs,
-    streamMetabolizer::convert_SW_to_PAR(c(0.25, 0.75, 1.25))
+    c(0.25, 0.75, 1.25) * 2.114
   )
 })
 

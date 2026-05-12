@@ -31,7 +31,7 @@ and western longitudes are negative.
 \code{\link[=tex_meso_stations]{tex_meso_stations()}}, \code{\link[=tex_meso_current]{tex_meso_current()}}, and
 \code{\link[=tex_meso_timeseries]{tex_meso_timeseries()}}.
 \item Retrieve or calculate site context with \code{\link[=get_usgs_elev]{get_usgs_elev()}},
-\code{\link[=correct_bp]{correct_bp()}}, \code{\link[=convert_UTC_to_solartime]{convert_UTC_to_solartime()}}, and \code{\link[=calc_light]{calc_light()}}.
+\code{\link[=correct_bp]{correct_bp()}}, \code{\link[=convert_to_solar_time]{convert_to_solar_time()}}, and \code{\link[=calc_par]{calc_par()}}.
 \item Prepare model inputs with \code{\link[=even_timesteps]{even_timesteps()}}, \code{\link[=calc_O2sat]{calc_O2sat()}},
 \code{\link[=calc_water_height]{calc_water_height()}}, and the built-in example datasets.
 \item Summarize and check data with \code{\link[=flag_z]{flag_z()}},

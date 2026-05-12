@@ -27,12 +27,12 @@ Imports:
     sf,
     stats,
     stringr,
+    SunCalcMeeus,
     tibble,
     tools,
     cli,
     Rcpp,
-    lifecycle,
-    streamMetabolizer
+    lifecycle
 Suggests:
     ggplot2,
     jsonlite,
@@ -46,9 +46,7 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-Remotes: 
-    ConnorB/streamMetabolizer
-LinkingTo: 
+LinkingTo:
     Rcpp
 Config/roxygen2/version: 8.0.0.9000
 RoxygenNote: 8.0.0.9000

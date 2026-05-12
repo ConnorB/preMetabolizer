@@ -33,7 +33,7 @@ This vignette shows that preparation step by step using the built-in `french_cre
 | `temp.water` | Water temperature (°C)                          |
 | `light`      | Photosynthetically active radiation (µmol/m²/s) |
 
-The data come from a field study on French Creek near Laramie, Wyoming, USA [@hotchkiss2015whole]. The runnable workflow uses modeled PAR from `calc_light()`. An optional chunk also shows how to retrieve observed light and surface pressure from NASA POWER when you are working interactively with an internet connection.
+The data come from a field study on French Creek near Laramie, Wyoming, USA [@hotchkiss2015whole]. The runnable workflow uses modeled PAR from `calc_par()`. An optional chunk also shows how to retrieve observed light and surface pressure from NASA POWER when you are working interactively with an internet connection.
 
 ```{r}
 #| label: libraries
@@ -125,10 +125,9 @@ site_longitude <- -106.359058
 
 french_creek <- french_creek |>
   mutate(
-    solar.time = convert_UTC_to_solartime(
+    solar.time = convert_to_solar_time(
       datetime,
-      longitude = site_longitude,
-      time.type = "mean solar"
+      longitude = site_longitude
     )
   ) |> 
   filter(solar.time >= as.POSIXct("2012-09-18 04:05:58") &
@@ -137,14 +136,14 @@ french_creek <- french_creek |>
 
 ## Calculate modeled light (PAR)
 
-`calc_light()` returns photosynthetically active radiation in µmol/m²/s based on the solar geometry at the site. It takes mean solar time as input.
+`calc_par()` returns photosynthetically active radiation in µmol/m²/s based on the solar geometry at the site. It takes mean solar time as input.
 
 ```{r}
 #| label: calc-light
 
 french_creek <- french_creek |>
   mutate(
-    light.calc = calc_light(
+    light.calc = calc_par(
       solar.time,
       latitude = site_latitude,
       longitude = site_longitude

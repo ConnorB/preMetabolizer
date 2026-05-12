@@ -2,7 +2,7 @@
 #'
 #' Classifies dates into astronomical seasons using the precise dates of
 #' equinoxes and solstices for each year, computed from Meeus's
-#' "Astronomical Algorithms" (2nd ed.), chapter 27.
+#' "Astronomical Algorithms" (Willmann-Bell, 1991), chapter 26.
 #'
 #' @param date A `Date`, `POSIXct`, or `POSIXlt` vector, or anything coercible
 #'   to `Date` via [base::as.Date()].
@@ -18,8 +18,8 @@
 #'
 #' @details
 #' A mean Julian Ephemeris Day for each equinox and solstice is computed
-#' from the Table 27.B polynomial and refined by the 24-term periodic
-#' correction in Table 27.C. The corrected instant is accurate to roughly
+#' from the Table 26.B polynomial and refined by the 24-term periodic
+#' correction in Table 26.C. The corrected instant is accurate to roughly
 #' a minute and is then rounded to a calendar date in UTC. The formulas
 #' are valid for years 1000-3000.
 #'
@@ -93,7 +93,7 @@ get_season <- function(date, hemisphere = c("north", "south"), labels = NULL) {
   )
 }
 
-# Meeus Table 27.C: 24 periodic terms used to refine the mean JDE.
+# Meeus (1991) Table 26.C: 24 periodic terms used to refine the mean JDE.
 # A is in units of 0.00001 day; B and C are in degrees.
 meeus_periodic_terms <- data.frame(
   A = c(
@@ -179,9 +179,10 @@ meeus_periodic_terms <- data.frame(
 # Sorted vector of every equinox and solstice date (as days since 1970-01-01
 # UTC) for years 1000-3000, interleaved by year:
 #   spring1000, summer1000, autumn1000, winter1000, spring1001, ...
-# Built once at package source/install via Meeus chapter 27: a Table 27.B
-# polynomial for the mean JDE per event, refined by the 24-term periodic
-# correction in Table 27.C. Vectorized across all 8004 events at once.
+# Built once at package source/install via Meeus (1991) chapter 26: a
+# Table 26.B polynomial for the mean JDE per event, refined by the
+# 24-term periodic correction in Table 26.C. Vectorized across all 8004
+# events at once.
 season_breaks <- local({
   years <- 1000:3000
   Y <- (years - 2000) / 1000
