@@ -4,7 +4,7 @@ Converts a datetime to mean or apparent (true) solar time at a given
 longitude. Mean solar time uses a constant 15 deg/hour longitude offset.
 Apparent solar time additionally applies the equation of time and is
 computed via
-[`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html).
+[`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html).
 
 ## Usage
 
@@ -61,7 +61,7 @@ their behaviour.
 
 The mean offset is `longitude / 15 * 3600` seconds. The apparent path
 delegates to
-[`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html),
+[`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html),
 which applies the equation of time using Meeus's algorithms.
 
 `convert_from_solar_time()` inverts the forward conversion by computing
@@ -72,7 +72,7 @@ which is well below typical sensor sampling intervals.
 
 ## See also
 
-[`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html),
+[`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html),
 [`streamMetabolizer::convert_UTC_to_solartime()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_UTC_to_solartime.html),
 [`streamMetabolizer::convert_solartime_to_UTC()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_solartime_to_UTC.html).
 

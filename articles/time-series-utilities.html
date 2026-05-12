@@ -136,7 +136,7 @@
 </div>
 </section><section class="level2"><h2 id="convert-utc-and-solar-time">Convert UTC and solar time<a class="anchor" aria-label="anchor" href="#convert-utc-and-solar-time"></a>
 </h2>
-<p><code><a href="../reference/convert_to_solar_time.html">convert_to_solar_time()</a></code> and <code><a href="../reference/convert_to_solar_time.html">convert_from_solar_time()</a></code> move between UTC and local solar time at a site longitude. Mean solar time is the time basis expected by stream metabolism models. Use <code>type = "apparent"</code> to additionally apply the equation of time (via <code><a href="https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>).</p>
+<p><code><a href="../reference/convert_to_solar_time.html">convert_to_solar_time()</a></code> and <code><a href="../reference/convert_to_solar_time.html">convert_from_solar_time()</a></code> move between UTC and local solar time at a site longitude. Mean solar time is the time basis expected by stream metabolism models. Use <code>type = "apparent"</code> to additionally apply the equation of time (via <code><a href="https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">utc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2024-06-21 18:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>

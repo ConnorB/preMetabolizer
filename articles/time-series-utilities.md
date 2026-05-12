@@ -82,7 +82,7 @@ and
 move between UTC and local solar time at a site longitude. Mean solar
 time is the time basis expected by stream metabolism models. Use
 `type = "apparent"` to additionally apply the equation of time (via
-[`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html)).
+[`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html)).
 
 ``` r
 
