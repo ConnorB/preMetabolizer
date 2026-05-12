@@ -5,7 +5,7 @@
     Condition
       Warning:
       Multiple layers found in '<tempdir>'.
-      i Using the first layer: "b".
+      i Using the first layer: "a".
 
 # read_shp errors when no layers are found
 

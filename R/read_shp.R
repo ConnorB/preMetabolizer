@@ -65,7 +65,7 @@ read_shp <- function(path, layer = NULL) {
 
   # Auto-detect layer if not specified
   if (is.null(layer)) {
-    layers <- sf::st_layers(dsn)$name
+    layers <- sort(sf::st_layers(dsn)$name)
     if (length(layers) == 0) {
       cli::cli_abort("No layers found at {.path {path}}.")
     } else if (length(layers) > 1) {
