@@ -159,16 +159,16 @@ current |>
 #> # A tibble: 60 × 8
 #>    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp
 #>    <chr>      <chr>          <dttm>              <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1 ADU        AUDUBON        2026-05-12 14:35:00  69.8  44.6    14   210   NA 
+#>  1 ADU        AUDUBON        2026-05-13 14:35:00  62.6  35.6     4   330   NA 
 #>  2 AIO        ATLANTIC       2026-05-12 12:10:00  60.8  48.2    10   210   NA 
-#>  3 ALO        Waterloo       2026-05-12 12:54:00  61    44      15   220 1013.
-#>  4 AMW        Ames           2026-05-12 14:21:00  63    49      10   240   NA 
-#>  5 AWG        WASHINGTON     2026-05-12 14:35:00  75.2  42.8    21   230   NA 
-#>  6 AXA        Algona         2026-05-12 14:35:00  68    42.8    19   300   NA 
-#>  7 BNW        BOONE MUNI     2026-05-12 14:35:00  66.2  51.8    12   250   NA 
-#>  8 BRL        BURLINGTON     2026-05-12 12:53:00  58    44       5   190 1018.
-#>  9 CAV        CLARION        2026-05-12 14:35:00  69.8  44.6    21   230   NA 
-#> 10 CBF        COUNCIL BLUFFS 2026-05-12 14:35:00  69.8  46.4    13   230   NA 
+#>  3 ALO        Waterloo       2026-05-13 13:54:00  55    41      16   330 1020.
+#>  4 AMW        Ames           2026-05-13 13:53:00  58    39      12   350 1021.
+#>  5 AWG        WASHINGTON     2026-05-13 14:35:00  59    41      17   330   NA 
+#>  6 AXA        Algona         2026-05-13 14:35:00  59    39.2     9   350   NA 
+#>  7 BNW        BOONE MUNI     2026-05-13 14:35:00  60.8  39.2    16   350   NA 
+#>  8 BRL        BURLINGTON     2026-05-13 13:53:00  58    41      15   360 1018.
+#>  9 CAV        CLARION        2026-05-13 14:35:00  59    37.4    14   350   NA 
+#> 10 CBF        COUNCIL BLUFFS 2026-05-13 14:35:00  64.4  37.4     4    NA   NA 
 #> # ℹ 50 more rows
 ```
 
@@ -194,8 +194,8 @@ dsm_current |>
 #> # A tibble: 2 × 7
 #>   station_id station_name utc_valid            tmpf  relh  sknt pres 
 #>   <chr>      <chr>        <dttm>              <dbl> <dbl> <dbl> <lgl>
-#> 1 AMW        Ames         2026-05-12 14:21:00    63  60.2    10 NA   
-#> 2 DSM        Des Moines   2026-05-12 12:54:00    66  44.9    17 NA
+#> 1 AMW        Ames         2026-05-13 13:53:00    58  49.1    12 NA   
+#> 2 DSM        Des Moines   2026-05-13 13:54:00    58  47.2     8 NA
 ```
 
 ## Retrieve one day of observations

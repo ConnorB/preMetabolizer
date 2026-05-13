@@ -149,9 +149,9 @@ activity |>
 #> # A tibble: 3 × 7
 #>   station_name interval interval_seconds first_observation   last_observation   
 #>   <chr>        <chr>               <dbl> <dttm>              <dttm>             
-#> 1 Konza Prair… 5min                  300 2023-10-06 05:25:00 2026-05-12 00:00:00
-#> 2 Konza Prair… hour                 3600 2023-10-06 07:00:00 2026-05-12 00:00:00
-#> 3 Konza Prair… day                 86400 2023-10-08 00:00:00 2026-05-12 00:00:00
+#> 1 Konza Prair… 5min                  300 2023-10-06 05:25:00 2026-05-13 00:00:00
+#> 2 Konza Prair… hour                 3600 2023-10-06 07:00:00 2026-05-13 00:00:00
+#> 3 Konza Prair… day                 86400 2023-10-08 00:00:00 2026-05-13 00:00:00
 #> # ℹ 2 more variables: data_span_days <dbl>, is_current <lgl>
 ```
 
@@ -177,7 +177,7 @@ recent |>
 #> # A tibble: 1 × 2
 #>   station_name  timestamp          
 #>   <chr>         <dttm>             
-#> 1 Konza Prairie 2026-05-12 08:00:00
+#> 1 Konza Prairie 2026-05-13 08:00:00
 ```
 
 ## Retrieve time-series data
