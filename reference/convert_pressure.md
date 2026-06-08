@@ -18,8 +18,8 @@ convert_pressure(pressure, from, to = "atm")
 - from:
 
   Character. Units of the input barometric pressure. Accepted values are
-  `"atm"`, `"hPa"`, `"mbar"`, `"kPa"`, `"Pa"`, `"Torr"`, `"psi"`, and
-  `"bar"`.
+  `"atm"`, `"hPa"`, `"mbar"`, `"kPa"`, `"Pa"`, `"Torr"`, `"mmHg"`,
+  `"psi"`, and `"bar"`.
 
 - to:
 

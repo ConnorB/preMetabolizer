@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Finding NOAA stations • preMetabolizer</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="noaa_files/libs/quarto-html/popper.min.js"></script><script src="noaa_files/libs/quarto-html/tippy.umd.min.js"></script><link href="noaa_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="noaa_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -124,7 +124,7 @@
 <span><span class="co">#&gt; $ latitude     &lt;dbl&gt; 39.07246, 39.55127, 38.77996, 39.13456, 38.32906, 38.9414…</span></span>
 <span><span class="co">#&gt; $ longitude    &lt;dbl&gt; -95.62602, -97.65077, -97.64444, -96.67894, -96.19453, -9…</span></span>
 <span><span class="co">#&gt; $ start_date   &lt;date&gt; 1946-08-01, 1885-05-01, 1952-01-01, 1960-06-01, 1950-10-…</span></span>
-<span><span class="co">#&gt; $ end_date     &lt;date&gt; 2026-05-09, 2026-05-09, 2026-05-08, 2026-05-09, 2026-05-…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ end_date     &lt;date&gt; 2026-06-05, 2026-06-05, 2026-06-04, 2026-06-05, 2026-06-…</span></span></code></pre></div>
 </div>
 <p>Filter to stations that carry the variables you need and span at least part of water year 2025:</p>
 <div class="cell">
@@ -142,16 +142,16 @@
 <span><span class="co">#&gt; # A tibble: 47 × 6</span></span>
 <span><span class="co">#&gt;    station_id  station_name           latitude longitude start_date end_date  </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt; &lt;date&gt;     &lt;date&gt;    </span></span>
-<span><span class="co">#&gt;  1 USC00140010 ABILENE, KS US             38.9     -97.2 1893-01-01 2026-03-31</span></span>
-<span><span class="co">#&gt;  2 USC00140682 BELLEVILLE, KS US          39.8     -97.6 1935-04-01 2026-05-08</span></span>
+<span><span class="co">#&gt;  1 USC00140010 ABILENE, KS US             38.9     -97.2 1893-01-01 2026-04-30</span></span>
+<span><span class="co">#&gt;  2 USC00140682 BELLEVILLE, KS US          39.8     -97.6 1935-04-01 2026-06-05</span></span>
 <span><span class="co">#&gt;  3 USC00140877 BLAINE, KS US              39.5     -96.4 1955-03-02 2026-04-15</span></span>
-<span><span class="co">#&gt;  4 USC00140911 BLUE RAPIDS, KS US         39.7     -96.7 1905-01-01 2026-05-08</span></span>
-<span><span class="co">#&gt;  5 USC00141435 CHAPMAN, KS US             39.0     -97.0 1904-02-01 2026-05-10</span></span>
-<span><span class="co">#&gt;  6 USC00141559 CLAY CENTER, KS US         39.4     -97.1 1902-04-16 2026-05-10</span></span>
-<span><span class="co">#&gt;  7 USC00141593 CLIFTON, KS US             39.6     -97.3 1931-04-01 2026-04-28</span></span>
-<span><span class="co">#&gt;  8 USC00141761 CONCORDIA 2 SE, KS US      39.6     -97.6 2003-01-01 2026-04-27</span></span>
-<span><span class="co">#&gt;  9 USC00141762 CONCORDIA 2 SSE, KS US     39.5     -97.7 2024-03-21 2026-05-10</span></span>
-<span><span class="co">#&gt; 10 USW00013984 CONCORDIA ASOS, KS US      39.6     -97.7 1885-05-01 2026-05-09</span></span>
+<span><span class="co">#&gt;  4 USC00140911 BLUE RAPIDS, KS US         39.7     -96.7 1905-01-01 2026-06-05</span></span>
+<span><span class="co">#&gt;  5 USC00141435 CHAPMAN, KS US             39.0     -97.0 1904-02-01 2026-06-06</span></span>
+<span><span class="co">#&gt;  6 USC00141559 CLAY CENTER, KS US         39.4     -97.1 1902-04-16 2026-06-06</span></span>
+<span><span class="co">#&gt;  7 USC00141593 CLIFTON, KS US             39.6     -97.3 1931-04-01 2026-06-05</span></span>
+<span><span class="co">#&gt;  8 USC00141761 CONCORDIA 2 SE, KS US      39.6     -97.6 2003-01-01 2026-06-04</span></span>
+<span><span class="co">#&gt;  9 USC00141762 CONCORDIA 2 SSE, KS US     39.5     -97.7 2024-03-21 2026-06-06</span></span>
+<span><span class="co">#&gt; 10 USW00013984 CONCORDIA ASOS, KS US      39.6     -97.7 1885-05-01 2026-06-05</span></span>
 <span><span class="co">#&gt; # ℹ 37 more rows</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="find-nearby-stations">Find nearby stations<a class="anchor" aria-label="anchor" href="#find-nearby-stations"></a>

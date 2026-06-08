@@ -250,7 +250,7 @@ french_data <- french_data |>
 
 summary(french_data$DO.sat)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   7.134   7.626   8.239   8.129   8.624   8.970
+#>   7.133   7.624   8.237   8.127   8.622   8.968
 ```
 
 ## Assemble the final tibble
@@ -347,10 +347,9 @@ sm_input |>
 PAR at French
 Creek.](french-creek_files/figure-html/plot-sm-input-other-1.png)
 
-To fit a model with
-[`streamMetabolizer::metab()`](https://rdrr.io/pkg/streamMetabolizer/man/metab.html),
-choose either `light.obs` or `light.calc` and rename that column to
-`light`. See the [streamMetabolizer
+To fit a model with `streamMetabolizer::metab()`, choose either
+`light.obs` or `light.calc` and rename that column to `light`. See the
+[streamMetabolizer
 documentation](https://github.com/ConnorB/streamMetabolizer) for details
 on model fitting and interpreting metabolism estimates.
 

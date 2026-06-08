@@ -156,20 +156,20 @@ if (!file.exists(cache_file)) {
 current |>
   select(station_id, station_name, utc_valid, tmpf, dwpf, sknt, drct, mslp) |>
   arrange(station_id)
-#> # A tibble: 60 × 8
+#> # A tibble: 61 × 8
 #>    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp
 #>    <chr>      <chr>          <dttm>              <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1 ADU        AUDUBON        2026-05-13 14:35:00  62.6  35.6     4   330   NA 
-#>  2 AIO        ATLANTIC       2026-05-12 12:10:00  60.8  48.2    10   210   NA 
-#>  3 ALO        Waterloo       2026-05-13 13:54:00  55    41      16   330 1020.
-#>  4 AMW        Ames           2026-05-13 13:53:00  58    39      12   350 1021.
-#>  5 AWG        WASHINGTON     2026-05-13 14:35:00  59    41      17   330   NA 
-#>  6 AXA        Algona         2026-05-13 14:35:00  59    39.2     9   350   NA 
-#>  7 BNW        BOONE MUNI     2026-05-13 14:35:00  60.8  39.2    16   350   NA 
-#>  8 BRL        BURLINGTON     2026-05-13 13:53:00  58    41      15   360 1018.
-#>  9 CAV        CLARION        2026-05-13 14:35:00  59    37.4    14   350   NA 
-#> 10 CBF        COUNCIL BLUFFS 2026-05-13 14:35:00  64.4  37.4     4    NA   NA 
-#> # ℹ 50 more rows
+#>  1 ADU        AUDUBON        2026-06-08 23:35:00  86    71.6     3   180   NA 
+#>  2 AIO        ATLANTIC       2026-06-08 23:35:00  86    71.6     8   190   NA 
+#>  3 ALO        Waterloo       2026-06-08 22:54:00  77    69       8    10 1010.
+#>  4 AMW        Ames           2026-06-08 23:53:00  85    70       4   220 1010.
+#>  5 AWG        WASHINGTON     2026-06-08 23:35:00  84.2  71.6     4   290   NA 
+#>  6 AXA        Algona         2026-06-08 23:35:00  82.4  71.6     8    80   NA 
+#>  7 BNW        BOONE MUNI     2026-06-08 23:35:00  84.2  71.6     5   120   NA 
+#>  8 BRL        BURLINGTON     2026-06-08 23:53:00  81    73       4   210 1011.
+#>  9 CAV        CLARION        2026-06-08 23:35:00  82.4  71.6     6    70   NA 
+#> 10 CBF        COUNCIL BLUFFS 2026-06-08 23:35:00  86    69.8     5   160   NA 
+#> # ℹ 51 more rows
 ```
 
 For station-specific work, include both `network` and `stations` so
@@ -194,8 +194,8 @@ dsm_current |>
 #> # A tibble: 2 × 7
 #>   station_id station_name utc_valid            tmpf  relh  sknt pres 
 #>   <chr>      <chr>        <dttm>              <dbl> <dbl> <dbl> <lgl>
-#> 1 AMW        Ames         2026-05-13 13:53:00    58  49.1    12 NA   
-#> 2 DSM        Des Moines   2026-05-13 13:54:00    58  47.2     8 NA
+#> 1 AMW        Ames         2026-06-08 23:53:00    85  61.0     4 NA   
+#> 2 DSM        Des Moines   2026-06-08 23:54:00    84  58.8     4 NA
 ```
 
 ## Retrieve one day of observations

@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Working with Iowa Environmental Mesonet data • preMetabolizer</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="iem_files/libs/quarto-html/popper.min.js"></script><script src="iem_files/libs/quarto-html/tippy.umd.min.js"></script><link href="iem_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="iem_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -194,20 +194,20 @@
 <span><span class="va">current</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">utc_valid</span>, <span class="va">tmpf</span>, <span class="va">dwpf</span>, <span class="va">sknt</span>, <span class="va">drct</span>, <span class="va">mslp</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">station_id</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 60 × 8</span></span>
+<span><span class="co">#&gt; # A tibble: 61 × 8</span></span>
 <span><span class="co">#&gt;    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;          &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 ADU        AUDUBON        2026-05-13 14:35:00  62.6  35.6     4   330   NA </span></span>
-<span><span class="co">#&gt;  2 AIO        ATLANTIC       2026-05-12 12:10:00  60.8  48.2    10   210   NA </span></span>
-<span><span class="co">#&gt;  3 ALO        Waterloo       2026-05-13 13:54:00  55    41      16   330 1020.</span></span>
-<span><span class="co">#&gt;  4 AMW        Ames           2026-05-13 13:53:00  58    39      12   350 1021.</span></span>
-<span><span class="co">#&gt;  5 AWG        WASHINGTON     2026-05-13 14:35:00  59    41      17   330   NA </span></span>
-<span><span class="co">#&gt;  6 AXA        Algona         2026-05-13 14:35:00  59    39.2     9   350   NA </span></span>
-<span><span class="co">#&gt;  7 BNW        BOONE MUNI     2026-05-13 14:35:00  60.8  39.2    16   350   NA </span></span>
-<span><span class="co">#&gt;  8 BRL        BURLINGTON     2026-05-13 13:53:00  58    41      15   360 1018.</span></span>
-<span><span class="co">#&gt;  9 CAV        CLARION        2026-05-13 14:35:00  59    37.4    14   350   NA </span></span>
-<span><span class="co">#&gt; 10 CBF        COUNCIL BLUFFS 2026-05-13 14:35:00  64.4  37.4     4    NA   NA </span></span>
-<span><span class="co">#&gt; # ℹ 50 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 ADU        AUDUBON        2026-06-08 23:35:00  86    71.6     3   180   NA </span></span>
+<span><span class="co">#&gt;  2 AIO        ATLANTIC       2026-06-08 23:35:00  86    71.6     8   190   NA </span></span>
+<span><span class="co">#&gt;  3 ALO        Waterloo       2026-06-08 22:54:00  77    69       8    10 1010.</span></span>
+<span><span class="co">#&gt;  4 AMW        Ames           2026-06-08 23:53:00  85    70       4   220 1010.</span></span>
+<span><span class="co">#&gt;  5 AWG        WASHINGTON     2026-06-08 23:35:00  84.2  71.6     4   290   NA </span></span>
+<span><span class="co">#&gt;  6 AXA        Algona         2026-06-08 23:35:00  82.4  71.6     8    80   NA </span></span>
+<span><span class="co">#&gt;  7 BNW        BOONE MUNI     2026-06-08 23:35:00  84.2  71.6     5   120   NA </span></span>
+<span><span class="co">#&gt;  8 BRL        BURLINGTON     2026-06-08 23:53:00  81    73       4   210 1011.</span></span>
+<span><span class="co">#&gt;  9 CAV        CLARION        2026-06-08 23:35:00  82.4  71.6     6    70   NA </span></span>
+<span><span class="co">#&gt; 10 CBF        COUNCIL BLUFFS 2026-06-08 23:35:00  86    69.8     5   160   NA </span></span>
+<span><span class="co">#&gt; # ℹ 51 more rows</span></span></code></pre></div>
 </div>
 <p>For station-specific work, include both <code>network</code> and <code>stations</code> so shared station identifiers do not surprise you.</p>
 <div class="cell">
@@ -229,8 +229,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 7</span></span>
 <span><span class="co">#&gt;   station_id station_name utc_valid            tmpf  relh  sknt pres </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;        &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;</span></span>
-<span><span class="co">#&gt; 1 AMW        Ames         2026-05-13 13:53:00    58  49.1    12 NA   </span></span>
-<span><span class="co">#&gt; 2 DSM        Des Moines   2026-05-13 13:54:00    58  47.2     8 NA</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 AMW        Ames         2026-06-08 23:53:00    85  61.0     4 NA   </span></span>
+<span><span class="co">#&gt; 2 DSM        Des Moines   2026-06-08 23:54:00    84  58.8     4 NA</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="retrieve-one-day-of-observations">Retrieve one day of observations<a class="anchor" aria-label="anchor" href="#retrieve-one-day-of-observations"></a>
 </h2>

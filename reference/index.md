@@ -79,6 +79,12 @@ related thermodynamic quantities.
 
 - [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
   : Calculate dissolved oxygen saturation
+- [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md)
+  : Calculate dissolved carbon dioxide saturation
+- [`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md)
+  : Calculate dissolved methane saturation
+- [`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md)
+  : Calculate dissolved nitrous oxide saturation
 - [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
   : Calculate dissolved CO2 concentration in mol/kg
 - [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)

@@ -80,6 +80,12 @@
 - Messages, warnings, and errors now consistently use cli formatting
   across the package (no issue).
 
+- [`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md)
+  calculates dissolved methane saturation (the concentration in
+  equilibrium with the atmosphere) from water temperature, barometric
+  pressure, and salinity using Wiesenburg and Guinasso (1979), returning
+  umol/L or mg/L (no issue).
+
 - [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
   and
   [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)
@@ -88,6 +94,20 @@
   hydrostatic) previously under-reported dissolved CO2 at any site away
   from 1 atm; the error reached ~15% at typical high-elevation streams
   (no issue).
+
+- [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md)
+  calculates dissolved carbon dioxide saturation (the concentration in
+  equilibrium with the atmosphere) using the Weiss and Price (1980)
+  trace-gas solubility function, returning umol/L or mg/L (no issue).
+
+- [`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md)
+  calculates dissolved nitrous oxide saturation (the concentration in
+  equilibrium with the atmosphere) using the Weiss and Price (1980)
+  trace-gas solubility function, returning umol/L or mg/L (no issue).
+
+- [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
+  gains an `out_units` argument to return saturation in umol/L in
+  addition to mg/L (no issue).
 
 - [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
   now uses the Benson and Krause umol/kg coefficients from Garcia and
@@ -145,10 +165,8 @@
 
 - `convert_PAR_to_SW()` and `convert_SW_to_PAR()` are no longer
   re-exported from preMetabolizer. Call
-  [`streamMetabolizer::convert_PAR_to_SW()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html)
-  and
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html)
-  directly (no issue).
+  `streamMetabolizer::convert_PAR_to_SW()` and
+  `streamMetabolizer::convert_SW_to_PAR()` directly (no issue).
 
 - [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
   and
@@ -156,13 +174,13 @@
   replace `convert_UTC_to_solartime()` and `convert_solartime_to_UTC()`.
   The new functions use the standard 15 deg/hour longitude offset for
   mean solar time and delegate to
-  [`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html)
+  [`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html)
   for apparent solar time. They are renamed to avoid shadowing the
   originals in `streamMetabolizer`, which can still be called directly
   when needed (no issue).
 
 - `calc_light()` now computes the solar zenith angle via
-  [`SunCalcMeeus::sun_zenith_angle()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/sun_angles.html)
+  [`SunCalcMeeus::sun_zenith_angle()`](https://rdrr.io/pkg/SunCalcMeeus/man/sun_angles.html)
   (full Meeus algorithms) instead of an internal first-order declination
   approximation. The public signature is unchanged; PAR values shift by
   less than ~0.03 percent. The internal helpers
@@ -171,21 +189,17 @@
   `to_degrees()` have been removed (no issue).
 
 - `calc_light()` no longer routes PAR through
-  [`streamMetabolizer::convert_PAR_to_SW()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html)
-  and
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html).
-  Those wrappers ultimately call
-  [`LakeMetabolizer::par.to.sw.base()`](https://rdrr.io/pkg/LakeMetabolizer/man/par.to.sw.html)
-  and `sw.to.par.base()`, which are constant-factor multiplications by
-  0.473 and 2.114 respectively; because the factors are reciprocals the
-  round-trip cancels exactly, so the conversion has been inlined as
-  `max.PAR * cos(zenith)` (no issue).
+  `streamMetabolizer::convert_PAR_to_SW()` and
+  `streamMetabolizer::convert_SW_to_PAR()`. Those wrappers ultimately
+  call `LakeMetabolizer::par.to.sw.base()` and `sw.to.par.base()`, which
+  are constant-factor multiplications by 0.473 and 2.114 respectively;
+  because the factors are reciprocals the round-trip cancels exactly, so
+  the conversion has been inlined as `max.PAR * cos(zenith)` (no issue).
 
 - [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
   inlines the SW-to-PAR conversion (`SW * 2.114`, Britton and Dodd 1976)
-  instead of calling
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html).
-  Output values are unchanged (no issue).
+  instead of calling `streamMetabolizer::convert_SW_to_PAR()`. Output
+  values are unchanged (no issue).
 
 - `streamMetabolizer` is no longer a hard dependency of preMetabolizer.
   It has been removed from `Imports:` and `Remotes:`, and install it
@@ -196,10 +210,10 @@
 
 - [`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
   replaces `calc_light()` to avoid shadowing
-  [`streamMetabolizer::calc_light()`](https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html).
-  The function body and behaviour are unchanged; parameters `solar.time`
-  and `max.PAR` were renamed to `solar_time` and `max_par` to use the
-  package’s underscore convention (no issue).
+  `streamMetabolizer::calc_light()`. The function body and behaviour are
+  unchanged; parameters `solar.time` and `max.PAR` were renamed to
+  `solar_time` and `max_par` to use the package’s underscore convention
+  (no issue).
 
 - [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
   now requires an explicit `from` argument; it always returns a plain
@@ -240,9 +254,8 @@
   `longitude` arguments or per-site `latitude`, `longitude`, and
   `elev_m` columns, interpolates NASA values to the input timestamps,
   returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html),
-  and runs quietly by default. The old `lat` and `lon` aliases are
-  deprecated (no issue).
+  `streamMetabolizer::convert_SW_to_PAR()`, and runs quietly by default.
+  The old `lat` and `lon` aliases are deprecated (no issue).
 
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
   now filters cached raw station metadata by `state`, validates options
