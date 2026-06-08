@@ -4,32 +4,41 @@
 \alias{calc_O2sat}
 \title{Calculate dissolved oxygen saturation}
 \usage{
-calc_O2sat(temp_water, atmo_press, units = "atm", salinity = 0)
+calc_O2sat(
+  temp_water,
+  atmo_press,
+  units = "atm",
+  salinity = 0,
+  out_units = "mg/L"
+)
 }
 \arguments{
 \item{temp_water}{Numeric vector. Water temperature in degrees Celsius.}
 
 \item{atmo_press}{Numeric vector. Barometric pressure at the site.}
 
-\item{units}{Character string. Units of \code{atmo_press}. Accepted values are
-\code{"atm"}, \code{"hPa"}, \code{"mbar"}, and \code{"kPa"}. Defaults to \code{"atm"}.}
+\item{units}{Character string. Units of \code{atmo_press}. See
+\code{\link[=convert_pressure]{convert_pressure()}} for accepted pressure units. Defaults to \code{"atm"}.}
 
 \item{salinity}{Numeric vector. Salinity in parts per thousand. Defaults to
 freshwater (\code{0}).}
+
+\item{out_units}{Character string. Output concentration units, either
+\code{"mg/L"} (the default) or \code{"umol/L"}.}
 }
 \value{
-Numeric vector of dissolved oxygen saturation in mg/L.
+Numeric vector of dissolved oxygen saturation in the requested units.
 }
 \description{
-Calculates dissolved oxygen saturation in mg/L from water temperature,
-barometric pressure, and salinity. This is the \code{DO.sat} quantity commonly
-required by stream metabolism models.
+Calculates the dissolved oxygen concentration in equilibrium with the
+atmosphere from water temperature, barometric pressure, and salinity. This is
+the \code{DO.sat} quantity commonly required by stream metabolism models.
 }
 \details{
 The calculation uses the Benson and Krause umol/kg fit reported by Garcia
 and Gordon (1992), applies a vapor-pressure correction for non-standard
-barometric pressure, and converts from mass-based concentration to mg/L with
-a salinity-aware density correction.
+barometric pressure, and converts from mass-based concentration to a volume
+basis with a salinity-aware density correction.
 }
 \examples{
 calc_O2sat(temp_water = 15, atmo_press = 1, units = "atm")
@@ -40,4 +49,14 @@ calc_O2sat(
   units = "kPa"
 )
 
+# Return micromoles per liter instead of mg/L
+calc_O2sat(temp_water = 15, atmo_press = 1, out_units = "umol/L")
+
+}
+\references{
+Garcia, H.E., and Gordon, L.I. (1992). Oxygen solubility in seawater: better
+fitting equations. Limnology and Oceanography, 37(6), 1307-1312.
+}
+\seealso{
+\code{\link[=calc_CO2sat]{calc_CO2sat()}}, \code{\link[=calc_CH4sat]{calc_CH4sat()}}, \code{\link[=calc_N2Osat]{calc_N2Osat()}}
 }

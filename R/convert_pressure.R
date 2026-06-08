@@ -6,7 +6,7 @@
 #' @param pressure Numeric. Barometric pressure value(s) to be converted.
 #' @param from Character. Units of the input barometric pressure. Accepted
 #'   values are `"atm"`, `"hPa"`, `"mbar"`, `"kPa"`, `"Pa"`, `"Torr"`,
-#'   `"psi"`, and `"bar"`.
+#'   `"mmHg"`, `"psi"`, and `"bar"`.
 #' @param to Character. Target unit. Same accepted values as `from`.
 #'   Defaults to `"atm"`.
 #'
@@ -29,6 +29,7 @@ convert_pressure <- function(pressure, from, to = "atm") {
     kpa = 1000,
     pa = 1,
     torr = 133.322387415,
+    mmhg = 133.32231202221,
     psi = 6894.757293168,
     bar = 100000
   )

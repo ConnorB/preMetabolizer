@@ -48,6 +48,9 @@ reference:
       thermodynamic quantities.
     contents:
       - calc_O2sat
+      - calc_CO2sat
+      - calc_CH4sat
+      - calc_N2Osat
       - calc_CO2_molKg
       - calc_CO2_mgL
       - calc_K0

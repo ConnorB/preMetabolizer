@@ -56,11 +56,19 @@ test_that("calc_O2sat is vectorized over temperature", {
 test_that("calc_O2sat uses corrected vapor pressure at non-standard pressure", {
   standard <- calc_O2sat(25, 1, "atm", 0)
   low_pressure <- calc_O2sat(25, 900, "mbar", 0)
-  vapor_press <- calc_vapor_press(25, salinity = 0, method = "MIMSY")
+  vapor_press <- calc_vapor_press(25, salinity = 0, method = "Dickson2007")
   expected_corr <- (convert_pressure(900, "mbar", "atm") - vapor_press) /
     (1 - vapor_press)
 
   expect_equal(low_pressure, standard * expected_corr, tolerance = 1e-8)
+})
+
+test_that("calc_O2sat returns umol/L consistent with mg/L", {
+  mgL <- calc_O2sat(25, 1, "atm", 0)
+  umolL <- calc_O2sat(25, 1, "atm", 0, out_units = "umol/L")
+  expect_equal(umolL, 258.2305, tolerance = 1e-3)
+  # mg/L = umol/L * 31.99880 g/mol / 1000
+  expect_equal(mgL, umolL * 31.99880 / 1000, tolerance = 1e-8)
 })
 
 test_that("calc_O2sat matches Garcia-Benson volume coefficients", {

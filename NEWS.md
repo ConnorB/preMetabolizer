@@ -15,7 +15,11 @@
 * Data-download helpers now throttle HTTP requests and use bounded parallel request execution to avoid sending too many simultaneous requests to remote services (no issue).
 * Mesonet helpers now return snake_case table columns and use consistent station and network identifiers such as `station_id`, `station_name`, `network`, and `network_name` across Kansas Mesonet, TexMesonet, and IEM results (no issue).
 * Messages, warnings, and errors now consistently use cli formatting across the package (no issue).
+* `calc_CH4sat()` calculates dissolved methane saturation (the concentration in equilibrium with the atmosphere) from water temperature, barometric pressure, and salinity using Wiesenburg and Guinasso (1979), returning umol/L or mg/L (no issue).
 * `calc_CO2_molKg()` and `calc_CO2_mgL()` now follow the standard Henry's law form `[CO2*] = K0 * pCO2`. A spurious additional factor of total pressure (atmospheric + hydrostatic) previously under-reported dissolved CO2 at any site away from 1 atm; the error reached ~15% at typical high-elevation streams (no issue).
+* `calc_CO2sat()` calculates dissolved carbon dioxide saturation (the concentration in equilibrium with the atmosphere) using the Weiss and Price (1980) trace-gas solubility function, returning umol/L or mg/L (no issue).
+* `calc_N2Osat()` calculates dissolved nitrous oxide saturation (the concentration in equilibrium with the atmosphere) using the Weiss and Price (1980) trace-gas solubility function, returning umol/L or mg/L (no issue).
+* `calc_O2sat()` gains an `out_units` argument to return saturation in umol/L in addition to mg/L (no issue).
 * `calc_O2sat()` now uses the Benson and Krause umol/kg coefficients from Garcia and Gordon (1992), converts to mg/L with salinity-aware density, and applies the corrected vapor-pressure term for non-standard pressure (no issue).
 * `calc_vapor_press()` with `method = "MIMSY"` now returns physically correct values. The Antoine equation constant `B` was incorrectly set to 140.264 (should be 1435.264), causing vapor pressures that were orders of magnitude too large.
 * `calc_water_density()` no longer accepts a `.drop_units` argument; it always returns a plain numeric vector (no issue).

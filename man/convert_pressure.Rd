@@ -11,7 +11,7 @@ convert_pressure(pressure, from, to = "atm")
 
 \item{from}{Character. Units of the input barometric pressure. Accepted
 values are \code{"atm"}, \code{"hPa"}, \code{"mbar"}, \code{"kPa"}, \code{"Pa"}, \code{"Torr"},
-\code{"psi"}, and \code{"bar"}.}
+\code{"mmHg"}, \code{"psi"}, and \code{"bar"}.}
 
 \item{to}{Character. Target unit. Same accepted values as \code{from}.
 Defaults to \code{"atm"}.}
