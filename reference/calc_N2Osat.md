@@ -71,7 +71,9 @@ and seawater. Marine Chemistry, 8, 347-359.
 
 [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md),
 [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md),
-[`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md)
+[`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md),
+[`calc_N2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2sat.md),
+[`calc_Arsat()`](https://connorb.github.io/preMetabolizer/reference/calc_Arsat.md)
 
 ## Examples
 

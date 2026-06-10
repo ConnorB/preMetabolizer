@@ -106,24 +106,25 @@ fitting equations. Limnology and Oceanography, 37(6), 1307-1312.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="calc_CO2sat.html">calc_CO2sat()</a></code>, <code><a href="calc_CH4sat.html">calc_CH4sat()</a></code>, <code><a href="calc_N2Osat.html">calc_N2Osat()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="calc_CO2sat.html">calc_CO2sat()</a></code>, <code><a href="calc_CH4sat.html">calc_CH4sat()</a></code>, <code><a href="calc_N2Osat.html">calc_N2Osat()</a></code>, <code><a href="calc_N2sat.html">calc_N2sat()</a></code>,
+<code><a href="calc_Arsat.html">calc_Arsat()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">calc_O2sat</span><span class="op">(</span>temp_water <span class="op">=</span> <span class="fl">15</span>, atmo_press <span class="op">=</span> <span class="fl">1</span>, units <span class="op">=</span> <span class="st">"atm"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10.0839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10.08393</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">calc_O2sat</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  temp_water <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">15</span>, <span class="fl">25</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  atmo_press <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">101.2</span>, <span class="fl">100.8</span>, <span class="fl">100.5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  units <span class="op">=</span> <span class="st">"kPa"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.754311 10.030760  8.193614</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.754349 10.030790  8.193632</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Return micromoles per liter instead of mg/L</span></span></span>
 <span class="r-in"><span><span class="fu">calc_O2sat</span><span class="op">(</span>temp_water <span class="op">=</span> <span class="fl">15</span>, atmo_press <span class="op">=</span> <span class="fl">1</span>, out_units <span class="op">=</span> <span class="st">"umol/L"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 315.1338</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 315.1347</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

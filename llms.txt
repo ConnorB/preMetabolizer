@@ -277,6 +277,8 @@ sources.
   : Find NOAA stations near a location
 - [`get_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/get_ghcnh.md)
   : Get GHCNh hourly observations
+- [`get_noaa_ghg()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_ghg.md)
+  : Get NOAA global monthly mean greenhouse gas concentrations
 - [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
   : Download NASA POWER hourly data
 - [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
@@ -326,6 +328,10 @@ related thermodynamic quantities.
   : Calculate dissolved methane saturation
 - [`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md)
   : Calculate dissolved nitrous oxide saturation
+- [`calc_N2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2sat.md)
+  : Calculate dissolved nitrogen saturation
+- [`calc_Arsat()`](https://connorb.github.io/preMetabolizer/reference/calc_Arsat.md)
+  : Calculate dissolved argon saturation
 - [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
   : Calculate dissolved CO2 concentration in mol/kg
 - [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)
@@ -333,7 +339,7 @@ related thermodynamic quantities.
 - [`calc_K0()`](https://connorb.github.io/preMetabolizer/reference/calc_K0.md)
   : Calculate the CO2 solubility coefficient
 - [`calc_vapor_press()`](https://connorb.github.io/preMetabolizer/reference/calc_vapor_press.md)
-  : Calculate water vapor pressure
+  : Saturation vapor pressure of water
 - [`xCO2_to_pCO2()`](https://connorb.github.io/preMetabolizer/reference/xCO2_to_pCO2.md)
   : Convert CO2 mole fraction to partial pressure
 - [`pCO2_to_xCO2()`](https://connorb.github.io/preMetabolizer/reference/pCO2_to_xCO2.md)

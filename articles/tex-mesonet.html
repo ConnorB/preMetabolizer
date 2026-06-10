@@ -138,7 +138,7 @@
 <span><span class="va">active_stations</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">display_id</span>, <span class="va">county</span>, <span class="va">latitude</span>, <span class="va">longitude</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">county</span>, <span class="va">station_name</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 123 × 6</span></span>
+<span><span class="co">#&gt; # A tibble: 124 × 6</span></span>
 <span><span class="co">#&gt;    station_id station_name            display_id county  latitude longitude</span></span>
 <span><span class="co">#&gt;         &lt;int&gt; &lt;chr&gt;                   &lt;chr&gt;      &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt;  1          6 Love Creek Preserve     BNLCP      Bandera     29.8     -99.4</span></span>
@@ -151,7 +151,7 @@
 <span><span class="co">#&gt;  8         36 River Ridge Ranch       BLRRR      Bell        31.0     -97.8</span></span>
 <span><span class="co">#&gt;  9        107 EAA Field Research Park BXEAA      Bexar       29.7     -98.4</span></span>
 <span><span class="co">#&gt; 10          2 Altwein Rd              BCALT      Blanco      30.1     -98.5</span></span>
-<span><span class="co">#&gt; # ℹ 113 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 114 more rows</span></span></code></pre></div>
 </div>
 <p>For station time-series requests, keep the integer <code>station_id</code>. This example finds stations in Blanco County and selects one station ID for later use.</p>
 <div class="cell">
@@ -185,7 +185,7 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">current</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 123</span></span>
+<span><span class="co">#&gt; Rows: 124</span></span>
 <span><span class="co">#&gt; Columns: 39</span></span>
 <span><span class="co">#&gt; $ object_id             &lt;int&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, …</span></span>
 <span><span class="co">#&gt; $ station_id            &lt;int&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, …</span></span>
@@ -194,38 +194,38 @@
 <span><span class="co">#&gt; $ latitude              &lt;dbl&gt; 30.14957, 30.08845, 30.01853, 30.11047, 29.80180…</span></span>
 <span><span class="co">#&gt; $ longitude             &lt;dbl&gt; -98.54044, -98.69757, -98.45631, -98.30463, -99.…</span></span>
 <span><span class="co">#&gt; $ elevation             &lt;int&gt; 1730, 1959, 1416, 1316, 2163, 2206, 1881, 166, 3…</span></span>
-<span><span class="co">#&gt; $ air_temp              &lt;dbl&gt; 27.88, 26.09, 26.45, 28.05, 23.12, 22.81, 32.97,…</span></span>
-<span><span class="co">#&gt; $ air_temp2_m           &lt;dbl&gt; 27.88, 26.09, 26.45, 28.05, 23.12, 22.81, 32.97,…</span></span>
-<span><span class="co">#&gt; $ humidity              &lt;dbl&gt; 72.21, 78.70, 81.40, 76.45, 81.80, 98.20, 41.74,…</span></span>
+<span><span class="co">#&gt; $ air_temp              &lt;dbl&gt; 31.49, 30.42, 31.82, 32.90, 31.21, 30.73, 32.86,…</span></span>
+<span><span class="co">#&gt; $ air_temp2_m           &lt;dbl&gt; 31.49, 30.42, 31.82, 32.90, 31.21, 30.73, 32.86,…</span></span>
+<span><span class="co">#&gt; $ humidity              &lt;dbl&gt; 50.06, 55.22, 51.52, 55.03, 48.53, 48.80, 40.39,…</span></span>
 <span><span class="co">#&gt; $ precip                &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, 0, 0,…</span></span>
-<span><span class="co">#&gt; $ precip24_hr           &lt;dbl&gt; 5.588, 0.508, 1.270, 1.016, 0.762, 2.794, 0.000,…</span></span>
-<span><span class="co">#&gt; $ precip48_hr           &lt;dbl&gt; 5.588, 0.508, 1.270, 1.016, 1.016, 2.794, 0.000,…</span></span>
-<span><span class="co">#&gt; $ precip72_hr           &lt;dbl&gt; 5.842, 1.524, 5.842, 37.846, 6.096, 2.794, 0.000…</span></span>
-<span><span class="co">#&gt; $ wind_speed            &lt;dbl&gt; 2.0707, 1.7271, 2.1064, 1.6964, 2.5036, 2.7271, …</span></span>
-<span><span class="co">#&gt; $ wind_speed2_m         &lt;dbl&gt; 2.0707, 1.7271, 2.1064, 1.6964, 1.3801, 2.7271, …</span></span>
-<span><span class="co">#&gt; $ wind_direction        &lt;dbl&gt; 114, 101, 80, 148, 223, 161, 157, 136, 174, 47, …</span></span>
-<span><span class="co">#&gt; $ wind_direction2_m     &lt;dbl&gt; 114, 101, 80, 148, 53, 161, 112, 175, 174, 47, 3…</span></span>
-<span><span class="co">#&gt; $ wind_gust             &lt;dbl&gt; 5.0734, 4.5408, 3.4756, 2.6767, 3.9429, 5.3397, …</span></span>
-<span><span class="co">#&gt; $ wind_gust2_m          &lt;dbl&gt; 5.0734, 4.5408, 3.4756, 2.6767, 2.9430, 5.3397, …</span></span>
-<span><span class="co">#&gt; $ battery_voltage       &lt;dbl&gt; 13.43, 13.49, 13.51, 13.01, 12.99, 13.29, 13.28,…</span></span>
-<span><span class="co">#&gt; $ soil_moisture         &lt;dbl&gt; 0.265, 0.374, 0.266, 0.509, 0.225, 0.363, 0.113,…</span></span>
-<span><span class="co">#&gt; $ soil_temperature      &lt;dbl&gt; 28.39, 24.52, 25.96, 25.86, 27.59, 26.19, 30.16,…</span></span>
-<span><span class="co">#&gt; $ soil_moisture5_cm     &lt;dbl&gt; 0.192, 0.288, 0.183, 0.433, 0.097, 0.159, NA, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_temperature5_cm  &lt;dbl&gt; 30.29, 26.71, 29.24, 34.41, 29.80, 28.89, NA, 26…</span></span>
-<span><span class="co">#&gt; $ soil_moisture10_cm    &lt;dbl&gt; 0.213, 0.172, 0.284, 0.481, 0.233, 0.243, 0.121,…</span></span>
-<span><span class="co">#&gt; $ soil_temperature10_cm &lt;dbl&gt; 30.19, 25.78, 28.42, 27.25, 29.98, 27.80, 34.05,…</span></span>
-<span><span class="co">#&gt; $ soil_moisture20_cm    &lt;dbl&gt; 0.265, 0.374, 0.266, 0.509, 0.225, 0.363, 0.113,…</span></span>
-<span><span class="co">#&gt; $ soil_temperature20_cm &lt;dbl&gt; 28.39, 24.52, 25.96, 25.86, 27.59, 26.19, 30.16,…</span></span>
-<span><span class="co">#&gt; $ soil_moisture50_cm    &lt;dbl&gt; 0.268, NA, 0.298, 0.556, NA, NA, NA, 0.246, NA, …</span></span>
-<span><span class="co">#&gt; $ soil_temperature50_cm &lt;dbl&gt; 25.87, NA, 24.85, NA, NA, NA, NA, 25.56, NA, 27.…</span></span>
+<span><span class="co">#&gt; $ precip24_hr           &lt;dbl&gt; 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000,…</span></span>
+<span><span class="co">#&gt; $ precip48_hr           &lt;dbl&gt; 0.000, 0.000, 0.000, 0.000, 1.016, 3.556, 0.000,…</span></span>
+<span><span class="co">#&gt; $ precip72_hr           &lt;dbl&gt; 5.588, 0.508, 1.270, 1.016, 1.270, 3.556, 0.000,…</span></span>
+<span><span class="co">#&gt; $ wind_speed            &lt;dbl&gt; 3.4329, 2.9103, 3.2651, 2.3078, 6.7102, 2.9925, …</span></span>
+<span><span class="co">#&gt; $ wind_speed2_m         &lt;dbl&gt; 3.4329, 2.9103, 3.2651, 2.3078, 3.9514, 2.9925, …</span></span>
+<span><span class="co">#&gt; $ wind_direction        &lt;dbl&gt; 176, 182, 178, 149, 246, 128, 205, 157, 163, 130…</span></span>
+<span><span class="co">#&gt; $ wind_direction2_m     &lt;dbl&gt; 176, 182, 178, 149, 50, 128, 154, 196, 163, 130,…</span></span>
+<span><span class="co">#&gt; $ wind_gust             &lt;dbl&gt; 6.1386, 5.0734, 5.8723, 4.5408, 9.9405, 6.9375, …</span></span>
+<span><span class="co">#&gt; $ wind_gust2_m          &lt;dbl&gt; 6.1386, 5.0734, 5.8723, 4.5408, 7.2038, 6.9375, …</span></span>
+<span><span class="co">#&gt; $ battery_voltage       &lt;dbl&gt; 13.26, 13.40, 13.45, 13.33, 13.48, 13.38, 13.30,…</span></span>
+<span><span class="co">#&gt; $ soil_moisture         &lt;dbl&gt; 0.258, 0.360, 0.260, 0.502, 0.212, 0.355, 0.109,…</span></span>
+<span><span class="co">#&gt; $ soil_temperature      &lt;dbl&gt; 27.57, 24.42, 26.04, 25.87, 26.94, 25.68, 29.67,…</span></span>
+<span><span class="co">#&gt; $ soil_moisture5_cm     &lt;dbl&gt; 0.197, 0.248, 0.159, 0.424, 0.093, 0.149, NA, 0.…</span></span>
+<span><span class="co">#&gt; $ soil_temperature5_cm  &lt;dbl&gt; 32.18, 27.64, 32.48, 34.65, 34.12, 28.70, NA, 27…</span></span>
+<span><span class="co">#&gt; $ soil_moisture10_cm    &lt;dbl&gt; 0.208, 0.159, 0.268, 0.473, 0.225, 0.236, 0.117,…</span></span>
+<span><span class="co">#&gt; $ soil_temperature10_cm &lt;dbl&gt; 30.78, 25.88, 29.05, 27.21, 29.70, 26.89, 33.72,…</span></span>
+<span><span class="co">#&gt; $ soil_moisture20_cm    &lt;dbl&gt; 0.258, 0.360, 0.260, 0.502, 0.212, 0.355, 0.109,…</span></span>
+<span><span class="co">#&gt; $ soil_temperature20_cm &lt;dbl&gt; 27.57, 24.42, 26.04, 25.87, 26.94, 25.68, 29.67,…</span></span>
+<span><span class="co">#&gt; $ soil_moisture50_cm    &lt;dbl&gt; 0.263, NA, 0.291, 0.548, NA, NA, NA, 0.239, NA, …</span></span>
+<span><span class="co">#&gt; $ soil_temperature50_cm &lt;dbl&gt; 26.12, NA, 25.13, NA, NA, NA, NA, 25.72, NA, 27.…</span></span>
 <span><span class="co">#&gt; $ data_interval_minutes &lt;dbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span></span>
-<span><span class="co">#&gt; $ recorded_time         &lt;dttm&gt; 2026-06-08 23:50:00, 2026-06-08 23:50:00, 2026-…</span></span>
-<span><span class="co">#&gt; $ air_temp9_m           &lt;dbl&gt; NA, NA, NA, NA, 22.96, NA, 32.61, 29.47, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ wind_speed10_m        &lt;dbl&gt; NA, NA, NA, NA, 2.5036, NA, 6.9908, 0.0295, NA, …</span></span>
-<span><span class="co">#&gt; $ wind_direction10_m    &lt;dbl&gt; NA, NA, NA, NA, 223, NA, 157, 136, NA, NA, 79, 1…</span></span>
-<span><span class="co">#&gt; $ wind_gust10_m         &lt;dbl&gt; NA, NA, NA, NA, 3.9429, NA, 9.7739, 0.4998, NA, …</span></span>
-<span><span class="co">#&gt; $ air_pressure          &lt;dbl&gt; NA, NA, NA, NA, 939.7231, NA, 945.5057, 1009.215…</span></span>
-<span><span class="co">#&gt; $ solar_radiation       &lt;dbl&gt; NA, NA, NA, NA, 74.3613, NA, 146.6131, 206.2581,…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ recorded_time         &lt;dttm&gt; 2026-06-10 21:25:00, 2026-06-10 21:25:00, 2026-…</span></span>
+<span><span class="co">#&gt; $ air_temp9_m           &lt;dbl&gt; NA, NA, NA, NA, 29.98, NA, 31.62, 30.93, NA, NA,…</span></span>
+<span><span class="co">#&gt; $ wind_speed10_m        &lt;dbl&gt; NA, NA, NA, NA, 6.7102, NA, 8.7561, 0.0471, NA, …</span></span>
+<span><span class="co">#&gt; $ wind_direction10_m    &lt;dbl&gt; NA, NA, NA, NA, 246, NA, 205, 157, NA, NA, 136, …</span></span>
+<span><span class="co">#&gt; $ wind_gust10_m         &lt;dbl&gt; NA, NA, NA, NA, 9.9405, NA, 12.4395, 0.4443, NA,…</span></span>
+<span><span class="co">#&gt; $ air_pressure          &lt;dbl&gt; NA, NA, NA, NA, 937.3382, NA, 944.1740, 1006.592…</span></span>
+<span><span class="co">#&gt; $ solar_radiation       &lt;dbl&gt; NA, NA, NA, NA, 838.9671, NA, 824.4895, 715.1444…</span></span></code></pre></div>
 </div>
 <p>The TexMesonet API reports units in a separate object. preMetabolizer stores that object as a data-frame attribute.</p>
 <div class="cell">
@@ -282,7 +282,7 @@
 <span><span class="co">#&gt; # A tibble: 1 × 8</span></span>
 <span><span class="co">#&gt;   station_id station_name recorded_time       air_temp humidity precip</span></span>
 <span><span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;        &lt;dttm&gt;                 &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1          2 Altwein Rd   2026-06-08 23:50:00     27.9     72.2      0</span></span>
+<span><span class="co">#&gt; 1          2 Altwein Rd   2026-06-10 21:25:00     31.5     50.1      0</span></span>
 <span><span class="co">#&gt; # ℹ 2 more variables: wind_speed &lt;dbl&gt;, air_pressure &lt;dbl&gt;</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="retrieve-recent-time-series">Retrieve recent time series<a class="anchor" aria-label="anchor" href="#retrieve-recent-time-series"></a>
@@ -304,39 +304,39 @@
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">recent</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 96</span></span>
 <span><span class="co">#&gt; Columns: 27</span></span>
-<span><span class="co">#&gt; $ air_temp           &lt;dbl&gt; 27.75, 27.71, 27.42, 26.69, 25.58, 25.72, 25.04, 24…</span></span>
+<span><span class="co">#&gt; $ air_temp           &lt;dbl&gt; 31.59, 32.01, 31.63, 31.31, 31.85, 31.95, 30.74, 30…</span></span>
 <span><span class="co">#&gt; $ air_temp9_m        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ humidity           &lt;dbl&gt; 73.12, 70.63, 73.94, 75.83, 87.40, 90.40, 93.90, 96…</span></span>
-<span><span class="co">#&gt; $ precip             &lt;dbl&gt; 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.…</span></span>
-<span><span class="co">#&gt; $ wind_speed         &lt;dbl&gt; 1.8518, 1.3853, 1.8230, 2.3250, 2.9606, 2.5490, 2.5…</span></span>
-<span><span class="co">#&gt; $ wind_speed2_m      &lt;dbl&gt; 1.8518, 1.3853, 1.8230, 2.3250, 2.9606, 2.5490, 2.5…</span></span>
+<span><span class="co">#&gt; $ humidity           &lt;dbl&gt; 49.32, 49.02, 48.71, 48.65, 47.80, 48.34, 50.67, 51…</span></span>
+<span><span class="co">#&gt; $ precip             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …</span></span>
+<span><span class="co">#&gt; $ wind_speed         &lt;dbl&gt; 3.6481, 3.3243, 3.5032, 2.9076, 3.6950, 3.3960, 3.4…</span></span>
+<span><span class="co">#&gt; $ wind_speed2_m      &lt;dbl&gt; 3.6481, 3.3243, 3.5032, 2.9076, 3.6950, 3.3960, 3.4…</span></span>
 <span><span class="co">#&gt; $ wind_speed10_m     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ wind_direction     &lt;dbl&gt; 105, 127, 119, 103, 113, 176, 181, 154, 178, 165, 7…</span></span>
-<span><span class="co">#&gt; $ wind_direction2_m  &lt;dbl&gt; 105, 127, 119, 103, 113, 176, 181, 154, 178, 165, 7…</span></span>
+<span><span class="co">#&gt; $ wind_direction     &lt;dbl&gt; 177, 194, 162, 146, 197, 160, 170, 160, 161, 215, 3…</span></span>
+<span><span class="co">#&gt; $ wind_direction2_m  &lt;dbl&gt; 177, 194, 162, 146, 197, 160, 170, 160, 161, 215, 3…</span></span>
 <span><span class="co">#&gt; $ wind_direction10_m &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ wind_gust2_m       &lt;dbl&gt; 3.4756, 4.2745, 4.5408, 4.5408, 5.6060, 4.5408, 5.6…</span></span>
+<span><span class="co">#&gt; $ wind_gust2_m       &lt;dbl&gt; 7.4701, 6.1386, 8.0027, 6.4049, 6.4049, 6.1386, 6.1…</span></span>
 <span><span class="co">#&gt; $ wind_gust10_m      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
 <span><span class="co">#&gt; $ air_pressure       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
 <span><span class="co">#&gt; $ solar_radiation    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ soil_moist5        &lt;dbl&gt; 0.192, 0.193, 0.192, 0.193, 0.193, 0.193, 0.192, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_moist10       &lt;dbl&gt; 0.213, 0.213, 0.213, 0.213, 0.213, 0.213, 0.213, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_moist20       &lt;dbl&gt; 0.265, 0.265, 0.265, 0.265, 0.265, 0.265, 0.265, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_moist50       &lt;dbl&gt; 0.268, 0.268, 0.268, 0.268, 0.268, 0.268, 0.268, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_temp5         &lt;dbl&gt; 30.30, 30.39, 30.48, 30.58, 30.64, 30.73, 30.87, 31…</span></span>
-<span><span class="co">#&gt; $ soil_temp10        &lt;dbl&gt; 30.20, 30.24, 30.28, 30.31, 30.38, 30.41, 30.48, 30…</span></span>
-<span><span class="co">#&gt; $ soil_temp20        &lt;dbl&gt; 28.40, 28.35, 28.32, 28.27, 28.23, 28.17, 28.11, 28…</span></span>
-<span><span class="co">#&gt; $ soil_temp50        &lt;dbl&gt; 25.88, 25.88, 25.89, 25.88, 25.89, 25.88, 25.86, 25…</span></span>
+<span><span class="co">#&gt; $ soil_moist5        &lt;dbl&gt; 0.197, 0.197, 0.197, 0.197, 0.197, 0.197, 0.197, 0.…</span></span>
+<span><span class="co">#&gt; $ soil_moist10       &lt;dbl&gt; 0.208, 0.208, 0.208, 0.208, 0.208, 0.208, 0.207, 0.…</span></span>
+<span><span class="co">#&gt; $ soil_moist20       &lt;dbl&gt; 0.258, 0.258, 0.258, 0.259, 0.259, 0.259, 0.259, 0.…</span></span>
+<span><span class="co">#&gt; $ soil_moist50       &lt;dbl&gt; 0.264, 0.264, 0.264, 0.264, 0.264, 0.264, 0.264, 0.…</span></span>
+<span><span class="co">#&gt; $ soil_temp5         &lt;dbl&gt; 32.06, 31.98, 31.84, 31.67, 31.47, 31.32, 31.14, 30…</span></span>
+<span><span class="co">#&gt; $ soil_temp10        &lt;dbl&gt; 30.65, 30.44, 30.22, 29.99, 29.78, 29.56, 29.32, 29…</span></span>
+<span><span class="co">#&gt; $ soil_temp20        &lt;dbl&gt; 27.54, 27.42, 27.42, 27.36, 27.33, 27.24, 27.22, 27…</span></span>
+<span><span class="co">#&gt; $ soil_temp50        &lt;dbl&gt; 26.11, 26.13, 26.10, 26.12, 26.10, 26.13, 26.13, 26…</span></span>
 <span><span class="co">#&gt; $ water_level        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
 <span><span class="co">#&gt; $ water_temp         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
 <span><span class="co">#&gt; $ water_level2       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
 <span><span class="co">#&gt; $ water_temp2        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ date_time          &lt;dttm&gt; 2026-06-08 23:45:00, 2026-06-08 23:30:00, 2026-06-…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ date_time          &lt;dttm&gt; 2026-06-10 21:15:00, 2026-06-10 21:00:00, 2026-06-…</span></span></code></pre></div>
 </div>
 <p>The returned <code>date_time</code> column is parsed as UTC.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">recent</span><span class="op">$</span><span class="va">date_time</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "2026-06-08 00:00:00 UTC" "2026-06-08 23:45:00 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-06-09 21:35:00 UTC" "2026-06-10 21:15:00 UTC"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">recent</span><span class="op">$</span><span class="va">date_time</span>, <span class="st">"tzone"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "UTC"</span></span></code></pre></div>
 </div>
@@ -363,12 +363,12 @@
 <span><span class="co">#&gt; # A tibble: 6 × 2</span></span>
 <span><span class="co">#&gt;   value date_time          </span></span>
 <span><span class="co">#&gt;   &lt;dbl&gt; &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt; 1    82 2026-06-08 23:25:00</span></span>
-<span><span class="co">#&gt; 2    82 2026-06-08 23:30:00</span></span>
-<span><span class="co">#&gt; 3    82 2026-06-08 23:35:00</span></span>
-<span><span class="co">#&gt; 4    82 2026-06-08 23:40:00</span></span>
-<span><span class="co">#&gt; 5    82 2026-06-08 23:45:00</span></span>
-<span><span class="co">#&gt; 6    82 2026-06-08 23:50:00</span></span>
+<span><span class="co">#&gt; 1    90 2026-06-10 21:00:00</span></span>
+<span><span class="co">#&gt; 2    90 2026-06-10 21:05:00</span></span>
+<span><span class="co">#&gt; 3    90 2026-06-10 21:10:00</span></span>
+<span><span class="co">#&gt; 4    89 2026-06-10 21:15:00</span></span>
+<span><span class="co">#&gt; 5    89 2026-06-10 21:20:00</span></span>
+<span><span class="co">#&gt; 6    89 2026-06-10 21:25:00</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">temperature</span>, <span class="st">"units"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Fahrenheit"</span></span></code></pre></div>
@@ -391,20 +391,20 @@
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">hourly_weather</span></span>
-<span><span class="co">#&gt; # A tibble: 24 × 5</span></span>
+<span><span class="co">#&gt; # A tibble: 25 × 5</span></span>
 <span><span class="co">#&gt;    hour                air_temp_C humidity_pct precip_mm wind_speed_m_s</span></span>
 <span><span class="co">#&gt;    &lt;dttm&gt;                   &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 2026-06-08 00:00:00       29.3         63.3         0           3.17</span></span>
-<span><span class="co">#&gt;  2 2026-06-08 01:00:00       27.7         70.2         0           1.87</span></span>
-<span><span class="co">#&gt;  3 2026-06-08 02:00:00       26.4         82.9         0           1.78</span></span>
-<span><span class="co">#&gt;  4 2026-06-08 03:00:00       25.7         86.6         0           1.94</span></span>
-<span><span class="co">#&gt;  5 2026-06-08 04:00:00       25.2         89.4         0           2.74</span></span>
-<span><span class="co">#&gt;  6 2026-06-08 05:00:00       24.6         89.9         0           3.58</span></span>
-<span><span class="co">#&gt;  7 2026-06-08 06:00:00       23.9         89.7         0           3.73</span></span>
-<span><span class="co">#&gt;  8 2026-06-08 07:00:00       23.4         88.1         0           3.92</span></span>
-<span><span class="co">#&gt;  9 2026-06-08 08:00:00       23.2         90.2         0           3.85</span></span>
-<span><span class="co">#&gt; 10 2026-06-08 09:00:00       23.2         90.4         0           3.14</span></span>
-<span><span class="co">#&gt; # ℹ 14 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 2026-06-09 21:00:00       30.9         59.1         0         2.12  </span></span>
+<span><span class="co">#&gt;  2 2026-06-09 22:00:00       30.9         58.1         0         1.81  </span></span>
+<span><span class="co">#&gt;  3 2026-06-09 23:00:00       29.7         59.3         0         1.63  </span></span>
+<span><span class="co">#&gt;  4 2026-06-10 00:00:00       28.9         60.5         0         1.25  </span></span>
+<span><span class="co">#&gt;  5 2026-06-10 01:00:00       27.4         64.2         0         0.0482</span></span>
+<span><span class="co">#&gt;  6 2026-06-10 02:00:00       25.9         71.9         0         0.0009</span></span>
+<span><span class="co">#&gt;  7 2026-06-10 03:00:00       24.8         76.7         0         0.646 </span></span>
+<span><span class="co">#&gt;  8 2026-06-10 04:00:00       24.1         75.3         0         1.89  </span></span>
+<span><span class="co">#&gt;  9 2026-06-10 05:00:00       23.2         80.3         0         1.89  </span></span>
+<span><span class="co">#&gt; 10 2026-06-10 06:00:00       22.7         87.3         0         2.71  </span></span>
+<span><span class="co">#&gt; # ℹ 15 more rows</span></span></code></pre></div>
 </div>
 <p>Plotting the recent series can help identify gaps or station behavior before combining meteorological data with stream logger observations.</p>
 <div class="cell">

@@ -72,7 +72,9 @@ of Chemical and Engineering Data, 24(4), 356-360.
 
 [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md),
 [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md),
-[`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md)
+[`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md),
+[`calc_N2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2sat.md),
+[`calc_Arsat()`](https://connorb.github.io/preMetabolizer/reference/calc_Arsat.md)
 
 ## Examples
 

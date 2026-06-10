@@ -64,22 +64,24 @@ better fitting equations. Limnology and Oceanography, 37(6), 1307-1312.
 
 [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md),
 [`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md),
-[`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md)
+[`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md),
+[`calc_N2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2sat.md),
+[`calc_Arsat()`](https://connorb.github.io/preMetabolizer/reference/calc_Arsat.md)
 
 ## Examples
 
 ``` r
 calc_O2sat(temp_water = 15, atmo_press = 1, units = "atm")
-#> [1] 10.0839
+#> [1] 10.08393
 
 calc_O2sat(
   temp_water = c(5, 15, 25),
   atmo_press = c(101.2, 100.8, 100.5),
   units = "kPa"
 )
-#> [1] 12.754311 10.030760  8.193614
+#> [1] 12.754349 10.030790  8.193632
 
 # Return micromoles per liter instead of mg/L
 calc_O2sat(temp_water = 15, atmo_press = 1, out_units = "umol/L")
-#> [1] 315.1338
+#> [1] 315.1347
 ```

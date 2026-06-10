@@ -36,6 +36,15 @@
   instead of individual years, and returns column names in `snake_case`
   (no issue).
 
+- [`get_noaa_ghg()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_ghg.md)
+  downloads the NOAA Global Monitoring Laboratory globally averaged
+  monthly mean records for CO2, CH4, N2O, and SF6 and returns them
+  stacked long with a `gas` label, a mid-month `date`, and a `unit`
+  column; each gas is reported in its standard NOAA unit by default (CO2
+  in ppm, CH4 and N2O in ppb, SF6 in ppt), or pass `units` (`"ppm"`,
+  `"ppb"`, or `"ppt"`) to convert every gas to a common unit; `-9.99`
+  uncertainty sentinels are read as `NA` (no issue).
+
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
   now queries the NCEI Search API for GHCND stations instead of parsing
   the MSHR fixed-width archive; it accepts `bbox`, `start_date`,
@@ -80,6 +89,12 @@
 - Messages, warnings, and errors now consistently use cli formatting
   across the package (no issue).
 
+- [`calc_Arsat()`](https://connorb.github.io/preMetabolizer/reference/calc_Arsat.md)
+  calculates dissolved argon saturation (the concentration in
+  equilibrium with the atmosphere) from water temperature, barometric
+  pressure, and salinity using the Hamme and Emerson (2004) solubility
+  fit, returning umol/L or mg/L (no issue).
+
 - [`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md)
   calculates dissolved methane saturation (the concentration in
   equilibrium with the atmosphere) from water temperature, barometric
@@ -105,6 +120,12 @@
   equilibrium with the atmosphere) using the Weiss and Price (1980)
   trace-gas solubility function, returning umol/L or mg/L (no issue).
 
+- [`calc_N2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2sat.md)
+  calculates dissolved nitrogen (N2) saturation (the concentration in
+  equilibrium with the atmosphere) from water temperature, barometric
+  pressure, and salinity using the Hamme and Emerson (2004) solubility
+  fit, returning umol/L or mg/L (no issue).
+
 - [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
   gains an `out_units` argument to return saturation in umol/L in
   addition to mg/L (no issue).
@@ -120,6 +141,16 @@
   Antoine equation constant `B` was incorrectly set to 140.264 (should
   be 1435.264), causing vapor pressures that were orders of magnitude
   too large.
+
+- [`calc_water_density()`](https://connorb.github.io/preMetabolizer/reference/calc_water_density.md)
+  gains a `salinity` argument: freshwater (`salinity = 0`) uses the
+  Tanaka et al. (2001) recommended pure-water (SMOW) equation up to 40°C
+  and Kell (1975) above 40°C (to 150°C), and any nonzero salinity uses
+  the Millero and Poisson (1981) one-atmosphere seawater equation of
+  state (valid 0-40°C and salinity 0.5-43), warning when temperature or
+  salinity falls outside the valid range of the equation used. The
+  gas-saturation functions now share this single density helper instead
+  of a private copy (no issue).
 
 - [`calc_water_density()`](https://connorb.github.io/preMetabolizer/reference/calc_water_density.md)
   no longer accepts a `.drop_units` argument; it always returns a plain
@@ -174,13 +205,13 @@
   replace `convert_UTC_to_solartime()` and `convert_solartime_to_UTC()`.
   The new functions use the standard 15 deg/hour longitude offset for
   mean solar time and delegate to
-  [`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html)
+  [`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html)
   for apparent solar time. They are renamed to avoid shadowing the
   originals in `streamMetabolizer`, which can still be called directly
   when needed (no issue).
 
 - `calc_light()` now computes the solar zenith angle via
-  [`SunCalcMeeus::sun_zenith_angle()`](https://rdrr.io/pkg/SunCalcMeeus/man/sun_angles.html)
+  [`SunCalcMeeus::sun_zenith_angle()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/sun_angles.html)
   (full Meeus algorithms) instead of an internal first-order declination
   approximation. The public signature is unchanged; PAR values shift by
   less than ~0.03 percent. The internal helpers
