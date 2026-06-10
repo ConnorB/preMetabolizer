@@ -1,5 +1,5 @@
 test_that("weiss_price_F reproduces Weiss & Price (1980) gravimetric tables", {
-  density_kgL <- calc_O2sat_density(10, 34) / 1000
+  density_kgL <- calc_water_density(10, 34) / 1000
 
   # Table VII: CO2 gravimetric F = 4.342e-2 mol/(kg atm) at T=10C, S=34.
   F_co2 <- weiss_price_F(

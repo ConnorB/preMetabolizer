@@ -23,6 +23,7 @@ reference:
       - get_noaa_stations
       - closest_noaa_stations
       - get_ghcnh
+      - get_noaa_ghg
       - get_nasa_data
       - get_usgs_elev
       - iem_networks
@@ -51,6 +52,8 @@ reference:
       - calc_CO2sat
       - calc_CH4sat
       - calc_N2Osat
+      - calc_N2sat
+      - calc_Arsat
       - calc_CO2_molKg
       - calc_CO2_mgL
       - calc_K0

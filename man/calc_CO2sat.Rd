@@ -66,5 +66,6 @@ Weiss, R.F., and Price, B.A. (1980). Nitrous oxide solubility in water and
 seawater. Marine Chemistry, 8, 347-359.
 }
 \seealso{
-\code{\link[=calc_O2sat]{calc_O2sat()}}, \code{\link[=calc_CH4sat]{calc_CH4sat()}}, \code{\link[=calc_N2Osat]{calc_N2Osat()}}, \code{\link[=calc_CO2_molKg]{calc_CO2_molKg()}}
+\code{\link[=calc_O2sat]{calc_O2sat()}}, \code{\link[=calc_CH4sat]{calc_CH4sat()}}, \code{\link[=calc_N2Osat]{calc_N2Osat()}}, \code{\link[=calc_N2sat]{calc_N2sat()}},
+\code{\link[=calc_Arsat]{calc_Arsat()}}, \code{\link[=calc_CO2_molKg]{calc_CO2_molKg()}}
 }

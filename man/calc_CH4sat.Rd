@@ -64,5 +64,6 @@ methane, carbon monoxide, and hydrogen in water and sea water. Journal of
 Chemical and Engineering Data, 24(4), 356-360.
 }
 \seealso{
-\code{\link[=calc_O2sat]{calc_O2sat()}}, \code{\link[=calc_CO2sat]{calc_CO2sat()}}, \code{\link[=calc_N2Osat]{calc_N2Osat()}}
+\code{\link[=calc_O2sat]{calc_O2sat()}}, \code{\link[=calc_CO2sat]{calc_CO2sat()}}, \code{\link[=calc_N2Osat]{calc_N2Osat()}}, \code{\link[=calc_N2sat]{calc_N2sat()}},
+\code{\link[=calc_Arsat]{calc_Arsat()}}
 }

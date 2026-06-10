@@ -42,9 +42,8 @@ calc_water_height(
 
 }
 \references{
-Kell, G. S. (1975). Density, thermal expansivity, and compressibility of
-liquid water from 0° to 150°C: Correlations and tables for atmospheric
-pressure and saturation reviewed and expressed on 1968 temperature scale.
-\emph{Journal of Chemical and Engineering Data}, 20(1), 97-105.
-\doi{10.1021/je60064a005}
+Tanaka, M., Girard, G., Davis, R., Peuto, A., and Bignell, N. (2001).
+Recommended table for the density of water between 0°C and 40°C based on
+recent experimental reports. \emph{Metrologia}, 38(4), 301-309.
+\doi{10.1088/0026-1394/38/4/3}
 }

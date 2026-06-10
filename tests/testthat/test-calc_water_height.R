@@ -16,13 +16,7 @@ test_that("calc_water_height behaves as expected under various conditions", {
 
   # Manual calculation for vented sensors
   gravity <- 9.80665
-  water_density <- (999.83952 +
-    16.945176 * water_temp +
-    (-7.9870401e-3) * water_temp^2 +
-    (-46.170461e-6) * water_temp^3 +
-    105.56302e-9 * water_temp^4 +
-    (-280.54253e-12) * water_temp^5) /
-    (1 + 16.87985e-3 * water_temp)
+  water_density <- calc_water_density(water_temp)
   delta_Pa <- sensor_kPa * 1000
   expected_height_vented <- delta_Pa / (water_density * gravity)
 

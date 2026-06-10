@@ -2,29 +2,25 @@
 % Please edit documentation in R/calc_vapor_press.R
 \name{calc_vapor_press}
 \alias{calc_vapor_press}
-\title{Calculate water vapor pressure}
+\title{Saturation vapor pressure of water}
 \usage{
 calc_vapor_press(temp_water = 25, salinity = 0, method = "Dickson2007")
 }
 \arguments{
-\item{temp_water}{Numeric vector. Water temperature in degrees Celsius.
-Defaults to \code{25}.}
+\item{temp_water}{Water temperature in degrees Celsius. May be a vector.}
 
-\item{salinity}{Numeric vector. Salinity in practical salinity units.
-Defaults to freshwater (\code{0}).}
+\item{salinity}{Practical salinity (unitless). Use 0 for freshwater.
+Ignored when \code{method = "MIMSY"}.}
 
-\item{method}{Character string. Calculation method. Use \code{"Dickson2007"} for
-seawater and \code{"MIMSY"} for freshwater. Defaults to \code{"Dickson2007"}.}
+\item{method}{Either "Dickson2007" (Wagner & Pruss pure-water fit with a
+seawater osmotic correction) or "MIMSY" (Antoine equation, freshwater).
+Defaults to \code{"Dickson2007"}.}
 }
 \value{
-Numeric vector of vapor pressure in atm.
+Saturation vapor pressure in atm.
 }
 \description{
-Calculates the vapor pressure of freshwater or seawater in atmospheres.
-}
-\details{
-\code{"Dickson2007"} follows the ocean CO2 best-practices guide and includes a
-salinity correction. \code{"MIMSY"} uses the Antoine equation for freshwater.
+Computes the saturation vapor pressure of water (or seawater) in atm.
 }
 \examples{
 calc_vapor_press(temp_water = 25, salinity = 35, method = "Dickson2007")
@@ -32,9 +28,11 @@ calc_vapor_press(temp_water = 20, salinity = 0, method = "MIMSY")
 
 }
 \references{
-Dickson, A.G., Sabine, C.L., and Christian, J.R. (Eds.) (2007). Guide to
-best practices for ocean CO2 measurements. PICES Special Publication 3.
-
+Dickson, A.G., Sabine, C.L. and Christian, J.R. (Eds.) 2007. Guide to best
+practices for ocean CO2 measurements. PICES Special Publication 3, 191 pp.
+(Chapter 5, section 3.)
+Stull, D.R. 1947. Vapor pressure of pure substances. Ind. Eng. Chem. 39(4):
+517-540. doi:10.1021/ie50448a022
 Kelly, M.C. (2024). mimsy: Calculate MIMS Dissolved Gas Concentrations
 Without Getting a Headache. R package version 0.6.5.
 \url{https://CRAN.R-project.org/package=mimsy}

@@ -30,7 +30,8 @@
 #' Weiss, R.F., and Price, B.A. (1980). Nitrous oxide solubility in water and
 #' seawater. Marine Chemistry, 8, 347-359.
 #'
-#' @seealso [calc_O2sat()], [calc_CO2sat()], [calc_CH4sat()]
+#' @seealso [calc_O2sat()], [calc_CO2sat()], [calc_CH4sat()], [calc_N2sat()],
+#'   [calc_Arsat()]
 #'
 #' @examples
 #' calc_N2Osat(temp_water = 20, atmo_press = 1, salinity = 0)
@@ -72,12 +73,13 @@ calc_N2Osat <- function(
 
   # C* = x' F at the Weiss & Price moist-air 1-atm reference condition,
   # then scaled by the dry-pressure ratio for the supplied barometric pressure.
-  press_corr <- sat_press_corr(
+  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
+  P_H2O_atm <- calc_vapor_press(
     temp_water,
-    atmo_press,
-    units,
-    salinity = salinity
+    salinity = salinity,
+    method = "Dickson2007"
   )
+  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
   N2O_molL <- F_n2o * xN2O_ppm * 1e-6 * press_corr
 
   if (out_units == "mg/L") {

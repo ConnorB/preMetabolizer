@@ -32,7 +32,8 @@
 #' Weiss, R.F., and Price, B.A. (1980). Nitrous oxide solubility in water and
 #' seawater. Marine Chemistry, 8, 347-359.
 #'
-#' @seealso [calc_O2sat()], [calc_CH4sat()], [calc_N2Osat()], [calc_CO2_molKg()]
+#' @seealso [calc_O2sat()], [calc_CH4sat()], [calc_N2Osat()], [calc_N2sat()],
+#'   [calc_Arsat()], [calc_CO2_molKg()]
 #'
 #' @examples
 #' calc_CO2sat(temp_water = 20, atmo_press = 1, salinity = 0)
@@ -72,12 +73,13 @@ calc_CO2sat <- function(
     B3 = 0.0053407
   )
   # C* = x' F for moist air at 1 atm, scaled to the supplied barometric pressure
-  press_corr <- sat_press_corr(
+  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
+  P_H2O_atm <- calc_vapor_press(
     temp_water,
-    atmo_press,
-    units,
-    salinity = salinity
+    salinity = salinity,
+    method = "Dickson2007"
   )
+  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
   CO2_molL <- F_co2 * xCO2_ppm * 1e-6 * press_corr
   if (out_units == "mg/L") {
     CO2_molL * 44.0095 * 1e3

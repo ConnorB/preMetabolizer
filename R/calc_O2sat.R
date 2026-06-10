@@ -25,7 +25,8 @@
 #' Garcia, H.E., and Gordon, L.I. (1992). Oxygen solubility in seawater: better
 #' fitting equations. Limnology and Oceanography, 37(6), 1307-1312.
 #'
-#' @seealso [calc_CO2sat()], [calc_CH4sat()], [calc_N2Osat()]
+#' @seealso [calc_CO2sat()], [calc_CH4sat()], [calc_N2Osat()], [calc_N2sat()],
+#'   [calc_Arsat()]
 #'
 #' @examples
 #' calc_O2sat(temp_water = 15, atmo_press = 1, units = "atm")
@@ -51,26 +52,29 @@ calc_O2sat <- function(
   check_numeric(salinity)
   out_units <- rlang::arg_match(out_units, c("mg/L", "umol/L"))
 
-  # Vapor-pressure-corrected barometric pressure correction
-  press_corr <- sat_press_corr(
+  # Scale the 1-atm equilibrium concentration to the supplied barometric
+  # pressure as C(P) = C(1 atm) * (P - pH2O) / (1 - pH2O), using the
+  # salinity-aware Dickson et al. (2007) saturated water vapor pressure.
+  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
+  P_H2O_atm <- calc_vapor_press(
     temp_water,
-    atmo_press,
-    units,
-    salinity = salinity
+    salinity = salinity,
+    method = "Dickson2007"
   )
+  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
 
   # O2 saturation calculation (Benson and Krause fit in Garcia and Gordon 1992)
   A0 <- 5.80871
   A1 <- 3.20291
   A2 <- 4.17887
   A3 <- 5.10006
-  A4 <- -9.86643 * 10^-2
+  A4 <- -9.86643e-2
   A5 <- 3.80369
-  B0 <- -7.01577 * 10^-3
-  B1 <- -7.70028 * 10^-3
-  B2 <- -1.13864 * 10^-2
-  B3 <- -9.51519 * 10^-3
-  C0 <- -2.75915 * 10^-7
+  B0 <- -7.01577e-3
+  B1 <- -7.70028e-3
+  B2 <- -1.13864e-2
+  B3 <- -9.51519e-3
+  C0 <- -2.75915e-7
 
   # Scaled temperature
   TS <- log((298.15 - temp_water) / (273.15 + temp_water))
@@ -89,7 +93,7 @@ calc_O2sat <- function(
   DOsat_uMol.kg <- exp(lnO2.sat) * press_corr
 
   # Density [kg/m^3] used to convert from umol/kg to umol/L or mg/L
-  water_density <- calc_O2sat_density(temp_water, salinity)
+  water_density <- calc_water_density(temp_water, salinity)
 
   if (out_units == "umol/L") {
     # umol/kg * (kg/L) = umol/L
@@ -98,39 +102,4 @@ calc_O2sat <- function(
     # umol/kg -> mg/L (31.99880 g/mol O2; density in kg/m^3 gives g/m^3 = mg/L)
     DOsat_uMol.kg * (10^(-6)) * 31.99880 * water_density
   }
-}
-
-# Barometric pressure correction factor shared by the gas-saturation functions.
-# Scales an equilibrium concentration computed for water-vapor-saturated air at
-# 1 atm total pressure to the supplied barometric pressure, following
-# C(P) = C(1 atm) * (P - pH2O) / (1 - pH2O). The saturated water vapor pressure
-# pH2O is the salinity-aware Dickson et al. (2007) value.
-sat_press_corr <- function(temp_water, atmo_press, units, salinity = 0) {
-  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
-  P_H2O_atm <- calc_vapor_press(
-    temp_water,
-    salinity = salinity,
-    method = "Dickson2007"
-  )
-  (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
-}
-
-calc_O2sat_density <- function(temp_water, salinity) {
-  density_fresh <- calc_water_density(temp_water)
-
-  # Salinity terms from the UNESCO equation of state at atmospheric pressure.
-  A <- 0.824493 -
-    0.0040899 * temp_water +
-    0.000076438 * temp_water^2 -
-    0.00000082467 * temp_water^3 +
-    0.0000000053875 * temp_water^4
-  B <- -0.00572466 +
-    0.00010227 * temp_water -
-    0.0000016546 * temp_water^2
-  C <- 0.00048314
-
-  density_fresh +
-    A * salinity +
-    B * salinity^(3 / 2) +
-    C * salinity^2
 }

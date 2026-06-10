@@ -58,5 +58,6 @@ Garcia, H.E., and Gordon, L.I. (1992). Oxygen solubility in seawater: better
 fitting equations. Limnology and Oceanography, 37(6), 1307-1312.
 }
 \seealso{
-\code{\link[=calc_CO2sat]{calc_CO2sat()}}, \code{\link[=calc_CH4sat]{calc_CH4sat()}}, \code{\link[=calc_N2Osat]{calc_N2Osat()}}
+\code{\link[=calc_CO2sat]{calc_CO2sat()}}, \code{\link[=calc_CH4sat]{calc_CH4sat()}}, \code{\link[=calc_N2Osat]{calc_N2Osat()}}, \code{\link[=calc_N2sat]{calc_N2sat()}},
+\code{\link[=calc_Arsat]{calc_Arsat()}}
 }

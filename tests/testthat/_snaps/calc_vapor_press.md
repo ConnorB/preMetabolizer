@@ -4,7 +4,7 @@
       calc_vapor_press(20, 10, "MIMSY")
     Condition
       Warning:
-      `salinity` should be 0 when using `method = "MIMSY"`.
+      `salinity` is ignored when `method = "MIMSY"`.
     Output
       [1] 0.02300875
 

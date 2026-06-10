@@ -30,7 +30,8 @@
 #' methane, carbon monoxide, and hydrogen in water and sea water. Journal of
 #' Chemical and Engineering Data, 24(4), 356-360.
 #'
-#' @seealso [calc_O2sat()], [calc_CO2sat()], [calc_N2Osat()]
+#' @seealso [calc_O2sat()], [calc_CO2sat()], [calc_N2Osat()], [calc_N2sat()],
+#'   [calc_Arsat()]
 #'
 #' @examples
 #' calc_CH4sat(temp_water = 20, atmo_press = 1, salinity = 0)
@@ -80,12 +81,13 @@ calc_CH4sat <- function(
 
   # Equilibrium concentration [nmol/L] at the moist-air 1-atm reference condition,
   # scaled to the supplied barometric pressure.
-  press_corr <- sat_press_corr(
+  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
+  P_H2O_atm <- calc_vapor_press(
     temp_water,
-    atmo_press,
-    units,
-    salinity = salinity
+    salinity = salinity,
+    method = "Dickson2007"
   )
+  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
 
   CH4_nmolL <- exp(ln_C) * press_corr
   if (out_units == "mg/L") {
