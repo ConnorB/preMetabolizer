@@ -24,8 +24,10 @@ the function operates on the underlying instant, so a CDT timestamp
 and the matching UTC timestamp produce identical results. Character or
 \code{Date} input is coerced with \code{as.POSIXct(., tz = "UTC")}.}
 
-\item{longitude}{Numeric. Site longitude in decimal degrees; western
-longitudes are negative.}
+\item{longitude}{Numeric site longitude in decimal degrees; western
+longitudes are negative. Length 1 for a single site, or the same length as
+the datetime input to convert several sites at once (one site per
+timestamp).}
 
 \item{type}{One of \code{"mean"} (default) or \code{"apparent"}.}
 

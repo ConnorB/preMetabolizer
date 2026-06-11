@@ -9,11 +9,13 @@ calc_par(solar_time, latitude, longitude, max_par = 2326)
 \arguments{
 \item{solar_time}{POSIXct vector of mean solar time values.}
 
-\item{latitude}{Numeric. Site latitude in decimal degrees between -90 and
-90.}
+\item{latitude}{Numeric site latitude in decimal degrees between -90 and 90.
+Length 1 for a single site, or the same length as \code{solar_time} to model
+several sites at once (one site per timestamp).}
 
-\item{longitude}{Numeric. Site longitude in decimal degrees; western
-longitudes are negative.}
+\item{longitude}{Numeric site longitude in decimal degrees; western
+longitudes are negative. Length 1 for a single site, or the same length as
+\code{solar_time} to model several sites at once (one site per timestamp).}
 
 \item{max_par}{Numeric. Peak daily PAR in umol m^-2 s^-1. Defaults to
 \code{2326}.}

@@ -24,10 +24,12 @@
 #' function.
 #'
 #' @param solar_time POSIXct vector of mean solar time values.
-#' @param latitude Numeric. Site latitude in decimal degrees between -90 and
-#'   90.
-#' @param longitude Numeric. Site longitude in decimal degrees; western
-#'   longitudes are negative.
+#' @param latitude Numeric site latitude in decimal degrees between -90 and 90.
+#'   Length 1 for a single site, or the same length as `solar_time` to model
+#'   several sites at once (one site per timestamp).
+#' @param longitude Numeric site longitude in decimal degrees; western
+#'   longitudes are negative. Length 1 for a single site, or the same length as
+#'   `solar_time` to model several sites at once (one site per timestamp).
 #' @param max_par Numeric. Peak daily PAR in umol m^-2 s^-1. Defaults to
 #'   `2326`.
 #'
@@ -53,23 +55,39 @@
 #'
 #' @export
 calc_par <- function(solar_time, latitude, longitude, max_par = 2326) {
+  n <- length(solar_time)
+  check_site_coord(latitude, n)
+  check_site_coord(longitude, n)
+
   utc <- convert_from_solar_time(
     solar_time,
     longitude = longitude,
     type = "mean"
   )
 
-  geocode <- tibble::tibble(
-    lon = longitude,
-    lat = latitude,
-    address = "calc_par_site"
-  )
-  zenith_rad <- SunCalcMeeus::sun_zenith_angle(
-    time = utc,
-    geocode = geocode
-  ) *
-    pi /
-    180
+  # `SunCalcMeeus::sun_zenith_angle()` vectorizes over time for a single
+  # geocode but cannot pair n timestamps with n geocode rows, so group by
+  # unique site and compute each site's timestamps together.
+  lat <- rep_len(latitude, n)
+  lon <- rep_len(longitude, n)
+  zenith_rad <- numeric(n)
+  site_key <- paste(lon, lat)
+
+  for (key in unique(site_key)) {
+    idx <- which(site_key == key)
+    geocode <- data.frame(
+      lon = lon[idx[1]],
+      lat = lat[idx[1]],
+      address = "calc_par_site",
+      stringsAsFactors = FALSE
+    )
+    zenith_rad[idx] <- SunCalcMeeus::sun_zenith_angle(
+      time = utc[idx],
+      geocode = geocode
+    ) *
+      pi /
+      180
+  }
 
   pmax(max_par * cos(zenith_rad), 0)
 }

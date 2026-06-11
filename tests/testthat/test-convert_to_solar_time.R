@@ -86,3 +86,29 @@ test_that("convert_to_solar_time deprecates dateTime argument", {
     longitude = -96.6
   )))
 })
+
+test_that("convert_to_solar_time handles one site per timestamp", {
+  utc <- as.POSIXct(c("2024-06-21 18:00", "2024-06-21 06:00"), tz = "UTC")
+  for (type in c("mean", "apparent")) {
+    multi <- convert_to_solar_time(utc, longitude = c(-96.6, -100), type = type)
+    s1 <- convert_to_solar_time(utc[1], longitude = -96.6, type = type)
+    s2 <- convert_to_solar_time(utc[2], longitude = -100, type = type)
+    expect_equal(as.numeric(multi), as.numeric(c(s1, s2)))
+  }
+})
+
+test_that("convert_from_solar_time inverts the multi-site forward conversion", {
+  utc <- as.POSIXct(c("2024-06-21 18:00", "2024-06-21 06:00"), tz = "UTC")
+  lon <- c(-96.6, -100)
+  solar <- convert_to_solar_time(utc, longitude = lon)
+  back <- convert_from_solar_time(solar, longitude = lon)
+  expect_equal(as.numeric(back), as.numeric(utc))
+})
+
+test_that("solar time conversions error on a bad longitude length", {
+  utc <- as.POSIXct(c("2024-06-21 18:00", "2024-06-21 06:00"), tz = "UTC")
+  expect_snapshot(
+    convert_to_solar_time(utc, longitude = c(-96.6, -100, -110)),
+    error = TRUE
+  )
+})

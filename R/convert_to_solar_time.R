@@ -20,8 +20,10 @@
 #'   reading is interpreted as solar time even though the tzone attribute is
 #'   UTC; this matches the convention used by `streamMetabolizer` and
 #'   `SunCalcMeeus`.
-#' @param longitude Numeric. Site longitude in decimal degrees; western
-#'   longitudes are negative.
+#' @param longitude Numeric site longitude in decimal degrees; western
+#'   longitudes are negative. Length 1 for a single site, or the same length as
+#'   the datetime input to convert several sites at once (one site per
+#'   timestamp).
 #' @param type One of `"mean"` (default) or `"apparent"`.
 #'
 #' @return A POSIXct vector with class `c("solar_date", "POSIXct", "POSIXt")`
@@ -82,6 +84,8 @@ convert_to_solar_time <- function(
     date_time <- lubridate::with_tz(date_time, "UTC")
   }
 
+  check_site_coord(longitude, length(date_time))
+
   if (type == "mean") {
     offset_seconds <- longitude / 15 * 3600
     solar <- date_time + offset_seconds
@@ -90,30 +94,47 @@ convert_to_solar_time <- function(
     return(solar)
   }
 
-  geocode <- tibble::tibble(
-    lon = longitude,
-    lat = 0,
-    address = "solar_time_reference"
-  )
-
-  raw_solar <- SunCalcMeeus::solar_time(
-    time = date_time,
-    geocode = geocode,
-    unit.out = "datetime"
-  )
-
-  # `SunCalcMeeus::solar_time()` returns the solar time wrapped onto the
-  # same calendar day as the UTC input (i.e., it adds or removes 24 h to
-  # keep the clock reading within [00:00, 24:00) on the input date). Undo
-  # that wrap so the returned timestamp lies on the correct solar
-  # calendar day. The natural offset is bounded by abs(longitude)/15
-  # hours, so normalising to [-12 h, +12 h] is sufficient.
-  offset <- as.numeric(raw_solar) - as.numeric(date_time)
-  offset <- ((offset + 43200) %% 86400) - 43200
-  solar <- date_time + offset
+  solar <- solar_time_apparent(date_time, longitude)
   attr(solar, "tzone") <- "UTC"
   class(solar) <- c("solar_date", "POSIXct", "POSIXt")
   solar
+}
+
+# Apparent solar time for one or more sites. `SunCalcMeeus::solar_time()`
+# vectorizes over time for a single geocode but cannot pair n timestamps with n
+# geocode rows, so group by unique longitude and convert each site's timestamps
+# together. `longitude` is length 1 (one site) or length(date_time) (one site
+# per timestamp); the result preserves the input order.
+solar_time_apparent <- function(date_time, longitude) {
+  lon <- rep_len(longitude, length(date_time))
+  out <- date_time
+
+  for (site_lon in unique(lon)) {
+    idx <- which(lon == site_lon)
+    geocode <- data.frame(
+      lon = site_lon,
+      lat = 0,
+      address = "solar_time_reference",
+      stringsAsFactors = FALSE
+    )
+    raw_solar <- SunCalcMeeus::solar_time(
+      time = date_time[idx],
+      geocode = geocode,
+      unit.out = "datetime"
+    )
+
+    # `SunCalcMeeus::solar_time()` returns the solar time wrapped onto the
+    # same calendar day as the UTC input (i.e., it adds or removes 24 h to
+    # keep the clock reading within [00:00, 24:00) on the input date). Undo
+    # that wrap so the returned timestamp lies on the correct solar
+    # calendar day. The natural offset is bounded by abs(longitude)/15
+    # hours, so normalising to [-12 h, +12 h] is sufficient.
+    offset <- as.numeric(raw_solar) - as.numeric(date_time[idx])
+    offset <- ((offset + 43200) %% 86400) - 43200
+    out[idx] <- date_time[idx] + offset
+  }
+
+  out
 }
 
 #' @rdname convert_to_solar_time
@@ -130,6 +151,8 @@ convert_from_solar_time <- function(
   } else {
     solar_datetime <- lubridate::with_tz(solar_datetime, "UTC")
   }
+
+  check_site_coord(longitude, length(solar_datetime))
 
   if (type == "mean") {
     offset_seconds <- longitude / 15 * 3600

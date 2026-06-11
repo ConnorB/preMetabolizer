@@ -32,6 +32,28 @@ check_string <- function(
   invisible(x)
 }
 
+# Validate a site coordinate (latitude/longitude) supplied alongside a vector
+# of `n` timestamps. Allows a single value (one site, recycled across all
+# timestamps) or a length-`n` value (one site per timestamp). Rejects any other
+# length so a silent recycling mistake becomes a clear error.
+check_site_coord <- function(
+  x,
+  n,
+  arg = rlang::caller_arg(x),
+  call = rlang::caller_env()
+) {
+  check_numeric(x, allow_na = FALSE, arg = arg, call = call)
+
+  if (length(x) != 1L && length(x) != n) {
+    cli::cli_abort(
+      "{.arg {arg}} must be length 1 or {n}, not length {length(x)}.",
+      call = call
+    )
+  }
+
+  invisible(x)
+}
+
 check_character <- function(
   x,
   allow_null = FALSE,
