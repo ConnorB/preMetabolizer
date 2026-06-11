@@ -1,3 +1,12 @@
+# get_nasa_data errors with multiple datetime columns
+
+    Code
+      get_nasa_data(timeseries, latitude = 39, longitude = -96, elev_m = 300)
+    Condition
+      Error in `get_nasa_data()`:
+      ! `data` contains multiple date-time columns: dateTime and solar_time.
+      i Specify the column to use with `datetime_col`.
+
 # get_nasa_data requires coordinates for single-site data
 
     Code

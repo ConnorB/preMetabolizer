@@ -63,6 +63,42 @@ test_that("get_nasa_data uses single-site coordinates and inferred dates", {
   )
 })
 
+test_that("get_nasa_data detects a datetime column with any name", {
+  timeseries <- data.frame(
+    timestamp = as.POSIXct(
+      c("2024-01-02 00:00:00", "2024-01-04 12:00:00"),
+      tz = "UTC"
+    )
+  )
+
+  local_mocked_bindings(
+    get_power = function(...) fake_nasa_power(list(...))
+  )
+
+  result <- get_nasa_data(
+    timeseries,
+    latitude = 39,
+    longitude = -96,
+    elev_m = 300
+  )
+
+  expect_equal(
+    result$dateTime,
+    lubridate::as_datetime(timeseries$timestamp, tz = "UTC")
+  )
+})
+
+test_that("get_nasa_data errors with multiple datetime columns", {
+  timeseries <- data.frame(
+    dateTime = as.POSIXct("2024-01-02 00:00:00", tz = "UTC"),
+    solar_time = as.POSIXct("2024-01-01 17:00:00", tz = "UTC")
+  )
+  expect_snapshot(
+    error = TRUE,
+    get_nasa_data(timeseries, latitude = 39, longitude = -96, elev_m = 300)
+  )
+})
+
 test_that("get_nasa_data uses per-site coordinates and inferred dates", {
   timeseries <- data.frame(
     station_id = c("a", "a", "b", "b"),

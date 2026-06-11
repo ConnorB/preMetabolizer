@@ -134,3 +134,37 @@
       Error:
       ! `"1"` must be numeric.
 
+# detect_datetime_col errors without a candidate column
+
+    Code
+      detect_datetime_col(df)
+    Condition
+      Error:
+      ! `data` must contain a date-time column (<POSIXct>).
+      i Alternatively, name the column with `datetime_col`.
+
+# detect_datetime_col errors with multiple candidate columns
+
+    Code
+      detect_datetime_col(df)
+    Condition
+      Error:
+      ! `data` contains multiple date-time columns: a and b.
+      i Specify the column to use with `datetime_col`.
+
+# detect_datetime_col errors on invalid explicit column
+
+    Code
+      detect_datetime_col(df, "missing")
+    Condition
+      Error:
+      ! `data` must contain a missing column.
+
+---
+
+    Code
+      detect_datetime_col(df, 1)
+    Condition
+      Error:
+      ! `datetime_col` must be a single string.
+

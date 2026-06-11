@@ -83,6 +83,49 @@ test_that("check_numeric rejects non-numeric input", {
   expect_snapshot(error = TRUE, check_numeric("1"))
 })
 
+test_that("detect_datetime_col finds the single POSIXct column", {
+  df <- data.frame(
+    when = as.POSIXct("2024-01-01", tz = "UTC"),
+    x = 1
+  )
+  expect_equal(detect_datetime_col(df), "when")
+})
+
+test_that("detect_datetime_col returns an explicitly named column", {
+  df <- data.frame(
+    a = as.POSIXct("2024-01-01", tz = "UTC"),
+    b = as.POSIXct("2024-01-02", tz = "UTC")
+  )
+  expect_equal(detect_datetime_col(df, "b"), "b")
+})
+
+test_that("detect_datetime_col detects Date columns when allowed", {
+  df <- data.frame(day = as.Date("2024-01-01"), x = 1)
+  expect_equal(
+    detect_datetime_col(df, classes = c("POSIXt", "Date")),
+    "day"
+  )
+})
+
+test_that("detect_datetime_col errors without a candidate column", {
+  df <- data.frame(x = 1)
+  expect_snapshot(error = TRUE, detect_datetime_col(df))
+})
+
+test_that("detect_datetime_col errors with multiple candidate columns", {
+  df <- data.frame(
+    a = as.POSIXct("2024-01-01", tz = "UTC"),
+    b = as.POSIXct("2024-01-02", tz = "UTC")
+  )
+  expect_snapshot(error = TRUE, detect_datetime_col(df))
+})
+
+test_that("detect_datetime_col errors on invalid explicit column", {
+  df <- data.frame(when = as.POSIXct("2024-01-01", tz = "UTC"))
+  expect_snapshot(error = TRUE, detect_datetime_col(df, "missing"))
+  expect_snapshot(error = TRUE, detect_datetime_col(df, 1))
+})
+
 test_that("cli_inform_if emits message only when condition is TRUE", {
   expect_message(cli_inform_if(TRUE, "hello"), "hello")
   expect_no_message(cli_inform_if(FALSE, "hello"))

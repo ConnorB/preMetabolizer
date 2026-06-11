@@ -39,9 +39,35 @@ test_that("even_timesteps works with multiple sites", {
   expect_equal(nrow(result[result$site == "B", ]), 4)
 })
 
-test_that("even_timesteps errors on missing datetime column", {
-  df <- data.frame(time = as.POSIXct("2024-01-01", tz = "UTC"))
+test_that("even_timesteps detects a datetime column with any name", {
+  df <- data.frame(
+    timestamp = seq(
+      as.POSIXct("2024-01-01", tz = "UTC"),
+      by = "1 hour",
+      length.out = 5
+    )
+  )
+  df_gap <- df[c(1, 2, 4, 5), , drop = FALSE]
+  result <- even_timesteps(df_gap)
+  expect_equal(nrow(result), 5)
+})
+
+test_that("even_timesteps errors without a datetime column", {
+  df <- data.frame(x = 1:3)
   expect_snapshot(error = TRUE, even_timesteps(df))
+})
+
+test_that("even_timesteps errors with multiple datetime columns", {
+  df <- data.frame(
+    start = as.POSIXct("2024-01-01", tz = "UTC"),
+    end = as.POSIXct("2024-01-02", tz = "UTC")
+  )
+  expect_snapshot(error = TRUE, even_timesteps(df))
+})
+
+test_that("even_timesteps errors on missing explicit datetime column", {
+  df <- data.frame(time = as.POSIXct("2024-01-01", tz = "UTC"))
+  expect_snapshot(error = TRUE, even_timesteps(df, datetime_col = "missing"))
 })
 
 test_that("even_timesteps errors on non-data.frame input", {

@@ -1,10 +1,28 @@
-# even_timesteps errors on missing datetime column
+# even_timesteps errors without a datetime column
 
     Code
       even_timesteps(df)
     Condition
       Error in `even_timesteps()`:
-      ! `logger_data` must contain a DateTime_UTC column.
+      ! `logger_data` must contain a date-time column (<POSIXct>).
+      i Alternatively, name the column with `datetime_col`.
+
+# even_timesteps errors with multiple datetime columns
+
+    Code
+      even_timesteps(df)
+    Condition
+      Error in `even_timesteps()`:
+      ! `logger_data` contains multiple date-time columns: start and end.
+      i Specify the column to use with `datetime_col`.
+
+# even_timesteps errors on missing explicit datetime column
+
+    Code
+      even_timesteps(df, datetime_col = "missing")
+    Condition
+      Error in `even_timesteps()`:
+      ! `logger_data` must contain a missing column.
 
 # even_timesteps errors on non-data.frame input
 

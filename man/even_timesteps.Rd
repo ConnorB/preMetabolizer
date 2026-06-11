@@ -6,7 +6,7 @@
 \usage{
 even_timesteps(
   logger_data,
-  datetime_col = "DateTime_UTC",
+  datetime_col = NULL,
   site_col = NULL,
   loggerData = lifecycle::deprecated()
 )
@@ -14,8 +14,10 @@ even_timesteps(
 \arguments{
 \item{logger_data}{Data frame or tibble containing timestamped logger data.}
 
-\item{datetime_col}{Character string naming the POSIXct datetime column.
-Defaults to \code{"DateTime_UTC"}.}
+\item{datetime_col}{Optional character string naming the POSIXct datetime
+column. If \code{NULL} (default), the single POSIXct column in \code{logger_data}
+is detected automatically; when \code{logger_data} contains more than one
+POSIXct column, \code{datetime_col} must be supplied.}
 
 \item{site_col}{Optional character string naming a site column. When
 supplied, each site is completed independently.}

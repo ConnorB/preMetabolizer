@@ -5,8 +5,10 @@
 #' values in the measured columns.
 #'
 #' @param logger_data Data frame or tibble containing timestamped logger data.
-#' @param datetime_col Character string naming the POSIXct datetime column.
-#'   Defaults to `"DateTime_UTC"`.
+#' @param datetime_col Optional character string naming the POSIXct datetime
+#'   column. If `NULL` (default), the single POSIXct column in `logger_data`
+#'   is detected automatically; when `logger_data` contains more than one
+#'   POSIXct column, `datetime_col` must be supplied.
 #' @param site_col Optional character string naming a site column. When
 #'   supplied, each site is completed independently.
 #' @param loggerData `r lifecycle::badge("deprecated")` Use `logger_data`
@@ -46,7 +48,7 @@
 #' @export
 even_timesteps <- function(
   logger_data,
-  datetime_col = "DateTime_UTC",
+  datetime_col = NULL,
   site_col = NULL,
   loggerData = lifecycle::deprecated()
 ) {
@@ -63,11 +65,12 @@ even_timesteps <- function(
   if (!is.data.frame(logger_data)) {
     cli::cli_abort("{.arg logger_data} must be a data frame.")
   }
-  if (!datetime_col %in% names(logger_data)) {
-    cli::cli_abort(
-      "{.arg logger_data} must contain a {.field {datetime_col}} column."
-    )
-  }
+  datetime_col <- detect_datetime_col(
+    logger_data,
+    datetime_col,
+    classes = "POSIXct",
+    data_arg = "logger_data"
+  )
   if (!is.null(site_col) && !site_col %in% names(logger_data)) {
     cli::cli_abort(
       "{.arg logger_data} must contain a {.field {site_col}} column."

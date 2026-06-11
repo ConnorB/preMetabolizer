@@ -5,8 +5,10 @@
 #' to the input timestamps.
 #'
 #' @param data A data frame or tibble containing time-series data.
-#' @param datetime_col Character string specifying the date-time column in
-#'   `data`. Defaults to `"dateTime"`.
+#' @param datetime_col Optional character string specifying the date-time
+#'   column in `data`. If `NULL` (default), the single date-time (POSIXct or
+#'   Date) column in `data` is detected automatically; when `data` contains
+#'   more than one date-time column, `datetime_col` must be supplied.
 #' @param site_col Optional character string specifying the site column in
 #'   `data`. If `NULL`, `data` is treated as a single site.
 #' @param latitude,longitude Single numeric values used for single-site data.
@@ -73,7 +75,7 @@
 #' @export
 get_nasa_data <- function(
   data,
-  datetime_col = "dateTime",
+  datetime_col = NULL,
   site_col = NULL,
   latitude = NULL,
   longitude = NULL,
@@ -117,17 +119,11 @@ get_nasa_data <- function(
   if (nrow(data) == 0) {
     cli::cli_abort("{.arg data} must contain at least one row.")
   }
-  if (
-    !is.character(datetime_col) ||
-      length(datetime_col) != 1 ||
-      is.na(datetime_col) ||
-      datetime_col == ""
-  ) {
-    cli::cli_abort("{.arg datetime_col} must be a single string.")
-  }
-  if (!datetime_col %in% names(data)) {
-    cli::cli_abort("{.arg data} must contain a {.field {datetime_col}} column.")
-  }
+  datetime_col <- detect_datetime_col(
+    data,
+    datetime_col,
+    classes = c("POSIXt", "Date")
+  )
   if (
     !is.null(site_col) &&
       (!is.character(site_col) ||

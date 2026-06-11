@@ -110,7 +110,7 @@ streamMetabolizer requires evenly spaced data. `even_timesteps()` fills any gaps
 ```{r}
 #| label: even-timesteps
 
-french_creek <- even_timesteps(french_creek, datetime_col = "datetime")
+french_creek <- even_timesteps(french_creek)
 ```
 
 ## Convert datetime to solar time

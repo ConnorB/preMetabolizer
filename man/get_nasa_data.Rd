@@ -6,7 +6,7 @@
 \usage{
 get_nasa_data(
   data,
-  datetime_col = "dateTime",
+  datetime_col = NULL,
   site_col = NULL,
   latitude = NULL,
   longitude = NULL,
@@ -21,8 +21,10 @@ get_nasa_data(
 \arguments{
 \item{data}{A data frame or tibble containing time-series data.}
 
-\item{datetime_col}{Character string specifying the date-time column in
-\code{data}. Defaults to \code{"dateTime"}.}
+\item{datetime_col}{Optional character string specifying the date-time
+column in \code{data}. If \code{NULL} (default), the single date-time (POSIXct or
+Date) column in \code{data} is detected automatically; when \code{data} contains
+more than one date-time column, \code{datetime_col} must be supplied.}
 
 \item{site_col}{Optional character string specifying the site column in
 \code{data}. If \code{NULL}, \code{data} is treated as a single site.}
