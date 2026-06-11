@@ -217,9 +217,8 @@ get_nasa_data(
   demonstrates timestamp, season, outlier, summary, and
   exceedance-probability helpers.
 - [`vignette("noaa", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/noaa.md)
-  finds candidate NOAA stations.
-- `vignette("ghcnh", package = "preMetabolizer")` downloads and reads
-  NOAA hourly GHCNh files.
+  finds candidate NOAA stations and downloads and reads NOAA hourly
+  GHCNh files.
 - [`vignette("ks-mesonet", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/ks-mesonet.md)
   works with Kansas Mesonet station metadata and cached observations.
 - [`vignette("iem", package = "preMetabolizer")`](https://connorb.github.io/preMetabolizer/articles/iem.md)
@@ -231,7 +230,7 @@ get_nasa_data(
 
 ## License
 
-GPL (\>= 3). See
+AGPL (\>= 3). See
 [LICENSE.md](https://connorb.github.io/preMetabolizer/LICENSE.md).
 
 ## Issues

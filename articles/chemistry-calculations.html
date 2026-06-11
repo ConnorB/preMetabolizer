@@ -163,21 +163,21 @@
 <code class="sourceCode R"><span><span class="va">co2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  CO2_ppm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">420</span>, <span class="fl">800</span>, <span class="fl">1200</span><span class="op">)</span>,</span>
 <span>  temp_water <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  waterDepth_m <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  water_depth_m <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  atmo_press <span class="op">=</span> <span class="fl">101.325</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    CO2_mol_kg <span class="op">=</span> <span class="fu"><a href="../reference/calc_CO2_molKg.html">calc_CO2_molKg</a></span><span class="op">(</span></span>
 <span>      CO2_ppm <span class="op">=</span> <span class="va">CO2_ppm</span>,</span>
 <span>      temp_water <span class="op">=</span> <span class="va">temp_water</span>,</span>
-<span>      waterDepth_m <span class="op">=</span> <span class="va">waterDepth_m</span>,</span>
+<span>      water_depth_m <span class="op">=</span> <span class="va">water_depth_m</span>,</span>
 <span>      atmo_press <span class="op">=</span> <span class="va">atmo_press</span>,</span>
 <span>      press_units <span class="op">=</span> <span class="st">"kPa"</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    CO2_mg_L <span class="op">=</span> <span class="fu"><a href="../reference/calc_CO2_mgL.html">calc_CO2_mgL</a></span><span class="op">(</span></span>
 <span>      CO2_ppm <span class="op">=</span> <span class="va">CO2_ppm</span>,</span>
 <span>      temp_water <span class="op">=</span> <span class="va">temp_water</span>,</span>
-<span>      waterDepth_m <span class="op">=</span> <span class="va">waterDepth_m</span>,</span>
+<span>      water_depth_m <span class="op">=</span> <span class="va">water_depth_m</span>,</span>
 <span>      atmo_press <span class="op">=</span> <span class="va">atmo_press</span>,</span>
 <span>      press_units <span class="op">=</span> <span class="st">"kPa"</span></span>
 <span>    <span class="op">)</span></span>
@@ -185,11 +185,11 @@
 <span></span>
 <span><span class="va">co2</span></span>
 <span><span class="co">#&gt; # A tibble: 3 × 6</span></span>
-<span><span class="co">#&gt;   CO2_ppm temp_water waterDepth_m atmo_press CO2_mol_kg CO2_mg_L</span></span>
-<span><span class="co">#&gt;     &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1     420         20          0.5       101.  0.0000161    0.706</span></span>
-<span><span class="co">#&gt; 2     800         20          0.5       101.  0.0000306    1.34 </span></span>
-<span><span class="co">#&gt; 3    1200         20          0.5       101.  0.0000459    2.02</span></span></code></pre></div>
+<span><span class="co">#&gt;   CO2_ppm temp_water water_depth_m atmo_press CO2_mol_kg CO2_mg_L</span></span>
+<span><span class="co">#&gt;     &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1     420         20           0.5       101.  0.0000161    0.706</span></span>
+<span><span class="co">#&gt; 2     800         20           0.5       101.  0.0000306    1.34 </span></span>
+<span><span class="co">#&gt; 3    1200         20           0.5       101.  0.0000459    2.02</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="vapor-pressure-and-solubility">Vapor pressure and solubility<a class="anchor" aria-label="anchor" href="#vapor-pressure-and-solubility"></a>
 </h2>
@@ -203,7 +203,7 @@
 <span>      salinity <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>      method <span class="op">=</span> <span class="st">"MIMSY"</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    K0_mol_kg_atm <span class="op">=</span> <span class="fu"><a href="../reference/calc_K0.html">calc_K0</a></span><span class="op">(</span><span class="va">temp_water</span>, waterDepth_m <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span>    K0_mol_kg_atm <span class="op">=</span> <span class="fu"><a href="../reference/calc_K0.html">calc_K0</a></span><span class="op">(</span><span class="va">temp_water</span>, water_depth_m <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">temps</span></span>

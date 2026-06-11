@@ -4,12 +4,17 @@ Converts a datetime to mean or apparent (true) solar time at a given
 longitude. Mean solar time uses a constant 15 deg/hour longitude offset.
 Apparent solar time additionally applies the equation of time and is
 computed via
-[`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html).
+[`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html).
 
 ## Usage
 
 ``` r
-convert_to_solar_time(dateTime, longitude, type = c("mean", "apparent"))
+convert_to_solar_time(
+  date_time,
+  longitude,
+  type = c("mean", "apparent"),
+  dateTime = lifecycle::deprecated()
+)
 
 convert_from_solar_time(
   solar_datetime,
@@ -20,7 +25,7 @@ convert_from_solar_time(
 
 ## Arguments
 
-- dateTime:
+- date_time:
 
   A datetime vector. POSIXct in any time zone is accepted; the function
   operates on the underlying instant, so a CDT timestamp and the
@@ -29,12 +34,18 @@ convert_from_solar_time(
 
 - longitude:
 
-  Numeric. Site longitude in decimal degrees; western longitudes are
-  negative.
+  Numeric site longitude in decimal degrees; western longitudes are
+  negative. Length 1 for a single site, or the same length as the
+  datetime input to convert several sites at once (one site per
+  timestamp).
 
 - type:
 
   One of `"mean"` (default) or `"apparent"`.
+
+- dateTime:
+
+  **\[deprecated\]** Use `date_time` instead.
 
 - solar_datetime:
 
@@ -59,7 +70,7 @@ called directly from `streamMetabolizer` if you need their behaviour.
 
 The mean offset is `longitude / 15 * 3600` seconds. The apparent path
 delegates to
-[`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html),
+[`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html),
 which applies the equation of time using Meeus's algorithms.
 
 `convert_from_solar_time()` inverts the forward conversion by computing
@@ -70,7 +81,7 @@ which is well below typical sensor sampling intervals.
 
 ## See also
 
-[`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html),
+[`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html),
 `streamMetabolizer::convert_UTC_to_solartime()`,
 `streamMetabolizer::convert_solartime_to_UTC()`.
 

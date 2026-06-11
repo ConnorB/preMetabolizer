@@ -8,7 +8,13 @@ correction for the total pressure at the sensor.
 ## Usage
 
 ``` r
-calc_K0(temp_water, waterDepth_m = 0, atmo_press = 1, salinity = 0)
+calc_K0(
+  temp_water,
+  water_depth_m = 0,
+  atmo_press = 1,
+  salinity = 0,
+  waterDepth_m = lifecycle::deprecated()
+)
 ```
 
 ## Arguments
@@ -17,7 +23,7 @@ calc_K0(temp_water, waterDepth_m = 0, atmo_press = 1, salinity = 0)
 
   Numeric vector. Water temperature in degrees Celsius.
 
-- waterDepth_m:
+- water_depth_m:
 
   Numeric vector. Water depth in meters. Defaults to `0`.
 
@@ -30,6 +36,10 @@ calc_K0(temp_water, waterDepth_m = 0, atmo_press = 1, salinity = 0)
 
   Numeric vector. Salinity in practical salinity units. Defaults to
   freshwater (`0`).
+
+- waterDepth_m:
+
+  **\[deprecated\]** Use `water_depth_m` instead.
 
 ## Value
 
@@ -45,6 +55,6 @@ of a non-ideal gas. Marine Chemistry, 2, 203-215.
 ``` r
 calc_K0(temp_water = 20)
 #> [1] 0.03916223
-calc_K0(temp_water = c(5, 15, 25), waterDepth_m = 1, salinity = 0)
+calc_K0(temp_water = c(5, 15, 25), water_depth_m = 1, salinity = 0)
 #> [1] 0.06406044 0.04555376 0.03405660
 ```

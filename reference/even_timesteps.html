@@ -52,25 +52,37 @@ values in the measured columns.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">even_timesteps</span><span class="op">(</span><span class="va">loggerData</span>, datetime_col <span class="op">=</span> <span class="st">"DateTime_UTC"</span>, site_col <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">even_timesteps</span><span class="op">(</span></span>
+<span>  <span class="va">logger_data</span>,</span>
+<span>  datetime_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  site_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  loggerData <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-loggerdata">loggerData<a class="anchor" aria-label="anchor" href="#arg-loggerdata"></a></dt>
+<dl><dt id="arg-logger-data">logger_data<a class="anchor" aria-label="anchor" href="#arg-logger-data"></a></dt>
 <dd><p>Data frame or tibble containing timestamped logger data.</p></dd>
 
 
 <dt id="arg-datetime-col">datetime_col<a class="anchor" aria-label="anchor" href="#arg-datetime-col"></a></dt>
-<dd><p>Character string naming the POSIXct datetime column.
-Defaults to <code>"DateTime_UTC"</code>.</p></dd>
+<dd><p>Optional character string naming the POSIXct datetime
+column. If <code>NULL</code> (default), the single POSIXct column in <code>logger_data</code>
+is detected automatically; when <code>logger_data</code> contains more than one
+POSIXct column, <code>datetime_col</code> must be supplied.</p></dd>
 
 
 <dt id="arg-site-col">site_col<a class="anchor" aria-label="anchor" href="#arg-site-col"></a></dt>
 <dd><p>Optional character string naming a site column. When
 supplied, each site is completed independently.</p></dd>
+
+
+<dt id="arg-loggerdata">loggerData<a class="anchor" aria-label="anchor" href="#arg-loggerdata"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use <code>logger_data</code>
+instead.</p></dd>
 
 </dl></div>
     <div class="section level2">

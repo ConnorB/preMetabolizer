@@ -128,7 +128,7 @@ fills any gaps with `NA` rows so the interval is consistent.
 
 ``` r
 
-french_creek <- even_timesteps(french_creek, datetime_col = "datetime")
+french_creek <- even_timesteps(french_creek)
 ```
 
 ## Convert datetime to solar time

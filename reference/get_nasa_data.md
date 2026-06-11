@@ -9,7 +9,7 @@ result to the input timestamps.
 ``` r
 get_nasa_data(
   data,
-  datetime_col = "dateTime",
+  datetime_col = NULL,
   site_col = NULL,
   latitude = NULL,
   longitude = NULL,
@@ -30,8 +30,10 @@ get_nasa_data(
 
 - datetime_col:
 
-  Character string specifying the date-time column in `data`. Defaults
-  to `"dateTime"`.
+  Optional character string specifying the date-time column in `data`.
+  If `NULL` (default), the single date-time (POSIXct or Date) column in
+  `data` is detected automatically; when `data` contains more than one
+  date-time column, `datetime_col` must be supplied.
 
 - site_col:
 

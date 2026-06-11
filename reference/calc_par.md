@@ -19,12 +19,15 @@ calc_par(solar_time, latitude, longitude, max_par = 2326)
 
 - latitude:
 
-  Numeric. Site latitude in decimal degrees between -90 and 90.
+  Numeric site latitude in decimal degrees between -90 and 90. Length 1
+  for a single site, or the same length as `solar_time` to model several
+  sites at once (one site per timestamp).
 
 - longitude:
 
-  Numeric. Site longitude in decimal degrees; western longitudes are
-  negative.
+  Numeric site longitude in decimal degrees; western longitudes are
+  negative. Length 1 for a single site, or the same length as
+  `solar_time` to model several sites at once (one site per timestamp).
 
 - max_par:
 
@@ -54,7 +57,7 @@ the `streamMetabolizer` / `LakeMetabolizer` dependency removed from this
 function.
 
 The solar zenith angle at each timestamp is computed via
-[`SunCalcMeeus::sun_zenith_angle()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/sun_angles.html)
+[`SunCalcMeeus::sun_zenith_angle()`](https://rdrr.io/pkg/SunCalcMeeus/man/sun_angles.html)
 (Meeus's algorithms), and PAR is modeled as `max_par * cos(zenith)`
 clipped at zero. The mean solar input is converted back to UTC for the
 zenith calculation via the standard 15 deg / hour longitude offset.

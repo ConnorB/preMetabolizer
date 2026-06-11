@@ -10,10 +10,11 @@ pressure, and the Weiss (1974) CO2 solubility coefficient.
 calc_CO2_molKg(
   CO2_ppm,
   temp_water,
-  waterDepth_m,
+  water_depth_m,
   atmo_press,
   press_units,
-  salinity = 0
+  salinity = 0,
+  waterDepth_m = lifecycle::deprecated()
 )
 ```
 
@@ -27,7 +28,7 @@ calc_CO2_molKg(
 
   Numeric vector. Water temperature in degrees Celsius.
 
-- waterDepth_m:
+- water_depth_m:
 
   Numeric vector. Water depth above the sensor in meters.
 
@@ -46,6 +47,10 @@ calc_CO2_molKg(
   Numeric vector. Salinity in practical salinity units. Defaults to
   freshwater (`0`).
 
+- waterDepth_m:
+
+  **\[deprecated\]** Use `water_depth_m` instead.
+
 ## Value
 
 Numeric vector of dissolved CO2 concentration in mol/kg.
@@ -62,7 +67,7 @@ Numeric vector of dissolved CO2 concentration in mol/kg.
 calc_CO2_molKg(
   CO2_ppm = 420,
   temp_water = 20,
-  waterDepth_m = 0.5,
+  water_depth_m = 0.5,
   atmo_press = 101.325,
   press_units = "kPa"
 )

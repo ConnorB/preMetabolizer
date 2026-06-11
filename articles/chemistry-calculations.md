@@ -111,21 +111,21 @@ temperature, water depth, atmospheric pressure, and salinity.
 co2 <- tibble::tibble(
   CO2_ppm = c(420, 800, 1200),
   temp_water = 20,
-  waterDepth_m = 0.5,
+  water_depth_m = 0.5,
   atmo_press = 101.325
 ) |>
   mutate(
     CO2_mol_kg = calc_CO2_molKg(
       CO2_ppm = CO2_ppm,
       temp_water = temp_water,
-      waterDepth_m = waterDepth_m,
+      water_depth_m = water_depth_m,
       atmo_press = atmo_press,
       press_units = "kPa"
     ),
     CO2_mg_L = calc_CO2_mgL(
       CO2_ppm = CO2_ppm,
       temp_water = temp_water,
-      waterDepth_m = waterDepth_m,
+      water_depth_m = water_depth_m,
       atmo_press = atmo_press,
       press_units = "kPa"
     )
@@ -133,11 +133,11 @@ co2 <- tibble::tibble(
 
 co2
 #> # A tibble: 3 × 6
-#>   CO2_ppm temp_water waterDepth_m atmo_press CO2_mol_kg CO2_mg_L
-#>     <dbl>      <dbl>        <dbl>      <dbl>      <dbl>    <dbl>
-#> 1     420         20          0.5       101.  0.0000161    0.706
-#> 2     800         20          0.5       101.  0.0000306    1.34 
-#> 3    1200         20          0.5       101.  0.0000459    2.02
+#>   CO2_ppm temp_water water_depth_m atmo_press CO2_mol_kg CO2_mg_L
+#>     <dbl>      <dbl>         <dbl>      <dbl>      <dbl>    <dbl>
+#> 1     420         20           0.5       101.  0.0000161    0.706
+#> 2     800         20           0.5       101.  0.0000306    1.34 
+#> 3    1200         20           0.5       101.  0.0000459    2.02
 ```
 
 ## Vapor pressure and solubility
@@ -158,7 +158,7 @@ temps <- tibble::tibble(temp_water = c(5, 15, 25)) |>
       salinity = 0,
       method = "MIMSY"
     ),
-    K0_mol_kg_atm = calc_K0(temp_water, waterDepth_m = 0.5)
+    K0_mol_kg_atm = calc_K0(temp_water, water_depth_m = 0.5)
   )
 
 temps

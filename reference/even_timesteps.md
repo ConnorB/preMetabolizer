@@ -7,24 +7,35 @@ with `NA` values in the measured columns.
 ## Usage
 
 ``` r
-even_timesteps(loggerData, datetime_col = "DateTime_UTC", site_col = NULL)
+even_timesteps(
+  logger_data,
+  datetime_col = NULL,
+  site_col = NULL,
+  loggerData = lifecycle::deprecated()
+)
 ```
 
 ## Arguments
 
-- loggerData:
+- logger_data:
 
   Data frame or tibble containing timestamped logger data.
 
 - datetime_col:
 
-  Character string naming the POSIXct datetime column. Defaults to
-  `"DateTime_UTC"`.
+  Optional character string naming the POSIXct datetime column. If
+  `NULL` (default), the single POSIXct column in `logger_data` is
+  detected automatically; when `logger_data` contains more than one
+  POSIXct column, `datetime_col` must be supplied.
 
 - site_col:
 
   Optional character string naming a site column. When supplied, each
   site is completed independently.
+
+- loggerData:
+
+  **\[deprecated\]** Use `logger_data` instead.
 
 ## Value
 

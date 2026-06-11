@@ -50,12 +50,17 @@ computed via SunCalcMeeus::solar_time()."></head><body>
     <p>Converts a datetime to mean or apparent (true) solar time at a given
 longitude. Mean solar time uses a constant 15 deg/hour longitude offset.
 Apparent solar time additionally applies the equation of time and is
-computed via <code><a href="https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>.</p>
+computed via <code><a href="https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">convert_to_solar_time</span><span class="op">(</span><span class="va">dateTime</span>, <span class="va">longitude</span>, type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"apparent"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">convert_to_solar_time</span><span class="op">(</span></span>
+<span>  <span class="va">date_time</span>,</span>
+<span>  <span class="va">longitude</span>,</span>
+<span>  type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"apparent"</span><span class="op">)</span>,</span>
+<span>  dateTime <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">convert_from_solar_time</span><span class="op">(</span></span>
 <span>  <span class="va">solar_datetime</span>,</span>
@@ -68,7 +73,7 @@ computed via <code><a href="https://docs.r4photobiology.info/SunCalcMeeus/refere
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-datetime">dateTime<a class="anchor" aria-label="anchor" href="#arg-datetime"></a></dt>
+<dl><dt id="arg-date-time">date_time<a class="anchor" aria-label="anchor" href="#arg-date-time"></a></dt>
 <dd><p>A datetime vector. POSIXct in any time zone is accepted;
 the function operates on the underlying instant, so a CDT timestamp
 and the matching UTC timestamp produce identical results. Character or
@@ -76,12 +81,18 @@ and the matching UTC timestamp produce identical results. Character or
 
 
 <dt id="arg-longitude">longitude<a class="anchor" aria-label="anchor" href="#arg-longitude"></a></dt>
-<dd><p>Numeric. Site longitude in decimal degrees; western
-longitudes are negative.</p></dd>
+<dd><p>Numeric site longitude in decimal degrees; western
+longitudes are negative. Length 1 for a single site, or the same length as
+the datetime input to convert several sites at once (one site per
+timestamp).</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>One of <code>"mean"</code> (default) or <code>"apparent"</code>.</p></dd>
+
+
+<dt id="arg-datetime">dateTime<a class="anchor" aria-label="anchor" href="#arg-datetime"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use <code>date_time</code> instead.</p></dd>
 
 
 <dt id="arg-solar-datetime">solar_datetime<a class="anchor" aria-label="anchor" href="#arg-solar-datetime"></a></dt>
@@ -106,7 +117,7 @@ cases; the clock reading carries the meaning.</p>
 <code>streamMetabolizer::convert_solartime_to_UTC()</code>, which can still be called
 directly from <code>streamMetabolizer</code> if you need their behaviour.</p>
 <p>The mean offset is <code>longitude / 15 * 3600</code> seconds. The apparent path
-delegates to <code><a href="https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>, which applies the equation of
+delegates to <code><a href="https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>, which applies the equation of
 time using Meeus's algorithms.</p>
 <p><code>convert_from_solar_time()</code> inverts the forward conversion by computing
 the forward offset <em>at the input solar instant</em> and subtracting it. This
@@ -116,7 +127,7 @@ is well below typical sensor sampling intervals.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>,
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html" class="external-link">SunCalcMeeus::solar_time()</a></code>,
 <code>streamMetabolizer::convert_UTC_to_solartime()</code>,
 <code>streamMetabolizer::convert_solartime_to_UTC()</code>.</p></div>
     </div>

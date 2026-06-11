@@ -94,7 +94,7 @@ calc_bin_width(rnorm(200), "fd")
 
 # Skewed data — Doane corrects for skewness
 calc_bin_width(rexp(200), "doane")
-#> [1] 0.3778829
+#> [1] 0.3775749
 
 # Discrete / zero-inflated data — FD falls back to Sturges
 calc_bin_width(c(rep(0, 50), rep(1, 50)), "fd")
@@ -109,7 +109,7 @@ x <- rnorm(500)
 methods <- c("auto", "sturges", "fd", "sqrt", "rice", "scott", "doane")
 vapply(methods, \(m) calc_bin_width(x, m), numeric(1))
 #>      auto   sturges        fd      sqrt      rice     scott     doane 
-#> 0.3280859 0.5811504 0.3280859 0.2590091 0.3648492 0.4261072 0.5560889 
+#> 0.3280859 0.5811504 0.3280859 0.2590091 0.3648492 0.4261072 0.5560269 
 
 # Error conditions
 try(calc_bin_width(letters))               # non-numeric x

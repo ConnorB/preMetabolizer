@@ -95,6 +95,12 @@
   pressure, and salinity using the Hamme and Emerson (2004) solubility
   fit, returning umol/L or mg/L (no issue).
 
+- [`calc_bin_width()`](https://connorb.github.io/preMetabolizer/reference/calc_bin_width.md)
+  with `method = "doane"` now uses a self-consistent population skewness
+  estimator; the previous formula mixed a population third moment with
+  the sample standard deviation, biasing the bin width for small samples
+  (no issue).
+
 - [`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md)
   calculates dissolved methane saturation (the concentration in
   equilibrium with the atmosphere) from water temperature, barometric
@@ -110,10 +116,20 @@
   from 1 atm; the error reached ~15% at typical high-elevation streams
   (no issue).
 
+- [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
+  and
+  [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)
+  rename the `waterDepth_m` argument to `water_depth_m`; `waterDepth_m`
+  is soft-deprecated (no issue).
+
 - [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md)
   calculates dissolved carbon dioxide saturation (the concentration in
   equilibrium with the atmosphere) using the Weiss and Price (1980)
   trace-gas solubility function, returning umol/L or mg/L (no issue).
+
+- [`calc_K0()`](https://connorb.github.io/preMetabolizer/reference/calc_K0.md)
+  renames the `waterDepth_m` argument to `water_depth_m`; `waterDepth_m`
+  is soft-deprecated (no issue).
 
 - [`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md)
   calculates dissolved nitrous oxide saturation (the concentration in
@@ -205,13 +221,24 @@
   replace `convert_UTC_to_solartime()` and `convert_solartime_to_UTC()`.
   The new functions use the standard 15 deg/hour longitude offset for
   mean solar time and delegate to
-  [`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html)
+  [`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html)
   for apparent solar time. They are renamed to avoid shadowing the
   originals in `streamMetabolizer`, which can still be called directly
   when needed (no issue).
 
+- [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
+  renames the `dateTime` argument to `date_time`; `dateTime` is
+  soft-deprecated (no issue).
+
+- [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
+  and
+  [`convert_from_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
+  now accept a vector `longitude` (one site per timestamp), so apparent
+  solar time can be computed for several sites in a single call rather
+  than erroring inside `SunCalcMeeus` (no issue).
+
 - `calc_light()` now computes the solar zenith angle via
-  [`SunCalcMeeus::sun_zenith_angle()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/sun_angles.html)
+  [`SunCalcMeeus::sun_zenith_angle()`](https://rdrr.io/pkg/SunCalcMeeus/man/sun_angles.html)
   (full Meeus algorithms) instead of an internal first-order declination
   approximation. The public signature is unchanged; PAR values shift by
   less than ~0.03 percent. The internal helpers
@@ -246,6 +273,12 @@
   `solar_time` and `max_par` to use the package’s underscore convention
   (no issue).
 
+- [`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
+  now accepts vector `latitude` and `longitude` (one site per timestamp)
+  so several sites can be modeled in a single call, and errors clearly
+  when a coordinate length is neither 1 nor the number of timestamps (no
+  issue).
+
 - [`convert_pressure()`](https://connorb.github.io/preMetabolizer/reference/convert_pressure.md)
   now requires an explicit `from` argument; it always returns a plain
   numeric vector. Unit-bearing objects are no longer accepted as input.
@@ -272,6 +305,15 @@
   series no longer causes a wrong (often much smaller) step to be
   inferred (no issue).
 
+- [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
+  renames the `loggerData` argument to `logger_data`; `loggerData` is
+  soft-deprecated (no issue).
+
+- [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
+  now detects the POSIXct datetime column automatically; `datetime_col`
+  defaults to `NULL` and only needs to be supplied when `logger_data`
+  contains multiple POSIXct columns (no issue).
+
 - [`flag_z()`](https://connorb.github.io/preMetabolizer/reference/flag_z.md)
   now uses the canonical Tukey biweight midvariance (Mosteller & Tukey
   1977; Lax 1985) with tuning constant `c = 9` for the robust scale
@@ -287,6 +329,11 @@
   returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with
   `streamMetabolizer::convert_SW_to_PAR()`, and runs quietly by default.
   The old `lat` and `lon` aliases are deprecated (no issue).
+
+- [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
+  now detects the date-time column automatically; `datetime_col`
+  defaults to `NULL` and only needs to be supplied when `data` contains
+  multiple POSIXct or Date columns (no issue).
 
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
   now filters cached raw station metadata by `state`, validates options

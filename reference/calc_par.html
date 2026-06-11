@@ -67,13 +67,15 @@ shadowing <code>streamMetabolizer::calc_light()</code>.</p>
 
 
 <dt id="arg-latitude">latitude<a class="anchor" aria-label="anchor" href="#arg-latitude"></a></dt>
-<dd><p>Numeric. Site latitude in decimal degrees between -90 and
-90.</p></dd>
+<dd><p>Numeric site latitude in decimal degrees between -90 and 90.
+Length 1 for a single site, or the same length as <code>solar_time</code> to model
+several sites at once (one site per timestamp).</p></dd>
 
 
 <dt id="arg-longitude">longitude<a class="anchor" aria-label="anchor" href="#arg-longitude"></a></dt>
-<dd><p>Numeric. Site longitude in decimal degrees; western
-longitudes are negative.</p></dd>
+<dd><p>Numeric site longitude in decimal degrees; western
+longitudes are negative. Length 1 for a single site, or the same length as
+<code>solar_time</code> to model several sites at once (one site per timestamp).</p></dd>
 
 
 <dt id="arg-max-par">max_par<a class="anchor" aria-label="anchor" href="#arg-max-par"></a></dt>
@@ -103,7 +105,7 @@ the round-trip cancels exactly, so the conversion has been inlined and
 the <code>streamMetabolizer</code> / <code>LakeMetabolizer</code> dependency removed from this
 function.</p>
 <p>The solar zenith angle at each timestamp is computed via
-<code><a href="https://docs.r4photobiology.info/SunCalcMeeus/reference/sun_angles.html" class="external-link">SunCalcMeeus::sun_zenith_angle()</a></code> (Meeus's algorithms), and PAR is
+<code><a href="https://rdrr.io/pkg/SunCalcMeeus/man/sun_angles.html" class="external-link">SunCalcMeeus::sun_zenith_angle()</a></code> (Meeus's algorithms), and PAR is
 modeled as <code>max_par * cos(zenith)</code> clipped at zero. The mean solar input
 is converted back to UTC for the zenith calculation via the standard
 15 deg / hour longitude offset.</p>
