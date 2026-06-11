@@ -6,11 +6,13 @@
 #' the total pressure at the sensor.
 #'
 #' @param temp_water Numeric vector. Water temperature in degrees Celsius.
-#' @param waterDepth_m Numeric vector. Water depth in meters. Defaults to `0`.
+#' @param water_depth_m Numeric vector. Water depth in meters. Defaults to `0`.
 #' @param atmo_press Numeric vector. Atmospheric pressure in atm. Defaults to
 #'   standard atmosphere (`1`).
 #' @param salinity Numeric vector. Salinity in practical salinity units.
 #'   Defaults to freshwater (`0`).
+#' @param waterDepth_m `r lifecycle::badge("deprecated")` Use `water_depth_m`
+#'   instead.
 #'
 #' @return Numeric vector of `K0` values in mol/(kg atm).
 #'
@@ -20,15 +22,25 @@
 #'
 #' @examples
 #' calc_K0(temp_water = 20)
-#' calc_K0(temp_water = c(5, 15, 25), waterDepth_m = 1, salinity = 0)
+#' calc_K0(temp_water = c(5, 15, 25), water_depth_m = 1, salinity = 0)
 #'
 #' @export
 calc_K0 <- function(
   temp_water,
-  waterDepth_m = 0,
+  water_depth_m = 0,
   atmo_press = 1,
-  salinity = 0
+  salinity = 0,
+  waterDepth_m = lifecycle::deprecated()
 ) {
+  if (lifecycle::is_present(waterDepth_m)) {
+    lifecycle::deprecate_soft(
+      "0.0.0.9000",
+      "calc_K0(waterDepth_m)",
+      "calc_K0(water_depth_m)"
+    )
+    water_depth_m <- waterDepth_m
+  }
+
   atmo_press_atm <- atmo_press
 
   # Convert water temperature to Kelvin
@@ -52,7 +64,7 @@ calc_K0 <- function(
   K0 <- exp(ln_K0)
 
   # Water pressure in atm (convert depth in meters to atm; 10.1325 m = 1 atm)
-  water_press_atm <- waterDepth_m / 10.1325
+  water_press_atm <- water_depth_m / 10.1325
 
   # Total pressure (atmospheric + water)
   total_pressure <- atmo_press_atm + water_press_atm

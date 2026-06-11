@@ -78,3 +78,11 @@ test_that("convert_to_solar_time is vectorised", {
   expect_length(t_solar, 2)
   expect_equal(diff(as.numeric(t_solar)), 12 * 3600)
 })
+
+test_that("convert_to_solar_time deprecates dateTime argument", {
+  utc <- as.POSIXct("2024-06-21 18:00:00", tz = "UTC")
+  expect_snapshot(invisible(convert_to_solar_time(
+    dateTime = utc,
+    longitude = -96.6
+  )))
+})

@@ -4,11 +4,13 @@
 #' observations onto it. Missing timestamps become explicit rows with `NA`
 #' values in the measured columns.
 #'
-#' @param loggerData Data frame or tibble containing timestamped logger data.
+#' @param logger_data Data frame or tibble containing timestamped logger data.
 #' @param datetime_col Character string naming the POSIXct datetime column.
 #'   Defaults to `"DateTime_UTC"`.
 #' @param site_col Optional character string naming a site column. When
 #'   supplied, each site is completed independently.
+#' @param loggerData `r lifecycle::badge("deprecated")` Use `logger_data`
+#'   instead.
 #'
 #' @return A data frame or tibble, matching the input class, with all original
 #'   rows plus inserted `NA` rows for missing time steps.
@@ -43,27 +45,37 @@
 #'
 #' @export
 even_timesteps <- function(
-  loggerData,
+  logger_data,
   datetime_col = "DateTime_UTC",
-  site_col = NULL
+  site_col = NULL,
+  loggerData = lifecycle::deprecated()
 ) {
-  # Input validation
-  if (!is.data.frame(loggerData)) {
-    cli::cli_abort("{.arg loggerData} must be a data frame.")
+  if (lifecycle::is_present(loggerData)) {
+    lifecycle::deprecate_soft(
+      "0.0.0.9000",
+      "even_timesteps(loggerData)",
+      "even_timesteps(logger_data)"
+    )
+    logger_data <- loggerData
   }
-  if (!datetime_col %in% names(loggerData)) {
+
+  # Input validation
+  if (!is.data.frame(logger_data)) {
+    cli::cli_abort("{.arg logger_data} must be a data frame.")
+  }
+  if (!datetime_col %in% names(logger_data)) {
     cli::cli_abort(
-      "{.arg loggerData} must contain a {.field {datetime_col}} column."
+      "{.arg logger_data} must contain a {.field {datetime_col}} column."
     )
   }
-  if (!is.null(site_col) && !site_col %in% names(loggerData)) {
+  if (!is.null(site_col) && !site_col %in% names(logger_data)) {
     cli::cli_abort(
-      "{.arg loggerData} must contain a {.field {site_col}} column."
+      "{.arg logger_data} must contain a {.field {site_col}} column."
     )
   }
 
   # Get datetime vector
-  datetime_vec <- loggerData[[datetime_col]]
+  datetime_vec <- logger_data[[datetime_col]]
   if (!inherits(datetime_vec, "POSIXct")) {
     cli::cli_abort("{.field {datetime_col}} must be a POSIXct vector.")
   }
@@ -119,25 +131,25 @@ even_timesteps <- function(
 
   if (is.null(site_col)) {
     # Process all data as single site
-    result <- process_site(loggerData)
+    result <- process_site(logger_data)
   } else {
     # Split by site, process each separately, and recombine
-    sites <- unique(loggerData[[site_col]])
+    sites <- unique(logger_data[[site_col]])
     result <- do.call(
       rbind,
       lapply(sites, function(s) {
-        site_data <- loggerData[loggerData[[site_col]] == s, ]
+        site_data <- logger_data[logger_data[[site_col]] == s, ]
         process_site(site_data)
       })
     )
   }
 
   # Reorder columns (datetime and site first)
-  col_order <- unique(c(datetime_col, site_col, names(loggerData)))
+  col_order <- unique(c(datetime_col, site_col, names(logger_data)))
   result <- result[, col_order[col_order %in% names(result)], drop = FALSE]
 
   # Return the same class as the input: tibble or data frame
-  if (tibble::is_tibble(loggerData)) {
+  if (tibble::is_tibble(logger_data)) {
     result <- tibble::as_tibble(result)
   } else {
     result <- as.data.frame(result, stringsAsFactors = FALSE)

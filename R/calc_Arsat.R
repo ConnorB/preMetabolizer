@@ -68,13 +68,7 @@ calc_Arsat <- function(
 
   # Equilibrium concentration for moist air at 1 atm, scaled to the supplied
   # barometric pressure.
-  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
-  P_H2O_atm <- calc_vapor_press(
-    temp_water,
-    salinity = salinity,
-    method = "Dickson2007"
-  )
-  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
+  press_corr <- sat_press_corr(atmo_press, units, temp_water, salinity)
   Ar_umolkg <- Ar_umolkg * press_corr
 
   # Density [kg/m^3] used to convert from umol/kg to umol/L or mg/L
@@ -87,29 +81,4 @@ calc_Arsat <- function(
     # umol/kg * (kg/L) = umol/L
     Ar_umolkg * water_density / 1000
   }
-}
-
-# Hamme & Emerson (2004) eq 1 equilibrium concentration of a gas in water in
-# contact with water-vapor-saturated air at 1 atm total pressure, using the
-# eq 2 scaled temperature. Returns umol/kg with their Table 4 constants.
-# Shared by calc_Arsat() and calc_N2sat().
-hamme_emerson_sat <- function(
-  temp_water,
-  salinity,
-  A0,
-  A1,
-  A2,
-  A3,
-  B0,
-  B1,
-  B2
-) {
-  # Scaled temperature (Hamme and Emerson 2004, eq 2)
-  TS <- log((298.15 - temp_water) / (273.15 + temp_water))
-  ln_C <- A0 +
-    A1 * TS +
-    A2 * TS^2 +
-    A3 * TS^3 +
-    salinity * (B0 + B1 * TS + B2 * TS^2)
-  exp(ln_C)
 }

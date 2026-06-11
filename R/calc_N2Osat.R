@@ -73,13 +73,7 @@ calc_N2Osat <- function(
 
   # C* = x' F at the Weiss & Price moist-air 1-atm reference condition,
   # then scaled by the dry-pressure ratio for the supplied barometric pressure.
-  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
-  P_H2O_atm <- calc_vapor_press(
-    temp_water,
-    salinity = salinity,
-    method = "Dickson2007"
-  )
-  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
+  press_corr <- sat_press_corr(atmo_press, units, temp_water, salinity)
   N2O_molL <- F_n2o * xN2O_ppm * 1e-6 * press_corr
 
   if (out_units == "mg/L") {

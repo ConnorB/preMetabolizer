@@ -64,3 +64,14 @@ test_that("even_timesteps infers step from modal diff, not first diff", {
   # 1-hour step over an ~7-hour span should produce ~8 rows, not ~420.
   expect_lt(nrow(result), 20L)
 })
+
+test_that("even_timesteps deprecates loggerData argument", {
+  df <- data.frame(
+    DateTime_UTC = seq(
+      as.POSIXct("2024-01-01", tz = "UTC"),
+      by = "1 hour",
+      length.out = 3
+    )
+  )
+  expect_snapshot(invisible(even_timesteps(loggerData = df)))
+})

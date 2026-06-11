@@ -134,7 +134,9 @@ calc_bin_width <- function(x, method = "auto") {
     rice = rng / (2 * n^(1 / 3)),
     scott = 3.49 * stats::sd(x) * n^(-1 / 3),
     doane = {
-      g1 <- mean((x - mean(x))^3) / stats::sd(x)^3
+      m2 <- mean((x - mean(x))^2)
+      m3 <- mean((x - mean(x))^3)
+      g1 <- m3 / m2^1.5
       sg1 <- sqrt(6 * (n - 2) / ((n + 1) * (n + 3)))
       rng / (1 + log2(n) + log2(1 + abs(g1) / sg1))
     },

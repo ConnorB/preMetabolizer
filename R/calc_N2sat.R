@@ -68,13 +68,7 @@ calc_N2sat <- function(
 
   # Equilibrium concentration for moist air at 1 atm, scaled to the supplied
   # barometric pressure.
-  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
-  P_H2O_atm <- calc_vapor_press(
-    temp_water,
-    salinity = salinity,
-    method = "Dickson2007"
-  )
-  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
+  press_corr <- sat_press_corr(atmo_press, units, temp_water, salinity)
   N2_umolkg <- N2_umolkg * press_corr
 
   # Density [kg/m^3] used to convert from umol/kg to umol/L or mg/L

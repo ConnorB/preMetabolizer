@@ -5,9 +5,10 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![License: GPL (>=
-3)](https://img.shields.io/badge/license-GPL%20(%3E%3D%203)-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: AGPL (>=
+3)](https://img.shields.io/badge/license-AGPL%20(%3E%3D%203)-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![R-CMD-check](https://github.com/ConnorB/preMetabolizer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ConnorB/preMetabolizer/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/ConnorB/preMetabolizer/graph/badge.svg)](https://app.codecov.io/gh/ConnorB/preMetabolizer)
 <!-- badges: end -->
 
 `preMetabolizer` helps turn field and public environmental data into the
@@ -213,9 +214,8 @@ get_nasa_data(
   unit conversions, water height, pressure correction, and modeled light.
 - `vignette("time-series-utilities", package = "preMetabolizer")` demonstrates
   timestamp, season, outlier, summary, and exceedance-probability helpers.
-- `vignette("noaa", package = "preMetabolizer")` finds candidate NOAA stations.
-- `vignette("ghcnh", package = "preMetabolizer")` downloads and reads NOAA
-  hourly GHCNh files.
+- `vignette("noaa", package = "preMetabolizer")` finds candidate NOAA stations
+  and downloads and reads NOAA hourly GHCNh files.
 - `vignette("ks-mesonet", package = "preMetabolizer")` works with Kansas
   Mesonet station metadata and cached observations.
 - `vignette("iem", package = "preMetabolizer")` works with Iowa Environmental
@@ -226,7 +226,7 @@ get_nasa_data(
 
 ## License
 
-GPL (\>= 3). See [LICENSE.md](LICENSE.md).
+AGPL (\>= 3). See [LICENSE.md](LICENSE.md).
 
 ## Issues
 

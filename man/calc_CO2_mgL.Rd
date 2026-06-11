@@ -7,10 +7,11 @@
 calc_CO2_mgL(
   CO2_ppm,
   temp_water,
-  waterDepth_m,
+  water_depth_m,
   atmo_press,
   press_units,
-  salinity = 0
+  salinity = 0,
+  waterDepth_m = lifecycle::deprecated()
 )
 }
 \arguments{
@@ -19,7 +20,7 @@ million.}
 
 \item{temp_water}{Numeric vector. Water temperature in degrees Celsius.}
 
-\item{waterDepth_m}{Numeric vector. Water depth above the sensor in meters.}
+\item{water_depth_m}{Numeric vector. Water depth above the sensor in meters.}
 
 \item{atmo_press}{Numeric vector. Atmospheric pressure at the water surface.}
 
@@ -28,6 +29,9 @@ million.}
 
 \item{salinity}{Numeric vector. Salinity in practical salinity units.
 Defaults to freshwater (\code{0}).}
+
+\item{waterDepth_m}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{water_depth_m}
+instead.}
 }
 \value{
 Numeric vector of dissolved CO2 concentration in mg/L.
@@ -41,7 +45,7 @@ concentration in mg/L. This is a volume-based companion to
 calc_CO2_mgL(
   CO2_ppm = c(420, 800, 1200),
   temp_water = 20,
-  waterDepth_m = 0.5,
+  water_depth_m = 0.5,
   atmo_press = 101.325,
   press_units = "kPa"
 )

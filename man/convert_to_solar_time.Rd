@@ -5,7 +5,12 @@
 \alias{convert_from_solar_time}
 \title{Convert a datetime to local solar time}
 \usage{
-convert_to_solar_time(dateTime, longitude, type = c("mean", "apparent"))
+convert_to_solar_time(
+  date_time,
+  longitude,
+  type = c("mean", "apparent"),
+  dateTime = lifecycle::deprecated()
+)
 
 convert_from_solar_time(
   solar_datetime,
@@ -14,7 +19,7 @@ convert_from_solar_time(
 )
 }
 \arguments{
-\item{dateTime}{A datetime vector. POSIXct in any time zone is accepted;
+\item{date_time}{A datetime vector. POSIXct in any time zone is accepted;
 the function operates on the underlying instant, so a CDT timestamp
 and the matching UTC timestamp produce identical results. Character or
 \code{Date} input is coerced with \code{as.POSIXct(., tz = "UTC")}.}
@@ -23,6 +28,8 @@ and the matching UTC timestamp produce identical results. Character or
 longitudes are negative.}
 
 \item{type}{One of \code{"mean"} (default) or \code{"apparent"}.}
+
+\item{dateTime}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{date_time} instead.}
 
 \item{solar_datetime}{A POSIXct vector of solar-time values. The clock
 reading is interpreted as solar time even though the tzone attribute is

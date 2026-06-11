@@ -55,13 +55,7 @@ calc_O2sat <- function(
   # Scale the 1-atm equilibrium concentration to the supplied barometric
   # pressure as C(P) = C(1 atm) * (P - pH2O) / (1 - pH2O), using the
   # salinity-aware Dickson et al. (2007) saturated water vapor pressure.
-  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
-  P_H2O_atm <- calc_vapor_press(
-    temp_water,
-    salinity = salinity,
-    method = "Dickson2007"
-  )
-  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
+  press_corr <- sat_press_corr(atmo_press, units, temp_water, salinity)
 
   # O2 saturation calculation (Benson and Krause fit in Garcia and Gordon 1992)
   A0 <- 5.80871

@@ -4,16 +4,24 @@
 \alias{even_timesteps}
 \title{Fill missing rows in an even time series}
 \usage{
-even_timesteps(loggerData, datetime_col = "DateTime_UTC", site_col = NULL)
+even_timesteps(
+  logger_data,
+  datetime_col = "DateTime_UTC",
+  site_col = NULL,
+  loggerData = lifecycle::deprecated()
+)
 }
 \arguments{
-\item{loggerData}{Data frame or tibble containing timestamped logger data.}
+\item{logger_data}{Data frame or tibble containing timestamped logger data.}
 
 \item{datetime_col}{Character string naming the POSIXct datetime column.
 Defaults to \code{"DateTime_UTC"}.}
 
 \item{site_col}{Optional character string naming a site column. When
 supplied, each site is completed independently.}
+
+\item{loggerData}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{logger_data}
+instead.}
 }
 \value{
 A data frame or tibble, matching the input class, with all original

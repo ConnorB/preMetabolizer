@@ -11,10 +11,11 @@
 #' `streamMetabolizer::convert_solartime_to_UTC()`, which can still be called
 #' directly from `streamMetabolizer` if you need their behaviour.
 #'
-#' @param dateTime A datetime vector. POSIXct in any time zone is accepted;
+#' @param date_time A datetime vector. POSIXct in any time zone is accepted;
 #'   the function operates on the underlying instant, so a CDT timestamp
 #'   and the matching UTC timestamp produce identical results. Character or
 #'   `Date` input is coerced with `as.POSIXct(., tz = "UTC")`.
+#' @param dateTime `r lifecycle::badge("deprecated")` Use `date_time` instead.
 #' @param solar_datetime A POSIXct vector of solar-time values. The clock
 #'   reading is interpreted as solar time even though the tzone attribute is
 #'   UTC; this matches the convention used by `streamMetabolizer` and
@@ -59,21 +60,31 @@
 #'
 #' @export
 convert_to_solar_time <- function(
-  dateTime,
+  date_time,
   longitude,
-  type = c("mean", "apparent")
+  type = c("mean", "apparent"),
+  dateTime = lifecycle::deprecated()
 ) {
   type <- match.arg(type)
 
-  if (!inherits(dateTime, "POSIXct")) {
-    dateTime <- as.POSIXct(dateTime, tz = "UTC")
+  if (lifecycle::is_present(dateTime)) {
+    lifecycle::deprecate_soft(
+      "0.0.0.9000",
+      "convert_to_solar_time(dateTime)",
+      "convert_to_solar_time(date_time)"
+    )
+    date_time <- dateTime
+  }
+
+  if (!inherits(date_time, "POSIXct")) {
+    date_time <- as.POSIXct(date_time, tz = "UTC")
   } else {
-    dateTime <- lubridate::with_tz(dateTime, "UTC")
+    date_time <- lubridate::with_tz(date_time, "UTC")
   }
 
   if (type == "mean") {
     offset_seconds <- longitude / 15 * 3600
-    solar <- dateTime + offset_seconds
+    solar <- date_time + offset_seconds
     attr(solar, "tzone") <- "UTC"
     class(solar) <- c("solar_date", "POSIXct", "POSIXt")
     return(solar)
@@ -86,7 +97,7 @@ convert_to_solar_time <- function(
   )
 
   raw_solar <- SunCalcMeeus::solar_time(
-    time = dateTime,
+    time = date_time,
     geocode = geocode,
     unit.out = "datetime"
   )
@@ -97,9 +108,9 @@ convert_to_solar_time <- function(
   # that wrap so the returned timestamp lies on the correct solar
   # calendar day. The natural offset is bounded by abs(longitude)/15
   # hours, so normalising to [-12 h, +12 h] is sufficient.
-  offset <- as.numeric(raw_solar) - as.numeric(dateTime)
+  offset <- as.numeric(raw_solar) - as.numeric(date_time)
   offset <- ((offset + 43200) %% 86400) - 43200
-  solar <- dateTime + offset
+  solar <- date_time + offset
   attr(solar, "tzone") <- "UTC"
   class(solar) <- c("solar_date", "POSIXct", "POSIXt")
   solar

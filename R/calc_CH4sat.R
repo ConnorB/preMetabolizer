@@ -81,13 +81,7 @@ calc_CH4sat <- function(
 
   # Equilibrium concentration [nmol/L] at the moist-air 1-atm reference condition,
   # scaled to the supplied barometric pressure.
-  pressure_atm <- convert_pressure(atmo_press, from = units, to = "atm")
-  P_H2O_atm <- calc_vapor_press(
-    temp_water,
-    salinity = salinity,
-    method = "Dickson2007"
-  )
-  press_corr <- (pressure_atm - P_H2O_atm) / (1 - P_H2O_atm)
+  press_corr <- sat_press_corr(atmo_press, units, temp_water, salinity)
 
   CH4_nmolL <- exp(ln_C) * press_corr
   if (out_units == "mg/L") {

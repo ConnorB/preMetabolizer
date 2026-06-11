@@ -29,8 +29,8 @@ test_that("calc_K0 is vectorized over temp_water", {
 test_that("calc_K0 pressure correction adjusts K0 with depth", {
   # Weiss & Price (1980) pressure correction: increased total pressure
   # decreases K0 (mol/kg/atm) via the partial molal volume term.
-  k0_surface <- calc_K0(20, waterDepth_m = 0, atmo_press = 1, salinity = 0)
-  k0_deep <- calc_K0(20, waterDepth_m = 10, atmo_press = 1, salinity = 0)
+  k0_surface <- calc_K0(20, water_depth_m = 0, atmo_press = 1, salinity = 0)
+  k0_deep <- calc_K0(20, water_depth_m = 10, atmo_press = 1, salinity = 0)
   expect_lt(k0_deep, k0_surface)
 })
 
@@ -95,4 +95,32 @@ test_that("calc_CO2_molKg pressure correction is via K0 only (no extra factor)",
   ratio_code <- calc_CO2_molKg(xCO2, T, 10, 1, "atm", S) /
     calc_CO2_molKg(xCO2, T, 0, 1, "atm", S)
   expect_equal(ratio_code, K0_depth / K0_surface, tolerance = 1e-10)
+})
+
+test_that("calc_K0 deprecates waterDepth_m argument", {
+  expect_snapshot(invisible(calc_K0(20, waterDepth_m = 0.5)))
+})
+
+test_that("calc_CO2_molKg deprecates waterDepth_m argument", {
+  expect_snapshot(
+    invisible(calc_CO2_molKg(
+      CO2_ppm = 420,
+      temp_water = 20,
+      atmo_press = 101.325,
+      press_units = "kPa",
+      waterDepth_m = 0.5
+    ))
+  )
+})
+
+test_that("calc_CO2_mgL deprecates waterDepth_m argument", {
+  expect_snapshot(
+    invisible(calc_CO2_mgL(
+      CO2_ppm = 420,
+      temp_water = 20,
+      atmo_press = 101.325,
+      press_units = "kPa",
+      waterDepth_m = 0.5
+    ))
+  )
 })

@@ -7,12 +7,14 @@
 #' @param CO2_ppm Numeric vector. Mole fraction of CO2 in air in parts per
 #'   million.
 #' @param temp_water Numeric vector. Water temperature in degrees Celsius.
-#' @param waterDepth_m Numeric vector. Water depth above the sensor in meters.
+#' @param water_depth_m Numeric vector. Water depth above the sensor in meters.
 #' @param atmo_press Numeric vector. Atmospheric pressure at the water surface.
 #' @param press_units Character string giving the units of `atmo_press`. See
 #'   [convert_pressure()] for accepted pressure units.
 #' @param salinity Numeric vector. Salinity in practical salinity units.
 #'   Defaults to freshwater (`0`).
+#' @param waterDepth_m `r lifecycle::badge("deprecated")` Use `water_depth_m`
+#'   instead.
 #'
 #' @return Numeric vector of dissolved CO2 concentration in mol/kg.
 #'
@@ -22,7 +24,7 @@
 #' calc_CO2_molKg(
 #'   CO2_ppm = 420,
 #'   temp_water = 20,
-#'   waterDepth_m = 0.5,
+#'   water_depth_m = 0.5,
 #'   atmo_press = 101.325,
 #'   press_units = "kPa"
 #' )
@@ -31,11 +33,21 @@
 calc_CO2_molKg <- function(
   CO2_ppm,
   temp_water,
-  waterDepth_m,
+  water_depth_m,
   atmo_press,
   press_units,
-  salinity = 0
+  salinity = 0,
+  waterDepth_m = lifecycle::deprecated()
 ) {
+  if (lifecycle::is_present(waterDepth_m)) {
+    lifecycle::deprecate_soft(
+      "0.0.0.9000",
+      "calc_CO2_molKg(waterDepth_m)",
+      "calc_CO2_molKg(water_depth_m)"
+    )
+    water_depth_m <- waterDepth_m
+  }
+
   # Pressure to atm
   atmo_press_atm <- convert_pressure(
     pressure = atmo_press,
@@ -44,8 +56,8 @@ calc_CO2_molKg <- function(
   )
 
   # Pressure correction to K0 uses the total (atmospheric + hydrostatic)
-  # pressure at the sensor; calc_K0() converts waterDepth_m internally.
-  K0 <- calc_K0(temp_water, waterDepth_m, atmo_press_atm, salinity)
+  # pressure at the sensor; calc_K0() converts water_depth_m internally.
+  K0 <- calc_K0(temp_water, water_depth_m, atmo_press_atm, salinity)
 
   # Vapor pressure of water at the equilibrator
   vapor_press <- calc_vapor_press(temp_water, salinity)
@@ -74,7 +86,7 @@ calc_CO2_molKg <- function(
 #' calc_CO2_mgL(
 #'   CO2_ppm = c(420, 800, 1200),
 #'   temp_water = 20,
-#'   waterDepth_m = 0.5,
+#'   water_depth_m = 0.5,
 #'   atmo_press = 101.325,
 #'   press_units = "kPa"
 #' )
@@ -83,15 +95,25 @@ calc_CO2_molKg <- function(
 calc_CO2_mgL <- function(
   CO2_ppm,
   temp_water,
-  waterDepth_m,
+  water_depth_m,
   atmo_press,
   press_units,
-  salinity = 0
+  salinity = 0,
+  waterDepth_m = lifecycle::deprecated()
 ) {
+  if (lifecycle::is_present(waterDepth_m)) {
+    lifecycle::deprecate_soft(
+      "0.0.0.9000",
+      "calc_CO2_mgL(waterDepth_m)",
+      "calc_CO2_mgL(water_depth_m)"
+    )
+    water_depth_m <- waterDepth_m
+  }
+
   CO2_molKg <- calc_CO2_molKg(
     CO2_ppm = CO2_ppm,
     temp_water = temp_water,
-    waterDepth_m = waterDepth_m,
+    water_depth_m = water_depth_m,
     atmo_press = atmo_press,
     press_units = press_units,
     salinity = salinity

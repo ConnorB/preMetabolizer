@@ -34,6 +34,7 @@ Imports:
     Rcpp,
     lifecycle
 Suggests:
+    covr,
     ggplot2,
     jsonlite,
     knitr,

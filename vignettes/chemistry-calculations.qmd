@@ -115,21 +115,21 @@ and salinity.
 co2 <- tibble::tibble(
   CO2_ppm = c(420, 800, 1200),
   temp_water = 20,
-  waterDepth_m = 0.5,
+  water_depth_m = 0.5,
   atmo_press = 101.325
 ) |>
   mutate(
     CO2_mol_kg = calc_CO2_molKg(
       CO2_ppm = CO2_ppm,
       temp_water = temp_water,
-      waterDepth_m = waterDepth_m,
+      water_depth_m = water_depth_m,
       atmo_press = atmo_press,
       press_units = "kPa"
     ),
     CO2_mg_L = calc_CO2_mgL(
       CO2_ppm = CO2_ppm,
       temp_water = temp_water,
-      waterDepth_m = waterDepth_m,
+      water_depth_m = water_depth_m,
       atmo_press = atmo_press,
       press_units = "kPa"
     )
@@ -155,7 +155,7 @@ temps <- tibble::tibble(temp_water = c(5, 15, 25)) |>
       salinity = 0,
       method = "MIMSY"
     ),
-    K0_mol_kg_atm = calc_K0(temp_water, waterDepth_m = 0.5)
+    K0_mol_kg_atm = calc_K0(temp_water, water_depth_m = 0.5)
   )
 
 temps

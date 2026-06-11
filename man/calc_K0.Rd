@@ -4,18 +4,27 @@
 \alias{calc_K0}
 \title{Calculate the CO2 solubility coefficient}
 \usage{
-calc_K0(temp_water, waterDepth_m = 0, atmo_press = 1, salinity = 0)
+calc_K0(
+  temp_water,
+  water_depth_m = 0,
+  atmo_press = 1,
+  salinity = 0,
+  waterDepth_m = lifecycle::deprecated()
+)
 }
 \arguments{
 \item{temp_water}{Numeric vector. Water temperature in degrees Celsius.}
 
-\item{waterDepth_m}{Numeric vector. Water depth in meters. Defaults to \code{0}.}
+\item{water_depth_m}{Numeric vector. Water depth in meters. Defaults to \code{0}.}
 
 \item{atmo_press}{Numeric vector. Atmospheric pressure in atm. Defaults to
 standard atmosphere (\code{1}).}
 
 \item{salinity}{Numeric vector. Salinity in practical salinity units.
 Defaults to freshwater (\code{0}).}
+
+\item{waterDepth_m}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{water_depth_m}
+instead.}
 }
 \value{
 Numeric vector of \code{K0} values in mol/(kg atm).
@@ -28,7 +37,7 @@ the total pressure at the sensor.
 }
 \examples{
 calc_K0(temp_water = 20)
-calc_K0(temp_water = c(5, 15, 25), waterDepth_m = 1, salinity = 0)
+calc_K0(temp_water = c(5, 15, 25), water_depth_m = 1, salinity = 0)
 
 }
 \references{

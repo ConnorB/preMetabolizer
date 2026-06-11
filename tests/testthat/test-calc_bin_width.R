@@ -46,6 +46,11 @@ test_that("zero-range input errors", {
   expect_snapshot(calc_bin_width(rep(5, 10)), error = TRUE)
 })
 
+test_that("doane returns expected value for a skewed vector", {
+  x <- c(1, 1, 1, 2, 2, 3, 5, 8, 13, 21)
+  expect_equal(calc_bin_width(x, "doane"), 3.268178, tolerance = 1e-5)
+})
+
 test_that("doane with fewer than 3 observations errors", {
   expect_snapshot(calc_bin_width(c(1, 2), "doane"), error = TRUE)
 })
