@@ -124,7 +124,7 @@
 <span><span class="co">#&gt; $ latitude     &lt;dbl&gt; 39.07246, 39.55127, 38.77996, 39.13456, 38.32906, 38.9414…</span></span>
 <span><span class="co">#&gt; $ longitude    &lt;dbl&gt; -95.62602, -97.65077, -97.64444, -96.67894, -96.19453, -9…</span></span>
 <span><span class="co">#&gt; $ start_date   &lt;date&gt; 1946-08-01, 1885-05-01, 1952-01-01, 1960-06-01, 1950-10-…</span></span>
-<span><span class="co">#&gt; $ end_date     &lt;date&gt; 2026-06-07, 2026-06-07, 2026-06-06, 2026-06-07, 2026-06-…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ end_date     &lt;date&gt; 2026-06-09, 2026-06-09, 2026-06-08, 2026-06-09, 2026-06-…</span></span></code></pre></div>
 </div>
 <p>Filter to stations that carry the variables you need and span at least part of water year 2025:</p>
 <div class="cell">
@@ -139,20 +139,20 @@
 <span><span class="va">wx_stations</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">latitude</span>, <span class="va">longitude</span>, <span class="va">start_date</span>, <span class="va">end_date</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">station_name</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 21 × 6</span></span>
-<span><span class="co">#&gt;    station_id  station_name             latitude longitude start_date end_date  </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;                       &lt;dbl&gt;     &lt;dbl&gt; &lt;date&gt;     &lt;date&gt;    </span></span>
-<span><span class="co">#&gt;  1 USC00140911 BLUE RAPIDS, KS US           39.7     -96.7 1905-01-01 2026-06-08</span></span>
-<span><span class="co">#&gt;  2 USC00141559 CLAY CENTER, KS US           39.4     -97.1 1902-04-16 2026-06-08</span></span>
-<span><span class="co">#&gt;  3 USC00141593 CLIFTON, KS US               39.6     -97.3 1931-04-01 2026-06-05</span></span>
-<span><span class="co">#&gt;  4 USC00141761 CONCORDIA 2 SE, KS US        39.6     -97.6 2003-01-01 2026-06-06</span></span>
-<span><span class="co">#&gt;  5 USC00141762 CONCORDIA 2 SSE, KS US       39.5     -97.7 2024-03-21 2026-06-08</span></span>
-<span><span class="co">#&gt;  6 USC00141858 COTTONWOOD FALLS, KS US      38.4     -96.5 1902-12-01 2025-02-28</span></span>
-<span><span class="co">#&gt;  7 USC00141867 COUNCIL GROVE LAKE, KS …     38.7     -96.5 1964-06-01 2026-06-01</span></span>
-<span><span class="co">#&gt;  8 USC00142548 EMPORIA 3 NW, KS US          38.4     -96.2 1979-06-01 2026-06-08</span></span>
-<span><span class="co">#&gt;  9 USW00003936 MANHATTAN ASOS, KS US        39.1     -96.7 1960-06-01 2026-06-07</span></span>
-<span><span class="co">#&gt; 10 USC00145039 MARION RESERVOIR, KS US      38.4     -97.1 1966-01-01 2026-06-05</span></span>
-<span><span class="co">#&gt; # ℹ 11 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 47 × 6</span></span>
+<span><span class="co">#&gt;    station_id  station_name           latitude longitude start_date end_date  </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;       &lt;chr&gt;                     &lt;dbl&gt;     &lt;dbl&gt; &lt;date&gt;     &lt;date&gt;    </span></span>
+<span><span class="co">#&gt;  1 USC00140010 ABILENE, KS US             38.9     -97.2 1893-01-01 2026-04-30</span></span>
+<span><span class="co">#&gt;  2 USC00140682 BELLEVILLE, KS US          39.8     -97.6 1935-04-01 2026-06-10</span></span>
+<span><span class="co">#&gt;  3 USC00140877 BLAINE, KS US              39.5     -96.4 1955-03-02 2026-04-15</span></span>
+<span><span class="co">#&gt;  4 USC00140911 BLUE RAPIDS, KS US         39.7     -96.7 1905-01-01 2026-06-10</span></span>
+<span><span class="co">#&gt;  5 USC00141435 CHAPMAN, KS US             39.0     -97.0 1904-02-01 2026-06-10</span></span>
+<span><span class="co">#&gt;  6 USC00141559 CLAY CENTER, KS US         39.4     -97.1 1902-04-16 2026-06-10</span></span>
+<span><span class="co">#&gt;  7 USC00141593 CLIFTON, KS US             39.6     -97.3 1931-04-01 2026-06-09</span></span>
+<span><span class="co">#&gt;  8 USC00141761 CONCORDIA 2 SE, KS US      39.6     -97.6 2003-01-01 2026-06-09</span></span>
+<span><span class="co">#&gt;  9 USC00141762 CONCORDIA 2 SSE, KS US     39.5     -97.7 2024-03-21 2026-06-10</span></span>
+<span><span class="co">#&gt; 10 USW00013984 CONCORDIA ASOS, KS US      39.6     -97.7 1885-05-01 2026-06-09</span></span>
+<span><span class="co">#&gt; # ℹ 37 more rows</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="find-nearby-stations">Find nearby stations<a class="anchor" aria-label="anchor" href="#find-nearby-stations"></a>
 </h2>
@@ -170,14 +170,22 @@
 <span></span>
 <span><span class="va">konza_noaa</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">distance_km</span>, <span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">latitude</span>, <span class="va">longitude</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 5 × 5</span></span>
-<span><span class="co">#&gt;   distance_km station_id  station_name              latitude longitude</span></span>
-<span><span class="co">#&gt;         &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;                        &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1        6.58 USW00003936 MANHATTAN ASOS, KS US         39.1     -96.7</span></span>
-<span><span class="co">#&gt; 2       15.7  USC00148259 TUTTLE CREEK LAKE, KS US      39.2     -96.6</span></span>
-<span><span class="co">#&gt; 3       24.0  USC00148563 WAMEGO 4 W, KS US             39.2     -96.4</span></span>
-<span><span class="co">#&gt; 4       35.9  USC00148802 WHITE CITY, KS US             38.8     -96.7</span></span>
-<span><span class="co">#&gt; 5       48.7  USC00141867 COUNCIL GROVE LAKE, KS US     38.7     -96.5</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 13 × 5</span></span>
+<span><span class="co">#&gt;    distance_km station_id  station_name                       latitude longitude</span></span>
+<span><span class="co">#&gt;          &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;                                 &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1       0.493 USW00053974 MANHATTAN 6 SSW, KS US                 39.1     -96.6</span></span>
+<span><span class="co">#&gt;  2       6.58  USW00003936 MANHATTAN ASOS, KS US                  39.1     -96.7</span></span>
+<span><span class="co">#&gt;  3      10.4   USC00144972 MANHATTAN, KS US                       39.2     -96.6</span></span>
+<span><span class="co">#&gt;  4      14.4   USC00142827 FORT RILEY, KS US                      39.1     -96.8</span></span>
+<span><span class="co">#&gt;  5      14.8   USW00013947 FORT RILEY MARSHALL ARMY AIR FIEL…     39.0     -96.8</span></span>
+<span><span class="co">#&gt;  6      15.7   USC00148259 TUTTLE CREEK LAKE, KS US               39.2     -96.6</span></span>
+<span><span class="co">#&gt;  7      24.0   USC00148563 WAMEGO 4 W, KS US                      39.2     -96.4</span></span>
+<span><span class="co">#&gt;  8      25.0   USC00145306 MILFORD LAKE, KS US                    39.1     -96.9</span></span>
+<span><span class="co">#&gt;  9      35.9   USC00148802 WHITE CITY, KS US                      38.8     -96.7</span></span>
+<span><span class="co">#&gt; 10      38.4   USC00141435 CHAPMAN, KS US                         39.0     -97.0</span></span>
+<span><span class="co">#&gt; 11      43.5   USC00148503 WAKEFIELD 4 W, KS US                   39.2     -97.1</span></span>
+<span><span class="co">#&gt; 12      47.1   USC00140877 BLAINE, KS US                          39.5     -96.4</span></span>
+<span><span class="co">#&gt; 13      48.7   USC00141867 COUNCIL GROVE LAKE, KS US              38.7     -96.5</span></span></code></pre></div>
 </div>
 <p>Map the candidates before choosing a station:</p>
 <div class="cell">
@@ -211,7 +219,7 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">station_id</span></span>
-<span><span class="co">#&gt; [1] "USW00003936"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "USW00053974"</span></span></code></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
@@ -226,12 +234,12 @@
 <span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">daily_wx</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Rows: 365</span></span>
 <span><span class="co">#&gt; Columns: 6</span></span>
-<span><span class="co">#&gt; $ station_id   &lt;chr&gt; "USW00003936", "USW00003936", "USW00003936", "USW00003936…</span></span>
-<span><span class="co">#&gt; $ station_name &lt;chr&gt; "MANHATTAN ASOS, KS US", "MANHATTAN ASOS, KS US", "MANHAT…</span></span>
+<span><span class="co">#&gt; $ station_id   &lt;chr&gt; "USW00053974", "USW00053974", "USW00053974", "USW00053974…</span></span>
+<span><span class="co">#&gt; $ station_name &lt;chr&gt; "MANHATTAN 6 SSW, KS US", "MANHATTAN 6 SSW, KS US", "MANH…</span></span>
 <span><span class="co">#&gt; $ date         &lt;date&gt; 2024-10-01, 2024-10-02, 2024-10-03, 2024-10-04, 2024-10-…</span></span>
-<span><span class="co">#&gt; $ prcp         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.…</span></span>
-<span><span class="co">#&gt; $ tmax         &lt;dbl&gt; 23.3, 29.4, 36.7, 28.9, 37.2, 26.7, 25.6, 27.2, 31.1, 30.…</span></span>
-<span><span class="co">#&gt; $ tmin         &lt;dbl&gt; 5.6, 2.8, 11.7, 13.9, 11.1, 6.7, 2.8, 8.3, 6.7, 12.2, 11.…</span></span></code></pre></div>
+<span><span class="co">#&gt; $ prcp         &lt;dbl&gt; 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3.7, 0.0, 0.…</span></span>
+<span><span class="co">#&gt; $ tmax         &lt;dbl&gt; 22.6, 28.4, 34.7, 28.3, 35.4, 26.2, 24.8, 26.5, 30.2, 29.…</span></span>
+<span><span class="co">#&gt; $ tmin         &lt;dbl&gt; 5.5, 3.8, 12.5, 13.2, 12.8, 6.4, 2.5, 8.8, 7.0, 12.9, 16.…</span></span></code></pre></div>
 </div>
 <p>With <code>units = "metric"</code> (the default), <code><a href="../reference/ncei_data.html">ncei_data()</a></code> returns <code>tmax</code> and <code>tmin</code> in °C and <code>prcp</code> in mm. The <code>date</code> column is already a <code>Date</code>:</p>
 <div class="cell">
@@ -281,7 +289,7 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">station_id</span></span>
-<span><span class="co">#&gt; [1] "USW00003936"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "USW00053974"</span></span></code></pre></div>
 </div>
 <p>See <code>vignette("ghcnh", package = "preMetabolizer")</code> for a full hourly-data workflow.</p>
 </section><script id="quarto-html-after-body" type="application/javascript">

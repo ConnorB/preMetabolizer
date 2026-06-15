@@ -221,7 +221,7 @@
   replace `convert_UTC_to_solartime()` and `convert_solartime_to_UTC()`.
   The new functions use the standard 15 deg/hour longitude offset for
   mean solar time and delegate to
-  [`SunCalcMeeus::solar_time()`](https://rdrr.io/pkg/SunCalcMeeus/man/solar_time.html)
+  [`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html)
   for apparent solar time. They are renamed to avoid shadowing the
   originals in `streamMetabolizer`, which can still be called directly
   when needed (no issue).
@@ -238,7 +238,7 @@
   than erroring inside `SunCalcMeeus` (no issue).
 
 - `calc_light()` now computes the solar zenith angle via
-  [`SunCalcMeeus::sun_zenith_angle()`](https://rdrr.io/pkg/SunCalcMeeus/man/sun_angles.html)
+  [`SunCalcMeeus::sun_zenith_angle()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/sun_angles.html)
   (full Meeus algorithms) instead of an internal first-order declination
   approximation. The public signature is unchanged; PAR values shift by
   less than ~0.03 percent. The internal helpers

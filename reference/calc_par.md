@@ -57,7 +57,7 @@ the `streamMetabolizer` / `LakeMetabolizer` dependency removed from this
 function.
 
 The solar zenith angle at each timestamp is computed via
-[`SunCalcMeeus::sun_zenith_angle()`](https://rdrr.io/pkg/SunCalcMeeus/man/sun_angles.html)
+[`SunCalcMeeus::sun_zenith_angle()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/sun_angles.html)
 (Meeus's algorithms), and PAR is modeled as `max_par * cos(zenith)`
 clipped at zero. The mean solar input is converted back to UTC for the
 zenith calculation via the standard 15 deg / hour longitude offset.
