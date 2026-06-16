@@ -3,7 +3,8 @@
 Calculate photosynthetically active radiation (PAR) for a series of
 date-times and site coordinates. Input times should be mean solar time,
 as expected by stream metabolism models. Renamed from `calc_light()` to
-avoid shadowing `streamMetabolizer::calc_light()`.
+avoid shadowing
+[`streamMetabolizer::calc_light()`](https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html).
 
 ## Usage
 
@@ -39,9 +40,10 @@ Numeric vector of modeled PAR in umol m^-2 s^-1.
 
 ## Details
 
-This function was adapted from `streamMetabolizer::calc_light` and is
-included here under the terms of the CC0 1.0 Universal public domain
-dedication, as described at:
+This function was adapted from
+[`streamMetabolizer::calc_light`](https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html)
+and is included here under the terms of the CC0 1.0 Universal public
+domain dedication, as described at:
 https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits
 
 Original citation: Appling, A. P., Hall, R. O., Yackulic, C. B., &
@@ -50,11 +52,11 @@ for Stream Metabolism Estimation. *Journal of Geophysical Research:
 Biogeosciences*, 123(2), 624-645. https://doi.org/10.1002/2017JG004140
 
 The original implementation routed PAR through SW and back via the
-`LakeMetabolizer::par.to.sw.base()` / `sw.to.par.base()` linear factors
-(`par * 0.473` and `sw * 2.114`). Because those factors are reciprocals
-the round-trip cancels exactly, so the conversion has been inlined and
-the `streamMetabolizer` / `LakeMetabolizer` dependency removed from this
-function.
+[`LakeMetabolizer::par.to.sw.base()`](https://rdrr.io/pkg/LakeMetabolizer/man/par.to.sw.html)
+/ `sw.to.par.base()` linear factors (`par * 0.473` and `sw * 2.114`).
+Because those factors are reciprocals the round-trip cancels exactly, so
+the conversion has been inlined and the `streamMetabolizer` /
+`LakeMetabolizer` dependency removed from this function.
 
 The solar zenith angle at each timestamp is computed via
 [`SunCalcMeeus::sun_zenith_angle()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/sun_angles.html)

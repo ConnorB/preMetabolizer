@@ -347,9 +347,10 @@ sm_input |>
 PAR at French
 Creek.](french-creek_files/figure-html/plot-sm-input-other-1.png)
 
-To fit a model with `streamMetabolizer::metab()`, choose either
-`light.obs` or `light.calc` and rename that column to `light`. See the
-[streamMetabolizer
+To fit a model with
+[`streamMetabolizer::metab()`](https://rdrr.io/pkg/streamMetabolizer/man/metab.html),
+choose either `light.obs` or `light.calc` and rename that column to
+`light`. See the [streamMetabolizer
 documentation](https://github.com/ConnorB/streamMetabolizer) for details
 on model fitting and interpreting metabolism estimates.
 

@@ -49,7 +49,7 @@ models on the prepared data.
 Most workflows begin with logger data that contain a timestamp, observed
 dissolved oxygen, and water temperature. The example below uses the
 built-in French Creek dataset and builds the core columns expected by
-`streamMetabolizer::metab()`.
+[`streamMetabolizer::metab()`](https://rdrr.io/pkg/streamMetabolizer/man/metab.html).
 
 ``` r
 

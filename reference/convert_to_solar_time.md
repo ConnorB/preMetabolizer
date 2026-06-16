@@ -64,9 +64,11 @@ cases; the clock reading carries the meaning.
 
 These helpers are named `convert_to_solar_time()` /
 `convert_from_solar_time()` to avoid shadowing the original
-`streamMetabolizer::convert_UTC_to_solartime()` and
-`streamMetabolizer::convert_solartime_to_UTC()`, which can still be
-called directly from `streamMetabolizer` if you need their behaviour.
+[`streamMetabolizer::convert_UTC_to_solartime()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_UTC_to_solartime.html)
+and
+[`streamMetabolizer::convert_solartime_to_UTC()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_solartime_to_UTC.html),
+which can still be called directly from `streamMetabolizer` if you need
+their behaviour.
 
 The mean offset is `longitude / 15 * 3600` seconds. The apparent path
 delegates to
@@ -82,8 +84,8 @@ which is well below typical sensor sampling intervals.
 ## See also
 
 [`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html),
-`streamMetabolizer::convert_UTC_to_solartime()`,
-`streamMetabolizer::convert_solartime_to_UTC()`.
+[`streamMetabolizer::convert_UTC_to_solartime()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_UTC_to_solartime.html),
+[`streamMetabolizer::convert_solartime_to_UTC()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_solartime_to_UTC.html).
 
 ## Examples
 

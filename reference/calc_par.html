@@ -50,7 +50,7 @@ shadowing streamMetabolizer::calc_light()."></head><body>
     <p>Calculate photosynthetically active radiation (PAR) for a series of
 date-times and site coordinates. Input times should be mean solar time, as
 expected by stream metabolism models. Renamed from <code>calc_light()</code> to avoid
-shadowing <code>streamMetabolizer::calc_light()</code>.</p>
+shadowing <code><a href="https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html" class="external-link">streamMetabolizer::calc_light()</a></code>.</p>
     </div>
 
     <div class="section level2">
@@ -90,7 +90,7 @@ longitudes are negative. Length 1 for a single site, or the same length as
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function was adapted from
-<code>streamMetabolizer::calc_light</code> and is included here under the terms of the
+<code><a href="https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html" class="external-link">streamMetabolizer::calc_light</a></code> and is included here under the terms of the
 CC0 1.0 Universal public domain dedication, as described at:
 https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits</p>
 <p>Original citation:
@@ -99,7 +99,7 @@ Overcoming Equifinality: Leveraging Long Time Series for Stream Metabolism
 Estimation. <em>Journal of Geophysical Research: Biogeosciences</em>, 123(2), 624-645.
 https://doi.org/10.1002/2017JG004140</p>
 <p>The original implementation routed PAR through SW and back via the
-<code>LakeMetabolizer::par.to.sw.base()</code> / <code>sw.to.par.base()</code> linear factors
+<code><a href="https://rdrr.io/pkg/LakeMetabolizer/man/par.to.sw.html" class="external-link">LakeMetabolizer::par.to.sw.base()</a></code> / <code>sw.to.par.base()</code> linear factors
 (<code>par * 0.473</code> and <code>sw * 2.114</code>). Because those factors are reciprocals
 the round-trip cancels exactly, so the conversion has been inlined and
 the <code>streamMetabolizer</code> / <code>LakeMetabolizer</code> dependency removed from this

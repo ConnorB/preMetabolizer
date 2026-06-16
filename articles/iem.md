@@ -159,16 +159,16 @@ current |>
 #> # A tibble: 61 × 8
 #>    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp
 #>    <chr>      <chr>          <dttm>              <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1 ADU        AUDUBON        2026-06-15 19:15:00  77    39.2     4   270   NA 
+#>  1 ADU        AUDUBON        2026-06-16 13:55:00  62.6  46.4    11   330   NA 
 #>  2 AIO        ATLANTIC       2026-06-15 06:55:00  53.6  51.8     0     0   NA 
-#>  3 ALO        Waterloo       2026-06-15 18:54:00  76    46      11   310 1012.
-#>  4 AMW        Ames           2026-06-15 18:53:00  76    41      10   270 1013.
+#>  3 ALO        Waterloo       2026-06-16 13:54:00  60    48      21   280 1005.
+#>  4 AMW        Ames           2026-06-16 13:53:00  62    44      20   310 1008.
 #>  5 AWG        WASHINGTON     2026-06-14 01:15:00  77    68      10   350   NA 
-#>  6 AXA        Algona         2026-06-15 19:15:00  77    39.2    16   280   NA 
+#>  6 AXA        Algona         2026-06-16 13:55:00  60.8  44.6    18   320   NA 
 #>  7 BNW        BOONE MUNI     2026-06-13 22:35:00  66.2  66.2    10   360   NA 
-#>  8 BRL        BURLINGTON     2026-06-15 18:53:00  76    50       8   260 1014.
-#>  9 CAV        CLARION        2026-06-15 19:15:00  77    41      16   280   NA 
-#> 10 CBF        COUNCIL BLUFFS 2026-06-15 19:15:00  77    44.6    11   280   NA 
+#>  8 BRL        BURLINGTON     2026-06-16 13:53:00  67    59      11   260 1006.
+#>  9 CAV        CLARION        2026-06-16 13:55:00  59    46.4    20   320   NA 
+#> 10 CBF        COUNCIL BLUFFS 2026-06-16 13:55:00  64.4  44.6     9   340   NA 
 #> # ℹ 51 more rows
 ```
 
@@ -194,8 +194,8 @@ dsm_current |>
 #> # A tibble: 2 × 7
 #>   station_id station_name utc_valid            tmpf  relh  sknt pres 
 #>   <chr>      <chr>        <dttm>              <dbl> <dbl> <dbl> <lgl>
-#> 1 AMW        Ames         2026-06-15 18:53:00    76  28.5    10 NA   
-#> 2 DSM        Des Moines   2026-06-15 18:54:00    77  28.7    12 NA
+#> 1 AMW        Ames         2026-06-16 13:53:00    62  51.6    20 NA   
+#> 2 DSM        Des Moines   2026-06-16 13:54:00    63  53.8    19 NA
 ```
 
 ## Retrieve one day of observations
