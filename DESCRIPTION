@@ -39,9 +39,12 @@ Suggests:
     jsonlite,
     knitr,
     quarto,
+    streamMetabolizer (>= 0.12.1.9000),
     testthat (>= 3.0.0),
     tidyr,
     withr
+Remotes:
+    ConnorB/streamMetabolizer
 VignetteBuilder: quarto
 Config/testthat/edition: 3
 Encoding: UTF-8
