@@ -1,3 +1,23 @@
+# Resolves a soft-deprecated old-style cdo_*() argument name to its
+# snake_case replacement, warning only when the old name was actually used.
+cdo_deprecate_arg <- function(
+  new_value,
+  old_value,
+  new_name,
+  old_name,
+  fn_name
+) {
+  if (lifecycle::is_present(old_value)) {
+    lifecycle::deprecate_soft(
+      "0.0.0.9000",
+      paste0(fn_name, "(", old_name, ")"),
+      paste0(fn_name, "(", new_name, ")")
+    )
+    return(old_value)
+  }
+  new_value
+}
+
 cdo_base_url <- "https://www.ncei.noaa.gov/cdo-web/api/v2"
 
 cdo_daily_limit <- 10000L

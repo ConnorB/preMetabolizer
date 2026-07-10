@@ -17,13 +17,13 @@
 #'   \item Find and download meteorological data with [get_noaa_stations()],
 #'     [closest_noaa_stations()], [get_ghcnh()], [ncei_data()],
 #'     [get_nasa_data()], and
-#'     [ks_meso_timeseries()]. Retrieve mesonet station observations with
-#'     [iem_networks()], [iem_current()], [iem_obhistory()],
+#'     [ks_meso_time_series()]. Retrieve mesonet station observations with
+#'     [iem_networks()], [iem_current()], [iem_ob_history()],
 #'     [tex_meso_stations()], [tex_meso_current()], and
-#'     [tex_meso_timeseries()].
+#'     [tex_meso_time_series()].
 #'   \item Retrieve or calculate site context with [get_usgs_elev()],
 #'     [correct_bp()], [convert_to_solar_time()], and [calc_par()].
-#'   \item Prepare model inputs with [even_timesteps()], [calc_O2sat()],
+#'   \item Prepare model inputs with [even_timesteps()], [calc_o2_sat()],
 #'     [calc_water_height()], and the built-in example datasets.
 #'   \item Summarize and check data with [flag_z()],
 #'     [calc_exceedance_prob()], [calc_cv()], and [calc_bin_width()].

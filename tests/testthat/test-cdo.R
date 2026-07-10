@@ -129,11 +129,11 @@ test_that("cdo_data sends required filters and parses values", {
   })
 
   out <- cdo_data(
-    datasetid = "GHCND",
-    stationid = "GHCND:USW00013722",
-    startdate = "2024-01-01",
-    enddate = "2024-01-31",
-    datatypeid = c("TMAX", "TMIN")
+    dataset_id = "GHCND",
+    station_id = "GHCND:USW00013722",
+    start_date = "2024-01-01",
+    end_date = "2024-01-31",
+    datatype_id = c("TMAX", "TMIN")
   )
 
   expect_s3_class(out, "tbl_df")
@@ -190,7 +190,7 @@ test_that("cdo_paginate walks multiple pages and respects max_results", {
     cdo_response(pages[[page_idx]])
   })
 
-  out <- cdo_stations(datasetid = "GHCND")
+  out <- cdo_stations(dataset_id = "GHCND")
 
   expect_equal(nrow(out), 1500)
   expect_equal(page_idx, 2L)
@@ -216,7 +216,7 @@ test_that("cdo_paginate honours max_results cap", {
     cdo_response(cdo_page(results, count = 1500, limit = 50))
   })
 
-  out <- cdo_stations(datasetid = "GHCND", max_results = 25)
+  out <- cdo_stations(dataset_id = "GHCND", max_results = 25)
 
   expect_equal(nrow(out), 25)
   expect_match(env$url, "limit=25")
@@ -239,19 +239,19 @@ test_that("cdo_stations validates and forwards extent bounding box", {
 test_that("cdo functions validate inputs", {
   cdo_with_token()
   expect_snapshot(error = TRUE, {
-    cdo_data(datasetid = "GHCND", startdate = "bad", enddate = "2024-01-31")
+    cdo_data(dataset_id = "GHCND", start_date = "bad", end_date = "2024-01-31")
   })
   expect_snapshot(error = TRUE, {
     cdo_stations(extent = c(0, 0, 0))
   })
   expect_snapshot(error = TRUE, {
-    cdo_datasets(sortfield = "nonsense")
+    cdo_datasets(sort_field = "nonsense")
   })
   expect_snapshot(error = TRUE, {
     cdo_data(
-      datasetid = "GHCND",
-      startdate = "2024-01-01",
-      enddate = "2024-01-31",
+      dataset_id = "GHCND",
+      start_date = "2024-01-01",
+      end_date = "2024-01-31",
       max_results = -5
     )
   })
@@ -304,11 +304,57 @@ test_that("cdo_data accepts logical includemetadata and forwards as string", {
   })
 
   cdo_data(
-    datasetid = "GHCND",
-    startdate = "2024-01-01",
-    enddate = "2024-01-31",
-    includemetadata = TRUE
+    dataset_id = "GHCND",
+    start_date = "2024-01-01",
+    end_date = "2024-01-31",
+    include_metadata = TRUE
   )
 
   expect_match(env$url, "includemetadata=true")
+})
+
+test_that("cdo_datasets(datatypeid) is deprecated", {
+  cdo_with_token()
+  httr2::local_mocked_responses(function(req) {
+    cdo_response(cdo_page(list()))
+  })
+  expect_snapshot(invisible(cdo_datasets(datatypeid = "TMAX")))
+})
+
+test_that("cdo_data(datasetid) is deprecated", {
+  cdo_with_token()
+  httr2::local_mocked_responses(function(req) {
+    cdo_response(cdo_page(list()))
+  })
+  expect_snapshot(
+    invisible(cdo_data(
+      datasetid = "GHCND",
+      startdate = "2024-01-01",
+      enddate = "2024-01-31"
+    ))
+  )
+})
+
+test_that("cdo_datacategories() is deprecated", {
+  cdo_with_token()
+  httr2::local_mocked_responses(function(req) {
+    cdo_response(cdo_page(list()))
+  })
+  expect_snapshot(invisible(cdo_datacategories(datasetid = "GHCND")))
+})
+
+test_that("cdo_datatypes() is deprecated", {
+  cdo_with_token()
+  httr2::local_mocked_responses(function(req) {
+    cdo_response(cdo_page(list()))
+  })
+  expect_snapshot(invisible(cdo_datatypes(datasetid = "GHCND")))
+})
+
+test_that("cdo_locationcategories() is deprecated", {
+  cdo_with_token()
+  httr2::local_mocked_responses(function(req) {
+    cdo_response(cdo_page(list()))
+  })
+  expect_snapshot(invisible(cdo_locationcategories()))
 })

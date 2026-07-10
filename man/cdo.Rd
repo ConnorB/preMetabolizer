@@ -3,9 +3,9 @@
 \name{cdo}
 \alias{cdo}
 \alias{cdo_datasets}
-\alias{cdo_datacategories}
-\alias{cdo_datatypes}
-\alias{cdo_locationcategories}
+\alias{cdo_data_categories}
+\alias{cdo_data_types}
+\alias{cdo_location_categories}
 \alias{cdo_locations}
 \alias{cdo_stations}
 \alias{cdo_data}
@@ -13,89 +13,120 @@
 \usage{
 cdo_datasets(
   id = NULL,
-  datatypeid = NULL,
-  locationid = NULL,
-  stationid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
+  datatype_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datatypeid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  stationid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
+)
+
+cdo_data_categories(
+  id = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
   max_results = Inf
 )
 
-cdo_datacategories(
+cdo_data_types(
   id = NULL,
-  datasetid = NULL,
-  locationid = NULL,
-  stationid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  data_category_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
   max_results = Inf
 )
 
-cdo_datatypes(
+cdo_location_categories(
   id = NULL,
-  datasetid = NULL,
-  locationid = NULL,
-  stationid = NULL,
-  datacategoryid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
-  max_results = Inf
-)
-
-cdo_locationcategories(
-  id = NULL,
-  datasetid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
+  dataset_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
   max_results = Inf
 )
 
 cdo_locations(
   id = NULL,
-  datasetid = NULL,
-  locationcategoryid = NULL,
-  datacategoryid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
-  max_results = Inf
+  dataset_id = NULL,
+  location_category_id = NULL,
+  data_category_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  locationcategoryid = lifecycle::deprecated(),
+  datacategoryid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
 )
 
 cdo_stations(
   id = NULL,
-  datasetid = NULL,
-  locationid = NULL,
-  datacategoryid = NULL,
-  datatypeid = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  data_category_id = NULL,
+  datatype_id = NULL,
   extent = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
-  max_results = Inf
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  datacategoryid = lifecycle::deprecated(),
+  datatypeid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
 )
 
 cdo_data(
-  datasetid,
-  startdate,
-  enddate,
-  datatypeid = NULL,
-  locationid = NULL,
-  stationid = NULL,
+  dataset_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  datatype_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
   units = "metric",
-  sortfield = NULL,
-  sortorder = NULL,
-  includemetadata = FALSE,
-  max_results = Inf
+  sort_field = NULL,
+  sort_order = NULL,
+  include_metadata = FALSE,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  datatypeid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  stationid = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated(),
+  includemetadata = lifecycle::deprecated()
 )
 }
 \arguments{
@@ -104,18 +135,23 @@ resource by its identifier (e.g., \code{cdo_datasets("GHCND")}) and
 returns a named list. When \code{NULL} (default) the list endpoint is
 queried and a tibble is returned.}
 
-\item{startdate, enddate}{Optional date filters as \code{Date} objects or
+\item{start_date, end_date}{Optional date filters as \code{Date} objects or
 \code{"YYYY-MM-DD"} strings. For \code{cdo_data()} both are required.}
 
-\item{sortfield, sortorder}{Optional sort controls. \code{sortfield} is one
+\item{sort_field, sort_order}{Optional sort controls. \code{sort_field} is one
 of \code{"id"}, \code{"name"}, \code{"mindate"}, \code{"maxdate"}, \code{"datacoverage"};
-\code{sortorder} is \code{"asc"} (default) or \code{"desc"}.}
+\code{sort_order} is \code{"asc"} (default) or \code{"desc"}.}
 
 \item{max_results}{Maximum number of rows to return. Defaults to
 \code{Inf} (all matching results).}
 
-\item{datasetid, datatypeid, locationid, stationid, datacategoryid, locationcategoryid}{Optional character vectors filtering the result set. Multiple
+\item{dataset_id, datatype_id, location_id, station_id, data_category_id, location_category_id}{Optional character vectors filtering the result set. Multiple
 values are sent as repeated query parameters.}
+
+\item{datasetid, datatypeid, locationid, stationid, datacategoryid, locationcategoryid, startdate, enddate, sortfield, sortorder, includemetadata}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{dataset_id}, \code{datatype_id},
+\code{location_id}, \code{station_id}, \code{data_category_id},
+\code{location_category_id}, \code{start_date}, \code{end_date}, \code{sort_field},
+\code{sort_order}, and \code{include_metadata} instead.}
 
 \item{extent}{For \code{cdo_stations()} only. Numeric vector of length 4
 giving a bounding box as \code{c(min_lat, min_lon, max_lat, max_lon)}.}
@@ -123,7 +159,7 @@ giving a bounding box as \code{c(min_lat, min_lon, max_lat, max_lon)}.}
 \item{units}{For \code{cdo_data()} only. \code{"metric"} (default) or
 \code{"standard"}.}
 
-\item{includemetadata}{For \code{cdo_data()} only. Logical; when \code{FALSE}
+\item{include_metadata}{For \code{cdo_data()} only. Logical; when \code{FALSE}
 (default) the API skips computing the result-set count, which can
 noticeably speed up large requests.}
 }
@@ -140,8 +176,8 @@ Web Services v2 API
 (\verb{https://www.ncei.noaa.gov/cdo-web/api/v2}). They retrieve
 observations (\code{cdo_data()}), search the station catalog
 (\code{cdo_stations()}), and browse the metadata catalog
-(\code{cdo_datasets()}, \code{cdo_datacategories()}, \code{cdo_datatypes()},
-\code{cdo_locationcategories()}, \code{cdo_locations()}).
+(\code{cdo_datasets()}, \code{cdo_data_categories()}, \code{cdo_data_types()},
+\code{cdo_location_categories()}, \code{cdo_locations()}).
 }
 \section{Authentication}{
 
@@ -176,31 +212,31 @@ cdo_datasets()
 cdo_datasets("GHCND")
 }
 \dontrun{
-cdo_datacategories(datasetid = "GHCND")
+cdo_data_categories(dataset_id = "GHCND")
 }
 \dontrun{
-cdo_datatypes(datasetid = "GHCND", datacategoryid = "TEMP")
-cdo_datatypes("TMAX")
+cdo_data_types(dataset_id = "GHCND", data_category_id = "TEMP")
+cdo_data_types("TMAX")
 }
 \dontrun{
-cdo_locationcategories()
-cdo_locationcategories("ST")
+cdo_location_categories()
+cdo_location_categories("ST")
 }
 \dontrun{
-cdo_locations(locationcategoryid = "ST")
+cdo_locations(location_category_id = "ST")
 cdo_locations("FIPS:37")
 }
 \dontrun{
-cdo_stations(locationid = "FIPS:37", datasetid = "GHCND")
+cdo_stations(location_id = "FIPS:37", dataset_id = "GHCND")
 cdo_stations("GHCND:USW00013722")
 }
 \dontrun{
 cdo_data(
-  datasetid = "GHCND",
-  stationid = "GHCND:USW00013722",
-  startdate = "2024-01-01",
-  enddate   = "2024-01-31",
-  datatypeid = c("TMAX", "TMIN")
+  dataset_id = "GHCND",
+  station_id = "GHCND:USW00013722",
+  start_date = "2024-01-01",
+  end_date   = "2024-01-31",
+  datatype_id = c("TMAX", "TMIN")
 )
 }
 }

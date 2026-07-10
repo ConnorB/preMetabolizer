@@ -11,10 +11,10 @@
 # cdo functions validate inputs
 
     Code
-      cdo_data(datasetid = "GHCND", startdate = "bad", enddate = "2024-01-31")
+      cdo_data(dataset_id = "GHCND", start_date = "bad", end_date = "2024-01-31")
     Condition
       Error in `cdo_data()`:
-      ! `startdate` must be a valid date in `YYYY-MM-DD` format.
+      ! `start_date` must be a valid date in `YYYY-MM-DD` format.
 
 ---
 
@@ -27,15 +27,15 @@
 ---
 
     Code
-      cdo_datasets(sortfield = "nonsense")
+      cdo_datasets(sort_field = "nonsense")
     Condition
       Error in `cdo_datasets()`:
-      ! `sortfield` must be one of "id", "name", "mindate", "maxdate", or "datacoverage", not "nonsense".
+      ! `sort_field` must be one of "id", "name", "mindate", "maxdate", or "datacoverage", not "nonsense".
 
 ---
 
     Code
-      cdo_data(datasetid = "GHCND", startdate = "2024-01-01", enddate = "2024-01-31",
+      cdo_data(dataset_id = "GHCND", start_date = "2024-01-01", end_date = "2024-01-31",
         max_results = -5)
     Condition
       Error in `cdo_data()`:
@@ -49,4 +49,55 @@
       Error in `cdo_perform()`:
       ! Reached the NCEI CDO daily request limit of 10000 requests.
       i The limit resets daily; call `cdo_reset_request_count()` once you are within a new quota window.
+
+# cdo_datasets(datatypeid) is deprecated
+
+    Code
+      invisible(cdo_datasets(datatypeid = "TMAX"))
+    Condition
+      Warning:
+      The `datatypeid` argument of `cdo_datasets()` is deprecated as of preMetabolizer 0.0.0.9000.
+      i Please use the `datatype_id` argument instead.
+
+# cdo_data(datasetid) is deprecated
+
+    Code
+      invisible(cdo_data(datasetid = "GHCND", startdate = "2024-01-01", enddate = "2024-01-31"))
+    Condition
+      Warning:
+      The `datasetid` argument of `cdo_data()` is deprecated as of preMetabolizer 0.0.0.9000.
+      i Please use the `dataset_id` argument instead.
+      Warning:
+      The `startdate` argument of `cdo_data()` is deprecated as of preMetabolizer 0.0.0.9000.
+      i Please use the `start_date` argument instead.
+      Warning:
+      The `enddate` argument of `cdo_data()` is deprecated as of preMetabolizer 0.0.0.9000.
+      i Please use the `end_date` argument instead.
+
+# cdo_datacategories() is deprecated
+
+    Code
+      invisible(cdo_datacategories(datasetid = "GHCND"))
+    Condition
+      Warning:
+      `cdo_datacategories()` was deprecated in preMetabolizer 0.0.0.9000.
+      i Please use `cdo_data_categories()` instead.
+
+# cdo_datatypes() is deprecated
+
+    Code
+      invisible(cdo_datatypes(datasetid = "GHCND"))
+    Condition
+      Warning:
+      `cdo_datatypes()` was deprecated in preMetabolizer 0.0.0.9000.
+      i Please use `cdo_data_types()` instead.
+
+# cdo_locationcategories() is deprecated
+
+    Code
+      invisible(cdo_locationcategories())
+    Condition
+      Warning:
+      `cdo_locationcategories()` was deprecated in preMetabolizer 0.0.0.9000.
+      i Please use `cdo_location_categories()` instead.
 

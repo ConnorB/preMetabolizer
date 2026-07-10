@@ -4,20 +4,32 @@
 \alias{calc_water_height}
 \title{Calculate water height from pressure}
 \usage{
-calc_water_height(sensor_kPa, atmo_kPa = NULL, water_temp, type = "vented")
+calc_water_height(
+  sensor_kpa,
+  atmo_kpa = NULL,
+  water_temp,
+  type = "vented",
+  sensor_kPa = lifecycle::deprecated(),
+  atmo_kPa = lifecycle::deprecated()
+)
 }
 \arguments{
-\item{sensor_kPa}{Numeric vector. Sensor pressure in kilopascals. For
+\item{sensor_kpa}{Numeric vector. Sensor pressure in kilopascals. For
 \code{type = "vented"}, this is differential pressure from the water column.
 For \code{type = "unvented"}, this is absolute pressure.}
 
-\item{atmo_kPa}{Numeric vector. Atmospheric pressure in kilopascals. Required
+\item{atmo_kpa}{Numeric vector. Atmospheric pressure in kilopascals. Required
 when \code{type = "unvented"}.}
 
 \item{water_temp}{Numeric vector. Water temperature in degrees Celsius.}
 
 \item{type}{Character string. Sensor type, either \code{"vented"} or
 \code{"unvented"}. Defaults to \code{"vented"}.}
+
+\item{sensor_kPa}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{sensor_kpa}
+instead.}
+
+\item{atmo_kPa}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{atmo_kpa} instead.}
 }
 \value{
 Numeric vector of water height in meters.
@@ -31,11 +43,11 @@ The pressure difference is divided by water density and gravitational
 acceleration. Water density is calculated with \code{\link[=calc_water_density]{calc_water_density()}}.
 }
 \examples{
-calc_water_height(sensor_kPa = 19.2, water_temp = 15, type = "vented")
+calc_water_height(sensor_kpa = 19.2, water_temp = 15, type = "vented")
 
 calc_water_height(
-  sensor_kPa = 120.5,
-  atmo_kPa = 101.3,
+  sensor_kpa = 120.5,
+  atmo_kpa = 101.3,
   water_temp = 15,
   type = "unvented"
 )

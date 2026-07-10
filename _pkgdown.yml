@@ -30,17 +30,17 @@ reference:
       - iem_stations
       - iem_station
       - iem_current
-      - iem_obhistory
+      - iem_ob_history
       - iem_daily
       - ks_meso_vars
-      - ks_meso_timeseries
+      - ks_meso_time_series
       - ks_meso_stations
       - ks_meso_station_activity
       - ks_meso_most_recent
       - ks_meso_fw13
       - tex_meso_stations
       - tex_meso_current
-      - tex_meso_timeseries
+      - tex_meso_time_series
       - read_shp
 
   - title: Chemistry calculations
@@ -48,18 +48,18 @@ reference:
       Calculate dissolved gas concentrations, solubility constants, and related
       thermodynamic quantities.
     contents:
-      - calc_O2sat
-      - calc_CO2sat
-      - calc_CH4sat
-      - calc_N2Osat
-      - calc_N2sat
-      - calc_Arsat
-      - calc_CO2_molKg
-      - calc_CO2_mgL
-      - calc_K0
+      - calc_o2_sat
+      - calc_co2_sat
+      - calc_ch4_sat
+      - calc_n2o_sat
+      - calc_n2_sat
+      - calc_ar_sat
+      - calc_co2_mol_kg
+      - calc_co2_mg_l
+      - calc_k0
       - calc_vapor_press
-      - xCO2_to_pCO2
-      - pCO2_to_xCO2
+      - xco2_to_pco2
+      - pco2_to_xco2
 
   - title: Physical property calculations
     desc: Calculate water density, depth from pressure, and solar radiation.

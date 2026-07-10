@@ -1,3 +1,12 @@
+# iem_obhistory() is deprecated
+
+    Code
+      invisible(iem_obhistory(station = "DSM", network = "IA_ASOS"))
+    Condition
+      Warning:
+      `iem_obhistory()` was deprecated in preMetabolizer 0.0.0.9000.
+      i Please use `iem_ob_history()` instead.
+
 # iem functions validate inputs
 
     Code
@@ -17,9 +26,9 @@
 ---
 
     Code
-      iem_obhistory("DSM", network = "IA_ASOS", date = "June 1, 2024")
+      iem_ob_history("DSM", network = "IA_ASOS", date = "June 1, 2024")
     Condition
-      Error in `iem_obhistory()`:
+      Error in `iem_ob_history()`:
       ! `date` must be a valid date in `YYYY-MM-DD` format.
 
 ---

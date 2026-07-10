@@ -16,8 +16,8 @@ sat_press_corr <- function(atmo_press, units, temp_water, salinity) {
 
 # Weiss & Price (1980) eq 13 solubility function F for a trace gas in moist air
 # at 1 atm total pressure. Returns F in mol/(L atm) (volumetric) or mol/(kg atm)
-# (gravimetric) depending on the supplied constants. Shared by calc_CO2sat() and
-# calc_N2Osat().
+# (gravimetric) depending on the supplied constants. Shared by calc_co2_sat()
+# and calc_n2o_sat().
 weiss_price_F <- function(temp_water, salinity, A1, A2, A3, A4, B1, B2, B3) {
   abs_temp <- temp_water + 273.15
   temp_ratio <- abs_temp / 100
@@ -32,7 +32,7 @@ weiss_price_F <- function(temp_water, salinity, A1, A2, A3, A4, B1, B2, B3) {
 # Hamme & Emerson (2004) eq 1 equilibrium concentration of a gas in water in
 # contact with water-vapor-saturated air at 1 atm total pressure, using the
 # eq 2 scaled temperature. Returns umol/kg with their Table 4 constants.
-# Shared by calc_Arsat() and calc_N2sat().
+# Shared by calc_ar_sat() and calc_n2_sat().
 hamme_emerson_sat <- function(
   temp_water,
   salinity,

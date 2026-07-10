@@ -104,7 +104,7 @@ test_that("iem_current builds filtered current observation requests", {
   expect_equal(attr(result$utc_valid, "tzone"), "UTC")
 })
 
-test_that("iem_obhistory reads one day of station observations", {
+test_that("iem_ob_history reads one day of station observations", {
   env <- new.env()
   httr2::local_mocked_responses(function(req) {
     parsed <- httr2::url_parse(req$url)
@@ -118,7 +118,7 @@ test_that("iem_obhistory reads one day of station observations", {
     ))
   })
 
-  result <- iem_obhistory(
+  result <- iem_ob_history(
     station = "DSM",
     network = "IA_ASOS",
     date = "2024-06-01",
@@ -132,6 +132,18 @@ test_that("iem_obhistory reads one day of station observations", {
   expect_equal(env$query$full, "true")
   expect_equal(result$tmpf, 71.6)
   expect_equal(attr(result$utc_valid, "tzone"), "UTC")
+})
+
+test_that("iem_obhistory() is deprecated", {
+  httr2::local_mocked_responses(function(req) {
+    iem_json_response(paste0(
+      '{"schema":{"fields":[{"name":"station"}]},',
+      '"data":[{"station":"DSM","utc_valid":"2024-06-01T05:00Z"}]}'
+    ))
+  })
+  expect_snapshot(
+    invisible(iem_obhistory(station = "DSM", network = "IA_ASOS"))
+  )
 })
 
 test_that("iem_daily reads daily summaries", {
@@ -167,7 +179,7 @@ test_that("iem functions validate inputs", {
     iem_current()
   })
   expect_snapshot(error = TRUE, {
-    iem_obhistory("DSM", network = "IA_ASOS", date = "June 1, 2024")
+    iem_ob_history("DSM", network = "IA_ASOS", date = "June 1, 2024")
   })
   expect_snapshot(error = TRUE, {
     iem_daily("IA_ASOS", date = "2024-06-01", year = 2024)

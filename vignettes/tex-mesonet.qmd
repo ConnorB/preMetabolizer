@@ -39,7 +39,7 @@ preMetabolizer provides three helpers for the public TexMesonet API:
 
 - `tex_meso_stations()` retrieves TWDB station metadata.
 - `tex_meso_current()` retrieves the most recent observation from each TWDB station.
-- `tex_meso_timeseries()` retrieves recent time-series observations for one station.
+- `tex_meso_time_series()` retrieves recent time-series observations for one station.
 
 > **Note:** These functions contact the TexMesonet API and require an internet connection. Code chunks that call the API will not run during package installation if the service is unreachable. Run them interactively in your own session.
 
@@ -153,14 +153,14 @@ current |>
 
 ## Retrieve recent time series
 
-`tex_meso_timeseries()` retrieves observations for a single station over a look-back window measured in minutes. By default, `variable = "all"` uses the TexMesonet charting-fields endpoint and returns all fields available for that station.
+`tex_meso_time_series()` retrieves observations for a single station over a look-back window measured in minutes. By default, `variable = "all"` uses the TexMesonet charting-fields endpoint and returns all fields available for that station.
 
 ```{r}
 #| label: all-timeseries
 
-cache_file <- file.path(cache_dir, "tex_meso_timeseries_blanco.rds")
+cache_file <- file.path(cache_dir, "tex_meso_time_series_blanco.rds")
 if (!file.exists(cache_file)) {
-  recent <- tex_meso_timeseries(
+  recent <- tex_meso_time_series(
     site_id = site_id,
     prior_minutes = 24 * 60
   )
@@ -188,9 +188,9 @@ TexMesonet also provides smaller single-variable endpoints. Use the `variable` a
 ```{r}
 #| label: temperature-series
 
-cache_file <- file.path(cache_dir, "tex_meso_timeseries_blanco_temperature.rds")
+cache_file <- file.path(cache_dir, "tex_meso_time_series_blanco_temperature.rds")
 if (!file.exists(cache_file)) {
-  temperature <- tex_meso_timeseries(
+  temperature <- tex_meso_time_series(
     site_id = site_id,
     prior_minutes = 24 * 60,
     variable = "temperature"

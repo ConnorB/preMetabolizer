@@ -149,7 +149,7 @@ recent |>
 
 ## Retrieve time-series data
 
-`ks_meso_timeseries()` retrieves Mesonet data for one or more stations and returns a tibble directly. Large date ranges are split into chunks automatically to stay within the API record limit.
+`ks_meso_time_series()` retrieves Mesonet data for one or more stations and returns a tibble directly. Large date ranges are split into chunks automatically to stay within the API record limit.
 
 Here we retrieve hourly data for Konza Prairie for the 2024 calendar year, requesting air temperature, relative humidity, precipitation, and surface pressure.
 
@@ -158,7 +158,7 @@ Here we retrieve hourly data for Konza Prairie for the 2024 calendar year, reque
 
 cache_file <- file.path(cache_dir, "ks_meso_konza_hourly_2024.rds")
 if (!file.exists(cache_file)) {
-  konza_hourly <- ks_meso_timeseries(
+  konza_hourly <- ks_meso_time_series(
     stations   = "Konza Prairie",
     start_date = "2024-01-01",
     end_date   = "2024-12-31",

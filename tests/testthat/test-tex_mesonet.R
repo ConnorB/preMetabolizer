@@ -50,7 +50,7 @@ test_that("tex_meso_current reads data and units", {
   expect_equal(attr(result, "units")$air_temp, "Celsius")
 })
 
-test_that("tex_meso_timeseries reads all charting fields", {
+test_that("tex_meso_time_series reads all charting fields", {
   env <- new.env()
   httr2::local_mocked_responses(function(req) {
     parsed <- httr2::url_parse(req$url)
@@ -62,7 +62,7 @@ test_that("tex_meso_timeseries reads all charting fields", {
     ))
   })
 
-  result <- tex_meso_timeseries(2, prior_minutes = 60)
+  result <- tex_meso_time_series(2, prior_minutes = 60)
 
   expect_match(env$path, "/api/AllChartingFieldsById/2/60$")
   expect_equal(result$air_temp, 29.69)
@@ -72,7 +72,7 @@ test_that("tex_meso_timeseries reads all charting fields", {
   expect_equal(attr(result$date_time, "tzone"), "UTC")
 })
 
-test_that("tex_meso_timeseries reads single-variable fields", {
+test_that("tex_meso_time_series reads single-variable fields", {
   env <- new.env()
   httr2::local_mocked_responses(function(req) {
     parsed <- httr2::url_parse(req$url)
@@ -84,7 +84,7 @@ test_that("tex_meso_timeseries reads single-variable fields", {
     ))
   })
 
-  result <- tex_meso_timeseries(
+  result <- tex_meso_time_series(
     2,
     prior_minutes = 60,
     variable = "temperature"
@@ -101,9 +101,19 @@ test_that("tex_meso functions validate inputs", {
     tex_meso_stations(active = NA)
   })
   expect_snapshot(error = TRUE, {
-    tex_meso_timeseries(site_id = 2.5, prior_minutes = 60)
+    tex_meso_time_series(site_id = 2.5, prior_minutes = 60)
   })
   expect_snapshot(error = TRUE, {
-    tex_meso_timeseries(site_id = 2, prior_minutes = 60, variable = "rain")
+    tex_meso_time_series(site_id = 2, prior_minutes = 60, variable = "rain")
   })
+})
+
+test_that("tex_meso_timeseries() is deprecated", {
+  httr2::local_mocked_responses(function(req) {
+    tex_meso_json_response(paste0(
+      '{"twdbStationId":2,"stationName":"Altwein Rd","values":[',
+      '{"airTemp":"29.69","dateTime":"2026-05-10T18:45:00Z"}]}'
+    ))
+  })
+  expect_snapshot(invisible(tex_meso_timeseries(2, prior_minutes = 60)))
 })

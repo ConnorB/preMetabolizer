@@ -26,13 +26,13 @@ and western longitudes are negative.
 \item Find and download meteorological data with \code{\link[=get_noaa_stations]{get_noaa_stations()}},
 \code{\link[=closest_noaa_stations]{closest_noaa_stations()}}, \code{\link[=get_ghcnh]{get_ghcnh()}}, \code{\link[=ncei_data]{ncei_data()}},
 \code{\link[=get_nasa_data]{get_nasa_data()}}, and
-\code{\link[=ks_meso_timeseries]{ks_meso_timeseries()}}. Retrieve mesonet station observations with
-\code{\link[=iem_networks]{iem_networks()}}, \code{\link[=iem_current]{iem_current()}}, \code{\link[=iem_obhistory]{iem_obhistory()}},
+\code{\link[=ks_meso_time_series]{ks_meso_time_series()}}. Retrieve mesonet station observations with
+\code{\link[=iem_networks]{iem_networks()}}, \code{\link[=iem_current]{iem_current()}}, \code{\link[=iem_ob_history]{iem_ob_history()}},
 \code{\link[=tex_meso_stations]{tex_meso_stations()}}, \code{\link[=tex_meso_current]{tex_meso_current()}}, and
-\code{\link[=tex_meso_timeseries]{tex_meso_timeseries()}}.
+\code{\link[=tex_meso_time_series]{tex_meso_time_series()}}.
 \item Retrieve or calculate site context with \code{\link[=get_usgs_elev]{get_usgs_elev()}},
 \code{\link[=correct_bp]{correct_bp()}}, \code{\link[=convert_to_solar_time]{convert_to_solar_time()}}, and \code{\link[=calc_par]{calc_par()}}.
-\item Prepare model inputs with \code{\link[=even_timesteps]{even_timesteps()}}, \code{\link[=calc_O2sat]{calc_O2sat()}},
+\item Prepare model inputs with \code{\link[=even_timesteps]{even_timesteps()}}, \code{\link[=calc_o2_sat]{calc_o2_sat()}},
 \code{\link[=calc_water_height]{calc_water_height()}}, and the built-in example datasets.
 \item Summarize and check data with \code{\link[=flag_z]{flag_z()}},
 \code{\link[=calc_exceedance_prob]{calc_exceedance_prob()}}, \code{\link[=calc_cv]{calc_cv()}}, and \code{\link[=calc_bin_width]{calc_bin_width()}}.

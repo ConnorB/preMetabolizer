@@ -90,7 +90,7 @@ test_that("ks_meso_fw13 requests station and compact dates", {
   expect_equal(result[1:2], c("FW13 line 1", "FW13 line 2"))
 })
 
-test_that("ks_meso_timeseries can request stations or networks", {
+test_that("ks_meso_time_series can request stations or networks", {
   queries <- list()
   httr2::local_mocked_responses(function(req) {
     parsed <- httr2::url_parse(req$url)
@@ -119,7 +119,7 @@ test_that("ks_meso_timeseries can request stations or networks", {
     )
   })
 
-  station_result <- ks_meso_timeseries(
+  station_result <- ks_meso_time_series(
     stations = "Ashland Bottoms",
     start_date = "2024-01-01",
     end_date = "2024-01-01",
@@ -127,7 +127,7 @@ test_that("ks_meso_timeseries can request stations or networks", {
     vars = c("TEMP2MAVG", "PRECIP")
   )
 
-  network_result <- ks_meso_timeseries(
+  network_result <- ks_meso_time_series(
     network = "KSRE",
     start_date = "2024-01-01",
     end_date = "2024-01-01",
@@ -174,7 +174,7 @@ test_that("Mesonet timestamps are parsed as fixed Central Standard Time", {
     )
   })
 
-  result <- ks_meso_timeseries(
+  result <- ks_meso_time_series(
     stations = "Manhattan",
     start_date = "2024-07-01",
     end_date = "2024-07-01",
@@ -186,5 +186,40 @@ test_that("Mesonet timestamps are parsed as fixed Central Standard Time", {
   expect_equal(
     as.numeric(result$timestamp),
     as.numeric(as.POSIXct("2024-07-01 18:00:00", tz = "UTC"))
+  )
+})
+
+test_that("ks_meso_timeseries() is deprecated", {
+  httr2::local_mocked_responses(function(req) {
+    parsed <- httr2::url_parse(req$url)
+    if (grepl("stationnames", parsed$path)) {
+      return(mesonet_csv_response(
+        paste(
+          "StationName,County,Latitude,Longitude,Elevation_m,Network,Abbreviation,OperatorName,FW13",
+          "Manhattan,Riley,39.18,-96.58,310,KSRE,MHK,Kansas Mesonet,1",
+          sep = "\n"
+        )
+      ))
+    }
+    if (grepl("variables", parsed$path)) {
+      return(mesonet_vars_response())
+    }
+    mesonet_csv_response(
+      paste(
+        "STATION,TIMESTAMP,TEMP2MAVG",
+        "Manhattan,2024-01-01 00:00:00,10",
+        sep = "\n"
+      )
+    )
+  })
+
+  expect_snapshot(
+    invisible(ks_meso_timeseries(
+      stations = "Manhattan",
+      start_date = "2024-01-01",
+      end_date = "2024-01-01",
+      interval = "day",
+      vars = "TEMP2MAVG"
+    ))
   )
 })

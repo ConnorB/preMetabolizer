@@ -35,7 +35,7 @@ library(ggplot2)
 
 ## Dissolved oxygen saturation
 
-`calc_O2sat()` calculates dissolved oxygen saturation in mg/L from water
+`calc_o2_sat()` calculates dissolved oxygen saturation in mg/L from water
 temperature, barometric pressure, pressure units, and optional salinity. This is
 the `DO.sat` input commonly used by stream metabolism models.
 
@@ -48,7 +48,7 @@ water <- tibble::tibble(
   salinity = 0
 ) |>
   mutate(
-    DO_sat_mg_L = calc_O2sat(
+    DO_sat_mg_L = calc_o2_sat(
       temp_water = temp_water,
       atmo_press = atmo_press,
       units = "kPa",
@@ -76,14 +76,14 @@ ggplot(water, aes(temp_water, DO_sat_mg_L)) +
 
 ## CO2 partial pressure
 
-`xCO2_to_pCO2()` converts CO2 mole fraction in air to water-vapor-corrected
-partial pressure. `pCO2_to_xCO2()` performs the inverse conversion.
+`xco2_to_pco2()` converts CO2 mole fraction in air to water-vapor-corrected
+partial pressure. `pco2_to_xco2()` performs the inverse conversion.
 
 ```{r}
 #| label: co2-partial-pressure
 
-pCO2 <- xCO2_to_pCO2(
-  xCO2_ppm = c(420, 800, 1200),
+pCO2 <- xco2_to_pco2(
+  xco2_ppm = c(420, 800, 1200),
   temp_water = 20,
   atmo_press = 101.325,
   press_units = "kPa",
@@ -93,9 +93,9 @@ pCO2 <- xCO2_to_pCO2(
 
 pCO2
 
-pCO2_to_xCO2(
+pco2_to_xco2(
   temp_water = 20,
-  pCO2_uatm = pCO2,
+  pco2_uatm = pCO2,
   atmo_press = 101.325,
   press_units = "kPa",
   salinity = 0,
@@ -105,7 +105,7 @@ pCO2_to_xCO2(
 
 ## Dissolved CO2 concentration
 
-`calc_CO2_molKg()` and `calc_CO2_mgL()` estimate dissolved CO2 concentration
+`calc_co2_mol_kg()` and `calc_co2_mg_l()` estimate dissolved CO2 concentration
 from CO2 mole fraction, water temperature, water depth, atmospheric pressure,
 and salinity.
 
@@ -113,21 +113,21 @@ and salinity.
 #| label: co2-concentration
 
 co2 <- tibble::tibble(
-  CO2_ppm = c(420, 800, 1200),
+  co2_ppm = c(420, 800, 1200),
   temp_water = 20,
   water_depth_m = 0.5,
   atmo_press = 101.325
 ) |>
   mutate(
-    CO2_mol_kg = calc_CO2_molKg(
-      CO2_ppm = CO2_ppm,
+    CO2_mol_kg = calc_co2_mol_kg(
+      co2_ppm = co2_ppm,
       temp_water = temp_water,
       water_depth_m = water_depth_m,
       atmo_press = atmo_press,
       press_units = "kPa"
     ),
-    CO2_mg_L = calc_CO2_mgL(
-      CO2_ppm = CO2_ppm,
+    CO2_mg_L = calc_co2_mg_l(
+      co2_ppm = co2_ppm,
       temp_water = temp_water,
       water_depth_m = water_depth_m,
       atmo_press = atmo_press,
@@ -142,7 +142,7 @@ co2
 
 `calc_vapor_press()` returns water vapor pressure in atmospheres. Use
 `method = "MIMSY"` for freshwater calculations and `"Dickson2007"` for
-seawater-style salinity corrections. `calc_K0()` returns the Weiss (1974) CO2
+seawater-style salinity corrections. `calc_k0()` returns the Weiss (1974) CO2
 solubility coefficient.
 
 ```{r}
@@ -155,7 +155,7 @@ temps <- tibble::tibble(temp_water = c(5, 15, 25)) |>
       salinity = 0,
       method = "MIMSY"
     ),
-    K0_mol_kg_atm = calc_K0(temp_water, water_depth_m = 0.5)
+    K0_mol_kg_atm = calc_k0(temp_water, water_depth_m = 0.5)
   )
 
 temps
@@ -175,15 +175,15 @@ logger <- tibble::tibble(
     tz = "UTC"
   ),
   temp_water = c(18.5, 18.2),
-  atmo_kPa = c(99.8, 99.7),
-  xCO2_ppm = c(600, 650)
+  atmo_kpa = c(99.8, 99.7),
+  xco2_ppm = c(600, 650)
 ) |>
   mutate(
-    DO.sat = calc_O2sat(temp_water, atmo_kPa, units = "kPa"),
-    pCO2_uatm = xCO2_to_pCO2(
-      xCO2_ppm = xCO2_ppm,
+    DO.sat = calc_o2_sat(temp_water, atmo_kpa, units = "kPa"),
+    pco2_uatm = xco2_to_pco2(
+      xco2_ppm = xco2_ppm,
       temp_water = temp_water,
-      atmo_press = atmo_kPa,
+      atmo_press = atmo_kpa,
       press_units = "kPa",
       salinity = 0,
       method = "MIMSY"

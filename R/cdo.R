@@ -5,8 +5,8 @@
 #' (`https://www.ncei.noaa.gov/cdo-web/api/v2`). They retrieve
 #' observations (`cdo_data()`), search the station catalog
 #' (`cdo_stations()`), and browse the metadata catalog
-#' (`cdo_datasets()`, `cdo_datacategories()`, `cdo_datatypes()`,
-#' `cdo_locationcategories()`, `cdo_locations()`).
+#' (`cdo_datasets()`, `cdo_data_categories()`, `cdo_data_types()`,
+#' `cdo_location_categories()`, `cdo_locations()`).
 #'
 #' @section Authentication:
 #' All CDO endpoints require a free API token. Request one at
@@ -33,23 +33,28 @@
 #'   resource by its identifier (e.g., `cdo_datasets("GHCND")`) and
 #'   returns a named list. When `NULL` (default) the list endpoint is
 #'   queried and a tibble is returned.
-#' @param datasetid,datatypeid,locationid,stationid,datacategoryid,locationcategoryid
+#' @param dataset_id,datatype_id,location_id,station_id,data_category_id,location_category_id
 #'   Optional character vectors filtering the result set. Multiple
 #'   values are sent as repeated query parameters.
-#' @param startdate,enddate Optional date filters as `Date` objects or
+#' @param start_date,end_date Optional date filters as `Date` objects or
 #'   `"YYYY-MM-DD"` strings. For `cdo_data()` both are required.
-#' @param sortfield,sortorder Optional sort controls. `sortfield` is one
+#' @param sort_field,sort_order Optional sort controls. `sort_field` is one
 #'   of `"id"`, `"name"`, `"mindate"`, `"maxdate"`, `"datacoverage"`;
-#'   `sortorder` is `"asc"` (default) or `"desc"`.
+#'   `sort_order` is `"asc"` (default) or `"desc"`.
 #' @param max_results Maximum number of rows to return. Defaults to
 #'   `Inf` (all matching results).
 #' @param extent For `cdo_stations()` only. Numeric vector of length 4
 #'   giving a bounding box as `c(min_lat, min_lon, max_lat, max_lon)`.
 #' @param units For `cdo_data()` only. `"metric"` (default) or
 #'   `"standard"`.
-#' @param includemetadata For `cdo_data()` only. Logical; when `FALSE`
+#' @param include_metadata For `cdo_data()` only. Logical; when `FALSE`
 #'   (default) the API skips computing the result-set count, which can
 #'   noticeably speed up large requests.
+#' @param datasetid,datatypeid,locationid,stationid,datacategoryid,locationcategoryid,startdate,enddate,sortfield,sortorder,includemetadata
+#'   `r lifecycle::badge("deprecated")` Use `dataset_id`, `datatype_id`,
+#'   `location_id`, `station_id`, `data_category_id`,
+#'   `location_category_id`, `start_date`, `end_date`, `sort_field`,
+#'   `sort_order`, and `include_metadata` instead.
 #'
 #' @return A [tibble][tibble::tibble-package] for list queries, or a
 #'   named list for single-resource (`id`-based) queries. Date-like
@@ -78,35 +83,35 @@ cdo_apply_filters <- function(req, ...) {
 }
 
 cdo_check_sort <- function(
-  sortfield,
-  sortorder,
+  sort_field,
+  sort_order,
   call = rlang::caller_env()
 ) {
-  if (!is.null(sortfield)) {
-    sortfield <- rlang::arg_match(
-      sortfield,
+  if (!is.null(sort_field)) {
+    sort_field <- rlang::arg_match(
+      sort_field,
       c("id", "name", "mindate", "maxdate", "datacoverage"),
       error_call = call
     )
   }
-  if (!is.null(sortorder)) {
-    sortorder <- rlang::arg_match(
-      sortorder,
+  if (!is.null(sort_order)) {
+    sort_order <- rlang::arg_match(
+      sort_order,
       c("asc", "desc"),
       error_call = call
     )
   }
-  list(sortfield = sortfield, sortorder = sortorder)
+  list(sort_field = sort_field, sort_order = sort_order)
 }
 
-cdo_normalise_dates <- function(startdate, enddate) {
-  if (!is.null(startdate)) {
-    startdate <- ncei_check_date(startdate)
+cdo_normalise_dates <- function(start_date, end_date) {
+  if (!is.null(start_date)) {
+    start_date <- ncei_check_date(start_date)
   }
-  if (!is.null(enddate)) {
-    enddate <- ncei_check_date(enddate)
+  if (!is.null(end_date)) {
+    end_date <- ncei_check_date(end_date)
   }
-  list(startdate = startdate, enddate = enddate)
+  list(start_date = start_date, end_date = end_date)
 }
 
 cdo_get_one <- function(path, error_message) {
@@ -123,15 +128,72 @@ cdo_get_one <- function(path, error_message) {
 #' }
 cdo_datasets <- function(
   id = NULL,
-  datatypeid = NULL,
-  locationid = NULL,
-  stationid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
-  max_results = Inf
+  datatype_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datatypeid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  stationid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
 ) {
+  datatype_id <- cdo_deprecate_arg(
+    datatype_id,
+    datatypeid,
+    "datatype_id",
+    "datatypeid",
+    "cdo_datasets"
+  )
+  location_id <- cdo_deprecate_arg(
+    location_id,
+    locationid,
+    "location_id",
+    "locationid",
+    "cdo_datasets"
+  )
+  station_id <- cdo_deprecate_arg(
+    station_id,
+    stationid,
+    "station_id",
+    "stationid",
+    "cdo_datasets"
+  )
+  start_date <- cdo_deprecate_arg(
+    start_date,
+    startdate,
+    "start_date",
+    "startdate",
+    "cdo_datasets"
+  )
+  end_date <- cdo_deprecate_arg(
+    end_date,
+    enddate,
+    "end_date",
+    "enddate",
+    "cdo_datasets"
+  )
+  sort_field <- cdo_deprecate_arg(
+    sort_field,
+    sortfield,
+    "sort_field",
+    "sortfield",
+    "cdo_datasets"
+  )
+  sort_order <- cdo_deprecate_arg(
+    sort_order,
+    sortorder,
+    "sort_order",
+    "sortorder",
+    "cdo_datasets"
+  )
+
   check_string(id, allow_null = TRUE, allow_empty = FALSE)
   if (!is.null(id)) {
     return(cdo_get_one(
@@ -139,22 +201,22 @@ cdo_datasets <- function(
       "Failed to retrieve dataset from the NCEI CDO API."
     ))
   }
-  check_character(datatypeid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(locationid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(stationid, allow_null = TRUE, allow_empty = FALSE)
-  dates <- cdo_normalise_dates(startdate, enddate)
-  sort <- cdo_check_sort(sortfield, sortorder)
+  check_character(datatype_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(location_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(station_id, allow_null = TRUE, allow_empty = FALSE)
+  dates <- cdo_normalise_dates(start_date, end_date)
+  sort <- cdo_check_sort(sort_field, sort_order)
   max_results <- cdo_check_max_results(max_results)
 
   req <- cdo_request("/datasets") |>
     cdo_apply_filters(
-      datatypeid = datatypeid,
-      locationid = locationid,
-      stationid = stationid,
-      startdate = dates$startdate,
-      enddate = dates$enddate,
-      sortfield = sort$sortfield,
-      sortorder = sort$sortorder
+      datatypeid = datatype_id,
+      locationid = location_id,
+      stationid = station_id,
+      startdate = dates$start_date,
+      enddate = dates$end_date,
+      sortfield = sort$sort_field,
+      sortorder = sort$sort_order
     )
 
   cdo_paginate(
@@ -168,8 +230,68 @@ cdo_datasets <- function(
 #' @export
 #' @examples
 #' \dontrun{
-#' cdo_datacategories(datasetid = "GHCND")
+#' cdo_data_categories(dataset_id = "GHCND")
 #' }
+cdo_data_categories <- function(
+  id = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf
+) {
+  check_string(id, allow_null = TRUE, allow_empty = FALSE)
+  if (!is.null(id)) {
+    return(cdo_get_one(
+      paste0("/datacategories/", id),
+      "Failed to retrieve data category from the NCEI CDO API."
+    ))
+  }
+  check_character(dataset_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(location_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(station_id, allow_null = TRUE, allow_empty = FALSE)
+  dates <- cdo_normalise_dates(start_date, end_date)
+  sort <- cdo_check_sort(sort_field, sort_order)
+  max_results <- cdo_check_max_results(max_results)
+
+  req <- cdo_request("/datacategories") |>
+    cdo_apply_filters(
+      datasetid = dataset_id,
+      locationid = location_id,
+      stationid = station_id,
+      startdate = dates$start_date,
+      enddate = dates$end_date,
+      sortfield = sort$sort_field,
+      sortorder = sort$sort_order
+    )
+
+  cdo_paginate(
+    req,
+    max_results = max_results,
+    error_message = "Failed to retrieve data categories from the NCEI CDO API."
+  )
+}
+
+#' Query the NCEI CDO data categories endpoint (deprecated)
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function is deprecated. Please use [cdo_data_categories()] instead.
+#'
+#' @examples
+#' # Old:
+#' # cdo_datacategories(datasetid = "GHCND")
+#' # New:
+#' \dontrun{
+#' cdo_data_categories(dataset_id = "GHCND")
+#' }
+#'
+#' @keywords internal
+#' @export
 cdo_datacategories <- function(
   id = NULL,
   datasetid = NULL,
@@ -181,35 +303,21 @@ cdo_datacategories <- function(
   sortorder = NULL,
   max_results = Inf
 ) {
-  check_string(id, allow_null = TRUE, allow_empty = FALSE)
-  if (!is.null(id)) {
-    return(cdo_get_one(
-      paste0("/datacategories/", id),
-      "Failed to retrieve data category from the NCEI CDO API."
-    ))
-  }
-  check_character(datasetid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(locationid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(stationid, allow_null = TRUE, allow_empty = FALSE)
-  dates <- cdo_normalise_dates(startdate, enddate)
-  sort <- cdo_check_sort(sortfield, sortorder)
-  max_results <- cdo_check_max_results(max_results)
-
-  req <- cdo_request("/datacategories") |>
-    cdo_apply_filters(
-      datasetid = datasetid,
-      locationid = locationid,
-      stationid = stationid,
-      startdate = dates$startdate,
-      enddate = dates$enddate,
-      sortfield = sort$sortfield,
-      sortorder = sort$sortorder
-    )
-
-  cdo_paginate(
-    req,
-    max_results = max_results,
-    error_message = "Failed to retrieve data categories from the NCEI CDO API."
+  lifecycle::deprecate_soft(
+    "0.0.0.9000",
+    "cdo_datacategories()",
+    "cdo_data_categories()"
+  )
+  cdo_data_categories(
+    id = id,
+    dataset_id = datasetid,
+    location_id = locationid,
+    station_id = stationid,
+    start_date = startdate,
+    end_date = enddate,
+    sort_field = sortfield,
+    sort_order = sortorder,
+    max_results = max_results
   )
 }
 
@@ -217,9 +325,72 @@ cdo_datacategories <- function(
 #' @export
 #' @examples
 #' \dontrun{
-#' cdo_datatypes(datasetid = "GHCND", datacategoryid = "TEMP")
-#' cdo_datatypes("TMAX")
+#' cdo_data_types(dataset_id = "GHCND", data_category_id = "TEMP")
+#' cdo_data_types("TMAX")
 #' }
+cdo_data_types <- function(
+  id = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  data_category_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf
+) {
+  check_string(id, allow_null = TRUE, allow_empty = FALSE)
+  if (!is.null(id)) {
+    return(cdo_get_one(
+      paste0("/datatypes/", id),
+      "Failed to retrieve data type from the NCEI CDO API."
+    ))
+  }
+  check_character(dataset_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(location_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(station_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(data_category_id, allow_null = TRUE, allow_empty = FALSE)
+  dates <- cdo_normalise_dates(start_date, end_date)
+  sort <- cdo_check_sort(sort_field, sort_order)
+  max_results <- cdo_check_max_results(max_results)
+
+  req <- cdo_request("/datatypes") |>
+    cdo_apply_filters(
+      datasetid = dataset_id,
+      locationid = location_id,
+      stationid = station_id,
+      datacategoryid = data_category_id,
+      startdate = dates$start_date,
+      enddate = dates$end_date,
+      sortfield = sort$sort_field,
+      sortorder = sort$sort_order
+    )
+
+  cdo_paginate(
+    req,
+    max_results = max_results,
+    error_message = "Failed to retrieve data types from the NCEI CDO API."
+  )
+}
+
+#' Query the NCEI CDO data types endpoint (deprecated)
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function is deprecated. Please use [cdo_data_types()] instead.
+#'
+#' @examples
+#' # Old:
+#' # cdo_datatypes(datasetid = "GHCND", datacategoryid = "TEMP")
+#' # New:
+#' \dontrun{
+#' cdo_data_types(dataset_id = "GHCND", data_category_id = "TEMP")
+#' }
+#'
+#' @keywords internal
+#' @export
 cdo_datatypes <- function(
   id = NULL,
   datasetid = NULL,
@@ -232,37 +403,22 @@ cdo_datatypes <- function(
   sortorder = NULL,
   max_results = Inf
 ) {
-  check_string(id, allow_null = TRUE, allow_empty = FALSE)
-  if (!is.null(id)) {
-    return(cdo_get_one(
-      paste0("/datatypes/", id),
-      "Failed to retrieve data type from the NCEI CDO API."
-    ))
-  }
-  check_character(datasetid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(locationid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(stationid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(datacategoryid, allow_null = TRUE, allow_empty = FALSE)
-  dates <- cdo_normalise_dates(startdate, enddate)
-  sort <- cdo_check_sort(sortfield, sortorder)
-  max_results <- cdo_check_max_results(max_results)
-
-  req <- cdo_request("/datatypes") |>
-    cdo_apply_filters(
-      datasetid = datasetid,
-      locationid = locationid,
-      stationid = stationid,
-      datacategoryid = datacategoryid,
-      startdate = dates$startdate,
-      enddate = dates$enddate,
-      sortfield = sort$sortfield,
-      sortorder = sort$sortorder
-    )
-
-  cdo_paginate(
-    req,
-    max_results = max_results,
-    error_message = "Failed to retrieve data types from the NCEI CDO API."
+  lifecycle::deprecate_soft(
+    "0.0.0.9000",
+    "cdo_datatypes()",
+    "cdo_data_types()"
+  )
+  cdo_data_types(
+    id = id,
+    dataset_id = datasetid,
+    location_id = locationid,
+    station_id = stationid,
+    data_category_id = datacategoryid,
+    start_date = startdate,
+    end_date = enddate,
+    sort_field = sortfield,
+    sort_order = sortorder,
+    max_results = max_results
   )
 }
 
@@ -270,16 +426,16 @@ cdo_datatypes <- function(
 #' @export
 #' @examples
 #' \dontrun{
-#' cdo_locationcategories()
-#' cdo_locationcategories("ST")
+#' cdo_location_categories()
+#' cdo_location_categories("ST")
 #' }
-cdo_locationcategories <- function(
+cdo_location_categories <- function(
   id = NULL,
-  datasetid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
+  dataset_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
   max_results = Inf
 ) {
   check_string(id, allow_null = TRUE, allow_empty = FALSE)
@@ -289,18 +445,18 @@ cdo_locationcategories <- function(
       "Failed to retrieve location category from the NCEI CDO API."
     ))
   }
-  check_character(datasetid, allow_null = TRUE, allow_empty = FALSE)
-  dates <- cdo_normalise_dates(startdate, enddate)
-  sort <- cdo_check_sort(sortfield, sortorder)
+  check_character(dataset_id, allow_null = TRUE, allow_empty = FALSE)
+  dates <- cdo_normalise_dates(start_date, end_date)
+  sort <- cdo_check_sort(sort_field, sort_order)
   max_results <- cdo_check_max_results(max_results)
 
   req <- cdo_request("/locationcategories") |>
     cdo_apply_filters(
-      datasetid = datasetid,
-      startdate = dates$startdate,
-      enddate = dates$enddate,
-      sortfield = sort$sortfield,
-      sortorder = sort$sortorder
+      datasetid = dataset_id,
+      startdate = dates$start_date,
+      enddate = dates$end_date,
+      sortfield = sort$sort_field,
+      sortorder = sort$sort_order
     )
 
   cdo_paginate(
@@ -310,24 +466,124 @@ cdo_locationcategories <- function(
   )
 }
 
-#' @rdname cdo
-#' @export
+#' Query the NCEI CDO location categories endpoint (deprecated)
+#'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' This function is deprecated. Please use [cdo_location_categories()]
+#' instead.
+#'
 #' @examples
+#' # Old:
+#' # cdo_locationcategories("ST")
+#' # New:
 #' \dontrun{
-#' cdo_locations(locationcategoryid = "ST")
-#' cdo_locations("FIPS:37")
+#' cdo_location_categories("ST")
 #' }
-cdo_locations <- function(
+#'
+#' @keywords internal
+#' @export
+cdo_locationcategories <- function(
   id = NULL,
   datasetid = NULL,
-  locationcategoryid = NULL,
-  datacategoryid = NULL,
   startdate = NULL,
   enddate = NULL,
   sortfield = NULL,
   sortorder = NULL,
   max_results = Inf
 ) {
+  lifecycle::deprecate_soft(
+    "0.0.0.9000",
+    "cdo_locationcategories()",
+    "cdo_location_categories()"
+  )
+  cdo_location_categories(
+    id = id,
+    dataset_id = datasetid,
+    start_date = startdate,
+    end_date = enddate,
+    sort_field = sortfield,
+    sort_order = sortorder,
+    max_results = max_results
+  )
+}
+
+#' @rdname cdo
+#' @export
+#' @examples
+#' \dontrun{
+#' cdo_locations(location_category_id = "ST")
+#' cdo_locations("FIPS:37")
+#' }
+cdo_locations <- function(
+  id = NULL,
+  dataset_id = NULL,
+  location_category_id = NULL,
+  data_category_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  locationcategoryid = lifecycle::deprecated(),
+  datacategoryid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
+) {
+  dataset_id <- cdo_deprecate_arg(
+    dataset_id,
+    datasetid,
+    "dataset_id",
+    "datasetid",
+    "cdo_locations"
+  )
+  location_category_id <- cdo_deprecate_arg(
+    location_category_id,
+    locationcategoryid,
+    "location_category_id",
+    "locationcategoryid",
+    "cdo_locations"
+  )
+  data_category_id <- cdo_deprecate_arg(
+    data_category_id,
+    datacategoryid,
+    "data_category_id",
+    "datacategoryid",
+    "cdo_locations"
+  )
+  start_date <- cdo_deprecate_arg(
+    start_date,
+    startdate,
+    "start_date",
+    "startdate",
+    "cdo_locations"
+  )
+  end_date <- cdo_deprecate_arg(
+    end_date,
+    enddate,
+    "end_date",
+    "enddate",
+    "cdo_locations"
+  )
+  sort_field <- cdo_deprecate_arg(
+    sort_field,
+    sortfield,
+    "sort_field",
+    "sortfield",
+    "cdo_locations"
+  )
+  sort_order <- cdo_deprecate_arg(
+    sort_order,
+    sortorder,
+    "sort_order",
+    "sortorder",
+    "cdo_locations"
+  )
+
   check_string(id, allow_null = TRUE, allow_empty = FALSE)
   if (!is.null(id)) {
     return(cdo_get_one(
@@ -335,22 +591,22 @@ cdo_locations <- function(
       "Failed to retrieve location from the NCEI CDO API."
     ))
   }
-  check_character(datasetid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(locationcategoryid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(datacategoryid, allow_null = TRUE, allow_empty = FALSE)
-  dates <- cdo_normalise_dates(startdate, enddate)
-  sort <- cdo_check_sort(sortfield, sortorder)
+  check_character(dataset_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(location_category_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(data_category_id, allow_null = TRUE, allow_empty = FALSE)
+  dates <- cdo_normalise_dates(start_date, end_date)
+  sort <- cdo_check_sort(sort_field, sort_order)
   max_results <- cdo_check_max_results(max_results)
 
   req <- cdo_request("/locations") |>
     cdo_apply_filters(
-      datasetid = datasetid,
-      locationcategoryid = locationcategoryid,
-      datacategoryid = datacategoryid,
-      startdate = dates$startdate,
-      enddate = dates$enddate,
-      sortfield = sort$sortfield,
-      sortorder = sort$sortorder
+      datasetid = dataset_id,
+      locationcategoryid = location_category_id,
+      datacategoryid = data_category_id,
+      startdate = dates$start_date,
+      enddate = dates$end_date,
+      sortfield = sort$sort_field,
+      sortorder = sort$sort_order
     )
 
   cdo_paginate(
@@ -364,22 +620,87 @@ cdo_locations <- function(
 #' @export
 #' @examples
 #' \dontrun{
-#' cdo_stations(locationid = "FIPS:37", datasetid = "GHCND")
+#' cdo_stations(location_id = "FIPS:37", dataset_id = "GHCND")
 #' cdo_stations("GHCND:USW00013722")
 #' }
 cdo_stations <- function(
   id = NULL,
-  datasetid = NULL,
-  locationid = NULL,
-  datacategoryid = NULL,
-  datatypeid = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  data_category_id = NULL,
+  datatype_id = NULL,
   extent = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
-  max_results = Inf
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  datacategoryid = lifecycle::deprecated(),
+  datatypeid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
 ) {
+  dataset_id <- cdo_deprecate_arg(
+    dataset_id,
+    datasetid,
+    "dataset_id",
+    "datasetid",
+    "cdo_stations"
+  )
+  location_id <- cdo_deprecate_arg(
+    location_id,
+    locationid,
+    "location_id",
+    "locationid",
+    "cdo_stations"
+  )
+  data_category_id <- cdo_deprecate_arg(
+    data_category_id,
+    datacategoryid,
+    "data_category_id",
+    "datacategoryid",
+    "cdo_stations"
+  )
+  datatype_id <- cdo_deprecate_arg(
+    datatype_id,
+    datatypeid,
+    "datatype_id",
+    "datatypeid",
+    "cdo_stations"
+  )
+  start_date <- cdo_deprecate_arg(
+    start_date,
+    startdate,
+    "start_date",
+    "startdate",
+    "cdo_stations"
+  )
+  end_date <- cdo_deprecate_arg(
+    end_date,
+    enddate,
+    "end_date",
+    "enddate",
+    "cdo_stations"
+  )
+  sort_field <- cdo_deprecate_arg(
+    sort_field,
+    sortfield,
+    "sort_field",
+    "sortfield",
+    "cdo_stations"
+  )
+  sort_order <- cdo_deprecate_arg(
+    sort_order,
+    sortorder,
+    "sort_order",
+    "sortorder",
+    "cdo_stations"
+  )
+
   check_string(id, allow_null = TRUE, allow_empty = FALSE)
   if (!is.null(id)) {
     return(cdo_get_one(
@@ -387,10 +708,10 @@ cdo_stations <- function(
       "Failed to retrieve station from the NCEI CDO API."
     ))
   }
-  check_character(datasetid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(locationid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(datacategoryid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(datatypeid, allow_null = TRUE, allow_empty = FALSE)
+  check_character(dataset_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(location_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(data_category_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(datatype_id, allow_null = TRUE, allow_empty = FALSE)
   extent_str <- NULL
   if (!is.null(extent)) {
     check_numeric(extent, allow_na = FALSE, allow_infinite = FALSE)
@@ -418,21 +739,21 @@ cdo_stations <- function(
       extent[4]
     )
   }
-  dates <- cdo_normalise_dates(startdate, enddate)
-  sort <- cdo_check_sort(sortfield, sortorder)
+  dates <- cdo_normalise_dates(start_date, end_date)
+  sort <- cdo_check_sort(sort_field, sort_order)
   max_results <- cdo_check_max_results(max_results)
 
   req <- cdo_request("/stations") |>
     cdo_apply_filters(
-      datasetid = datasetid,
-      locationid = locationid,
-      datacategoryid = datacategoryid,
-      datatypeid = datatypeid,
+      datasetid = dataset_id,
+      locationid = location_id,
+      datacategoryid = data_category_id,
+      datatypeid = datatype_id,
       extent = extent_str,
-      startdate = dates$startdate,
-      enddate = dates$enddate,
-      sortfield = sort$sortfield,
-      sortorder = sort$sortorder
+      startdate = dates$start_date,
+      enddate = dates$end_date,
+      sortfield = sort$sort_field,
+      sortorder = sort$sort_order
     )
 
   cdo_paginate(
@@ -447,49 +768,122 @@ cdo_stations <- function(
 #' @examples
 #' \dontrun{
 #' cdo_data(
-#'   datasetid = "GHCND",
-#'   stationid = "GHCND:USW00013722",
-#'   startdate = "2024-01-01",
-#'   enddate   = "2024-01-31",
-#'   datatypeid = c("TMAX", "TMIN")
+#'   dataset_id = "GHCND",
+#'   station_id = "GHCND:USW00013722",
+#'   start_date = "2024-01-01",
+#'   end_date   = "2024-01-31",
+#'   datatype_id = c("TMAX", "TMIN")
 #' )
 #' }
 cdo_data <- function(
-  datasetid,
-  startdate,
-  enddate,
-  datatypeid = NULL,
-  locationid = NULL,
-  stationid = NULL,
+  dataset_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  datatype_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
   units = "metric",
-  sortfield = NULL,
-  sortorder = NULL,
-  includemetadata = FALSE,
-  max_results = Inf
+  sort_field = NULL,
+  sort_order = NULL,
+  include_metadata = FALSE,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  datatypeid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  stationid = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated(),
+  includemetadata = lifecycle::deprecated()
 ) {
-  check_string(datasetid, allow_empty = FALSE)
-  startdate <- ncei_check_date(startdate)
-  enddate <- ncei_check_date(enddate)
-  check_character(datatypeid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(locationid, allow_null = TRUE, allow_empty = FALSE)
-  check_character(stationid, allow_null = TRUE, allow_empty = FALSE)
+  dataset_id <- cdo_deprecate_arg(
+    dataset_id,
+    datasetid,
+    "dataset_id",
+    "datasetid",
+    "cdo_data"
+  )
+  start_date <- cdo_deprecate_arg(
+    start_date,
+    startdate,
+    "start_date",
+    "startdate",
+    "cdo_data"
+  )
+  end_date <- cdo_deprecate_arg(
+    end_date,
+    enddate,
+    "end_date",
+    "enddate",
+    "cdo_data"
+  )
+  datatype_id <- cdo_deprecate_arg(
+    datatype_id,
+    datatypeid,
+    "datatype_id",
+    "datatypeid",
+    "cdo_data"
+  )
+  location_id <- cdo_deprecate_arg(
+    location_id,
+    locationid,
+    "location_id",
+    "locationid",
+    "cdo_data"
+  )
+  station_id <- cdo_deprecate_arg(
+    station_id,
+    stationid,
+    "station_id",
+    "stationid",
+    "cdo_data"
+  )
+  sort_field <- cdo_deprecate_arg(
+    sort_field,
+    sortfield,
+    "sort_field",
+    "sortfield",
+    "cdo_data"
+  )
+  sort_order <- cdo_deprecate_arg(
+    sort_order,
+    sortorder,
+    "sort_order",
+    "sortorder",
+    "cdo_data"
+  )
+  include_metadata <- cdo_deprecate_arg(
+    include_metadata,
+    includemetadata,
+    "include_metadata",
+    "includemetadata",
+    "cdo_data"
+  )
+
+  check_string(dataset_id, allow_empty = FALSE)
+  start_date <- ncei_check_date(start_date)
+  end_date <- ncei_check_date(end_date)
+  check_character(datatype_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(location_id, allow_null = TRUE, allow_empty = FALSE)
+  check_character(station_id, allow_null = TRUE, allow_empty = FALSE)
   units <- rlang::arg_match(units, c("metric", "standard"))
-  sort <- cdo_check_sort(sortfield, sortorder)
-  check_bool(includemetadata)
+  sort <- cdo_check_sort(sort_field, sort_order)
+  check_bool(include_metadata)
   max_results <- cdo_check_max_results(max_results)
 
   req <- cdo_request("/data") |>
     cdo_apply_filters(
-      datasetid = datasetid,
-      startdate = startdate,
-      enddate = enddate,
-      datatypeid = datatypeid,
-      locationid = locationid,
-      stationid = stationid,
+      datasetid = dataset_id,
+      startdate = start_date,
+      enddate = end_date,
+      datatypeid = datatype_id,
+      locationid = location_id,
+      stationid = station_id,
       units = units,
-      sortfield = sort$sortfield,
-      sortorder = sort$sortorder,
-      includemetadata = if (includemetadata) "true" else "false"
+      sortfield = sort$sort_field,
+      sortorder = sort$sort_order,
+      includemetadata = if (include_metadata) "true" else "false"
     )
 
   cdo_paginate(

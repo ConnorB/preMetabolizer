@@ -210,14 +210,14 @@ french_elev_m <- get_usgs_elev(
 
 ## Calculate O~2~ saturation
 
-With site-adjusted pressure and water temperature, `calc_O2sat()` returns the DO saturation concentration in mg/L.
+With site-adjusted pressure and water temperature, `calc_o2_sat()` returns the DO saturation concentration in mg/L.
 
 ```{r}
 #| label: o2-sat
 
 french_data <- french_data |>
   mutate(
-    DO.sat = calc_O2sat(
+    DO.sat = calc_o2_sat(
       temp_water = temp_C,
       atmo_press = bp_kPa,
       units      = "kPa"

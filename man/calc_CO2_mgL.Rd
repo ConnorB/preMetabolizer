@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_CO2_conc.R
 \name{calc_CO2_mgL}
 \alias{calc_CO2_mgL}
-\title{Calculate dissolved CO2 concentration in mg/L}
+\title{Calculate dissolved CO2 concentration in mg/L (deprecated)}
 \usage{
 calc_CO2_mgL(
   CO2_ppm,
@@ -15,35 +15,28 @@ calc_CO2_mgL(
 )
 }
 \arguments{
-\item{CO2_ppm}{Numeric vector. Mole fraction of CO2 in air in parts per
-million.}
-
-\item{temp_water}{Numeric vector. Water temperature in degrees Celsius.}
-
-\item{water_depth_m}{Numeric vector. Water depth above the sensor in meters.}
-
-\item{atmo_press}{Numeric vector. Atmospheric pressure at the water surface.}
-
-\item{press_units}{Character string giving the units of \code{atmo_press}. See
-\code{\link[=convert_pressure]{convert_pressure()}} for accepted pressure units.}
-
-\item{salinity}{Numeric vector. Salinity in practical salinity units.
-Defaults to freshwater (\code{0}).}
+\item{CO2_ppm}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{co2_ppm} instead.}
 
 \item{waterDepth_m}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{water_depth_m}
 instead.}
 }
-\value{
-Numeric vector of dissolved CO2 concentration in mg/L.
-}
 \description{
-Converts a measured or modeled CO2 mole fraction to dissolved CO2
-concentration in mg/L. This is a volume-based companion to
-\code{\link[=calc_CO2_molKg]{calc_CO2_molKg()}} and uses water density to convert from mol/kg.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+This function is deprecated. Please use \code{\link[=calc_co2_mg_l]{calc_co2_mg_l()}} instead.
 }
 \examples{
-calc_CO2_mgL(
-  CO2_ppm = c(420, 800, 1200),
+# Old:
+# calc_CO2_mgL(
+#   CO2_ppm = c(420, 800, 1200),
+#   temp_water = 20,
+#   water_depth_m = 0.5,
+#   atmo_press = 101.325,
+#   press_units = "kPa"
+# )
+# New:
+calc_co2_mg_l(
+  co2_ppm = c(420, 800, 1200),
   temp_water = 20,
   water_depth_m = 0.5,
   atmo_press = 101.325,
@@ -51,6 +44,4 @@ calc_CO2_mgL(
 )
 
 }
-\seealso{
-\code{\link[=calc_CO2_molKg]{calc_CO2_molKg()}}, \code{\link[=xCO2_to_pCO2]{xCO2_to_pCO2()}}, \code{\link[=calc_water_density]{calc_water_density()}}
-}
+\keyword{internal}
