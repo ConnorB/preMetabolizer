@@ -245,7 +245,7 @@
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    exceedance <span class="op">=</span> <span class="fu"><a href="../reference/calc_exceedance_prob.html">calc_exceedance_prob</a></span><span class="op">(</span><span class="va">flow_cms</span><span class="op">)</span>,</span>
-<span>    exceedance_no_zero <span class="op">=</span> <span class="fu"><a href="../reference/rcpp_calc_exceedance_prob.html">rcpp_calc_exceedance_prob</a></span><span class="op">(</span><span class="va">flow_cms</span>, rm.zero <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>    exceedance_no_zero <span class="op">=</span> <span class="fu"><a href="../reference/rcpp_calc_exceedance_prob.html">rcpp_calc_exceedance_prob</a></span><span class="op">(</span><span class="va">flow_cms</span>, remove_zeros <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">flows</span></span>
@@ -373,7 +373,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

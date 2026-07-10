@@ -74,7 +74,7 @@ glimpse(ks_stations)
 #> $ latitude     <dbl> 39.07246, 39.55127, 38.77996, 39.13456, 38.32906, 38.9414…
 #> $ longitude    <dbl> -95.62602, -97.65077, -97.64444, -96.67894, -96.19453, -9…
 #> $ start_date   <date> 1946-08-01, 1885-05-01, 1952-01-01, 1960-06-01, 1950-10-…
-#> $ end_date     <date> 2026-06-13, 2026-06-13, 2026-06-13, 2026-06-13, 2026-06-…
+#> $ end_date     <date> 2026-07-05, 2026-07-05, 2026-07-05, 2026-07-05, 2026-07-…
 ```
 
 Filter to stations that carry the variables you need and span at least
@@ -96,15 +96,15 @@ wx_stations |>
 #>    station_id  station_name           latitude longitude start_date end_date  
 #>    <chr>       <chr>                     <dbl>     <dbl> <date>     <date>    
 #>  1 USC00140010 ABILENE, KS US             38.9     -97.2 1893-01-01 2026-04-30
-#>  2 USC00140682 BELLEVILLE, KS US          39.8     -97.6 1935-04-01 2026-06-12
-#>  3 USC00140877 BLAINE, KS US              39.5     -96.4 1955-03-02 2026-04-15
-#>  4 USC00140911 BLUE RAPIDS, KS US         39.7     -96.7 1905-01-01 2026-06-14
-#>  5 USC00141435 CHAPMAN, KS US             39.0     -97.0 1904-02-01 2026-06-14
-#>  6 USC00141559 CLAY CENTER, KS US         39.4     -97.1 1902-04-16 2026-06-14
-#>  7 USC00141593 CLIFTON, KS US             39.6     -97.3 1931-04-01 2026-06-09
-#>  8 USC00141761 CONCORDIA 2 SE, KS US      39.6     -97.6 2003-01-01 2026-06-11
-#>  9 USC00141762 CONCORDIA 2 SSE, KS US     39.5     -97.7 2024-03-21 2026-06-13
-#> 10 USW00013984 CONCORDIA ASOS, KS US      39.6     -97.7 1885-05-01 2026-06-13
+#>  2 USC00140682 BELLEVILLE, KS US          39.8     -97.6 1935-04-01 2026-07-02
+#>  3 USC00140877 BLAINE, KS US              39.5     -96.4 1955-03-02 2026-07-02
+#>  4 USC00140911 BLUE RAPIDS, KS US         39.7     -96.7 1905-01-01 2026-07-06
+#>  5 USC00141435 CHAPMAN, KS US             39.0     -97.0 1904-02-01 2026-07-06
+#>  6 USC00141559 CLAY CENTER, KS US         39.4     -97.1 1902-04-16 2026-07-06
+#>  7 USC00141593 CLIFTON, KS US             39.6     -97.3 1931-04-01 2026-07-05
+#>  8 USC00141761 CONCORDIA 2 SE, KS US      39.6     -97.6 2003-01-01 2026-06-26
+#>  9 USC00141762 CONCORDIA 2 SSE, KS US     39.5     -97.7 2024-03-21 2026-07-06
+#> 10 USW00013984 CONCORDIA ASOS, KS US      39.6     -97.7 1885-05-01 2026-07-05
 #> # ℹ 37 more rows
 ```
 

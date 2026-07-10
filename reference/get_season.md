@@ -53,7 +53,7 @@ get_season(as.Date(c("2024-03-19", "2024-06-20", "2024-09-22", "2024-12-21")))
 #> Levels: Spring < Summer < Autumn < Winter
 
 get_season(Sys.time())
-#> [1] Spring
+#> [1] Summer
 #> Levels: Spring < Summer < Autumn < Winter
 
 # Southern hemisphere

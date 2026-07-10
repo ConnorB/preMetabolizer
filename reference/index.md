@@ -126,9 +126,9 @@ Descriptive statistics and outlier detection for time series data.
 - [`calc_mode()`](https://connorb.github.io/preMetabolizer/reference/calc_mode.md)
   : Calculate the mode of a vector
 - [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
-  : Calculate flow exceedance probabilities
+  : Calculate exceedance probabilities
 - [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
-  : Calculate flow exceedance probabilities with C++
+  : Calculate exceedance probabilities with C++
 - [`flag_z()`](https://connorb.github.io/preMetabolizer/reference/flag_z.md)
   : Flag outliers with robust Z-scores
 

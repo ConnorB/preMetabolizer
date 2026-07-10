@@ -204,11 +204,11 @@
 </div>
 </section><section class="level2"><h2 id="flow-duration-curve">Flow duration curve<a class="anchor" aria-label="anchor" href="#flow-duration-curve"></a>
 </h2>
-<p>A flow duration curve (FDC) shows what fraction of time discharge equals or exceeds a given value. <code><a href="../reference/calc_exceedance_prob.html">calc_exceedance_prob()</a></code> implements the Weibull plotting-position formula. Setting <code>rm.zero = TRUE</code> excludes days with zero discharge from the ranking, so the curve reflects the non-zero portion of the flow regime.</p>
+<p>A flow duration curve (FDC) shows what fraction of time discharge equals or exceeds a given value. <code><a href="../reference/calc_exceedance_prob.html">calc_exceedance_prob()</a></code> implements the Weibull plotting-position formula. Setting <code>remove_zeros = TRUE</code> excludes days with zero discharge from the ranking, so the curve reflects the non-zero portion of the flow regime.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">kings</span> <span class="op">&lt;-</span> <span class="va">kings</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>exceed_prob <span class="op">=</span> <span class="fu"><a href="../reference/calc_exceedance_prob.html">calc_exceedance_prob</a></span><span class="op">(</span><span class="va">discharge_cms</span>, rm.zero <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>exceed_prob <span class="op">=</span> <span class="fu"><a href="../reference/calc_exceedance_prob.html">calc_exceedance_prob</a></span><span class="op">(</span><span class="va">discharge_cms</span>, remove_zeros <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">zero_pct</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">kings</span><span class="op">$</span><span class="va">discharge_cms</span> <span class="op">==</span> <span class="fl">0</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"Days with zero discharge: %.1f%%\n"</span>, <span class="va">zero_pct</span><span class="op">)</span><span class="op">)</span></span>
@@ -386,7 +386,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

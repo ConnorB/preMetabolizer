@@ -2,6 +2,19 @@
 
 ## preMetabolizer 0.0.0.9000
 
+- [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
+  and
+  [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
+  now error when `remove_zeros` is not a single `TRUE` or `FALSE`;
+  previously logical vectors and `NA` were accepted (no issue).
+
+- [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
+  and
+  [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
+  rename the `flow` argument to `values` and the `rm.zero` argument to
+  `remove_zeros`. The `rm.zero` argument is deprecated and will be
+  removed in a future release (no issue).
+
 - [`cdo_data()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
   [`cdo_datasets()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
   [`cdo_datacategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
@@ -25,6 +38,16 @@
   downloading the full MSHR station archive; the `state` and `clean`
   arguments have been removed (no issue).
 
+- [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md),
+  [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md),
+  and
+  [`ncei_stations()`](https://connorb.github.io/preMetabolizer/reference/ncei_stations.md)
+  again return station coordinates: the NCEI Search API changed its
+  `centroid` field from an object to a bare longitude/latitude array,
+  which made every coordinate `NA` and caused
+  [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
+  to return `NULL` (no issue).
+
 - `download_ghcnh()` and `read_ghcnh()` have been replaced by
   [`get_ghcnh()`](https://connorb.github.io/preMetabolizer/reference/get_ghcnh.md),
   which downloads GHCNh files and returns a parsed tibble directly (no
@@ -45,11 +68,22 @@
   `"ppb"`, or `"ppt"`) to convert every gas to a common unit; `-9.99`
   uncertainty sentinels are read as `NA` (no issue).
 
+- [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
+  works with newer nasapower versions again: nasapower hourly output
+  replaced the `YYYYMMDD` column with separate `YEAR`, `MO`, and `DY`
+  columns, which caused an error when assembling timestamps after the
+  download completed (no issue).
+
 - [`get_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/get_noaa_stations.md)
   now queries the NCEI Search API for GHCND stations instead of parsing
   the MSHR fixed-width archive; it accepts `bbox`, `start_date`,
   `end_date`, `data_types`, and `text` arguments; the `state`, `clean`,
   and `debug` arguments have been removed (no issue).
+
+- [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
+  is faster when querying many points: duplicated coordinate pairs are
+  only queried once, successful results are cached for the rest of the
+  session, and up to 16 requests are performed concurrently (no issue).
 
 - [`ncei_bbox()`](https://connorb.github.io/preMetabolizer/reference/ncei_bbox.md)
   computes a bounding box from a centre latitude, longitude, and radius
@@ -126,6 +160,14 @@
   calculates dissolved carbon dioxide saturation (the concentration in
   equilibrium with the atmosphere) using the Weiss and Price (1980)
   trace-gas solubility function, returning umol/L or mg/L (no issue).
+
+- [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
+  gains an `alpha` argument for the plotting position constant in the
+  general formula of Cunnane (1978); the default `alpha = 0` keeps the
+  Weibull plotting position (no issue).
+
+- [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
+  now treats infinite values as `NA` instead of erroring (no issue).
 
 - [`calc_K0()`](https://connorb.github.io/preMetabolizer/reference/calc_K0.md)
   renames the `waterDepth_m` argument to `water_depth_m`; `waterDepth_m`
@@ -388,8 +430,18 @@
   removed before production release (no issue).
 
 - [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
-  now provides a C++ implementation of flow exceedance probability
+  gains an `alpha` argument for the plotting position constant, matching
+  [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
+  (no issue).
+
+- [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
+  now provides a C++ implementation of exceedance probability
   calculations (no issue).
+
+- [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
+  now treats infinite values as `NA` instead of erroring, matching
+  [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
+  (no issue).
 
 - `read_ghcnh()` is now exported, validates file inputs, can suppress
   progress messages with `quiet = TRUE`, and handles files that lack

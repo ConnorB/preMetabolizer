@@ -168,13 +168,13 @@ A flow duration curve (FDC) shows what fraction of time discharge equals
 or exceeds a given value.
 [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
 implements the Weibull plotting-position formula. Setting
-`rm.zero = TRUE` excludes days with zero discharge from the ranking, so
-the curve reflects the non-zero portion of the flow regime.
+`remove_zeros = TRUE` excludes days with zero discharge from the
+ranking, so the curve reflects the non-zero portion of the flow regime.
 
 ``` r
 
 kings <- kings |>
-  mutate(exceed_prob = calc_exceedance_prob(discharge_cms, rm.zero = TRUE))
+  mutate(exceed_prob = calc_exceedance_prob(discharge_cms, remove_zeros = TRUE))
 
 zero_pct <- mean(kings$discharge_cms == 0, na.rm = TRUE) * 100
 cat(sprintf("Days with zero discharge: %.1f%%\n", zero_pct))
