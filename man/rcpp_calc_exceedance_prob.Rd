@@ -2,23 +2,35 @@
 % Please edit documentation in R/calc_exceedance_prob.R
 \name{rcpp_calc_exceedance_prob}
 \alias{rcpp_calc_exceedance_prob}
-\title{Calculate flow exceedance probabilities with C++}
+\title{Calculate exceedance probabilities with C++}
 \usage{
-rcpp_calc_exceedance_prob(flow, rm.zero = FALSE)
+rcpp_calc_exceedance_prob(
+  values,
+  remove_zeros = FALSE,
+  alpha = 0,
+  rm.zero = lifecycle::deprecated()
+)
 }
 \arguments{
-\item{flow}{Numeric vector of flow or discharge values.}
+\item{values}{Numeric vector of values, such as stream discharge.}
 
-\item{rm.zero}{Logical. If \code{TRUE}, zero and negative values are omitted from
-the ranking and returned as \code{NA}. Defaults to \code{FALSE}.}
+\item{remove_zeros}{Logical. If \code{TRUE}, zero and negative values are
+excluded from the ranking and returned as \code{NA}. Defaults to \code{FALSE}.}
+
+\item{alpha}{Numeric plotting-position constant between 0 and 0.5. Defaults
+to 0, corresponding to the Weibull plotting position. Common alternatives
+include 0.375 (Blom), 0.4 (Cunnane), 0.44 (Gringorten), and 0.5 (Hazen).}
+
+\item{rm.zero}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{remove_zeros}
+instead.}
 }
 \value{
-A numeric vector of exceedance probabilities. If \code{rm.zero = TRUE},
-the returned vector has the same length as the input with \code{NA} at positions
-of zero or negative values.
+A numeric vector of exceedance probabilities. If
+\code{remove_zeros = TRUE}, the returned vector has the same length as the
+input with \code{NA} at positions of zero or negative values.
 }
 \description{
-Calculates exceedance probabilities using the same Weibull plotting position
+Calculates exceedance probabilities using the same plotting position
 method and return shape as \code{\link[=calc_exceedance_prob]{calc_exceedance_prob()}}, but delegates ranking to
 a C++ implementation.
 }

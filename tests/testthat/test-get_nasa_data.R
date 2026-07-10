@@ -63,6 +63,44 @@ test_that("get_nasa_data uses single-site coordinates and inferred dates", {
   )
 })
 
+test_that("get_nasa_data handles YEAR/MO/DY/HR hourly columns", {
+  timeseries <- data.frame(
+    time = as.POSIXct(
+      c("2024-01-02 00:00:00", "2024-01-04 12:00:00"),
+      tz = "UTC"
+    )
+  )
+
+  local_mocked_bindings(
+    get_power = function(...) {
+      old <- fake_nasa_power(list(...))
+      datetimes <- lubridate::ymd_h(paste(old$YYYYMMDD, old$HR), tz = "UTC")
+      old$YYYYMMDD <- NULL
+      old$MO <- lubridate::month(datetimes)
+      old$DY <- lubridate::day(datetimes)
+      old
+    }
+  )
+
+  result <- get_nasa_data(
+    timeseries,
+    datetime_col = "time",
+    latitude = 39,
+    longitude = -96,
+    elev_m = 300
+  )
+
+  expect_s3_class(result$dateTime, "POSIXct")
+  expect_equal(
+    result$dateTime,
+    lubridate::as_datetime(timeseries$time, tz = "UTC")
+  )
+  expect_equal(
+    intersect(names(result), c("YEAR", "MO", "DY", "HR")),
+    character()
+  )
+})
+
 test_that("get_nasa_data detects a datetime column with any name", {
   timeseries <- data.frame(
     timestamp = as.POSIXct(

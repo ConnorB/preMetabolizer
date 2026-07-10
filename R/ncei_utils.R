@@ -94,7 +94,10 @@ ncei_parse_stations <- function(body) {
   }
 
   get_centroid <- function(res, idx) {
-    pt <- res[["centroid"]][["point"]]
+    centroid <- res[["centroid"]]
+    # The API originally returned `centroid: {point: [lon, lat]}` but now
+    # returns a bare `centroid: [lon, lat]`; accept both.
+    pt <- if (is.null(centroid$point)) centroid else centroid$point
     if (is.null(pt) || length(pt) < 2) NA_real_ else as.numeric(pt[[idx]])
   }
 

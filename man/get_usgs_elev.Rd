@@ -26,7 +26,9 @@ issued.
 Queries the USGS Elevation Point Query Service for one or more latitude and
 longitude pairs. Coordinates are interpreted as WGS84 (WKID 4326). Requests
 are performed in parallel for improved performance when querying multiple
-points.
+points. Duplicated coordinate pairs are only queried once, and successful
+results are cached for the rest of the R session, so repeated calls with
+the same coordinates do not re-contact the service.
 }
 \examples{
 \dontrun{

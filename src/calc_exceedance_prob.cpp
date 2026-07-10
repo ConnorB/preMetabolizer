@@ -9,7 +9,7 @@ struct FlowValue {
 };
 
 // [[Rcpp::export]]
-NumericVector cpp_calc_exceedance_prob(NumericVector flow, bool rm_zero = false) {
+NumericVector cpp_calc_exceedance_prob(NumericVector flow, bool rm_zero = false, double alpha = 0.0) {
   int n_flow = flow.size();
   NumericVector result(n_flow, NA_REAL);
   std::vector<FlowValue> values;
@@ -47,7 +47,8 @@ NumericVector cpp_calc_exceedance_prob(NumericVector flow, bool rm_zero = false)
     }
 
     double rank = (static_cast<double>(i + 1) + static_cast<double>(j)) / 2.0;
-    double exceedance_probability = rank / (static_cast<double>(n) + 1.0);
+    double exceedance_probability =
+      (rank - alpha) / (static_cast<double>(n) + 1.0 - 2.0 * alpha);
 
     for (int k = i; k < j; ++k) {
       result[values[k].output_index] = exceedance_probability;

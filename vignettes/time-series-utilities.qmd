@@ -178,7 +178,7 @@ flows <- tibble::tibble(
 ) |>
   mutate(
     exceedance = calc_exceedance_prob(flow_cms),
-    exceedance_no_zero = rcpp_calc_exceedance_prob(flow_cms, rm.zero = TRUE)
+    exceedance_no_zero = rcpp_calc_exceedance_prob(flow_cms, remove_zeros = TRUE)
   )
 
 flows

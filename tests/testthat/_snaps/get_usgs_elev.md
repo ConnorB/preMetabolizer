@@ -26,3 +26,11 @@
     Code
       expect_equal(result, NA_real_)
 
+# get_usgs_elev does not cache failed lookups
+
+    Code
+      first <- get_usgs_elev(latitude = 44, longitude = -100)
+    Condition
+      Warning:
+      USGS elevation response did not include an elevation for point 1.
+

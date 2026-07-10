@@ -1,11 +1,16 @@
 # preMetabolizer 0.0.0.9000
 
+* `calc_exceedance_prob()` and `rcpp_calc_exceedance_prob()` now error when `remove_zeros` is not a single `TRUE` or `FALSE`; previously logical vectors and `NA` were accepted (no issue).
+* `calc_exceedance_prob()` and `rcpp_calc_exceedance_prob()` rename the `flow` argument to `values` and the `rm.zero` argument to `remove_zeros`. The `rm.zero` argument is deprecated and will be removed in a future release (no issue).
 * `cdo_data()`, `cdo_datasets()`, `cdo_datacategories()`, `cdo_datatypes()`, `cdo_locationcategories()`, `cdo_locations()`, and `cdo_stations()` wrap the seven endpoints of the NCEI Climate Data Online (CDO) Web Services v2 API; they auto-paginate, parse date and numeric columns, read the API token from the `API_NCEI_CDO` environment variable, throttle to the per-token limit of 5 requests per second, and abort once the 10,000 requests-per-day limit is reached for the session (use `cdo_request_count()` to inspect and `cdo_reset_request_count()` to clear the session counter) (no issue).
 * `closest_noaa_stations()` now queries the NCEI Search API with a bounding box instead of downloading the full MSHR station archive; the `state` and `clean` arguments have been removed (no issue).
+* `closest_noaa_stations()`, `get_noaa_stations()`, and `ncei_stations()` again return station coordinates: the NCEI Search API changed its `centroid` field from an object to a bare longitude/latitude array, which made every coordinate `NA` and caused `closest_noaa_stations()` to return `NULL` (no issue).
 * `download_ghcnh()` and `read_ghcnh()` have been replaced by `get_ghcnh()`, which downloads GHCNh files and returns a parsed tibble directly (no issue).
 * `get_ghcnh()` now uses the GHCNh v1.1.0 archive with per-year PSV files; it can retrieve data for multiple stations in parallel, accepts a date range instead of individual years, and returns column names in `snake_case` (no issue).
 * `get_noaa_ghg()` downloads the NOAA Global Monitoring Laboratory globally averaged monthly mean records for CO2, CH4, N2O, and SF6 and returns them stacked long with a `gas` label, a mid-month `date`, and a `unit` column; each gas is reported in its standard NOAA unit by default (CO2 in ppm, CH4 and N2O in ppb, SF6 in ppt), or pass `units` (`"ppm"`, `"ppb"`, or `"ppt"`) to convert every gas to a common unit; `-9.99` uncertainty sentinels are read as `NA` (no issue).
+* `get_nasa_data()` works with newer nasapower versions again: nasapower hourly output replaced the `YYYYMMDD` column with separate `YEAR`, `MO`, and `DY` columns, which caused an error when assembling timestamps after the download completed (no issue).
 * `get_noaa_stations()` now queries the NCEI Search API for GHCND stations instead of parsing the MSHR fixed-width archive; it accepts `bbox`, `start_date`, `end_date`, `data_types`, and `text` arguments; the `state`, `clean`, and `debug` arguments have been removed (no issue).
+* `get_usgs_elev()` is faster when querying many points: duplicated coordinate pairs are only queried once, successful results are cached for the rest of the session, and up to 16 requests are performed concurrently (no issue).
 * `ncei_bbox()` computes a bounding box from a centre latitude, longitude, and radius in kilometres (no issue).
 * `ncei_data()` can retrieve data from any NCEI dataset (e.g., `"daily-summaries"`, `"global-hourly"`) via the NCEI Access Data Service API (no issue).
 * `ncei_datasets()` retrieves metadata about an NCEI dataset from the Support Service API (no issue).
@@ -22,6 +27,8 @@
 * `calc_CO2_molKg()` and `calc_CO2_mgL()` now follow the standard Henry's law form `[CO2*] = K0 * pCO2`. A spurious additional factor of total pressure (atmospheric + hydrostatic) previously under-reported dissolved CO2 at any site away from 1 atm; the error reached ~15% at typical high-elevation streams (no issue).
 * `calc_CO2_molKg()` and `calc_CO2_mgL()` rename the `waterDepth_m` argument to `water_depth_m`; `waterDepth_m` is soft-deprecated (no issue).
 * `calc_CO2sat()` calculates dissolved carbon dioxide saturation (the concentration in equilibrium with the atmosphere) using the Weiss and Price (1980) trace-gas solubility function, returning umol/L or mg/L (no issue).
+* `calc_exceedance_prob()` gains an `alpha` argument for the plotting position constant in the general formula of Cunnane (1978); the default `alpha = 0` keeps the Weibull plotting position (no issue).
+* `calc_exceedance_prob()` now treats infinite values as `NA` instead of erroring (no issue).
 * `calc_K0()` renames the `waterDepth_m` argument to `water_depth_m`; `waterDepth_m` is soft-deprecated (no issue).
 * `calc_N2Osat()` calculates dissolved nitrous oxide saturation (the concentration in equilibrium with the atmosphere) using the Weiss and Price (1980) trace-gas solubility function, returning umol/L or mg/L (no issue).
 * `calc_N2sat()` calculates dissolved nitrogen (N2) saturation (the concentration in equilibrium with the atmosphere) from water temperature, barometric pressure, and salinity using the Hamme and Emerson (2004) solubility fit, returning umol/L or mg/L (no issue).
@@ -66,6 +73,8 @@
 * `ks_meso_fw13()` can now retrieve Kansas Mesonet fire weather data in FW13 format for one station and date range (no issue).
 * `ks_meso_most_recent()` can now retrieve the most recently ingested Kansas Mesonet timestamp for each station at a requested interval (no issue).
 * `ks_meso_timeseries()` can now retrieve Kansas Mesonet station or network observations directly without writing to or reading from a local cache. The old `get_ks_meso()` and `read_ks_meso()` cache-oriented helpers have been removed before production release (no issue).
-* `rcpp_calc_exceedance_prob()` now provides a C++ implementation of flow exceedance probability calculations (no issue).
+* `rcpp_calc_exceedance_prob()` gains an `alpha` argument for the plotting position constant, matching `calc_exceedance_prob()` (no issue).
+* `rcpp_calc_exceedance_prob()` now provides a C++ implementation of exceedance probability calculations (no issue).
+* `rcpp_calc_exceedance_prob()` now treats infinite values as `NA` instead of erroring, matching `calc_exceedance_prob()` (no issue).
 * `read_ghcnh()` is now exported, validates file inputs, can suppress progress messages with `quiet = TRUE`, and handles files that lack `Station_name` or `Station_ID` columns (no issue).
 * `tex_meso_stations()`, `tex_meso_current()`, and `tex_meso_timeseries()` can now retrieve Texas Water Development Board station metadata, current observations, and recent station time-series data from TexMesonet (no issue).

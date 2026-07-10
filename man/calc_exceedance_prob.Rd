@@ -2,35 +2,58 @@
 % Please edit documentation in R/calc_exceedance_prob.R
 \name{calc_exceedance_prob}
 \alias{calc_exceedance_prob}
-\title{Calculate flow exceedance probabilities}
+\title{Calculate exceedance probabilities}
 \usage{
-calc_exceedance_prob(flow, rm.zero = FALSE)
+calc_exceedance_prob(
+  values,
+  remove_zeros = FALSE,
+  alpha = 0,
+  rm.zero = lifecycle::deprecated()
+)
 }
 \arguments{
-\item{flow}{Numeric vector of flow or discharge values.}
+\item{values}{Numeric vector of values, such as stream discharge.}
 
-\item{rm.zero}{Logical. If \code{TRUE}, zero and negative values are omitted from
-the ranking and returned as \code{NA}. Defaults to \code{FALSE}.}
+\item{remove_zeros}{Logical. If \code{TRUE}, zero and negative values are
+excluded from the ranking and returned as \code{NA}. Defaults to \code{FALSE}.}
+
+\item{alpha}{Numeric plotting-position constant between 0 and 0.5. Defaults
+to 0, corresponding to the Weibull plotting position. Common alternatives
+include 0.375 (Blom), 0.4 (Cunnane), 0.44 (Gringorten), and 0.5 (Hazen).}
+
+\item{rm.zero}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use \code{remove_zeros}
+instead.}
 }
 \value{
-Numeric vector of exceedance probabilities with the same length as
-\code{flow}. Missing input values return \code{NA}.
+A numeric vector of exceedance probabilities with the same length
+and order as \code{values}. Missing and infinite input values are returned as
+\code{NA}.
 }
 \description{
-Calculates exceedance probabilities for a discharge vector with the Weibull
-plotting-position formula. Higher flows receive lower exceedance
-probabilities.
+Calculates exceedance probabilities for a numeric vector, such as
+stream discharge, using a plotting-position formula. Larger values
+are assigned lower exceedance probabilities.
 }
 \details{
-The Weibull plotting position is:
-\deqn{P = \frac{\mathrm{rank}}{n + 1}}
-where \code{rank} is the descending rank of the flow value and \code{n} is the number
-of ranked observations.
+Exceedance probabilities are calculated using the general plotting-position
+formula:
+\deqn{P = \frac{\mathrm{rank} - \alpha}{n + 1 - 2\alpha}}
+where rank is the descending rank of each value, n is the number of
+ranked observations, and alpha is the plotting-position constant.
+
+Tied values are assigned the average of the ranks they would otherwise
+occupy, so identical values receive identical exceedance probabilities.
 }
 \examples{
 flow_data <- c(10, 5, 0, 15, 8, NA, 0, 20)
 
 calc_exceedance_prob(flow_data)
-calc_exceedance_prob(flow_data, rm.zero = TRUE)
+calc_exceedance_prob(flow_data, remove_zeros = TRUE)
+calc_exceedance_prob(flow_data, alpha = 0.4)
 
+}
+\references{
+Cunnane, C. (1978). Unbiased plotting positions --- A review.
+\emph{Journal of Hydrology}, 37(3--4), 205--222.
+\doi{10.1016/0022-1694(78)90017-3}
 }

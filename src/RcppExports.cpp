@@ -11,14 +11,15 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // cpp_calc_exceedance_prob
-NumericVector cpp_calc_exceedance_prob(NumericVector flow, bool rm_zero);
-RcppExport SEXP _preMetabolizer_cpp_calc_exceedance_prob(SEXP flowSEXP, SEXP rm_zeroSEXP) {
+NumericVector cpp_calc_exceedance_prob(NumericVector flow, bool rm_zero, double alpha);
+RcppExport SEXP _preMetabolizer_cpp_calc_exceedance_prob(SEXP flowSEXP, SEXP rm_zeroSEXP, SEXP alphaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type flow(flowSEXP);
     Rcpp::traits::input_parameter< bool >::type rm_zero(rm_zeroSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_calc_exceedance_prob(flow, rm_zero));
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_calc_exceedance_prob(flow, rm_zero, alpha));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -38,7 +39,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_preMetabolizer_cpp_calc_exceedance_prob", (DL_FUNC) &_preMetabolizer_cpp_calc_exceedance_prob, 2},
+    {"_preMetabolizer_cpp_calc_exceedance_prob", (DL_FUNC) &_preMetabolizer_cpp_calc_exceedance_prob, 3},
     {"_preMetabolizer_flag_z", (DL_FUNC) &_preMetabolizer_flag_z, 4},
     {NULL, NULL, 0}
 };

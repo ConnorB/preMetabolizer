@@ -552,18 +552,48 @@ get_nasa_data <- function(
   }
 
   nasa_data <- dplyr::bind_rows(all_data) |>
-    tibble::as_tibble() |>
-    dplyr::mutate(
-      HR = paste0(
-        stringr::str_pad(.data$HR, 2, side = "left", pad = "0"),
-        ":00:00"
-      ),
-      dateTime = lubridate::ymd_hms(
-        paste(.data$YYYYMMDD, .data$HR, " "),
-        tz = "UTC"
+    tibble::as_tibble()
+
+  # nasapower hourly output originally had a YYYYMMDD column but newer
+  # versions return separate YEAR/MO/DY columns; accept both.
+  if ("YYYYMMDD" %in% names(nasa_data)) {
+    nasa_data <- nasa_data |>
+      dplyr::mutate(
+        dateTime = lubridate::ymd_hms(
+          paste0(
+            .data$YYYYMMDD,
+            " ",
+            stringr::str_pad(.data$HR, 2, side = "left", pad = "0"),
+            ":00:00"
+          ),
+          tz = "UTC"
+        )
       )
-    ) |>
-    dplyr::select(-dplyr::any_of(c("HR", "YYYYMMDD", "LON", "LAT", "YEAR")))
+  } else if (all(c("YEAR", "MO", "DY", "HR") %in% names(nasa_data))) {
+    nasa_data <- nasa_data |>
+      dplyr::mutate(
+        dateTime = lubridate::make_datetime(
+          .data$YEAR,
+          .data$MO,
+          .data$DY,
+          .data$HR,
+          tz = "UTC"
+        )
+      )
+  } else {
+    cli::cli_abort(
+      c(
+        "Unexpected columns in NASA POWER hourly data.",
+        "i" = "Expected a {.field YYYYMMDD} column or {.field YEAR}, {.field MO}, {.field DY}, and {.field HR} columns.",
+        "x" = "Got: {.field {names(nasa_data)}}."
+      )
+    )
+  }
+
+  nasa_data <- dplyr::select(
+    nasa_data,
+    -dplyr::any_of(c("HR", "YYYYMMDD", "LON", "LAT", "YEAR", "MO", "DY"))
+  )
 
   if ("ALLSKY_SFC_SW_DWN" %in% names(nasa_data)) {
     # Britton and Dodd (1976): PAR (umol m^-2 s^-1) = SW (W m^-2) * 2.114.

@@ -1,9 +1,13 @@
+usgs_elev_cache <- new.env(parent = emptyenv())
+
 #' Get elevation from the USGS Elevation Point Query Service
 #'
 #' Queries the USGS Elevation Point Query Service for one or more latitude and
 #' longitude pairs. Coordinates are interpreted as WGS84 (WKID 4326). Requests
 #' are performed in parallel for improved performance when querying multiple
-#' points.
+#' points. Duplicated coordinate pairs are only queried once, and successful
+#' results are cached for the rest of the R session, so repeated calls with
+#' the same coordinates do not re-contact the service.
 #'
 #' @param latitude,longitude Numeric vectors of latitude and longitude in
 #'   decimal degrees. Latitude values must be between -90 and 90; longitude
@@ -77,10 +81,30 @@ get_usgs_elev <- function(
     )
   }
 
+  keys <- paste(latitude, longitude, units, sep = "/")
+  cached <- vapply(
+    keys,
+    \(key) exists(key, envir = usgs_elev_cache, inherits = FALSE),
+    logical(1),
+    USE.NAMES = FALSE
+  )
+
+  results <- rep(NA_real_, length(keys))
+  for (i in which(cached)) {
+    results[[i]] <- get(keys[[i]], envir = usgs_elev_cache)
+  }
+
+  # First occurrence of each coordinate pair not already cached
+  fetch_idx <- which(!cached & !duplicated(keys))
+
+  if (length(fetch_idx) == 0) {
+    return(results)
+  }
+
   base_request <- httr2::request("https://epqs.nationalmap.gov/v1/json") |>
     httr2::req_headers(Accept = "application/json") |>
-    httr2::req_timeout(10) |>
-    httr2::req_retry(max_tries = 3)
+    httr2::req_timeout(5) |>
+    httr2::req_retry(max_tries = 5)
 
   requests <- Map(
     \(lat, lon) {
@@ -93,13 +117,14 @@ get_usgs_elev <- function(
           includeDate = "false"
         )
     },
-    latitude,
-    longitude
+    latitude[fetch_idx],
+    longitude[fetch_idx]
   )
 
   responses <- http_req_perform_parallel(
     requests,
-    on_error = "continue"
+    on_error = "continue",
+    max_active = 16
   )
 
   parse_elevation <- function(response, i) {
@@ -152,6 +177,17 @@ get_usgs_elev <- function(
     elev
   }
 
-  Map(parse_elevation, responses, seq_along(responses)) |>
+  values <- Map(parse_elevation, responses, fetch_idx) |>
     unlist(use.names = FALSE)
+
+  for (j in seq_along(fetch_idx)) {
+    key <- keys[[fetch_idx[[j]]]]
+    # Failed lookups are not cached so they can be retried in a later call
+    if (!is.na(values[[j]])) {
+      assign(key, values[[j]], envir = usgs_elev_cache)
+    }
+    results[keys == key] <- values[[j]]
+  }
+
+  results
 }

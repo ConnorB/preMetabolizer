@@ -57,6 +57,20 @@ test_that("ncei_stations parses Search API response correctly", {
   expect_equal(result$start_date, as.Date("1948-01-01"))
 })
 
+test_that("ncei_stations parses bare-array centroids", {
+  station <- fake_station()
+  station$centroid <- list(-115.147, 36.085)
+
+  httr2::local_mocked_responses(function(req) {
+    ncei_stations_json(list(station))
+  })
+
+  result <- ncei_stations("daily-summaries")
+
+  expect_equal(result$latitude, 36.085)
+  expect_equal(result$longitude, -115.147)
+})
+
 test_that("ncei_stations sends bounding box when supplied", {
   env <- new.env()
   httr2::local_mocked_responses(function(req) {
