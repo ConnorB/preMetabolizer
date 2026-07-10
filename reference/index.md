@@ -150,7 +150,7 @@ Work with meteorological seasons and solar time.
 - [`get_season()`](https://connorb.github.io/preMetabolizer/reference/get_season.md)
   : Determine the astronomical season from a date
 - [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
-  : Fill missing rows in an even time series
+  : Align logger data to even, rounded timestamps
 - [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
   [`convert_from_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
   : Convert a datetime to local solar time

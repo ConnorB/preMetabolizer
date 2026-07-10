@@ -13,20 +13,23 @@ library(dplyr)
 library(ggplot2)
 ```
 
-## Fill missing timesteps
+## Align to even timesteps
 
 [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
-builds a complete timestamp sequence from the observed time step and
-inserts rows where observations are missing.
+snaps logger data onto an evenly spaced, rounded time grid. The time
+step is inferred from the data, timestamps are rounded to that step
+(here, hourly readings starting at 00:59 become 01:00, 02:00, …), and
+values are linearly interpolated onto the grid. Grid times inside data
+gaps are left `NA`.
 
 ``` r
 
 logger <- tibble::tibble(
   DateTime_UTC = as.POSIXct(
     c(
-      "2024-06-01 00:00:00",
-      "2024-06-01 01:00:00",
-      "2024-06-01 03:00:00"
+      "2024-06-01 00:59:00",
+      "2024-06-01 01:59:00",
+      "2024-06-01 03:59:00"
     ),
     tz = "UTC"
   ),
@@ -37,13 +40,13 @@ even_timesteps(logger)
 #> # A tibble: 4 × 2
 #>   DateTime_UTC        temp_water
 #>   <dttm>                   <dbl>
-#> 1 2024-06-01 00:00:00       18.1
-#> 2 2024-06-01 01:00:00       18  
-#> 3 2024-06-01 02:00:00       NA  
-#> 4 2024-06-01 03:00:00       17.8
+#> 1 2024-06-01 01:00:00       18.1
+#> 2 2024-06-01 02:00:00       18  
+#> 3 2024-06-01 03:00:00       NA  
+#> 4 2024-06-01 04:00:00       17.8
 ```
 
-For multi-site data, provide the site column so each site is completed
+For multi-site data, provide the site column so each site is aligned
 independently.
 
 ``` r

@@ -124,7 +124,9 @@ french_creek <- french_creek |>
 
 streamMetabolizer requires evenly spaced data.
 [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
-fills any gaps with `NA` rows so the interval is consistent.
+aligns the record to a regular grid: timestamps are rounded to the
+inferred interval, values are linearly interpolated onto the grid, and
+grid times inside data gaps are left `NA`.
 
 ``` r
 

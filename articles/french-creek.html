@@ -186,7 +186,7 @@
 </div>
 </section><section class="level2"><h2 id="ensure-even-timesteps">Ensure even timesteps<a class="anchor" aria-label="anchor" href="#ensure-even-timesteps"></a>
 </h2>
-<p>streamMetabolizer requires evenly spaced data. <code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> fills any gaps with <code>NA</code> rows so the interval is consistent.</p>
+<p>streamMetabolizer requires evenly spaced data. <code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> aligns the record to a regular grid: timestamps are rounded to the inferred interval, values are linearly interpolated onto the grid, and grid times inside data gaps are left <code>NA</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">french_creek</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/even_timesteps.html">even_timesteps</a></span><span class="op">(</span><span class="va">french_creek</span><span class="op">)</span></span></code></pre></div>

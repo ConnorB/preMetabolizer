@@ -436,6 +436,30 @@
   defaults to `NULL` and only needs to be supplied when `logger_data`
   contains multiple POSIXct columns (no issue).
 
+- [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
+  now returns evenly spaced, rounded timestamps with values linearly
+  interpolated onto the new grid: the grid is aligned to the inferred
+  time step (e.g. a series of 10-minute readings starting at 20:59
+  yields 21:00, 21:10, …) and only the grid timestamps are returned.
+  Previously the original timestamps were kept and missing steps were
+  inserted as `NA` rows (no issue).
+
+- [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
+  gains a `max_gap` argument giving the maximum gap in seconds across
+  which values are interpolated; grid timestamps inside wider gaps are
+  left `NA`. It defaults to 1.5 times the inferred time step, which
+  bridges ordinary clock offsets while leaving missing readings as `NA`.
+  Non-numeric columns cannot be interpolated and are filled from the
+  nearest observation, with a warning (no issue).
+
+- [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md)
+  now builds grids with whole-second arithmetic, rounds both grid
+  boundaries to the nearest inferred step, handles duplicated and
+  clock-jittered timestamps, preserves daily local-midnight grids across
+  daylight saving time transitions, drops rows with missing timestamps
+  or site values with warnings, and drops sites whose time step cannot
+  be inferred instead of returning raw off-grid rows (no issue).
+
 - [`flag_z()`](https://connorb.github.io/preMetabolizer/reference/flag_z.md)
   now uses the canonical Tukey biweight midvariance (Mosteller & Tukey
   1977; Lax 1985) with tuning constant `c = 9` for the robust scale

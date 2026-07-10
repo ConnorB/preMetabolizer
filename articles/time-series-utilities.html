@@ -80,17 +80,17 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="fill-missing-timesteps">Fill missing timesteps<a class="anchor" aria-label="anchor" href="#fill-missing-timesteps"></a>
+</section><section class="level2"><h2 id="align-to-even-timesteps">Align to even timesteps<a class="anchor" aria-label="anchor" href="#align-to-even-timesteps"></a>
 </h2>
-<p><code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> builds a complete timestamp sequence from the observed time step and inserts rows where observations are missing.</p>
+<p><code><a href="../reference/even_timesteps.html">even_timesteps()</a></code> snaps logger data onto an evenly spaced, rounded time grid. The time step is inferred from the data, timestamps are rounded to that step (here, hourly readings starting at 00:59 become 01:00, 02:00, …), and values are linearly interpolated onto the grid. Grid times inside data gaps are left <code>NA</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">logger</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  DateTime_UTC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>      <span class="st">"2024-06-01 00:00:00"</span>,</span>
-<span>      <span class="st">"2024-06-01 01:00:00"</span>,</span>
-<span>      <span class="st">"2024-06-01 03:00:00"</span></span>
+<span>      <span class="st">"2024-06-01 00:59:00"</span>,</span>
+<span>      <span class="st">"2024-06-01 01:59:00"</span>,</span>
+<span>      <span class="st">"2024-06-01 03:59:00"</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    tz <span class="op">=</span> <span class="st">"UTC"</span></span>
 <span>  <span class="op">)</span>,</span>
@@ -101,12 +101,12 @@
 <span><span class="co">#&gt; # A tibble: 4 × 2</span></span>
 <span><span class="co">#&gt;   DateTime_UTC        temp_water</span></span>
 <span><span class="co">#&gt;   &lt;dttm&gt;                   &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 2024-06-01 00:00:00       18.1</span></span>
-<span><span class="co">#&gt; 2 2024-06-01 01:00:00       18  </span></span>
-<span><span class="co">#&gt; 3 2024-06-01 02:00:00       NA  </span></span>
-<span><span class="co">#&gt; 4 2024-06-01 03:00:00       17.8</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 2024-06-01 01:00:00       18.1</span></span>
+<span><span class="co">#&gt; 2 2024-06-01 02:00:00       18  </span></span>
+<span><span class="co">#&gt; 3 2024-06-01 03:00:00       NA  </span></span>
+<span><span class="co">#&gt; 4 2024-06-01 04:00:00       17.8</span></span></code></pre></div>
 </div>
-<p>For multi-site data, provide the site column so each site is completed independently.</p>
+<p>For multi-site data, provide the site column so each site is aligned independently.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">multi_site</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
