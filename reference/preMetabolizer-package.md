@@ -22,15 +22,15 @@ decimal degrees. Latitude ranges from -90 to 90, longitude ranges from
   [`ncei_data()`](https://connorb.github.io/preMetabolizer/reference/ncei_data.md),
   [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md),
   and
-  [`ks_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_timeseries.md).
+  [`ks_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_time_series.md).
   Retrieve mesonet station observations with
   [`iem_networks()`](https://connorb.github.io/preMetabolizer/reference/iem_networks.md),
   [`iem_current()`](https://connorb.github.io/preMetabolizer/reference/iem_current.md),
-  [`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md),
+  [`iem_ob_history()`](https://connorb.github.io/preMetabolizer/reference/iem_ob_history.md),
   [`tex_meso_stations()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_stations.md),
   [`tex_meso_current()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_current.md),
   and
-  [`tex_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_timeseries.md).
+  [`tex_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_time_series.md).
 
 - Retrieve or calculate site context with
   [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md),
@@ -41,7 +41,7 @@ decimal degrees. Latitude ranges from -90 to 90, longitude ranges from
 
 - Prepare model inputs with
   [`even_timesteps()`](https://connorb.github.io/preMetabolizer/reference/even_timesteps.md),
-  [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md),
+  [`calc_o2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_o2_sat.md),
   [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md),
   and the built-in example datasets.
 

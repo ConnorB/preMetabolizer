@@ -1,7 +1,10 @@
-# Get recent TexMesonet time-series data
+# Get recent TexMesonet time-series data (deprecated)
 
-Retrieves recent time-series observations for a single TWDB TexMesonet
-station.
+**\[deprecated\]**
+
+This function is deprecated. Please use
+[`tex_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_time_series.md)
+instead.
 
 ## Usage
 
@@ -14,47 +17,26 @@ tex_meso_timeseries(
 )
 ```
 
-## Arguments
-
-- site_id:
-
-  TexMesonet station ID.
-
-- prior_minutes:
-
-  Number of minutes before the current time to retrieve.
-
-- variable:
-
-  Data type to retrieve. Use `"all"` for the charting fields endpoint,
-  or one of `"temperature"`, `"humidity"`, `"barometric_pressure"`,
-  `"precip"`, or `"wind_speed"` for the single-variable endpoints.
-
-## Value
-
-A tibble of observations with UTC `date_time` values. Single-variable
-requests return `value` and `date_time` columns and have `"field_name"`,
-`"station_name"`, `"station_id"`, and `"units"` attributes. Requests
-with `variable = "all"` return one column per charting field and have
-`"station_name"` and `"station_id"` attributes.
-
-## Details
-
-**\[experimental\]**
-
-TexMesonet's public time-series API retrieves recent observations by
-station and look-back window. The API may return different fields by
-station because not all stations measure every parameter.
-
-## References
-
-TexMesonet APIs: <https://www.texmesonet.org/Apis>
-
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-tex_meso_timeseries(2, prior_minutes = 60)
-tex_meso_timeseries(2, prior_minutes = 60, variable = "temperature")
-} # }
+# Old:
+# tex_meso_timeseries(2, prior_minutes = 60)
+# New:
+tex_meso_time_series(2, prior_minutes = 60)
+#> # A tibble: 5 × 27
+#>   air_temp air_temp9_m humidity precip wind_speed wind_speed2_m wind_speed10_m
+#>      <dbl>       <dbl>    <dbl>  <dbl>      <dbl>         <dbl>          <dbl>
+#> 1     27.1          NA     56.8      0       2.34          2.34             NA
+#> 2     27.4          NA     56.2      0       2.62          2.62             NA
+#> 3     27.7          NA     55.1      0       2.98          2.98             NA
+#> 4     28.0          NA     53.5      0       2.07          2.07             NA
+#> 5     28.2          NA     52.9      0       1.84          1.84             NA
+#> # ℹ 20 more variables: wind_direction <dbl>, wind_direction2_m <dbl>,
+#> #   wind_direction10_m <dbl>, wind_gust2_m <dbl>, wind_gust10_m <dbl>,
+#> #   air_pressure <dbl>, solar_radiation <dbl>, soil_moist5 <dbl>,
+#> #   soil_moist10 <dbl>, soil_moist20 <dbl>, soil_moist50 <dbl>,
+#> #   soil_temp5 <dbl>, soil_temp10 <dbl>, soil_temp20 <dbl>, soil_temp50 <dbl>,
+#> #   water_level <dbl>, water_temp <dbl>, water_level2 <dbl>, water_temp2 <dbl>,
+#> #   date_time <dttm>
 ```

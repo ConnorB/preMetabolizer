@@ -82,7 +82,7 @@
 </div>
 </section><section class="level2"><h2 id="dissolved-oxygen-saturation">Dissolved oxygen saturation<a class="anchor" aria-label="anchor" href="#dissolved-oxygen-saturation"></a>
 </h2>
-<p><code><a href="../reference/calc_O2sat.html">calc_O2sat()</a></code> calculates dissolved oxygen saturation in mg/L from water temperature, barometric pressure, pressure units, and optional salinity. This is the <code>DO.sat</code> input commonly used by stream metabolism models.</p>
+<p><code><a href="../reference/calc_o2_sat.html">calc_o2_sat()</a></code> calculates dissolved oxygen saturation in mg/L from water temperature, barometric pressure, pressure units, and optional salinity. This is the <code>DO.sat</code> input commonly used by stream metabolism models.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">water</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
@@ -91,7 +91,7 @@
 <span>  salinity <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    DO_sat_mg_L <span class="op">=</span> <span class="fu"><a href="../reference/calc_O2sat.html">calc_O2sat</a></span><span class="op">(</span></span>
+<span>    DO_sat_mg_L <span class="op">=</span> <span class="fu"><a href="../reference/calc_o2_sat.html">calc_o2_sat</a></span><span class="op">(</span></span>
 <span>      temp_water <span class="op">=</span> <span class="va">temp_water</span>,</span>
 <span>      atmo_press <span class="op">=</span> <span class="va">atmo_press</span>,</span>
 <span>      units <span class="op">=</span> <span class="st">"kPa"</span>,</span>
@@ -130,11 +130,11 @@
 </div>
 </section><section class="level2"><h2 id="co2-partial-pressure">CO2 partial pressure<a class="anchor" aria-label="anchor" href="#co2-partial-pressure"></a>
 </h2>
-<p><code><a href="../reference/xCO2_to_pCO2.html">xCO2_to_pCO2()</a></code> converts CO2 mole fraction in air to water-vapor-corrected partial pressure. <code><a href="../reference/pCO2_to_xCO2.html">pCO2_to_xCO2()</a></code> performs the inverse conversion.</p>
+<p><code><a href="../reference/xco2_to_pco2.html">xco2_to_pco2()</a></code> converts CO2 mole fraction in air to water-vapor-corrected partial pressure. <code><a href="../reference/pco2_to_xco2.html">pco2_to_xco2()</a></code> performs the inverse conversion.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pCO2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/xCO2_to_pCO2.html">xCO2_to_pCO2</a></span><span class="op">(</span></span>
-<span>  xCO2_ppm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">420</span>, <span class="fl">800</span>, <span class="fl">1200</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="va">pCO2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/xco2_to_pco2.html">xco2_to_pco2</a></span><span class="op">(</span></span>
+<span>  xco2_ppm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">420</span>, <span class="fl">800</span>, <span class="fl">1200</span><span class="op">)</span>,</span>
 <span>  temp_water <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  atmo_press <span class="op">=</span> <span class="fl">101.325</span>,</span>
 <span>  press_units <span class="op">=</span> <span class="st">"kPa"</span>,</span>
@@ -145,9 +145,9 @@
 <span><span class="va">pCO2</span></span>
 <span><span class="co">#&gt; [1]  410.3363  781.5930 1172.3895</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/pCO2_to_xCO2.html">pCO2_to_xCO2</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="../reference/pco2_to_xco2.html">pco2_to_xco2</a></span><span class="op">(</span></span>
 <span>  temp_water <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  pCO2_uatm <span class="op">=</span> <span class="va">pCO2</span>,</span>
+<span>  pco2_uatm <span class="op">=</span> <span class="va">pCO2</span>,</span>
 <span>  atmo_press <span class="op">=</span> <span class="fl">101.325</span>,</span>
 <span>  press_units <span class="op">=</span> <span class="st">"kPa"</span>,</span>
 <span>  salinity <span class="op">=</span> <span class="fl">0</span>,</span>
@@ -157,25 +157,25 @@
 </div>
 </section><section class="level2"><h2 id="dissolved-co2-concentration">Dissolved CO2 concentration<a class="anchor" aria-label="anchor" href="#dissolved-co2-concentration"></a>
 </h2>
-<p><code><a href="../reference/calc_CO2_molKg.html">calc_CO2_molKg()</a></code> and <code><a href="../reference/calc_CO2_mgL.html">calc_CO2_mgL()</a></code> estimate dissolved CO2 concentration from CO2 mole fraction, water temperature, water depth, atmospheric pressure, and salinity.</p>
+<p><code><a href="../reference/calc_co2_mol_kg.html">calc_co2_mol_kg()</a></code> and <code><a href="../reference/calc_co2_mg_l.html">calc_co2_mg_l()</a></code> estimate dissolved CO2 concentration from CO2 mole fraction, water temperature, water depth, atmospheric pressure, and salinity.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">co2</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  CO2_ppm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">420</span>, <span class="fl">800</span>, <span class="fl">1200</span><span class="op">)</span>,</span>
+<span>  co2_ppm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">420</span>, <span class="fl">800</span>, <span class="fl">1200</span><span class="op">)</span>,</span>
 <span>  temp_water <span class="op">=</span> <span class="fl">20</span>,</span>
 <span>  water_depth_m <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  atmo_press <span class="op">=</span> <span class="fl">101.325</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    CO2_mol_kg <span class="op">=</span> <span class="fu"><a href="../reference/calc_CO2_molKg.html">calc_CO2_molKg</a></span><span class="op">(</span></span>
-<span>      CO2_ppm <span class="op">=</span> <span class="va">CO2_ppm</span>,</span>
+<span>    CO2_mol_kg <span class="op">=</span> <span class="fu"><a href="../reference/calc_co2_mol_kg.html">calc_co2_mol_kg</a></span><span class="op">(</span></span>
+<span>      co2_ppm <span class="op">=</span> <span class="va">co2_ppm</span>,</span>
 <span>      temp_water <span class="op">=</span> <span class="va">temp_water</span>,</span>
 <span>      water_depth_m <span class="op">=</span> <span class="va">water_depth_m</span>,</span>
 <span>      atmo_press <span class="op">=</span> <span class="va">atmo_press</span>,</span>
 <span>      press_units <span class="op">=</span> <span class="st">"kPa"</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    CO2_mg_L <span class="op">=</span> <span class="fu"><a href="../reference/calc_CO2_mgL.html">calc_CO2_mgL</a></span><span class="op">(</span></span>
-<span>      CO2_ppm <span class="op">=</span> <span class="va">CO2_ppm</span>,</span>
+<span>    CO2_mg_L <span class="op">=</span> <span class="fu"><a href="../reference/calc_co2_mg_l.html">calc_co2_mg_l</a></span><span class="op">(</span></span>
+<span>      co2_ppm <span class="op">=</span> <span class="va">co2_ppm</span>,</span>
 <span>      temp_water <span class="op">=</span> <span class="va">temp_water</span>,</span>
 <span>      water_depth_m <span class="op">=</span> <span class="va">water_depth_m</span>,</span>
 <span>      atmo_press <span class="op">=</span> <span class="va">atmo_press</span>,</span>
@@ -185,7 +185,7 @@
 <span></span>
 <span><span class="va">co2</span></span>
 <span><span class="co">#&gt; # A tibble: 3 × 6</span></span>
-<span><span class="co">#&gt;   CO2_ppm temp_water water_depth_m atmo_press CO2_mol_kg CO2_mg_L</span></span>
+<span><span class="co">#&gt;   co2_ppm temp_water water_depth_m atmo_press CO2_mol_kg CO2_mg_L</span></span>
 <span><span class="co">#&gt;     &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1     420         20           0.5       101.  0.0000161    0.706</span></span>
 <span><span class="co">#&gt; 2     800         20           0.5       101.  0.0000306    1.34 </span></span>
@@ -193,7 +193,7 @@
 </div>
 </section><section class="level2"><h2 id="vapor-pressure-and-solubility">Vapor pressure and solubility<a class="anchor" aria-label="anchor" href="#vapor-pressure-and-solubility"></a>
 </h2>
-<p><code><a href="../reference/calc_vapor_press.html">calc_vapor_press()</a></code> returns water vapor pressure in atmospheres. Use <code>method = "MIMSY"</code> for freshwater calculations and <code>"Dickson2007"</code> for seawater-style salinity corrections. <code><a href="../reference/calc_K0.html">calc_K0()</a></code> returns the Weiss (1974) CO2 solubility coefficient.</p>
+<p><code><a href="../reference/calc_vapor_press.html">calc_vapor_press()</a></code> returns water vapor pressure in atmospheres. Use <code>method = "MIMSY"</code> for freshwater calculations and <code>"Dickson2007"</code> for seawater-style salinity corrections. <code><a href="../reference/calc_k0.html">calc_k0()</a></code> returns the Weiss (1974) CO2 solubility coefficient.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">temps</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>temp_water <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">15</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -203,7 +203,7 @@
 <span>      salinity <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>      method <span class="op">=</span> <span class="st">"MIMSY"</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    K0_mol_kg_atm <span class="op">=</span> <span class="fu"><a href="../reference/calc_K0.html">calc_K0</a></span><span class="op">(</span><span class="va">temp_water</span>, water_depth_m <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<span>    K0_mol_kg_atm <span class="op">=</span> <span class="fu"><a href="../reference/calc_k0.html">calc_k0</a></span><span class="op">(</span><span class="va">temp_water</span>, water_depth_m <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">temps</span></span>
@@ -225,15 +225,15 @@
 <span>    tz <span class="op">=</span> <span class="st">"UTC"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  temp_water <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18.5</span>, <span class="fl">18.2</span><span class="op">)</span>,</span>
-<span>  atmo_kPa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">99.8</span>, <span class="fl">99.7</span><span class="op">)</span>,</span>
-<span>  xCO2_ppm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">650</span><span class="op">)</span></span>
+<span>  atmo_kpa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">99.8</span>, <span class="fl">99.7</span><span class="op">)</span>,</span>
+<span>  xco2_ppm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">600</span>, <span class="fl">650</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    DO.sat <span class="op">=</span> <span class="fu"><a href="../reference/calc_O2sat.html">calc_O2sat</a></span><span class="op">(</span><span class="va">temp_water</span>, <span class="va">atmo_kPa</span>, units <span class="op">=</span> <span class="st">"kPa"</span><span class="op">)</span>,</span>
-<span>    pCO2_uatm <span class="op">=</span> <span class="fu"><a href="../reference/xCO2_to_pCO2.html">xCO2_to_pCO2</a></span><span class="op">(</span></span>
-<span>      xCO2_ppm <span class="op">=</span> <span class="va">xCO2_ppm</span>,</span>
+<span>    DO.sat <span class="op">=</span> <span class="fu"><a href="../reference/calc_o2_sat.html">calc_o2_sat</a></span><span class="op">(</span><span class="va">temp_water</span>, <span class="va">atmo_kpa</span>, units <span class="op">=</span> <span class="st">"kPa"</span><span class="op">)</span>,</span>
+<span>    pco2_uatm <span class="op">=</span> <span class="fu"><a href="../reference/xco2_to_pco2.html">xco2_to_pco2</a></span><span class="op">(</span></span>
+<span>      xco2_ppm <span class="op">=</span> <span class="va">xco2_ppm</span>,</span>
 <span>      temp_water <span class="op">=</span> <span class="va">temp_water</span>,</span>
-<span>      atmo_press <span class="op">=</span> <span class="va">atmo_kPa</span>,</span>
+<span>      atmo_press <span class="op">=</span> <span class="va">atmo_kpa</span>,</span>
 <span>      press_units <span class="op">=</span> <span class="st">"kPa"</span>,</span>
 <span>      salinity <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>      method <span class="op">=</span> <span class="st">"MIMSY"</span></span>
@@ -242,7 +242,7 @@
 <span></span>
 <span><span class="va">logger</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 6</span></span>
-<span><span class="co">#&gt;   dateTime            temp_water atmo_kPa xCO2_ppm DO.sat pCO2_uatm</span></span>
+<span><span class="co">#&gt;   dateTime            temp_water atmo_kpa xco2_ppm DO.sat pco2_uatm</span></span>
 <span><span class="co">#&gt;   &lt;dttm&gt;                   &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1 2024-06-01 00:00:00       18.5     99.8      600   9.23      578.</span></span>
 <span><span class="co">#&gt; 2 2024-06-01 01:00:00       18.2     99.7      650   9.27      626.</span></span></code></pre></div>

@@ -17,9 +17,9 @@
 
 - [`cdo_data()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
   [`cdo_datasets()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
-  [`cdo_datacategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
-  [`cdo_datatypes()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
-  [`cdo_locationcategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_data_categories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_data_types()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_location_categories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
   [`cdo_locations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
   and
   [`cdo_stations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
@@ -32,6 +32,34 @@
   to inspect and
   [`cdo_reset_request_count()`](https://connorb.github.io/preMetabolizer/reference/cdo_request_count.md)
   to clear the session counter) (no issue).
+
+- [`cdo_data_categories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_data_types()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  and
+  [`cdo_location_categories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  replace
+  [`cdo_datacategories()`](https://connorb.github.io/preMetabolizer/reference/cdo_datacategories.md),
+  [`cdo_datatypes()`](https://connorb.github.io/preMetabolizer/reference/cdo_datatypes.md),
+  and
+  [`cdo_locationcategories()`](https://connorb.github.io/preMetabolizer/reference/cdo_locationcategories.md)
+  for tidyverse-style naming; the old names are soft-deprecated (no
+  issue).
+
+- [`cdo_data()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_datasets()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_data_categories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_data_types()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_location_categories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  [`cdo_locations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md),
+  and
+  [`cdo_stations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  rename their NOAA-API-style arguments (`datasetid`, `datatypeid`,
+  `locationid`, `stationid`, `datacategoryid`, `locationcategoryid`,
+  `startdate`, `enddate`, `sortfield`, `sortorder`, `includemetadata`)
+  to `dataset_id`, `datatype_id`, `location_id`, `station_id`,
+  `data_category_id`, `location_category_id`, `start_date`, `end_date`,
+  `sort_field`, `sort_order`, and `include_metadata`; the old argument
+  names are soft-deprecated (no issue).
 
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
   now queries the NCEI Search API with a bounding box instead of
@@ -123,7 +151,9 @@
 - Messages, warnings, and errors now consistently use cli formatting
   across the package (no issue).
 
-- [`calc_Arsat()`](https://connorb.github.io/preMetabolizer/reference/calc_Arsat.md)
+- [`calc_ar_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_ar_sat.md)
+  (formerly
+  [`calc_Arsat()`](https://connorb.github.io/preMetabolizer/reference/calc_Arsat.md))
   calculates dissolved argon saturation (the concentration in
   equilibrium with the atmosphere) from water temperature, barometric
   pressure, and salinity using the Hamme and Emerson (2004) solubility
@@ -135,31 +165,52 @@
   the sample standard deviation, biasing the bin width for small samples
   (no issue).
 
-- [`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md)
+- [`calc_ch4_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_ch4_sat.md)
+  (formerly
+  [`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md))
   calculates dissolved methane saturation (the concentration in
   equilibrium with the atmosphere) from water temperature, barometric
   pressure, and salinity using Wiesenburg and Guinasso (1979), returning
   umol/L or mg/L (no issue).
 
-- [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
+- [`calc_co2_mol_kg()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_mol_kg.md)
   and
-  [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)
+  [`calc_co2_mg_l()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_mg_l.md)
+  (formerly
+  [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
+  and
+  [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md))
   now follow the standard Henry’s law form `[CO2*] = K0 * pCO2`. A
   spurious additional factor of total pressure (atmospheric +
   hydrostatic) previously under-reported dissolved CO2 at any site away
   from 1 atm; the error reached ~15% at typical high-elevation streams
   (no issue).
 
-- [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
+- [`calc_co2_mol_kg()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_mol_kg.md)
   and
-  [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)
+  [`calc_co2_mg_l()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_mg_l.md)
   rename the `waterDepth_m` argument to `water_depth_m`; `waterDepth_m`
   is soft-deprecated (no issue).
 
-- [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md)
+- [`calc_co2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_sat.md)
+  (formerly
+  [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md))
   calculates dissolved carbon dioxide saturation (the concentration in
   equilibrium with the atmosphere) using the Weiss and Price (1980)
   trace-gas solubility function, returning umol/L or mg/L (no issue).
+
+- [`calc_ar_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_ar_sat.md),
+  [`calc_ch4_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_ch4_sat.md),
+  [`calc_co2_mol_kg()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_mol_kg.md),
+  [`calc_co2_mg_l()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_mg_l.md),
+  [`calc_co2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_sat.md),
+  [`calc_n2o_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_n2o_sat.md),
+  and
+  [`xco2_to_pco2()`](https://connorb.github.io/preMetabolizer/reference/xco2_to_pco2.md)/[`pco2_to_xco2()`](https://connorb.github.io/preMetabolizer/reference/pco2_to_xco2.md)
+  rename their chemistry/unit arguments (`xCH4_ppm`, `CO2_ppm`,
+  `xCO2_ppm`, `xN2O_ppm`, `pCO2_uatm`) to `xch4_ppm`, `co2_ppm`,
+  `xco2_ppm`, `xn2o_ppm`, and `pco2_uatm` for tidyverse-style naming;
+  the old argument names are soft-deprecated (no issue).
 
 - [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
   gains an `alpha` argument for the plotting position constant in the
@@ -169,26 +220,34 @@
 - [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
   now treats infinite values as `NA` instead of erroring (no issue).
 
-- [`calc_K0()`](https://connorb.github.io/preMetabolizer/reference/calc_K0.md)
+- [`calc_k0()`](https://connorb.github.io/preMetabolizer/reference/calc_k0.md)
+  (formerly
+  [`calc_K0()`](https://connorb.github.io/preMetabolizer/reference/calc_k0-deprecated.md))
   renames the `waterDepth_m` argument to `water_depth_m`; `waterDepth_m`
   is soft-deprecated (no issue).
 
-- [`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md)
+- [`calc_n2o_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_n2o_sat.md)
+  (formerly
+  [`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md))
   calculates dissolved nitrous oxide saturation (the concentration in
   equilibrium with the atmosphere) using the Weiss and Price (1980)
   trace-gas solubility function, returning umol/L or mg/L (no issue).
 
-- [`calc_N2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2sat.md)
+- [`calc_n2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_n2_sat.md)
+  (formerly
+  [`calc_N2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2sat.md))
   calculates dissolved nitrogen (N2) saturation (the concentration in
   equilibrium with the atmosphere) from water temperature, barometric
   pressure, and salinity using the Hamme and Emerson (2004) solubility
   fit, returning umol/L or mg/L (no issue).
 
-- [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
+- [`calc_o2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_o2_sat.md)
   gains an `out_units` argument to return saturation in umol/L in
   addition to mg/L (no issue).
 
-- [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
+- [`calc_o2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_o2_sat.md)
+  (formerly
+  [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md))
   now uses the Benson and Krause umol/kg coefficients from Garcia and
   Gordon (1992), converts to mg/L with salinity-aware density, and
   applies the corrected vapor-pressure term for non-standard pressure
@@ -199,6 +258,16 @@
   Antoine equation constant `B` was incorrectly set to 140.264 (should
   be 1435.264), causing vapor pressures that were orders of magnitude
   too large.
+
+- [`xco2_to_pco2()`](https://connorb.github.io/preMetabolizer/reference/xco2_to_pco2.md)
+  and
+  [`pco2_to_xco2()`](https://connorb.github.io/preMetabolizer/reference/pco2_to_xco2.md)
+  (formerly
+  [`xCO2_to_pCO2()`](https://connorb.github.io/preMetabolizer/reference/xco2_to_pco2-deprecated.md)
+  and
+  [`pCO2_to_xCO2()`](https://connorb.github.io/preMetabolizer/reference/pco2_to_xco2-deprecated.md))
+  convert between CO2 mole fraction and water-vapor-corrected partial
+  pressure (no issue).
 
 - [`calc_water_density()`](https://connorb.github.io/preMetabolizer/reference/calc_water_density.md)
   gains a `salinity` argument: freshwater (`salinity = 0`) uses the
@@ -216,7 +285,12 @@
 
 - [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md)
   now gives a clear error when `type = "unvented"` is used without
-  providing `atmo_kPa`, rather than silently returning `NA`.
+  providing `atmo_kpa`, rather than silently returning `NA`.
+
+- [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md)
+  renames the `sensor_kPa` and `atmo_kPa` arguments to `sensor_kpa` and
+  `atmo_kpa`; `sensor_kPa` and `atmo_kPa` are soft-deprecated (no
+  issue).
 
 - [`closest_noaa_stations()`](https://connorb.github.io/preMetabolizer/reference/closest_noaa_stations.md)
   no longer accepts the deprecated `lat`, `long`, or `lon` arguments;
@@ -407,13 +481,20 @@
 - [`iem_current()`](https://connorb.github.io/preMetabolizer/reference/iem_current.md),
   [`iem_daily()`](https://connorb.github.io/preMetabolizer/reference/iem_daily.md),
   [`iem_networks()`](https://connorb.github.io/preMetabolizer/reference/iem_networks.md),
-  [`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md),
+  [`iem_ob_history()`](https://connorb.github.io/preMetabolizer/reference/iem_ob_history.md),
   [`iem_station()`](https://connorb.github.io/preMetabolizer/reference/iem_stations.md),
   and
   [`iem_stations()`](https://connorb.github.io/preMetabolizer/reference/iem_stations.md)
   can now retrieve Iowa Environmental Mesonet network metadata, station
   metadata, current observations, one-day observation histories, and
   daily summaries (no issue).
+
+- [`iem_ob_history()`](https://connorb.github.io/preMetabolizer/reference/iem_ob_history.md)
+  replaces
+  [`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md)
+  for tidyverse-style naming;
+  [`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md)
+  is soft-deprecated (no issue).
 
 - [`ks_meso_fw13()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_fw13.md)
   can now retrieve Kansas Mesonet fire weather data in FW13 format for
@@ -423,7 +504,14 @@
   can now retrieve the most recently ingested Kansas Mesonet timestamp
   for each station at a requested interval (no issue).
 
-- [`ks_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_timeseries.md)
+- [`ks_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_time_series.md)
+  replaces
+  [`ks_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_timeseries.md)
+  for tidyverse-style naming;
+  [`ks_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_timeseries.md)
+  is soft-deprecated (no issue).
+
+- [`ks_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_time_series.md)
   can now retrieve Kansas Mesonet station or network observations
   directly without writing to or reading from a local cache. The old
   `get_ks_meso()` and `read_ks_meso()` cache-oriented helpers have been
@@ -450,7 +538,14 @@
 - [`tex_meso_stations()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_stations.md),
   [`tex_meso_current()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_current.md),
   and
-  [`tex_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_timeseries.md)
+  [`tex_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_time_series.md)
   can now retrieve Texas Water Development Board station metadata,
   current observations, and recent station time-series data from
   TexMesonet (no issue).
+
+- [`tex_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_time_series.md)
+  replaces
+  [`tex_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_timeseries.md)
+  for tidyverse-style naming;
+  [`tex_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_timeseries.md)
+  is soft-deprecated (no issue).

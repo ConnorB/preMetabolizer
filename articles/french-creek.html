@@ -271,12 +271,12 @@
 </div>
 </section></section><section class="level2"><h2 id="calculate-o2-saturation">Calculate O<sub>2</sub> saturation<a class="anchor" aria-label="anchor" href="#calculate-o2-saturation"></a>
 </h2>
-<p>With site-adjusted pressure and water temperature, <code><a href="../reference/calc_O2sat.html">calc_O2sat()</a></code> returns the DO saturation concentration in mg/L.</p>
+<p>With site-adjusted pressure and water temperature, <code><a href="../reference/calc_o2_sat.html">calc_o2_sat()</a></code> returns the DO saturation concentration in mg/L.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">french_data</span> <span class="op">&lt;-</span> <span class="va">french_data</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    DO.sat <span class="op">=</span> <span class="fu"><a href="../reference/calc_O2sat.html">calc_O2sat</a></span><span class="op">(</span></span>
+<span>    DO.sat <span class="op">=</span> <span class="fu"><a href="../reference/calc_o2_sat.html">calc_o2_sat</a></span><span class="op">(</span></span>
 <span>      temp_water <span class="op">=</span> <span class="va">temp_C</span>,</span>
 <span>      atmo_press <span class="op">=</span> <span class="va">bp_kPa</span>,</span>
 <span>      units      <span class="op">=</span> <span class="st">"kPa"</span></span>

@@ -6,18 +6,25 @@ to water height in meters.
 ## Usage
 
 ``` r
-calc_water_height(sensor_kPa, atmo_kPa = NULL, water_temp, type = "vented")
+calc_water_height(
+  sensor_kpa,
+  atmo_kpa = NULL,
+  water_temp,
+  type = "vented",
+  sensor_kPa = lifecycle::deprecated(),
+  atmo_kPa = lifecycle::deprecated()
+)
 ```
 
 ## Arguments
 
-- sensor_kPa:
+- sensor_kpa:
 
   Numeric vector. Sensor pressure in kilopascals. For `type = "vented"`,
   this is differential pressure from the water column. For
   `type = "unvented"`, this is absolute pressure.
 
-- atmo_kPa:
+- atmo_kpa:
 
   Numeric vector. Atmospheric pressure in kilopascals. Required when
   `type = "unvented"`.
@@ -30,6 +37,14 @@ calc_water_height(sensor_kPa, atmo_kPa = NULL, water_temp, type = "vented")
 
   Character string. Sensor type, either `"vented"` or `"unvented"`.
   Defaults to `"vented"`.
+
+- sensor_kPa:
+
+  **\[deprecated\]** Use `sensor_kpa` instead.
+
+- atmo_kPa:
+
+  **\[deprecated\]** Use `atmo_kpa` instead.
 
 ## Value
 
@@ -51,12 +66,12 @@ recent experimental reports. *Metrologia*, 38(4), 301-309.
 ## Examples
 
 ``` r
-calc_water_height(sensor_kPa = 19.2, water_temp = 15, type = "vented")
+calc_water_height(sensor_kpa = 19.2, water_temp = 15, type = "vented")
 #> [1] 1.959614
 
 calc_water_height(
-  sensor_kPa = 120.5,
-  atmo_kPa = 101.3,
+  sensor_kpa = 120.5,
+  atmo_kpa = 101.3,
   water_temp = 15,
   type = "unvented"
 )

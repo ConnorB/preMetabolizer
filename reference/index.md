@@ -20,9 +20,9 @@ sources.
 - [`ncei_bbox()`](https://connorb.github.io/preMetabolizer/reference/ncei_bbox.md)
   : Compute a bounding box around a point
 - [`cdo_datasets()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
-  [`cdo_datacategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
-  [`cdo_datatypes()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
-  [`cdo_locationcategories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_data_categories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_data_types()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
+  [`cdo_location_categories()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
   [`cdo_locations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
   [`cdo_stations()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
   [`cdo_data()`](https://connorb.github.io/preMetabolizer/reference/cdo.md)
@@ -49,13 +49,13 @@ sources.
   : Get Iowa Environmental Mesonet station metadata
 - [`iem_current()`](https://connorb.github.io/preMetabolizer/reference/iem_current.md)
   : Get current Iowa Environmental Mesonet observations
-- [`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md)
+- [`iem_ob_history()`](https://connorb.github.io/preMetabolizer/reference/iem_ob_history.md)
   : Get one day of Iowa Environmental Mesonet observations
 - [`iem_daily()`](https://connorb.github.io/preMetabolizer/reference/iem_daily.md)
   : Get Iowa Environmental Mesonet daily summaries
 - [`ks_meso_vars()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_vars.md)
   : Fetch Kansas Mesonet variable metadata
-- [`ks_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_timeseries.md)
+- [`ks_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_time_series.md)
   : Get Kansas Mesonet time-series data
 - [`ks_meso_stations()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_stations.md)
   : Get Kansas Mesonet station information
@@ -69,7 +69,7 @@ sources.
   : Get TexMesonet station information
 - [`tex_meso_current()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_current.md)
   : Get current TexMesonet data
-- [`tex_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_timeseries.md)
+- [`tex_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/tex_meso_time_series.md)
   : Get recent TexMesonet time-series data
 - [`read_shp()`](https://connorb.github.io/preMetabolizer/reference/read_shp.md)
   : Read a shapefile or zipped shapefile
@@ -79,29 +79,29 @@ sources.
 Calculate dissolved gas concentrations, solubility constants, and
 related thermodynamic quantities.
 
-- [`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
+- [`calc_o2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_o2_sat.md)
   : Calculate dissolved oxygen saturation
-- [`calc_CO2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2sat.md)
+- [`calc_co2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_sat.md)
   : Calculate dissolved carbon dioxide saturation
-- [`calc_CH4sat()`](https://connorb.github.io/preMetabolizer/reference/calc_CH4sat.md)
+- [`calc_ch4_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_ch4_sat.md)
   : Calculate dissolved methane saturation
-- [`calc_N2Osat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2Osat.md)
+- [`calc_n2o_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_n2o_sat.md)
   : Calculate dissolved nitrous oxide saturation
-- [`calc_N2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_N2sat.md)
+- [`calc_n2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_n2_sat.md)
   : Calculate dissolved nitrogen saturation
-- [`calc_Arsat()`](https://connorb.github.io/preMetabolizer/reference/calc_Arsat.md)
+- [`calc_ar_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_ar_sat.md)
   : Calculate dissolved argon saturation
-- [`calc_CO2_molKg()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_molKg.md)
+- [`calc_co2_mol_kg()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_mol_kg.md)
   : Calculate dissolved CO2 concentration in mol/kg
-- [`calc_CO2_mgL()`](https://connorb.github.io/preMetabolizer/reference/calc_CO2_mgL.md)
+- [`calc_co2_mg_l()`](https://connorb.github.io/preMetabolizer/reference/calc_co2_mg_l.md)
   : Calculate dissolved CO2 concentration in mg/L
-- [`calc_K0()`](https://connorb.github.io/preMetabolizer/reference/calc_K0.md)
+- [`calc_k0()`](https://connorb.github.io/preMetabolizer/reference/calc_k0.md)
   : Calculate the CO2 solubility coefficient
 - [`calc_vapor_press()`](https://connorb.github.io/preMetabolizer/reference/calc_vapor_press.md)
   : Saturation vapor pressure of water
-- [`xCO2_to_pCO2()`](https://connorb.github.io/preMetabolizer/reference/xCO2_to_pCO2.md)
+- [`xco2_to_pco2()`](https://connorb.github.io/preMetabolizer/reference/xco2_to_pco2.md)
   : Convert CO2 mole fraction to partial pressure
-- [`pCO2_to_xCO2()`](https://connorb.github.io/preMetabolizer/reference/pCO2_to_xCO2.md)
+- [`pco2_to_xco2()`](https://connorb.github.io/preMetabolizer/reference/pco2_to_xco2.md)
   : Convert CO2 partial pressure to mole fraction
 
 ## Physical property calculations

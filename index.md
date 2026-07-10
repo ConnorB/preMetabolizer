@@ -82,7 +82,7 @@ metab_input <- french_creek |>
       station_elev = 0,
       site_elev = site_elev_m
     ),
-    DO.sat = calc_O2sat(temp_C, bp_kPa, units = "kPa")
+    DO.sat = calc_o2_sat(temp_C, bp_kPa, units = "kPa")
   ) |>
   transmute(
     solar.time,
@@ -109,7 +109,7 @@ from NASA POWER, see
 library(preMetabolizer)
 
 # Dissolved oxygen saturation at 15°C, standard atmosphere, freshwater
-calc_O2sat(temp_water = 15, atmo_press = 1, units = "atm")
+calc_o2_sat(temp_water = 15, atmo_press = 1, units = "atm")
 #> [1] 10.07807
 
 # Water density (kg/m³) at several temperatures
@@ -121,10 +121,10 @@ correct_bp(station_bp = 101.3, air_temp = 15, station_elev = 300, site_elev = 50
 #> [1] 98.92626
 
 # Dissolved CO2 concentration from xCO2, pressure, and water depth
-calc_CO2_mgL(
-  CO2_ppm = 420,
+calc_co2_mg_l(
+  co2_ppm = 420,
   temp_water = 20,
-  waterDepth_m = 0.5,
+  water_depth_m = 0.5,
   atmo_press = 101.325,
   press_units = "kPa"
 )

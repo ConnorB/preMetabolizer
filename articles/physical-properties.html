@@ -166,23 +166,23 @@
 <span><span class="co">#&gt; 6         25          997.</span></span>
 <span><span class="co">#&gt; 7         30          996.</span></span></code></pre></div>
 </div>
-<p>For vented sensors, <code>sensor_kPa</code> is already the pressure from the water column. For unvented sensors, provide atmospheric pressure so it can be subtracted from the absolute sensor pressure.</p>
+<p>For vented sensors, <code>sensor_kpa</code> is already the pressure from the water column. For unvented sensors, provide atmospheric pressure so it can be subtracted from the absolute sensor pressure.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">water_level</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  sensor_kPa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18.9</span>, <span class="fl">19.2</span>, <span class="fl">19.5</span><span class="op">)</span>,</span>
-<span>  atmo_kPa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">101.1</span>, <span class="fl">101.0</span>, <span class="fl">100.9</span><span class="op">)</span>,</span>
+<span>  sensor_kpa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">18.9</span>, <span class="fl">19.2</span>, <span class="fl">19.5</span><span class="op">)</span>,</span>
+<span>  atmo_kpa <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">101.1</span>, <span class="fl">101.0</span>, <span class="fl">100.9</span><span class="op">)</span>,</span>
 <span>  water_temp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">14.8</span>, <span class="fl">15.0</span>, <span class="fl">15.2</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    vented_height_m <span class="op">=</span> <span class="fu"><a href="../reference/calc_water_height.html">calc_water_height</a></span><span class="op">(</span></span>
-<span>      sensor_kPa <span class="op">=</span> <span class="va">sensor_kPa</span>,</span>
+<span>      sensor_kpa <span class="op">=</span> <span class="va">sensor_kpa</span>,</span>
 <span>      water_temp <span class="op">=</span> <span class="va">water_temp</span>,</span>
 <span>      type <span class="op">=</span> <span class="st">"vented"</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    unvented_height_m <span class="op">=</span> <span class="fu"><a href="../reference/calc_water_height.html">calc_water_height</a></span><span class="op">(</span></span>
-<span>      sensor_kPa <span class="op">=</span> <span class="va">sensor_kPa</span> <span class="op">+</span> <span class="va">atmo_kPa</span>,</span>
-<span>      atmo_kPa <span class="op">=</span> <span class="va">atmo_kPa</span>,</span>
+<span>      sensor_kpa <span class="op">=</span> <span class="va">sensor_kpa</span> <span class="op">+</span> <span class="va">atmo_kpa</span>,</span>
+<span>      atmo_kpa <span class="op">=</span> <span class="va">atmo_kpa</span>,</span>
 <span>      water_temp <span class="op">=</span> <span class="va">water_temp</span>,</span>
 <span>      type <span class="op">=</span> <span class="st">"unvented"</span></span>
 <span>    <span class="op">)</span></span>
@@ -190,7 +190,7 @@
 <span></span>
 <span><span class="va">water_level</span></span>
 <span><span class="co">#&gt; # A tibble: 3 × 5</span></span>
-<span><span class="co">#&gt;   sensor_kPa atmo_kPa water_temp vented_height_m unvented_height_m</span></span>
+<span><span class="co">#&gt;   sensor_kpa atmo_kpa water_temp vented_height_m unvented_height_m</span></span>
 <span><span class="co">#&gt;        &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;           &lt;dbl&gt;             &lt;dbl&gt;</span></span>
 <span><span class="co">#&gt; 1       18.9     101.       14.8            1.93              1.93</span></span>
 <span><span class="co">#&gt; 2       19.2     101        15              1.96              1.96</span></span>

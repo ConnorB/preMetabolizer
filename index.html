@@ -116,7 +116,7 @@
 <span>      station_elev <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>      site_elev <span class="op">=</span> <span class="va">site_elev_m</span></span>
 <span>    <span class="op">)</span>,</span>
-<span>    DO.sat <span class="op">=</span> <span class="fu"><a href="reference/calc_O2sat.html">calc_O2sat</a></span><span class="op">(</span><span class="va">temp_C</span>, <span class="va">bp_kPa</span>, units <span class="op">=</span> <span class="st">"kPa"</span><span class="op">)</span></span>
+<span>    DO.sat <span class="op">=</span> <span class="fu"><a href="reference/calc_o2_sat.html">calc_o2_sat</a></span><span class="op">(</span><span class="va">temp_C</span>, <span class="va">bp_kPa</span>, units <span class="op">=</span> <span class="st">"kPa"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/transmute.html" class="external-link">transmute</a></span><span class="op">(</span></span>
 <span>    <span class="va">solar.time</span>,</span>
@@ -140,7 +140,7 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://connorb.github.io/preMetabolizer/">preMetabolizer</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Dissolved oxygen saturation at 15°C, standard atmosphere, freshwater</span></span>
-<span><span class="fu"><a href="reference/calc_O2sat.html">calc_O2sat</a></span><span class="op">(</span>temp_water <span class="op">=</span> <span class="fl">15</span>, atmo_press <span class="op">=</span> <span class="fl">1</span>, units <span class="op">=</span> <span class="st">"atm"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/calc_o2_sat.html">calc_o2_sat</a></span><span class="op">(</span>temp_water <span class="op">=</span> <span class="fl">15</span>, atmo_press <span class="op">=</span> <span class="fl">1</span>, units <span class="op">=</span> <span class="st">"atm"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 10.07807</span></span>
 <span></span>
 <span><span class="co"># Water density (kg/m³) at several temperatures</span></span>
@@ -152,10 +152,10 @@
 <span><span class="co">#&gt; [1] 98.92626</span></span>
 <span></span>
 <span><span class="co"># Dissolved CO2 concentration from xCO2, pressure, and water depth</span></span>
-<span><span class="fu"><a href="reference/calc_CO2_mgL.html">calc_CO2_mgL</a></span><span class="op">(</span></span>
-<span>  CO2_ppm <span class="op">=</span> <span class="fl">420</span>,</span>
+<span><span class="fu"><a href="reference/calc_co2_mg_l.html">calc_co2_mg_l</a></span><span class="op">(</span></span>
+<span>  co2_ppm <span class="op">=</span> <span class="fl">420</span>,</span>
 <span>  temp_water <span class="op">=</span> <span class="fl">20</span>,</span>
-<span>  waterDepth_m <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  water_depth_m <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  atmo_press <span class="op">=</span> <span class="fl">101.325</span>,</span>
 <span>  press_units <span class="op">=</span> <span class="st">"kPa"</span></span>
 <span><span class="op">)</span></span></code></pre></div>

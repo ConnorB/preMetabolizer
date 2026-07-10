@@ -202,17 +202,17 @@
 <span><span class="co">#&gt; # A tibble: 1 × 2</span></span>
 <span><span class="co">#&gt;   station_name  timestamp          </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;         &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt; 1 Konza Prairie 2026-07-09 20:00:00</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 Konza Prairie 2026-07-09 21:00:00</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="retrieve-time-series-data">Retrieve time-series data<a class="anchor" aria-label="anchor" href="#retrieve-time-series-data"></a>
 </h2>
-<p><code><a href="../reference/ks_meso_timeseries.html">ks_meso_timeseries()</a></code> retrieves Mesonet data for one or more stations and returns a tibble directly. Large date ranges are split into chunks automatically to stay within the API record limit.</p>
+<p><code><a href="../reference/ks_meso_time_series.html">ks_meso_time_series()</a></code> retrieves Mesonet data for one or more stations and returns a tibble directly. Large date ranges are split into chunks automatically to stay within the API record limit.</p>
 <p>Here we retrieve hourly data for Konza Prairie for the 2024 calendar year, requesting air temperature, relative humidity, precipitation, and surface pressure.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"ks_meso_konza_hourly_2024.rds"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">konza_hourly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_timeseries.html">ks_meso_timeseries</a></span><span class="op">(</span></span>
+<span>  <span class="va">konza_hourly</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ks_meso_time_series.html">ks_meso_time_series</a></span><span class="op">(</span></span>
 <span>    stations   <span class="op">=</span> <span class="st">"Konza Prairie"</span>,</span>
 <span>    start_date <span class="op">=</span> <span class="st">"2024-01-01"</span>,</span>
 <span>    end_date   <span class="op">=</span> <span class="st">"2024-12-31"</span>,</span>

@@ -4,97 +4,128 @@ These functions wrap the seven endpoints of NOAA's Climate Data Online
 Web Services v2 API (`https://www.ncei.noaa.gov/cdo-web/api/v2`). They
 retrieve observations (`cdo_data()`), search the station catalog
 (`cdo_stations()`), and browse the metadata catalog (`cdo_datasets()`,
-`cdo_datacategories()`, `cdo_datatypes()`, `cdo_locationcategories()`,
-`cdo_locations()`).
+`cdo_data_categories()`, `cdo_data_types()`,
+`cdo_location_categories()`, `cdo_locations()`).
 
 ## Usage
 
 ``` r
 cdo_datasets(
   id = NULL,
-  datatypeid = NULL,
-  locationid = NULL,
-  stationid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
+  datatype_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datatypeid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  stationid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
+)
+
+cdo_data_categories(
+  id = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
   max_results = Inf
 )
 
-cdo_datacategories(
+cdo_data_types(
   id = NULL,
-  datasetid = NULL,
-  locationid = NULL,
-  stationid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
+  data_category_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
   max_results = Inf
 )
 
-cdo_datatypes(
+cdo_location_categories(
   id = NULL,
-  datasetid = NULL,
-  locationid = NULL,
-  stationid = NULL,
-  datacategoryid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
-  max_results = Inf
-)
-
-cdo_locationcategories(
-  id = NULL,
-  datasetid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
+  dataset_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
   max_results = Inf
 )
 
 cdo_locations(
   id = NULL,
-  datasetid = NULL,
-  locationcategoryid = NULL,
-  datacategoryid = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
-  max_results = Inf
+  dataset_id = NULL,
+  location_category_id = NULL,
+  data_category_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  locationcategoryid = lifecycle::deprecated(),
+  datacategoryid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
 )
 
 cdo_stations(
   id = NULL,
-  datasetid = NULL,
-  locationid = NULL,
-  datacategoryid = NULL,
-  datatypeid = NULL,
+  dataset_id = NULL,
+  location_id = NULL,
+  data_category_id = NULL,
+  datatype_id = NULL,
   extent = NULL,
-  startdate = NULL,
-  enddate = NULL,
-  sortfield = NULL,
-  sortorder = NULL,
-  max_results = Inf
+  start_date = NULL,
+  end_date = NULL,
+  sort_field = NULL,
+  sort_order = NULL,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  datacategoryid = lifecycle::deprecated(),
+  datatypeid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated()
 )
 
 cdo_data(
-  datasetid,
-  startdate,
-  enddate,
-  datatypeid = NULL,
-  locationid = NULL,
-  stationid = NULL,
+  dataset_id = NULL,
+  start_date = NULL,
+  end_date = NULL,
+  datatype_id = NULL,
+  location_id = NULL,
+  station_id = NULL,
   units = "metric",
-  sortfield = NULL,
-  sortorder = NULL,
-  includemetadata = FALSE,
-  max_results = Inf
+  sort_field = NULL,
+  sort_order = NULL,
+  include_metadata = FALSE,
+  max_results = Inf,
+  datasetid = lifecycle::deprecated(),
+  startdate = lifecycle::deprecated(),
+  enddate = lifecycle::deprecated(),
+  datatypeid = lifecycle::deprecated(),
+  locationid = lifecycle::deprecated(),
+  stationid = lifecycle::deprecated(),
+  sortfield = lifecycle::deprecated(),
+  sortorder = lifecycle::deprecated(),
+  includemetadata = lifecycle::deprecated()
 )
 ```
 
@@ -107,15 +138,15 @@ cdo_data(
   list. When `NULL` (default) the list endpoint is queried and a tibble
   is returned.
 
-- startdate, enddate:
+- start_date, end_date:
 
   Optional date filters as `Date` objects or `"YYYY-MM-DD"` strings. For
   `cdo_data()` both are required.
 
-- sortfield, sortorder:
+- sort_field, sort_order:
 
-  Optional sort controls. `sortfield` is one of `"id"`, `"name"`,
-  `"mindate"`, `"maxdate"`, `"datacoverage"`; `sortorder` is `"asc"`
+  Optional sort controls. `sort_field` is one of `"id"`, `"name"`,
+  `"mindate"`, `"maxdate"`, `"datacoverage"`; `sort_order` is `"asc"`
   (default) or `"desc"`.
 
 - max_results:
@@ -123,11 +154,20 @@ cdo_data(
   Maximum number of rows to return. Defaults to `Inf` (all matching
   results).
 
-- datasetid, datatypeid, locationid, stationid, datacategoryid,
-  locationcategoryid:
+- dataset_id, datatype_id, location_id, station_id, data_category_id,
+  location_category_id:
 
   Optional character vectors filtering the result set. Multiple values
   are sent as repeated query parameters.
+
+- datasetid, datatypeid, locationid, stationid, datacategoryid,
+  locationcategoryid, startdate, enddate, sortfield, sortorder,
+  includemetadata:
+
+  **\[deprecated\]** Use `dataset_id`, `datatype_id`, `location_id`,
+  `station_id`, `data_category_id`, `location_category_id`,
+  `start_date`, `end_date`, `sort_field`, `sort_order`, and
+  `include_metadata` instead.
 
 - extent:
 
@@ -138,7 +178,7 @@ cdo_data(
 
   For `cdo_data()` only. `"metric"` (default) or `"standard"`.
 
-- includemetadata:
+- include_metadata:
 
   For `cdo_data()` only. Logical; when `FALSE` (default) the API skips
   computing the result-set count, which can noticeably speed up large
@@ -194,31 +234,31 @@ cdo_datasets()
 cdo_datasets("GHCND")
 } # }
 if (FALSE) { # \dontrun{
-cdo_datacategories(datasetid = "GHCND")
+cdo_data_categories(dataset_id = "GHCND")
 } # }
 if (FALSE) { # \dontrun{
-cdo_datatypes(datasetid = "GHCND", datacategoryid = "TEMP")
-cdo_datatypes("TMAX")
+cdo_data_types(dataset_id = "GHCND", data_category_id = "TEMP")
+cdo_data_types("TMAX")
 } # }
 if (FALSE) { # \dontrun{
-cdo_locationcategories()
-cdo_locationcategories("ST")
+cdo_location_categories()
+cdo_location_categories("ST")
 } # }
 if (FALSE) { # \dontrun{
-cdo_locations(locationcategoryid = "ST")
+cdo_locations(location_category_id = "ST")
 cdo_locations("FIPS:37")
 } # }
 if (FALSE) { # \dontrun{
-cdo_stations(locationid = "FIPS:37", datasetid = "GHCND")
+cdo_stations(location_id = "FIPS:37", dataset_id = "GHCND")
 cdo_stations("GHCND:USW00013722")
 } # }
 if (FALSE) { # \dontrun{
 cdo_data(
-  datasetid = "GHCND",
-  stationid = "GHCND:USW00013722",
-  startdate = "2024-01-01",
-  enddate   = "2024-01-31",
-  datatypeid = c("TMAX", "TMIN")
+  dataset_id = "GHCND",
+  station_id = "GHCND:USW00013722",
+  start_date = "2024-01-01",
+  end_date   = "2024-01-31",
+  datatype_id = c("TMAX", "TMIN")
 )
 } # }
 ```

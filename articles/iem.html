@@ -85,7 +85,7 @@
 <li>
 <code><a href="../reference/iem_current.html">iem_current()</a></code> retrieves current observations.</li>
 <li>
-<code><a href="../reference/iem_obhistory.html">iem_obhistory()</a></code> retrieves one local day of station observations.</li>
+<code><a href="../reference/iem_ob_history.html">iem_ob_history()</a></code> retrieves one local day of station observations.</li>
 <li>
 <code><a href="../reference/iem_daily.html">iem_daily()</a></code> retrieves daily summary observations.</li>
 </ul>
@@ -197,16 +197,16 @@
 <span><span class="co">#&gt; # A tibble: 61 × 8</span></span>
 <span><span class="co">#&gt;    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;          &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 ADU        AUDUBON        2026-07-10 02:15:00  73.4  71.6     0     0   NA </span></span>
-<span><span class="co">#&gt;  2 AIO        ATLANTIC       2026-07-10 01:55:00  77    73.4     3   320   NA </span></span>
-<span><span class="co">#&gt;  3 ALO        Waterloo       2026-07-10 02:01:00  78    72       3   230   NA </span></span>
-<span><span class="co">#&gt;  4 AMW        Ames           2026-07-10 01:53:00  78    73       3   270 1010.</span></span>
-<span><span class="co">#&gt;  5 AWG        WASHINGTON     2026-07-10 02:15:00  NA    NA       0     0   NA </span></span>
-<span><span class="co">#&gt;  6 AXA        Algona         2026-07-10 01:55:00  73.4  73.4     4    30   NA </span></span>
-<span><span class="co">#&gt;  7 BNW        BOONE MUNI     2026-07-10 02:15:00  77    71.6     0     0   NA </span></span>
-<span><span class="co">#&gt;  8 BRL        BURLINGTON     2026-07-10 01:53:00  74    73       0     0 1010.</span></span>
-<span><span class="co">#&gt;  9 CAV        CLARION        2026-07-10 02:15:00  73.4  73.4     5    10   NA </span></span>
-<span><span class="co">#&gt; 10 CBF        COUNCIL BLUFFS 2026-07-10 01:55:00  80.6  71.6     0     0   NA </span></span>
+<span><span class="co">#&gt;  1 ADU        AUDUBON        2026-07-10 03:15:00  71.6  69.8     0     0   NA </span></span>
+<span><span class="co">#&gt;  2 AIO        ATLANTIC       2026-07-10 03:15:00  71.6  71.6     0     0   NA </span></span>
+<span><span class="co">#&gt;  3 ALO        Waterloo       2026-07-10 02:54:00  76    72       0     0 1010.</span></span>
+<span><span class="co">#&gt;  4 AMW        Ames           2026-07-10 02:53:00  75    72       0     0 1010.</span></span>
+<span><span class="co">#&gt;  5 AWG        WASHINGTON     2026-07-10 03:15:00  NA    NA       4    90   NA </span></span>
+<span><span class="co">#&gt;  6 AXA        Algona         2026-07-10 02:55:00  69.8  69.8     4    40   NA </span></span>
+<span><span class="co">#&gt;  7 BNW        BOONE MUNI     2026-07-10 03:15:00  75.2  73.4     0     0   NA </span></span>
+<span><span class="co">#&gt;  8 BRL        BURLINGTON     2026-07-10 02:53:00  73    72       0     0 1011.</span></span>
+<span><span class="co">#&gt;  9 CAV        CLARION        2026-07-10 03:15:00  69.8  69.8     3   360   NA </span></span>
+<span><span class="co">#&gt; 10 CBF        COUNCIL BLUFFS 2026-07-10 02:55:00  77    71.6     3    40   NA </span></span>
 <span><span class="co">#&gt; # ℹ 51 more rows</span></span></code></pre></div>
 </div>
 <p>For station-specific work, include both <code>network</code> and <code>stations</code> so shared station identifiers do not surprise you.</p>
@@ -229,16 +229,16 @@
 <span><span class="co">#&gt; # A tibble: 1 × 7</span></span>
 <span><span class="co">#&gt;   station_id station_name utc_valid            tmpf  relh  sknt pres </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;        &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;</span></span>
-<span><span class="co">#&gt; 1 AMW        Ames         2026-07-10 01:53:00    78  84.7     3 NA</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 AMW        Ames         2026-07-10 02:53:00    75  90.4     0 NA</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="retrieve-one-day-of-observations">Retrieve one day of observations<a class="anchor" aria-label="anchor" href="#retrieve-one-day-of-observations"></a>
 </h2>
-<p><code><a href="../reference/iem_obhistory.html">iem_obhistory()</a></code> returns observations for a single station and local station date. UTC timestamp columns are parsed as UTC <code>POSIXct</code> values. Local timestamp columns are returned as character values because station time zones vary across networks.</p>
+<p><code><a href="../reference/iem_ob_history.html">iem_ob_history()</a></code> returns observations for a single station and local station date. UTC timestamp columns are parsed as UTC <code>POSIXct</code> values. Local timestamp columns are returned as character values because station time zones vary across networks.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"iem_obhistory_dsm_2024-06-01.rds"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">cache_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">cache_dir</span>, <span class="st">"iem_ob_history_dsm_2024-06-01.rds"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iem_obhistory.html">iem_obhistory</a></span><span class="op">(</span></span>
+<span>  <span class="va">obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iem_ob_history.html">iem_ob_history</a></span><span class="op">(</span></span>
 <span>    station <span class="op">=</span> <span class="st">"DSM"</span>,</span>
 <span>    network <span class="op">=</span> <span class="st">"IA_ASOS"</span>,</span>
 <span>    date <span class="op">=</span> <span class="st">"2024-06-01"</span></span>

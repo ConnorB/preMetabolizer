@@ -117,26 +117,26 @@ temps
 #> 7         30          996.
 ```
 
-For vented sensors, `sensor_kPa` is already the pressure from the water
+For vented sensors, `sensor_kpa` is already the pressure from the water
 column. For unvented sensors, provide atmospheric pressure so it can be
 subtracted from the absolute sensor pressure.
 
 ``` r
 
 water_level <- tibble::tibble(
-  sensor_kPa = c(18.9, 19.2, 19.5),
-  atmo_kPa = c(101.1, 101.0, 100.9),
+  sensor_kpa = c(18.9, 19.2, 19.5),
+  atmo_kpa = c(101.1, 101.0, 100.9),
   water_temp = c(14.8, 15.0, 15.2)
 ) |>
   mutate(
     vented_height_m = calc_water_height(
-      sensor_kPa = sensor_kPa,
+      sensor_kpa = sensor_kpa,
       water_temp = water_temp,
       type = "vented"
     ),
     unvented_height_m = calc_water_height(
-      sensor_kPa = sensor_kPa + atmo_kPa,
-      atmo_kPa = atmo_kPa,
+      sensor_kpa = sensor_kpa + atmo_kpa,
+      atmo_kpa = atmo_kpa,
       water_temp = water_temp,
       type = "unvented"
     )
@@ -144,7 +144,7 @@ water_level <- tibble::tibble(
 
 water_level
 #> # A tibble: 3 × 5
-#>   sensor_kPa atmo_kPa water_temp vented_height_m unvented_height_m
+#>   sensor_kpa atmo_kpa water_temp vented_height_m unvented_height_m
 #>        <dbl>    <dbl>      <dbl>           <dbl>             <dbl>
 #> 1       18.9     101.       14.8            1.93              1.93
 #> 2       19.2     101        15              1.96              1.96

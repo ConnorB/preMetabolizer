@@ -234,14 +234,14 @@ french_elev_m <- get_usgs_elev(
 ## Calculate O₂ saturation
 
 With site-adjusted pressure and water temperature,
-[`calc_O2sat()`](https://connorb.github.io/preMetabolizer/reference/calc_O2sat.md)
+[`calc_o2_sat()`](https://connorb.github.io/preMetabolizer/reference/calc_o2_sat.md)
 returns the DO saturation concentration in mg/L.
 
 ``` r
 
 french_data <- french_data |>
   mutate(
-    DO.sat = calc_O2sat(
+    DO.sat = calc_o2_sat(
       temp_water = temp_C,
       atmo_press = bp_kPa,
       units      = "kPa"

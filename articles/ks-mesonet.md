@@ -177,12 +177,12 @@ recent |>
 #> # A tibble: 1 × 2
 #>   station_name  timestamp          
 #>   <chr>         <dttm>             
-#> 1 Konza Prairie 2026-07-09 20:00:00
+#> 1 Konza Prairie 2026-07-09 21:00:00
 ```
 
 ## Retrieve time-series data
 
-[`ks_meso_timeseries()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_timeseries.md)
+[`ks_meso_time_series()`](https://connorb.github.io/preMetabolizer/reference/ks_meso_time_series.md)
 retrieves Mesonet data for one or more stations and returns a tibble
 directly. Large date ranges are split into chunks automatically to stay
 within the API record limit.
@@ -195,7 +195,7 @@ surface pressure.
 
 cache_file <- file.path(cache_dir, "ks_meso_konza_hourly_2024.rds")
 if (!file.exists(cache_file)) {
-  konza_hourly <- ks_meso_timeseries(
+  konza_hourly <- ks_meso_time_series(
     stations   = "Konza Prairie",
     start_date = "2024-01-01",
     end_date   = "2024-12-31",

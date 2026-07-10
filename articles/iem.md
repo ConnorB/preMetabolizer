@@ -17,7 +17,7 @@ preMetabolizer provides helpers for selected IEM API v1 endpoints:
   looks up one station identifier across networks.
 - [`iem_current()`](https://connorb.github.io/preMetabolizer/reference/iem_current.md)
   retrieves current observations.
-- [`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md)
+- [`iem_ob_history()`](https://connorb.github.io/preMetabolizer/reference/iem_ob_history.md)
   retrieves one local day of station observations.
 - [`iem_daily()`](https://connorb.github.io/preMetabolizer/reference/iem_daily.md)
   retrieves daily summary observations.
@@ -159,16 +159,16 @@ current |>
 #> # A tibble: 61 × 8
 #>    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp
 #>    <chr>      <chr>          <dttm>              <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1 ADU        AUDUBON        2026-07-10 02:15:00  73.4  71.6     0     0   NA 
-#>  2 AIO        ATLANTIC       2026-07-10 01:55:00  77    73.4     3   320   NA 
-#>  3 ALO        Waterloo       2026-07-10 02:01:00  78    72       3   230   NA 
-#>  4 AMW        Ames           2026-07-10 01:53:00  78    73       3   270 1010.
-#>  5 AWG        WASHINGTON     2026-07-10 02:15:00  NA    NA       0     0   NA 
-#>  6 AXA        Algona         2026-07-10 01:55:00  73.4  73.4     4    30   NA 
-#>  7 BNW        BOONE MUNI     2026-07-10 02:15:00  77    71.6     0     0   NA 
-#>  8 BRL        BURLINGTON     2026-07-10 01:53:00  74    73       0     0 1010.
-#>  9 CAV        CLARION        2026-07-10 02:15:00  73.4  73.4     5    10   NA 
-#> 10 CBF        COUNCIL BLUFFS 2026-07-10 01:55:00  80.6  71.6     0     0   NA 
+#>  1 ADU        AUDUBON        2026-07-10 03:15:00  71.6  69.8     0     0   NA 
+#>  2 AIO        ATLANTIC       2026-07-10 03:15:00  71.6  71.6     0     0   NA 
+#>  3 ALO        Waterloo       2026-07-10 02:54:00  76    72       0     0 1010.
+#>  4 AMW        Ames           2026-07-10 02:53:00  75    72       0     0 1010.
+#>  5 AWG        WASHINGTON     2026-07-10 03:15:00  NA    NA       4    90   NA 
+#>  6 AXA        Algona         2026-07-10 02:55:00  69.8  69.8     4    40   NA 
+#>  7 BNW        BOONE MUNI     2026-07-10 03:15:00  75.2  73.4     0     0   NA 
+#>  8 BRL        BURLINGTON     2026-07-10 02:53:00  73    72       0     0 1011.
+#>  9 CAV        CLARION        2026-07-10 03:15:00  69.8  69.8     3   360   NA 
+#> 10 CBF        COUNCIL BLUFFS 2026-07-10 02:55:00  77    71.6     3    40   NA 
 #> # ℹ 51 more rows
 ```
 
@@ -194,12 +194,12 @@ dsm_current |>
 #> # A tibble: 1 × 7
 #>   station_id station_name utc_valid            tmpf  relh  sknt pres 
 #>   <chr>      <chr>        <dttm>              <dbl> <dbl> <dbl> <lgl>
-#> 1 AMW        Ames         2026-07-10 01:53:00    78  84.7     3 NA
+#> 1 AMW        Ames         2026-07-10 02:53:00    75  90.4     0 NA
 ```
 
 ## Retrieve one day of observations
 
-[`iem_obhistory()`](https://connorb.github.io/preMetabolizer/reference/iem_obhistory.md)
+[`iem_ob_history()`](https://connorb.github.io/preMetabolizer/reference/iem_ob_history.md)
 returns observations for a single station and local station date. UTC
 timestamp columns are parsed as UTC `POSIXct` values. Local timestamp
 columns are returned as character values because station time zones vary
@@ -207,9 +207,9 @@ across networks.
 
 ``` r
 
-cache_file <- file.path(cache_dir, "iem_obhistory_dsm_2024-06-01.rds")
+cache_file <- file.path(cache_dir, "iem_ob_history_dsm_2024-06-01.rds")
 if (!file.exists(cache_file)) {
-  obs <- iem_obhistory(
+  obs <- iem_ob_history(
     station = "DSM",
     network = "IA_ASOS",
     date = "2024-06-01"

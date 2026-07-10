@@ -4,14 +4,14 @@ Web Services v2 API
 (https://www.ncei.noaa.gov/cdo-web/api/v2). They retrieve
 observations (cdo_data()), search the station catalog
 (cdo_stations()), and browse the metadata catalog
-(cdo_datasets(), cdo_datacategories(), cdo_datatypes(),
-cdo_locationcategories(), cdo_locations())."><meta property="og:description" content="These functions wrap the seven endpoints of NOAA's Climate Data Online
+(cdo_datasets(), cdo_data_categories(), cdo_data_types(),
+cdo_location_categories(), cdo_locations())."><meta property="og:description" content="These functions wrap the seven endpoints of NOAA's Climate Data Online
 Web Services v2 API
 (https://www.ncei.noaa.gov/cdo-web/api/v2). They retrieve
 observations (cdo_data()), search the station catalog
 (cdo_stations()), and browse the metadata catalog
-(cdo_datasets(), cdo_datacategories(), cdo_datatypes(),
-cdo_locationcategories(), cdo_locations())."></head><body>
+(cdo_datasets(), cdo_data_categories(), cdo_data_types(),
+cdo_location_categories(), cdo_locations())."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -58,97 +58,128 @@ Web Services v2 API
 (<code>https://www.ncei.noaa.gov/cdo-web/api/v2</code>). They retrieve
 observations (<code>cdo_data()</code>), search the station catalog
 (<code>cdo_stations()</code>), and browse the metadata catalog
-(<code>cdo_datasets()</code>, <code>cdo_datacategories()</code>, <code>cdo_datatypes()</code>,
-<code>cdo_locationcategories()</code>, <code>cdo_locations()</code>).</p>
+(<code>cdo_datasets()</code>, <code>cdo_data_categories()</code>, <code>cdo_data_types()</code>,
+<code>cdo_location_categories()</code>, <code>cdo_locations()</code>).</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cdo_datasets</span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datatypeid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  locationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startdate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  enddate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortfield <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  datatype_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  location_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  station_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_field <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_results <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  datatypeid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  locationid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  stationid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  startdate <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  enddate <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  sortfield <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  sortorder <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cdo_data_categories</span><span class="op">(</span></span>
+<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataset_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  location_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  station_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_field <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_results <span class="op">=</span> <span class="cn">Inf</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">cdo_datacategories</span><span class="op">(</span></span>
+<span><span class="fu">cdo_data_types</span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datasetid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  locationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startdate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  enddate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortfield <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataset_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  location_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  station_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data_category_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_field <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_results <span class="op">=</span> <span class="cn">Inf</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">cdo_datatypes</span><span class="op">(</span></span>
+<span><span class="fu">cdo_location_categories</span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datasetid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  locationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datacategoryid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startdate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  enddate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortfield <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  max_results <span class="op">=</span> <span class="cn">Inf</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">cdo_locationcategories</span><span class="op">(</span></span>
-<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datasetid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startdate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  enddate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortfield <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataset_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_field <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_results <span class="op">=</span> <span class="cn">Inf</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cdo_locations</span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datasetid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  locationcategoryid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datacategoryid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startdate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  enddate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortfield <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  max_results <span class="op">=</span> <span class="cn">Inf</span></span>
+<span>  dataset_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  location_category_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data_category_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_field <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_results <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  datasetid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  locationcategoryid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  datacategoryid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  startdate <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  enddate <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  sortfield <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  sortorder <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cdo_stations</span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datasetid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  locationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datacategoryid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  datatypeid <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataset_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  location_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  data_category_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  datatype_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  extent <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  startdate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  enddate <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortfield <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  max_results <span class="op">=</span> <span class="cn">Inf</span></span>
+<span>  start_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_field <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_results <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  datasetid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  locationid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  datacategoryid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  datatypeid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  startdate <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  enddate <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  sortfield <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  sortorder <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">cdo_data</span><span class="op">(</span></span>
-<span>  <span class="va">datasetid</span>,</span>
-<span>  <span class="va">startdate</span>,</span>
-<span>  <span class="va">enddate</span>,</span>
-<span>  datatypeid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  locationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  stationid <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dataset_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  start_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  end_date <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  datatype_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  location_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  station_id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  units <span class="op">=</span> <span class="st">"metric"</span>,</span>
-<span>  sortfield <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sortorder <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  includemetadata <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  max_results <span class="op">=</span> <span class="cn">Inf</span></span>
+<span>  sort_field <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  sort_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  include_metadata <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  max_results <span class="op">=</span> <span class="cn">Inf</span>,</span>
+<span>  datasetid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  startdate <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  enddate <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  datatypeid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  locationid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  stationid <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  sortfield <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  sortorder <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  includemetadata <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -163,15 +194,15 @@ returns a named list. When <code>NULL</code> (default) the list endpoint is
 queried and a tibble is returned.</p></dd>
 
 
-<dt id="arg-startdate-enddate">startdate, enddate<a class="anchor" aria-label="anchor" href="#arg-startdate-enddate"></a></dt>
+<dt id="arg-start-date-end-date">start_date, end_date<a class="anchor" aria-label="anchor" href="#arg-start-date-end-date"></a></dt>
 <dd><p>Optional date filters as <code>Date</code> objects or
 <code>"YYYY-MM-DD"</code> strings. For <code>cdo_data()</code> both are required.</p></dd>
 
 
-<dt id="arg-sortfield-sortorder">sortfield, sortorder<a class="anchor" aria-label="anchor" href="#arg-sortfield-sortorder"></a></dt>
-<dd><p>Optional sort controls. <code>sortfield</code> is one
+<dt id="arg-sort-field-sort-order">sort_field, sort_order<a class="anchor" aria-label="anchor" href="#arg-sort-field-sort-order"></a></dt>
+<dd><p>Optional sort controls. <code>sort_field</code> is one
 of <code>"id"</code>, <code>"name"</code>, <code>"mindate"</code>, <code>"maxdate"</code>, <code>"datacoverage"</code>;
-<code>sortorder</code> is <code>"asc"</code> (default) or <code>"desc"</code>.</p></dd>
+<code>sort_order</code> is <code>"asc"</code> (default) or <code>"desc"</code>.</p></dd>
 
 
 <dt id="arg-max-results">max_results<a class="anchor" aria-label="anchor" href="#arg-max-results"></a></dt>
@@ -179,9 +210,16 @@ of <code>"id"</code>, <code>"name"</code>, <code>"mindate"</code>, <code>"maxdat
 <code>Inf</code> (all matching results).</p></dd>
 
 
-<dt id="arg-datasetid-datatypeid-locationid-stationid-datacategoryid-locationcategoryid">datasetid, datatypeid, locationid, stationid, datacategoryid, locationcategoryid<a class="anchor" aria-label="anchor" href="#arg-datasetid-datatypeid-locationid-stationid-datacategoryid-locationcategoryid"></a></dt>
+<dt id="arg-dataset-id-datatype-id-location-id-station-id-data-category-id-location-category-id">dataset_id, datatype_id, location_id, station_id, data_category_id, location_category_id<a class="anchor" aria-label="anchor" href="#arg-dataset-id-datatype-id-location-id-station-id-data-category-id-location-category-id"></a></dt>
 <dd><p>Optional character vectors filtering the result set. Multiple
 values are sent as repeated query parameters.</p></dd>
+
+
+<dt id="arg-datasetid-datatypeid-locationid-stationid-datacategoryid-locationcategoryid-startdate-enddate-sortfield-sortorder-includemetadata">datasetid, datatypeid, locationid, stationid, datacategoryid, locationcategoryid, startdate, enddate, sortfield, sortorder, includemetadata<a class="anchor" aria-label="anchor" href="#arg-datasetid-datatypeid-locationid-stationid-datacategoryid-locationcategoryid-startdate-enddate-sortfield-sortorder-includemetadata"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a> Use <code>dataset_id</code>, <code>datatype_id</code>,
+<code>location_id</code>, <code>station_id</code>, <code>data_category_id</code>,
+<code>location_category_id</code>, <code>start_date</code>, <code>end_date</code>, <code>sort_field</code>,
+<code>sort_order</code>, and <code>include_metadata</code> instead.</p></dd>
 
 
 <dt id="arg-extent">extent<a class="anchor" aria-label="anchor" href="#arg-extent"></a></dt>
@@ -194,7 +232,7 @@ giving a bounding box as <code>c(min_lat, min_lon, max_lat, max_lon)</code>.</p>
 <code>"standard"</code>.</p></dd>
 
 
-<dt id="arg-includemetadata">includemetadata<a class="anchor" aria-label="anchor" href="#arg-includemetadata"></a></dt>
+<dt id="arg-include-metadata">include_metadata<a class="anchor" aria-label="anchor" href="#arg-include-metadata"></a></dt>
 <dd><p>For <code>cdo_data()</code> only. Logical; when <code>FALSE</code>
 (default) the API skips computing the result-set count, which can
 noticeably speed up large requests.</p></dd>
@@ -252,31 +290,31 @@ structure).</p></div>
 <span class="r-in"><span><span class="fu">cdo_datasets</span><span class="op">(</span><span class="st">"GHCND"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu">cdo_datacategories</span><span class="op">(</span>datasetid <span class="op">=</span> <span class="st">"GHCND"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cdo_data_categories</span><span class="op">(</span>dataset_id <span class="op">=</span> <span class="st">"GHCND"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu">cdo_datatypes</span><span class="op">(</span>datasetid <span class="op">=</span> <span class="st">"GHCND"</span>, datacategoryid <span class="op">=</span> <span class="st">"TEMP"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">cdo_datatypes</span><span class="op">(</span><span class="st">"TMAX"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cdo_data_types</span><span class="op">(</span>dataset_id <span class="op">=</span> <span class="st">"GHCND"</span>, data_category_id <span class="op">=</span> <span class="st">"TEMP"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cdo_data_types</span><span class="op">(</span><span class="st">"TMAX"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu">cdo_locationcategories</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">cdo_locationcategories</span><span class="op">(</span><span class="st">"ST"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cdo_location_categories</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cdo_location_categories</span><span class="op">(</span><span class="st">"ST"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu">cdo_locations</span><span class="op">(</span>locationcategoryid <span class="op">=</span> <span class="st">"ST"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cdo_locations</span><span class="op">(</span>location_category_id <span class="op">=</span> <span class="st">"ST"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cdo_locations</span><span class="op">(</span><span class="st">"FIPS:37"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="fu">cdo_stations</span><span class="op">(</span>locationid <span class="op">=</span> <span class="st">"FIPS:37"</span>, datasetid <span class="op">=</span> <span class="st">"GHCND"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">cdo_stations</span><span class="op">(</span>location_id <span class="op">=</span> <span class="st">"FIPS:37"</span>, dataset_id <span class="op">=</span> <span class="st">"GHCND"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cdo_stations</span><span class="op">(</span><span class="st">"GHCND:USW00013722"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">cdo_data</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  datasetid <span class="op">=</span> <span class="st">"GHCND"</span>,</span></span>
-<span class="r-in"><span>  stationid <span class="op">=</span> <span class="st">"GHCND:USW00013722"</span>,</span></span>
-<span class="r-in"><span>  startdate <span class="op">=</span> <span class="st">"2024-01-01"</span>,</span></span>
-<span class="r-in"><span>  enddate   <span class="op">=</span> <span class="st">"2024-01-31"</span>,</span></span>
-<span class="r-in"><span>  datatypeid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TMAX"</span>, <span class="st">"TMIN"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  dataset_id <span class="op">=</span> <span class="st">"GHCND"</span>,</span></span>
+<span class="r-in"><span>  station_id <span class="op">=</span> <span class="st">"GHCND:USW00013722"</span>,</span></span>
+<span class="r-in"><span>  start_date <span class="op">=</span> <span class="st">"2024-01-01"</span>,</span></span>
+<span class="r-in"><span>  end_date   <span class="op">=</span> <span class="st">"2024-01-31"</span>,</span></span>
+<span class="r-in"><span>  datatype_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"TMAX"</span>, <span class="st">"TMIN"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
