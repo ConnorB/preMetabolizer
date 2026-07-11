@@ -16,11 +16,22 @@ usgs_elev_cache <- new.env(parent = emptyenv())
 #' @param units Character scalar specifying the output elevation units. Accepted
 #'   values are `"meters"`, `"m"`, `"feet"`, and `"ft"`. Matching is case
 #'   insensitive. Defaults to `"meters"`.
+#' @param details Logical; if `FALSE` (the default), return a numeric elevation
+#'   vector. If `TRUE`, return a tibble that also reports the USGS raster ID,
+#'   raster resolution, source date when supplied by the service, and a status
+#'   for each coordinate pair.
 #'
 #' @return A numeric vector of elevations in the requested units, with one
 #'   element for each input coordinate pair. If an elevation cannot be retrieved
-#'   for a point, `NA_real_` is returned for that location and a warning is
-#'   issued.
+#'   for a point, `NA_real_` is returned for that location and one warning is
+#'   issued for the failed points. With `details = TRUE`, a tibble is returned
+#'   with the elevation and response metadata for each coordinate pair.
+#'
+#' @details
+#' Elevations are interpolated from USGS 3DEP digital elevation models. They are
+#' not surveyed elevations; accuracy varies with the source data at each
+#' location. Use `details = TRUE` to retain the available raster metadata when
+#' elevations need to be audited or compared.
 #'
 #' @examples
 #' \dontrun{
@@ -40,9 +51,20 @@ usgs_elev_cache <- new.env(parent = emptyenv())
 get_usgs_elev <- function(
   latitude,
   longitude,
-  units = c("meters", "feet", "m", "ft")
+  units = c("meters", "feet", "m", "ft"),
+  details = FALSE
 ) {
-  units <- match.arg(tolower(units[[1]]), c("meters", "feet", "m", "ft"))
+  if (missing(units)) {
+    units <- "meters"
+  }
+  check_string(units, allow_empty = FALSE)
+  check_bool(details)
+
+  units <- tolower(units)
+  units <- rlang::arg_match(
+    units,
+    c("meters", "feet", "m", "ft")
+  )
 
   units <- switch(
     units,
@@ -89,22 +111,29 @@ get_usgs_elev <- function(
     USE.NAMES = FALSE
   )
 
-  results <- rep(NA_real_, length(keys))
+  records <- vector("list", length(keys))
   for (i in which(cached)) {
-    results[[i]] <- get(keys[[i]], envir = usgs_elev_cache)
+    records[[i]] <- get(keys[[i]], envir = usgs_elev_cache)
   }
 
   # First occurrence of each coordinate pair not already cached
   fetch_idx <- which(!cached & !duplicated(keys))
 
   if (length(fetch_idx) == 0) {
-    return(results)
+    return(usgs_elev_result(records, latitude, longitude, units, details))
   }
 
   base_request <- httr2::request("https://epqs.nationalmap.gov/v1/json") |>
     httr2::req_headers(Accept = "application/json") |>
-    httr2::req_timeout(5) |>
-    httr2::req_retry(max_tries = 5)
+    httr2::req_timeout(30) |>
+    httr2::req_retry(
+      max_tries = 5,
+      max_seconds = 60,
+      retry_on_failure = TRUE,
+      is_transient = \(response) {
+        httr2::resp_status(response) %in% c(408, 425, 429, 500, 502, 503, 504)
+      }
+    )
 
   requests <- Map(
     \(lat, lon) {
@@ -114,7 +143,7 @@ get_usgs_elev <- function(
           y = lat,
           wkid = 4326,
           units = units,
-          includeDate = "false"
+          includeDate = "true"
         )
     },
     latitude[fetch_idx],
@@ -124,70 +153,176 @@ get_usgs_elev <- function(
   responses <- http_req_perform_parallel(
     requests,
     on_error = "continue",
-    max_active = 16
+    max_active = 4
   )
 
-  parse_elevation <- function(response, i) {
+  parse_elevation <- function(response) {
     if (inherits(response, "error")) {
-      cli::cli_warn(
-        c(
-          "Failed to retrieve elevation for point {i}.",
-          "x" = conditionMessage(response)
-        )
-      )
-      return(NA_real_)
+      if (inherits(response, "httr2_http")) {
+        return(usgs_elev_record(
+          status = "http_error",
+          http_status = response$status,
+          problem = paste0("USGS returned HTTP status ", response$status, ".")
+        ))
+      }
+
+      return(usgs_elev_record(
+        status = "request_error",
+        problem = conditionMessage(response)
+      ))
     }
 
-    if (httr2::resp_status(response) >= 400) {
-      cli::cli_warn(
-        "USGS elevation request for point {i} returned HTTP status {httr2::resp_status(response)}."
-      )
-      return(NA_real_)
+    http_status <- httr2::resp_status(response)
+    if (http_status < 200 || http_status >= 300) {
+      return(usgs_elev_record(
+        status = "http_error",
+        http_status = http_status,
+        problem = paste0("USGS returned HTTP status ", http_status, ".")
+      ))
     }
 
     result <- tryCatch(
-      httr2::resp_body_json(response, simplifyVector = TRUE),
-      error = function(cnd) {
-        cli::cli_warn(
-          c(
-            "Failed to parse elevation response for point {i}.",
-            "x" = conditionMessage(cnd)
-          )
-        )
-        NULL
-      }
+      httr2::resp_body_json(response, simplifyVector = FALSE),
+      error = identity
     )
 
-    if (is.null(result) || is.null(result$value)) {
-      cli::cli_warn(
-        "USGS elevation response did not include an elevation for point {i}."
-      )
-      return(NA_real_)
+    if (inherits(result, "error")) {
+      return(usgs_elev_record(
+        status = "invalid_json",
+        http_status = http_status,
+        problem = conditionMessage(result)
+      ))
     }
 
-    elev <- suppressWarnings(as.numeric(result$value))
-
-    if (length(elev) != 1 || is.na(elev)) {
-      cli::cli_warn(
-        "USGS elevation response did not include a valid elevation for point {i}."
-      )
-      return(NA_real_)
+    if (!is.list(result) || is.null(result$value)) {
+      return(usgs_elev_record(
+        status = "invalid_response",
+        http_status = http_status,
+        problem = "USGS response did not include an elevation."
+      ))
     }
 
-    elev
+    elev <- usgs_elev_number(result$value)
+
+    if (!is.finite(elev)) {
+      return(usgs_elev_record(
+        status = "invalid_response",
+        http_status = http_status,
+        problem = "USGS response did not include a finite elevation."
+      ))
+    }
+
+    usgs_elev_record(
+      elevation = elev,
+      raster_id = usgs_elev_number(result$rasterId),
+      resolution = usgs_elev_number(result$resolution),
+      source_date = usgs_elev_string(result$date),
+      http_status = http_status
+    )
   }
 
-  values <- Map(parse_elevation, responses, fetch_idx) |>
-    unlist(use.names = FALSE)
+  values <- lapply(responses, parse_elevation)
 
   for (j in seq_along(fetch_idx)) {
     key <- keys[[fetch_idx[[j]]]]
     # Failed lookups are not cached so they can be retried in a later call
-    if (!is.na(values[[j]])) {
+    if (identical(values[[j]]$status, "ok")) {
       assign(key, values[[j]], envir = usgs_elev_cache)
     }
-    results[keys == key] <- values[[j]]
+    for (i in which(keys == key)) {
+      records[[i]] <- values[[j]]
+    }
   }
 
-  results
+  usgs_elev_warn(records)
+  usgs_elev_result(records, latitude, longitude, units, details)
+}
+
+usgs_elev_record <- function(
+  elevation = NA_real_,
+  raster_id = NA_real_,
+  resolution = NA_real_,
+  source_date = NA_character_,
+  status = "ok",
+  http_status = 200L,
+  problem = NA_character_
+) {
+  list(
+    elevation = elevation,
+    raster_id = raster_id,
+    resolution = resolution,
+    source_date = source_date,
+    status = status,
+    http_status = http_status,
+    problem = problem
+  )
+}
+
+usgs_elev_number <- function(x) {
+  if (
+    (!is.numeric(x) && !is.character(x)) ||
+      length(x) != 1 ||
+      !is.null(names(x)) ||
+      is.na(x)
+  ) {
+    return(NA_real_)
+  }
+
+  value <- suppressWarnings(as.numeric(x))
+  if (!is.finite(value)) {
+    return(NA_real_)
+  }
+
+  value
+}
+
+usgs_elev_string <- function(x) {
+  if (!is.character(x) || length(x) != 1 || !is.null(names(x)) || is.na(x)) {
+    return(NA_character_)
+  }
+
+  x
+}
+
+usgs_elev_warn <- function(records) {
+  failed <- which(vapply(records, \(record) record$status != "ok", logical(1)))
+
+  if (length(failed) == 0) {
+    return(invisible())
+  }
+
+  problems <- unique(vapply(
+    records[failed],
+    \(record) record$problem,
+    character(1)
+  ))
+  problems <- utils::head(problems, 3)
+  cli::cli_warn(
+    c(
+      "Could not retrieve USGS elevations for {length(failed)} point(s).",
+      "i" = "Input positions: {toString(failed)}.",
+      "x" = "{paste(problems, collapse = ' ')}"
+    )
+  )
+}
+
+usgs_elev_result <- function(records, latitude, longitude, units, details) {
+  elevation <- vapply(records, \(record) record$elevation, numeric(1))
+
+  if (!details) {
+    return(elevation)
+  }
+
+  tibble::tibble(
+    latitude = latitude,
+    longitude = longitude,
+    elevation = elevation,
+    units = tolower(units),
+    raster_id = vapply(records, \(record) record$raster_id, numeric(1)),
+    resolution = vapply(records, \(record) record$resolution, numeric(1)),
+    source_date = vapply(records, \(record) record$source_date, character(1)),
+    status = vapply(records, \(record) record$status, character(1)),
+    http_status = vapply(records, \(record) record$http_status, numeric(1)),
+    problem = vapply(records, \(record) record$problem, character(1))
+  )
 }

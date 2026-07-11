@@ -220,7 +220,7 @@ french_data <- french_data |>
     DO.sat = calc_o2_sat(
       temp_water = temp_C,
       atmo_press = bp_kPa,
-      units      = "kPa"
+      units = "kPa"
     )
   )
 
@@ -237,78 +237,24 @@ The final step restructures the data and retains both observed and calculated li
 sm_input <- french_data |>
   transmute(
     solar.time = solar.time,
-    DO.obs     = DO_mgL,
-    DO.sat     = DO.sat,
-    depth      = 0.16,
+    DO.obs = DO_mgL,
+    DO.sat = DO.sat,
+    depth = 0.16,
     temp.water = temp_C,
-    light.obs  = light.obs,
-    light.calc = light.calc
-  )
+    light = light.obs
+    )
 
 head(sm_input)
 ```
 
 ```{r}
-#| label: plot-sm-input-do
-#| fig-alt: "Time series of observed DO, saturated DO, and percent DO saturation at French Creek."
+#| label: plot-sm-input
+#| fig-alt: "Time series of streamMetabolizer data at French Creek."
 
 sm_input |>
-  mutate(DO.pctsat = 100 * DO.obs / DO.sat) |>
-  tidyr::pivot_longer(
-    c(DO.obs, DO.sat, DO.pctsat),
-    names_to = "variable",
-    values_to = "value"
-  ) |>
-  mutate(units = ifelse(variable == "DO.pctsat", "DO\n(% sat)", "DO\n(mg/L)")) |>
-  ggplot(aes(solar.time, value, color = variable)) +
-  geom_line(linewidth = 0.3) +
-  facet_grid(units ~ ., scales = "free_y") +
-  labs(x = "Solar time", y = NULL, color = "Variable") +
-  theme_bw()
+  plot_metab_data()
 ```
 
-```{r}
-#| label: plot-sm-input-other
-#| fig-alt: "Time series of depth, water temperature, observed PAR, and calculated PAR at French Creek."
-
-labels <- c(
-  depth      = "depth~(m)",
-  temp.water = "water~temp~(degree*C)",
-  light.obs  = "atop(observed~PAR, (mu*mol~m^{-2}~s^{-1}))",
-  light.calc = "atop(calculated~PAR, (mu*mol~m^{-2}~s^{-1}))"
-)
-
-sm_input |>
-  tidyr::pivot_longer(
-    c(depth, temp.water, light.obs, light.calc),
-    names_to = "variable",
-    values_to = "value"
-  ) |>
-  mutate(
-    variable = ordered(
-      variable,
-      levels = c("depth", "temp.water", "light.obs", "light.calc")
-    )
-  ) |>
-  ggplot(aes(solar.time, value, color = variable)) +
-  geom_line(linewidth = 0.3) +
-  facet_grid(
-    variable ~ .,
-    scales = "free_y",
-    labeller = ggplot2::as_labeller(labels, label_parsed)
-  ) +
-  scale_color_manual(
-    values = c(
-      depth      = "#333333",
-      temp.water = "#e8000d",
-      light.obs  = "#f2a900",
-      light.calc = "#f5c542"
-    )
-  ) +
-  labs(x = "Solar time", y = NULL, color = "Variable") +
-  theme_bw()
-```
-
-To fit a model with `streamMetabolizer::metab()`, choose either `light.obs` or `light.calc` and rename that column to `light`. See the [streamMetabolizer documentation](https://github.com/ConnorB/streamMetabolizer) for details on model fitting and interpreting metabolism estimates.
+See the [streamMetabolizer documentation](https://github.com/ConnorB/streamMetabolizer) for details on model fitting and interpreting metabolism estimates.
 
 ## References

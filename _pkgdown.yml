@@ -92,6 +92,11 @@ reference:
       - even_timesteps
       - convert_to_solar_time
 
+  - title: Plotting
+    desc: Visualize stream metabolism input data.
+    contents:
+      - plot_metab_data
+
   - title: Data
     desc: Built-in reference datasets.
     contents:

@@ -13,10 +13,12 @@
 * `get_nasa_data()` works with newer nasapower versions again: nasapower hourly output replaced the `YYYYMMDD` column with separate `YEAR`, `MO`, and `DY` columns, which caused an error when assembling timestamps after the download completed (no issue).
 * `get_noaa_stations()` now queries the NCEI Search API for GHCND stations instead of parsing the MSHR fixed-width archive; it accepts `bbox`, `start_date`, `end_date`, `data_types`, and `text` arguments; the `state`, `clean`, and `debug` arguments have been removed (no issue).
 * `get_usgs_elev()` is faster when querying many points: duplicated coordinate pairs are only queried once, successful results are cached for the rest of the session, and up to 16 requests are performed concurrently (no issue).
+* `get_usgs_elev()` now retries transient server and network failures, validates elevation responses more strictly, limits queries to four concurrent requests, and can return USGS response metadata with `details = TRUE` (no issue).
 * `ncei_bbox()` computes a bounding box from a centre latitude, longitude, and radius in kilometres (no issue).
 * `ncei_data()` can retrieve data from any NCEI dataset (e.g., `"daily-summaries"`, `"global-hourly"`) via the NCEI Access Data Service API (no issue).
 * `ncei_datasets()` retrieves metadata about an NCEI dataset from the Support Service API (no issue).
 * `ncei_stations()` searches for stations across any NCEI dataset via the NCEI Search Service API, with optional bounding box, date range, and data type filters (no issue).
+* `plot_metab_data()` creates a five-panel time-series plot of dissolved oxygen, saturation, depth, water temperature, and light from stream metabolism input data (no issue).
 
 * Added `french_creek` dataset: 5-minute dissolved oxygen and water temperature records from French Creek, Laramie, WY (Aug--Sep 2012), courtesy of Bob Hall. Source: Hall et al. (2016), \doi{10.1890/14-0631.1}.
 * Added "Preparing French Creek Data for Stream Metabolism Modeling" vignette demonstrating a complete preMetabolizer workflow: solar time conversion, modeled PAR, elevation-corrected barometric pressure, O2 saturation, and streamMetabolizer input assembly.

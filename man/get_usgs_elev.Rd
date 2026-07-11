@@ -4,7 +4,12 @@
 \alias{get_usgs_elev}
 \title{Get elevation from the USGS Elevation Point Query Service}
 \usage{
-get_usgs_elev(latitude, longitude, units = c("meters", "feet", "m", "ft"))
+get_usgs_elev(
+  latitude,
+  longitude,
+  units = c("meters", "feet", "m", "ft"),
+  details = FALSE
+)
 }
 \arguments{
 \item{latitude, longitude}{Numeric vectors of latitude and longitude in
@@ -15,12 +20,18 @@ Inputs must be the same length.}
 \item{units}{Character scalar specifying the output elevation units. Accepted
 values are \code{"meters"}, \code{"m"}, \code{"feet"}, and \code{"ft"}. Matching is case
 insensitive. Defaults to \code{"meters"}.}
+
+\item{details}{Logical; if \code{FALSE} (the default), return a numeric elevation
+vector. If \code{TRUE}, return a tibble that also reports the USGS raster ID,
+raster resolution, source date when supplied by the service, and a status
+for each coordinate pair.}
 }
 \value{
 A numeric vector of elevations in the requested units, with one
 element for each input coordinate pair. If an elevation cannot be retrieved
-for a point, \code{NA_real_} is returned for that location and a warning is
-issued.
+for a point, \code{NA_real_} is returned for that location and one warning is
+issued for the failed points. With \code{details = TRUE}, a tibble is returned
+with the elevation and response metadata for each coordinate pair.
 }
 \description{
 Queries the USGS Elevation Point Query Service for one or more latitude and
@@ -29,6 +40,12 @@ are performed in parallel for improved performance when querying multiple
 points. Duplicated coordinate pairs are only queried once, and successful
 results are cached for the rest of the R session, so repeated calls with
 the same coordinates do not re-contact the service.
+}
+\details{
+Elevations are interpolated from USGS 3DEP digital elevation models. They are
+not surveyed elevations; accuracy varies with the source data at each
+location. Use \code{details = TRUE} to retain the available raster metadata when
+elevations need to be audited or compared.
 }
 \examples{
 \dontrun{

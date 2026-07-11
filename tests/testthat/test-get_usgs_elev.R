@@ -1,6 +1,6 @@
-json_response <- function(body) {
+json_response <- function(body, status = 200) {
   httr2::response(
-    200,
+    status,
     headers = list(`Content-Type` = "application/json"),
     body = charToRaw(body)
   )
@@ -37,7 +37,7 @@ test_that("get_usgs_elev queries USGS elevation for one point", {
   expect_equal(as.numeric(env$last_query$y), 39.102075, tolerance = 1e-5)
   expect_equal(env$last_query$wkid, "4326")
   expect_equal(env$last_query$units, "Meters")
-  expect_equal(env$last_query$includeDate, "false")
+  expect_equal(env$last_query$includeDate, "true")
 })
 
 test_that("get_usgs_elev is vectorized over coordinate pairs", {
@@ -70,6 +70,14 @@ test_that("get_usgs_elev validates coordinate inputs", {
   expect_snapshot(error = TRUE, {
     get_usgs_elev(latitude = 91, longitude = -96)
   })
+
+  expect_snapshot(error = TRUE, {
+    get_usgs_elev(latitude = 39, longitude = -96, units = c("m", "ft"))
+  })
+
+  expect_snapshot(error = TRUE, {
+    get_usgs_elev(latitude = 39, longitude = -96, details = NA)
+  })
 })
 
 test_that("get_usgs_elev validates service responses", {
@@ -82,6 +90,85 @@ test_that("get_usgs_elev validates service responses", {
     result <- get_usgs_elev(latitude = 39, longitude = -96)
     expect_equal(result, NA_real_)
   })
+})
+
+test_that("get_usgs_elev rejects malformed and non-finite elevations", {
+  clear_elev_cache()
+
+  httr2::local_mocked_responses(function(req) {
+    latitude <- as.numeric(httr2::url_parse(req$url)$query$y)
+    if (latitude == 39) {
+      return(json_response('{"value":"Inf"}'))
+    }
+    json_response('{"value":{"unexpected":1}}')
+  })
+
+  expect_snapshot({
+    result <- get_usgs_elev(latitude = c(39, 40), longitude = c(-96, -97))
+    expect_equal(result, c(NA_real_, NA_real_))
+  })
+})
+
+test_that("get_usgs_elev retries transient HTTP responses", {
+  for (status in c(500, 502, 504)) {
+    clear_elev_cache()
+    requests <- 0
+
+    httr2::local_mocked_responses(function(req) {
+      requests <<- requests + 1
+      if (requests == 1) {
+        return(json_response("temporary failure", status = status))
+      }
+      json_response('{"value":"12"}')
+    })
+
+    expect_equal(get_usgs_elev(latitude = 39, longitude = -96), 12)
+    expect_equal(requests, 2, info = paste("HTTP status", status))
+  }
+})
+
+test_that("get_usgs_elev reports permanent HTTP responses", {
+  clear_elev_cache()
+  requests <- 0
+  httr2::local_mocked_responses(function(req) {
+    requests <<- requests + 1
+    json_response("bad request", status = 400)
+  })
+
+  expect_snapshot({
+    result <- get_usgs_elev(latitude = 39, longitude = -96, details = TRUE)
+    expect_equal(result$status, "http_error")
+    expect_equal(result$http_status, 400)
+    expect_equal(requests, 1)
+  })
+})
+
+test_that("get_usgs_elev returns response metadata when requested", {
+  clear_elev_cache()
+  httr2::local_mocked_responses(function(req) {
+    json_response(
+      paste0(
+        '{"value":"335.0","rasterId":73412,"resolution":1,',
+        '"date":"2025-01-01"}'
+      )
+    )
+  })
+
+  result <- get_usgs_elev(
+    latitude = 39.102075,
+    longitude = -96.5946888888889,
+    details = TRUE
+  )
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(result$elevation, 335)
+  expect_equal(result$units, "meters")
+  expect_equal(result$raster_id, 73412)
+  expect_equal(result$resolution, 1)
+  expect_equal(result$source_date, "2025-01-01")
+  expect_equal(result$status, "ok")
+  expect_equal(result$http_status, 200)
+  expect_equal(result$problem, NA_character_)
 })
 
 test_that("get_usgs_elev queries duplicated coordinate pairs once", {

@@ -18,6 +18,8 @@ Imports:
     lubridate,
     dplyr,
     geosphere,
+    ggplot2,
+    ggthemes,
     httr2,
     memoise,
     methods,
@@ -29,19 +31,18 @@ Imports:
     stringr,
     SunCalcMeeus,
     tibble,
+    tidyr,
     tools,
     cli,
     Rcpp,
     lifecycle
 Suggests:
     covr,
-    ggplot2,
     jsonlite,
     knitr,
     quarto,
     streamMetabolizer (>= 0.12.1.9000),
     testthat (>= 3.0.0),
-    tidyr,
     withr
 Remotes:
     ConnorB/streamMetabolizer
