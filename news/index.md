@@ -113,6 +113,12 @@
   only queried once, successful results are cached for the rest of the
   session, and up to 16 requests are performed concurrently (no issue).
 
+- [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
+  now retries transient server and network failures, validates elevation
+  responses more strictly, limits queries to four concurrent requests,
+  and can return USGS response metadata with `details = TRUE` (no
+  issue).
+
 - [`ncei_bbox()`](https://connorb.github.io/preMetabolizer/reference/ncei_bbox.md)
   computes a bounding box from a centre latitude, longitude, and radius
   in kilometres (no issue).
@@ -129,6 +135,11 @@
   searches for stations across any NCEI dataset via the NCEI Search
   Service API, with optional bounding box, date range, and data type
   filters (no issue).
+
+- [`plot_metab_data()`](https://connorb.github.io/preMetabolizer/reference/plot_metab_data.md)
+  creates a five-panel time-series plot of dissolved oxygen, saturation,
+  depth, water temperature, and light from stream metabolism input data
+  (no issue).
 
 - Added `french_creek` dataset: 5-minute dissolved oxygen and water
   temperature records from French Creek, Laramie, WY (Aug–Sep 2012),

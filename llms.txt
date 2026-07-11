@@ -395,6 +395,13 @@ Work with meteorological seasons and solar time.
   [`convert_from_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
   : Convert a datetime to local solar time
 
+## Plotting
+
+Visualize stream metabolism input data.
+
+- [`plot_metab_data()`](https://connorb.github.io/preMetabolizer/reference/plot_metab_data.md)
+  : Plot stream metabolism input data
+
 ## Data
 
 Built-in reference datasets.

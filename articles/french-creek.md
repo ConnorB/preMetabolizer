@@ -246,7 +246,7 @@ french_data <- french_data |>
     DO.sat = calc_o2_sat(
       temp_water = temp_C,
       atmo_press = bp_kPa,
-      units      = "kPa"
+      units = "kPa"
     )
   )
 
@@ -265,94 +265,35 @@ calculated light.
 sm_input <- french_data |>
   transmute(
     solar.time = solar.time,
-    DO.obs     = DO_mgL,
-    DO.sat     = DO.sat,
-    depth      = 0.16,
+    DO.obs = DO_mgL,
+    DO.sat = DO.sat,
+    depth = 0.16,
     temp.water = temp_C,
-    light.obs  = light.obs,
-    light.calc = light.calc
-  )
+    light = light.obs
+    )
 
 head(sm_input)
-#> # A tibble: 6 × 7
-#>   solar.time          DO.obs DO.sat depth temp.water light.obs light.calc
-#>   <solar_dt>           <dbl>  <dbl> <dbl>      <dbl>     <dbl>      <dbl>
-#> 1 2012-09-18 04:09:33   8.4    8.89  0.16       3.58         0          0
-#> 2 2012-09-18 04:24:33   8.42   8.90  0.16       3.54         0          0
-#> 3 2012-09-18 04:39:33   8.42   8.91  0.16       3.5          0          0
-#> 4 2012-09-18 04:54:33   8.42   8.92  0.16       3.46         0          0
-#> 5 2012-09-18 05:09:33   8.44   8.93  0.16       3.42         0          0
-#> 6 2012-09-18 05:24:33   8.47   8.94  0.16       3.37         0          0
+#> # A tibble: 6 × 6
+#>   solar.time          DO.obs DO.sat depth temp.water light
+#>   <solar_dt>           <dbl>  <dbl> <dbl>      <dbl> <dbl>
+#> 1 2012-09-18 04:09:33   8.4    8.89  0.16       3.58     0
+#> 2 2012-09-18 04:24:33   8.42   8.90  0.16       3.54     0
+#> 3 2012-09-18 04:39:33   8.42   8.91  0.16       3.5      0
+#> 4 2012-09-18 04:54:33   8.42   8.92  0.16       3.46     0
+#> 5 2012-09-18 05:09:33   8.44   8.93  0.16       3.42     0
+#> 6 2012-09-18 05:24:33   8.47   8.94  0.16       3.37     0
 ```
 
 ``` r
 
 sm_input |>
-  mutate(DO.pctsat = 100 * DO.obs / DO.sat) |>
-  tidyr::pivot_longer(
-    c(DO.obs, DO.sat, DO.pctsat),
-    names_to = "variable",
-    values_to = "value"
-  ) |>
-  mutate(units = ifelse(variable == "DO.pctsat", "DO\n(% sat)", "DO\n(mg/L)")) |>
-  ggplot(aes(solar.time, value, color = variable)) +
-  geom_line(linewidth = 0.3) +
-  facet_grid(units ~ ., scales = "free_y") +
-  labs(x = "Solar time", y = NULL, color = "Variable") +
-  theme_bw()
+  plot_metab_data()
 ```
 
-![Time series of observed DO, saturated DO, and percent DO saturation at
-French Creek.](french-creek_files/figure-html/plot-sm-input-do-1.png)
+![Time series of streamMetabolizer data at French
+Creek.](french-creek_files/figure-html/plot-sm-input-1.png)
 
-``` r
-
-labels <- c(
-  depth      = "depth~(m)",
-  temp.water = "water~temp~(degree*C)",
-  light.obs  = "atop(observed~PAR, (mu*mol~m^{-2}~s^{-1}))",
-  light.calc = "atop(calculated~PAR, (mu*mol~m^{-2}~s^{-1}))"
-)
-
-sm_input |>
-  tidyr::pivot_longer(
-    c(depth, temp.water, light.obs, light.calc),
-    names_to = "variable",
-    values_to = "value"
-  ) |>
-  mutate(
-    variable = ordered(
-      variable,
-      levels = c("depth", "temp.water", "light.obs", "light.calc")
-    )
-  ) |>
-  ggplot(aes(solar.time, value, color = variable)) +
-  geom_line(linewidth = 0.3) +
-  facet_grid(
-    variable ~ .,
-    scales = "free_y",
-    labeller = ggplot2::as_labeller(labels, label_parsed)
-  ) +
-  scale_color_manual(
-    values = c(
-      depth      = "#333333",
-      temp.water = "#e8000d",
-      light.obs  = "#f2a900",
-      light.calc = "#f5c542"
-    )
-  ) +
-  labs(x = "Solar time", y = NULL, color = "Variable") +
-  theme_bw()
-```
-
-![Time series of depth, water temperature, observed PAR, and calculated
-PAR at French
-Creek.](french-creek_files/figure-html/plot-sm-input-other-1.png)
-
-To fit a model with
-[`streamMetabolizer::metab()`](https://rdrr.io/pkg/streamMetabolizer/man/metab.html),
-choose either `light.obs` or `light.calc` and rename that column to
-`light`. See the [streamMetabolizer
+See the [streamMetabolizer
 documentation](https://github.com/ConnorB/streamMetabolizer) for details
 on model fitting and interpreting metabolism estimates.
 

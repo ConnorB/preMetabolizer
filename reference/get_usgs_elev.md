@@ -11,7 +11,12 @@ service.
 ## Usage
 
 ``` r
-get_usgs_elev(latitude, longitude, units = c("meters", "feet", "m", "ft"))
+get_usgs_elev(
+  latitude,
+  longitude,
+  units = c("meters", "feet", "m", "ft"),
+  details = FALSE
+)
 ```
 
 ## Arguments
@@ -29,12 +34,28 @@ get_usgs_elev(latitude, longitude, units = c("meters", "feet", "m", "ft"))
   values are `"meters"`, `"m"`, `"feet"`, and `"ft"`. Matching is case
   insensitive. Defaults to `"meters"`.
 
+- details:
+
+  Logical; if `FALSE` (the default), return a numeric elevation vector.
+  If `TRUE`, return a tibble that also reports the USGS raster ID,
+  raster resolution, source date when supplied by the service, and a
+  status for each coordinate pair.
+
 ## Value
 
 A numeric vector of elevations in the requested units, with one element
 for each input coordinate pair. If an elevation cannot be retrieved for
-a point, `NA_real_` is returned for that location and a warning is
-issued.
+a point, `NA_real_` is returned for that location and one warning is
+issued for the failed points. With `details = TRUE`, a tibble is
+returned with the elevation and response metadata for each coordinate
+pair.
+
+## Details
+
+Elevations are interpolated from USGS 3DEP digital elevation models.
+They are not surveyed elevations; accuracy varies with the source data
+at each location. Use `details = TRUE` to retain the available raster
+metadata when elevations need to be audited or compared.
 
 ## Examples
 
