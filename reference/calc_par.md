@@ -4,7 +4,7 @@ Calculate photosynthetically active radiation (PAR) for a series of
 date-times and site coordinates. Input times should be mean solar time,
 as expected by stream metabolism models. Renamed from `calc_light()` to
 avoid shadowing
-[`streamMetabolizer::calc_light()`](https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html).
+[`streamMetabolizer::calc_light()`](https://connorb.github.io/streamMetabolizer/reference/calc_light.html).
 
 ## Usage
 
@@ -41,7 +41,7 @@ Numeric vector of modeled PAR in umol m^-2 s^-1.
 ## Details
 
 This function was adapted from
-[`streamMetabolizer::calc_light`](https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html)
+[`streamMetabolizer::calc_light`](https://connorb.github.io/streamMetabolizer/reference/calc_light.html)
 and is included here under the terms of the CC0 1.0 Universal public
 domain dedication, as described at:
 https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits

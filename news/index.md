@@ -339,9 +339,9 @@
 
 - `convert_PAR_to_SW()` and `convert_SW_to_PAR()` are no longer
   re-exported from preMetabolizer. Call
-  [`streamMetabolizer::convert_PAR_to_SW()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html)
+  [`streamMetabolizer::convert_PAR_to_SW()`](https://connorb.github.io/streamMetabolizer/reference/convert_PAR_to_SW.html)
   and
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html)
+  [`streamMetabolizer::convert_SW_to_PAR()`](https://connorb.github.io/streamMetabolizer/reference/convert_SW_to_PAR.html)
   directly (no issue).
 
 - [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
@@ -376,9 +376,9 @@
   `to_degrees()` have been removed (no issue).
 
 - `calc_light()` no longer routes PAR through
-  [`streamMetabolizer::convert_PAR_to_SW()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_PAR_to_SW.html)
+  [`streamMetabolizer::convert_PAR_to_SW()`](https://connorb.github.io/streamMetabolizer/reference/convert_PAR_to_SW.html)
   and
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html).
+  [`streamMetabolizer::convert_SW_to_PAR()`](https://connorb.github.io/streamMetabolizer/reference/convert_SW_to_PAR.html).
   Those wrappers ultimately call
   [`LakeMetabolizer::par.to.sw.base()`](https://rdrr.io/pkg/LakeMetabolizer/man/par.to.sw.html)
   and `sw.to.par.base()`, which are constant-factor multiplications by
@@ -389,7 +389,7 @@
 - [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
   inlines the SW-to-PAR conversion (`SW * 2.114`, Britton and Dodd 1976)
   instead of calling
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html).
+  [`streamMetabolizer::convert_SW_to_PAR()`](https://connorb.github.io/streamMetabolizer/reference/convert_SW_to_PAR.html).
   Output values are unchanged (no issue).
 
 - `streamMetabolizer` is no longer a hard dependency of preMetabolizer.
@@ -401,7 +401,7 @@
 
 - [`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
   replaces `calc_light()` to avoid shadowing
-  [`streamMetabolizer::calc_light()`](https://rdrr.io/pkg/streamMetabolizer/man/calc_light.html).
+  [`streamMetabolizer::calc_light()`](https://connorb.github.io/streamMetabolizer/reference/calc_light.html).
   The function body and behaviour are unchanged; parameters `solar.time`
   and `max.PAR` were renamed to `solar_time` and `max_par` to use the
   package’s underscore convention (no issue).
@@ -484,7 +484,7 @@
   `longitude` arguments or per-site `latitude`, `longitude`, and
   `elev_m` columns, interpolates NASA values to the input timestamps,
   returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_SW_to_PAR.html),
+  [`streamMetabolizer::convert_SW_to_PAR()`](https://connorb.github.io/streamMetabolizer/reference/convert_SW_to_PAR.html),
   and runs quietly by default. The old `lat` and `lon` aliases are
   deprecated (no issue).
 

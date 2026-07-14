@@ -1,23 +1,32 @@
 # Plot stream metabolism input data
 
-Creates a five-panel time-series plot of dissolved oxygen, dissolved
-oxygen saturation, water depth, water temperature, and
-photosynthetically active radiation. The input must use the column names
-returned by common streamMetabolizer workflows.
+Creates a time-series plot of the selected input variables, chosen from
+dissolved oxygen, dissolved oxygen saturation, water depth, water
+temperature, and photosynthetically active radiation. The input must use
+the column names returned by common streamMetabolizer workflows.
 
 ## Usage
 
 ``` r
-plot_metab_data(data)
+plot_metab_data(
+  data,
+  cols = c("DO.obs", "DO.sat", "depth", "temp.water", "light")
+)
 ```
 
 ## Arguments
 
 - data:
 
-  A data frame with `solar.time`, `DO.obs`, `DO.sat`, `depth`,
-  `temp.water`, and `light` columns. The measurement columns must be
-  numeric.
+  A data frame or tibble with a `solar.time` column and the measurement
+  columns named in `cols`. The measurement columns must be numeric.
+
+- cols:
+
+  Character vector of measurement columns to plot. Any subset of
+  `"DO.obs"`, `"DO.sat"`, `"depth"`, `"temp.water"`, and `"light"`.
+  Defaults to all five. The dissolved oxygen saturation percentage panel
+  is shown when both `"DO.obs"` and `"DO.sat"` are selected.
 
 ## Value
 
@@ -28,14 +37,17 @@ shown as missing.
 ## Examples
 
 ``` r
-data <- data.frame(
-  solar.time = as.POSIXct("2024-06-01", tz = "UTC") + 0:2 * 3600,
-  DO.obs = c(8, 8.2, 8.4),
-  DO.sat = c(9, 9.1, 9.2),
-  depth = c(0.4, 0.4, 0.4),
-  temp.water = c(18, 18.2, 18.4),
-  light = c(0, 100, 500)
+hours <- 0:47
+data <- tibble::tibble(
+  solar.time = as.POSIXct("2024-06-01", tz = "UTC") + hours * 3600,
+  DO.obs = 8 + 1.5 * sin((hours - 10) / 24 * 2 * pi),
+  DO.sat = 9 - 0.2 * sin((hours - 9) / 24 * 2 * pi),
+  depth = 0.4,
+  temp.water = 18 + 2 * sin((hours - 9) / 24 * 2 * pi),
+  light = pmax(0, sin((hours - 6) / 12 * pi)) * 1500
 )
 plot_metab_data(data)
+
+plot_metab_data(data, cols = c("DO.obs", "temp.water"))
 
 ```

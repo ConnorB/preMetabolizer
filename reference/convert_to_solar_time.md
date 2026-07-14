@@ -64,9 +64,9 @@ cases; the clock reading carries the meaning.
 
 These helpers are named `convert_to_solar_time()` /
 `convert_from_solar_time()` to avoid shadowing the original
-[`streamMetabolizer::convert_UTC_to_solartime()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_UTC_to_solartime.html)
+[`streamMetabolizer::convert_UTC_to_solartime()`](https://connorb.github.io/streamMetabolizer/reference/convert_UTC_to_solartime.html)
 and
-[`streamMetabolizer::convert_solartime_to_UTC()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_solartime_to_UTC.html),
+[`streamMetabolizer::convert_solartime_to_UTC()`](https://connorb.github.io/streamMetabolizer/reference/convert_solartime_to_UTC.html),
 which can still be called directly from `streamMetabolizer` if you need
 their behaviour.
 
@@ -84,8 +84,8 @@ which is well below typical sensor sampling intervals.
 ## See also
 
 [`SunCalcMeeus::solar_time()`](https://docs.r4photobiology.info/SunCalcMeeus/reference/solar_time.html),
-[`streamMetabolizer::convert_UTC_to_solartime()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_UTC_to_solartime.html),
-[`streamMetabolizer::convert_solartime_to_UTC()`](https://rdrr.io/pkg/streamMetabolizer/man/convert_solartime_to_UTC.html).
+[`streamMetabolizer::convert_UTC_to_solartime()`](https://connorb.github.io/streamMetabolizer/reference/convert_UTC_to_solartime.html),
+[`streamMetabolizer::convert_solartime_to_UTC()`](https://connorb.github.io/streamMetabolizer/reference/convert_solartime_to_UTC.html).
 
 ## Examples
 

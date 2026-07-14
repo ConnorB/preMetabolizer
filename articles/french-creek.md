@@ -52,7 +52,7 @@ library(ggplot2)
 
 
 data(french_creek)
-french_creek <- french_creek |> 
+french_creek <- french_creek |>
   filter(lubridate::minute(datetime) %in% c(0, 15, 30, 45))
 
 glimpse(french_creek)
@@ -116,7 +116,7 @@ may indicate sensor malfunction. We’ll remove those rows.
 ``` r
 
 french_creek <- french_creek |>
-  filter(is.na(temp_C) | temp_C >= 0) |> 
+  filter(is.na(temp_C) | temp_C >= 0) |>
   filter(is.na(DO_mgL) | DO_mgL > 5)
 ```
 
@@ -150,7 +150,7 @@ french_creek <- french_creek |>
       datetime,
       longitude = site_longitude
     )
-  ) |> 
+  ) |>
   filter(solar.time >= as.POSIXct("2012-09-18 04:05:58") &
            solar.time <= as.POSIXct("2012-09-21 03:50:58"))
 ```
