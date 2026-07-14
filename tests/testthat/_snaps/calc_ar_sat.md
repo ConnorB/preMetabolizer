@@ -23,4 +23,3 @@
       Warning:
       `calc_Arsat()` was deprecated in preMetabolizer 0.0.0.9000.
       i Please use `calc_ar_sat()` instead.
-

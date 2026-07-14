@@ -17,4 +17,3 @@
       Mean is zero, so CV cannot be calculated.
     Output
       [1] NA
-

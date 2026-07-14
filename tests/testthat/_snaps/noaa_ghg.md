@@ -30,4 +30,3 @@
     Condition
       Error in `get_noaa_ghg()`:
       ! `quiet` must be `TRUE` or `FALSE`.
-

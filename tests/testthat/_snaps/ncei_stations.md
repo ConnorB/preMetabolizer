@@ -37,4 +37,3 @@
     Condition
       Error in `ncei_bbox()`:
       ! `dist_km` must be a single positive number.
-

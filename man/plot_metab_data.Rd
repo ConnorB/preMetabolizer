@@ -4,11 +4,20 @@
 \alias{plot_metab_data}
 \title{Plot stream metabolism input data}
 \usage{
-plot_metab_data(data)
+plot_metab_data(
+  data,
+  cols = c("DO.obs", "DO.sat", "depth", "temp.water", "light")
+)
 }
 \arguments{
-\item{data}{A data frame with \code{solar.time}, \code{DO.obs}, \code{DO.sat}, \code{depth},
-\code{temp.water}, and \code{light} columns. The measurement columns must be numeric.}
+\item{data}{A data frame or tibble with a \code{solar.time} column and the
+measurement columns named in \code{cols}. The measurement columns must be
+numeric.}
+
+\item{cols}{Character vector of measurement columns to plot. Any subset of
+\code{"DO.obs"}, \code{"DO.sat"}, \code{"depth"}, \code{"temp.water"}, and \code{"light"}. Defaults
+to all five. The dissolved oxygen saturation percentage panel is shown when
+both \code{"DO.obs"} and \code{"DO.sat"} are selected.}
 }
 \value{
 A ggplot object. The dissolved oxygen saturation percentage is
@@ -16,20 +25,22 @@ calculated as \code{100 * DO.obs / DO.sat}; values where \code{DO.sat} is zero a
 shown as missing.
 }
 \description{
-Creates a five-panel time-series plot of dissolved oxygen, dissolved oxygen
-saturation, water depth, water temperature, and photosynthetically active
-radiation. The input must use the column names returned by common
-streamMetabolizer workflows.
+Creates a time-series plot of the selected input variables, chosen from
+dissolved oxygen, dissolved oxygen saturation, water depth, water
+temperature, and photosynthetically active radiation. The input must use the
+column names returned by common streamMetabolizer workflows.
 }
 \examples{
-data <- data.frame(
-  solar.time = as.POSIXct("2024-06-01", tz = "UTC") + 0:2 * 3600,
-  DO.obs = c(8, 8.2, 8.4),
-  DO.sat = c(9, 9.1, 9.2),
-  depth = c(0.4, 0.4, 0.4),
-  temp.water = c(18, 18.2, 18.4),
-  light = c(0, 100, 500)
+hours <- 0:47
+data <- tibble::tibble(
+  solar.time = as.POSIXct("2024-06-01", tz = "UTC") + hours * 3600,
+  DO.obs = 8 + 1.5 * sin((hours - 10) / 24 * 2 * pi),
+  DO.sat = 9 - 0.2 * sin((hours - 9) / 24 * 2 * pi),
+  depth = 0.4,
+  temp.water = 18 + 2 * sin((hours - 9) / 24 * 2 * pi),
+  light = pmax(0, sin((hours - 6) / 12 * pi)) * 1500
 )
 plot_metab_data(data)
+plot_metab_data(data, cols = c("DO.obs", "temp.water"))
 
 }

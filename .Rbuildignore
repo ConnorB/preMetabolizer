@@ -18,3 +18,9 @@
 ^\.agents$
 ^AGENTS\.md$
 ^00LOCK
+^vignettes/\.quarto$
+^[.]?air[.]toml$
+^\.vscode$
+^skills-lock\.json$
+# Ignore pre-commit config
+.pre-commit-config.yaml

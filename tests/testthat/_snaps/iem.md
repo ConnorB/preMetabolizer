@@ -38,4 +38,3 @@
     Condition
       Error in `iem_daily()`:
       ! `date` cannot be supplied with `year` or `month`.
-

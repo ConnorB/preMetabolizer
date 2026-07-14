@@ -79,4 +79,3 @@
       Could not retrieve USGS elevations for 1 point(s).
       i Input positions: 1.
       x USGS response did not include an elevation.
-

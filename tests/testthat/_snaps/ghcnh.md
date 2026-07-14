@@ -28,4 +28,3 @@
     Condition
       Error in `get_ghcnh()`:
       ! `start_date` must be on or before `end_date`.
-

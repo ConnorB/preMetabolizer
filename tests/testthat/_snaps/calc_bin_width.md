@@ -62,4 +62,3 @@
       ! Invalid `method` argument.
       x Method "badrule" is not supported.
       i Allowed methods: "auto", "sturges", "fd", "sqrt", "rice", "scott", and "doane"
-

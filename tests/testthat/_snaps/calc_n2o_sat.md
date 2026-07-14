@@ -6,4 +6,3 @@
       Warning:
       `calc_N2Osat()` was deprecated in preMetabolizer 0.0.0.9000.
       i Please use `calc_n2o_sat()` instead.
-

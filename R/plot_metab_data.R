@@ -1,53 +1,64 @@
 #' Plot stream metabolism input data
 #'
-#' Creates a five-panel time-series plot of dissolved oxygen, dissolved oxygen
-#' saturation, water depth, water temperature, and photosynthetically active
-#' radiation. The input must use the column names returned by common
-#' streamMetabolizer workflows.
+#' Creates a time-series plot of the selected input variables, chosen from
+#' dissolved oxygen, dissolved oxygen saturation, water depth, water
+#' temperature, and photosynthetically active radiation. The input must use the
+#' column names returned by common streamMetabolizer workflows.
 #'
-#' @param data A data frame with `solar.time`, `DO.obs`, `DO.sat`, `depth`,
-#'   `temp.water`, and `light` columns. The measurement columns must be numeric.
+#' @param data A data frame or tibble with a `solar.time` column and the
+#'   measurement columns named in `cols`. The measurement columns must be
+#'   numeric.
+#' @param cols Character vector of measurement columns to plot. Any subset of
+#'   `"DO.obs"`, `"DO.sat"`, `"depth"`, `"temp.water"`, and `"light"`. Defaults
+#'   to all five. The dissolved oxygen saturation percentage panel is shown when
+#'   both `"DO.obs"` and `"DO.sat"` are selected.
 #'
 #' @return A ggplot object. The dissolved oxygen saturation percentage is
 #'   calculated as `100 * DO.obs / DO.sat`; values where `DO.sat` is zero are
 #'   shown as missing.
 #'
 #' @examples
-#' data <- data.frame(
-#'   solar.time = as.POSIXct("2024-06-01", tz = "UTC") + 0:2 * 3600,
-#'   DO.obs = c(8, 8.2, 8.4),
-#'   DO.sat = c(9, 9.1, 9.2),
-#'   depth = c(0.4, 0.4, 0.4),
-#'   temp.water = c(18, 18.2, 18.4),
-#'   light = c(0, 100, 500)
+#' hours <- 0:47
+#' data <- tibble::tibble(
+#'   solar.time = as.POSIXct("2024-06-01", tz = "UTC") + hours * 3600,
+#'   DO.obs = 8 + 1.5 * sin((hours - 10) / 24 * 2 * pi),
+#'   DO.sat = 9 - 0.2 * sin((hours - 9) / 24 * 2 * pi),
+#'   depth = 0.4,
+#'   temp.water = 18 + 2 * sin((hours - 9) / 24 * 2 * pi),
+#'   light = pmax(0, sin((hours - 6) / 12 * pi)) * 1500
 #' )
 #' plot_metab_data(data)
+#' plot_metab_data(data, cols = c("DO.obs", "temp.water"))
 #'
 #' @export
-plot_metab_data <- function(data) {
+plot_metab_data <- function(
+  data,
+  cols = c("DO.obs", "DO.sat", "depth", "temp.water", "light")
+) {
   if (!is.data.frame(data)) {
     cli::cli_abort("{.arg data} must be a data frame.")
   }
-
-  required <- c(
-    "solar.time",
-    "DO.obs",
-    "DO.sat",
-    "depth",
-    "temp.water",
-    "light"
-  )
+  valid_cols <- c("DO.obs", "DO.sat", "depth", "temp.water", "light")
+  unknown <- setdiff(cols, valid_cols)
+  if (length(unknown) > 0) {
+    cli::cli_abort(c(
+      "{.arg cols} contains unknown columns: {toString(unknown)}.",
+      "i" = "Valid columns are: {toString(valid_cols)}."
+    ))
+  }
+  if (length(cols) == 0) {
+    cli::cli_abort("{.arg cols} must name at least one column.")
+  }
+  required <- c("solar.time", cols)
   missing <- setdiff(required, names(data))
   if (length(missing) > 0) {
     cli::cli_abort(
       "{.arg data} is missing required columns: {toString(missing)}."
     )
   }
-
-  measurement_cols <- setdiff(required, "solar.time")
-  non_numeric <- measurement_cols[
+  non_numeric <- cols[
     !vapply(
-      data[measurement_cols],
+      data[cols],
       is.numeric,
       logical(1)
     )
@@ -57,66 +68,53 @@ plot_metab_data <- function(data) {
       "{.arg data} measurement columns must be numeric: {toString(non_numeric)}."
     )
   }
-
-  panel_labels <- c(
-    DO_mgL = "atop(~DO, (mg/L))",
-    DO_pctsat = "atop(~DO, ('% Sat'))",
-    depth = "atop(~Depth, (m))",
-    temp_water = "atop(~Temp, (degree*C))",
-    light = "atop(~PAR, (mu*mol~m^{-2}~s^{-1}))"
+  plot_vars <- tibble::tribble(
+    ~variable    , ~variable_label , ~color    , ~panel       , ~panel_label                         ,
+    "DO.obs"     , "DO[obs]"       , "#0072B2" , "DO_mgL"     , "atop(~DO, (mg/L))"                  ,
+    "DO.sat"     , "DO[sat]"       , "#56B4E9" , "DO_mgL"     , "atop(~DO, (mg/L))"                  ,
+    "DO.pctsat"  , "DO['% Sat']"   , "#009E73" , "DO_pctsat"  , "atop(~DO, ('% Sat'))"               ,
+    "depth"      , "Depth"         , "#333333" , "depth"      , "atop(~Depth, (m))"                  ,
+    "temp.water" , "Water~Temp"    , "#E8000D" , "temp_water" , "atop(~Temp, (degree*C))"            ,
+    "light"      , "Light"         , "#F2A900" , "light"      , "atop(~PAR, (mu*mol~m^{-2}~s^{-1}))"
   )
-  variable_labels <- c(
-    DO.obs = "DO[obs]",
-    DO.sat = "DO[sat]",
-    DO.pctsat = "DO['% Sat']",
-    depth = "Depth",
-    temp.water = "Water~Temp",
-    light = "Light"
-  )
-
+  show_pctsat <- all(c("DO.obs", "DO.sat") %in% cols)
+  keep_vars <- c(cols, if (show_pctsat) "DO.pctsat")
+  plot_vars <- plot_vars |>
+    dplyr::filter(.data$variable %in% keep_vars)
+  panel_labels <- plot_vars |>
+    dplyr::distinct(.data$panel, .data$panel_label) |>
+    tibble::deframe()
+  variable_labels <- plot_vars |>
+    dplyr::select("variable", "variable_label") |>
+    tibble::deframe()
+  variable_colors <- plot_vars |>
+    dplyr::select("variable", "color") |>
+    tibble::deframe()
+  legend_breaks <- intersect(c("DO.obs", "DO.sat"), plot_vars$variable)
   data |>
     dplyr::mutate(
-      DO.pctsat = dplyr::if_else(
-        .data$DO.sat == 0,
-        NA_real_,
-        100 * .data$DO.obs / .data$DO.sat
-      )
+      DO.pctsat = if (show_pctsat) {
+        dplyr::if_else(
+          .data$DO.sat == 0,
+          NA_real_,
+          100 * .data$DO.obs / .data$DO.sat
+        )
+      } else {
+        NULL
+      }
     ) |>
     tidyr::pivot_longer(
-      dplyr::all_of(c(
-        "DO.obs",
-        "DO.sat",
-        "DO.pctsat",
-        "depth",
-        "temp.water",
-        "light"
-      )),
+      dplyr::all_of(plot_vars$variable),
       names_to = "variable",
       values_to = "value"
     ) |>
+    dplyr::left_join(
+      plot_vars |> dplyr::select("variable", "panel"),
+      by = "variable"
+    ) |>
     dplyr::mutate(
-      panel = dplyr::case_when(
-        .data$variable %in% c("DO.obs", "DO.sat") ~ "DO_mgL",
-        .data$variable == "DO.pctsat" ~ "DO_pctsat",
-        .data$variable == "depth" ~ "depth",
-        .data$variable == "temp.water" ~ "temp_water",
-        .data$variable == "light" ~ "light"
-      ),
-      panel = factor(
-        .data$panel,
-        levels = c("DO_mgL", "DO_pctsat", "depth", "temp_water", "light")
-      ),
-      variable = factor(
-        .data$variable,
-        levels = c(
-          "DO.obs",
-          "DO.sat",
-          "DO.pctsat",
-          "depth",
-          "temp.water",
-          "light"
-        )
-      )
+      panel = factor(.data$panel, levels = unique(plot_vars$panel)),
+      variable = factor(.data$variable, levels = plot_vars$variable)
     ) |>
     ggplot2::ggplot(ggplot2::aes(
       .data$solar.time,
@@ -130,15 +128,8 @@ plot_metab_data <- function(data) {
       labeller = ggplot2::as_labeller(panel_labels, ggplot2::label_parsed)
     ) +
     ggplot2::scale_color_manual(
-      values = c(
-        DO.obs = "#0072B2",
-        DO.sat = "#56B4E9",
-        DO.pctsat = "#009E73",
-        depth = "#333333",
-        temp.water = "#E8000D",
-        light = "#F2A900"
-      ),
-      breaks = c("DO.obs", "DO.sat"),
+      values = variable_colors,
+      breaks = legend_breaks,
       labels = \(x) parse(text = variable_labels[x])
     ) +
     ggplot2::labs(
@@ -146,6 +137,6 @@ plot_metab_data <- function(data) {
       y = NULL,
       color = NULL
     ) +
-    ggthemes::theme_few() +
+    ggplot2::theme_bw() +
     ggplot2::theme(legend.position = "bottom")
 }

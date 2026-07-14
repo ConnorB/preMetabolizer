@@ -71,4 +71,3 @@
       Warning:
       The `rm.zero` argument of `rcpp_calc_exceedance_prob()` is deprecated as of preMetabolizer 0.1.0.
       i Please use the `remove_zeros` argument instead.
-

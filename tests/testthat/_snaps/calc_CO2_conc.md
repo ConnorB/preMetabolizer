@@ -64,4 +64,3 @@
       Warning:
       The `waterDepth_m` argument of `calc_CO2_mgL()` is deprecated as of preMetabolizer 0.0.0.9000.
       i Please use the `water_depth_m` argument of `calc_co2_mg_l()` instead.
-

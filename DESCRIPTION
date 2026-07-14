@@ -1,7 +1,7 @@
 Package: preMetabolizer
 Title: A Utility Package for the streamMetabolizer Package
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
     person("Connor", "Brown", , "ConnorBrown1996@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9680-8930"))
 Description: Tools for preparing environmental time series before fitting
@@ -19,7 +19,6 @@ Imports:
     dplyr,
     geosphere,
     ggplot2,
-    ggthemes,
     httr2,
     memoise,
     methods,

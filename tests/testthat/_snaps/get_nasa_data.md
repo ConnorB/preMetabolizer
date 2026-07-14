@@ -48,4 +48,3 @@
       Warning in `get_nasa_data()`:
       The lon column in `data` is deprecated as of preMetabolizer 0.1.0.
       i Use longitude instead.
-
