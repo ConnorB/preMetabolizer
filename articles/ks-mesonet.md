@@ -15,9 +15,9 @@ Prairie**, a long-term ecological research (LTER) site in northeastern
 Kansas, as our example station.
 
 > **Note:** Functions that contact the Mesonet API require an internet
-> connection. Code chunks that call the API will not run during package
-> installation if the service is unreachable. Run them interactively in
-> your own session.
+> connection. Set `PREMETABOLIZER_RUN_VIGNETTES=true` to run the API
+> chunks; they are skipped by default during package installation and
+> checks.
 
 ``` r
 
@@ -62,20 +62,6 @@ Search the catalog to find variables of interest:
 mesonet_vars |>
   filter(grepl("temp|precip|solar|humidity", desc, ignore.case = TRUE)) |>
   select(var, tidy_name, units, desc)
-#> # A tibble: 44 × 4
-#>    var                    tidy_name               units desc                    
-#>    <chr>                  <chr>                   <chr> <chr>                   
-#>  1 AirTemperature.avg     air_temperature_avg     °C    Average air temperature…
-#>  2 AirTemperature.min     air_temperature_min     °C    Min air temperature at …
-#>  3 AirTemperature.max     air_temperature_max     °C    Max air temperature at …
-#>  4 AirTemperature.smp     air_temperature_smp     °C    Most recent 5 second sa…
-#>  5 AirTemperature.10m.avg air_temperature_10m_avg °C    Average air temperature…
-#>  6 AirTemperature.10m.min air_temperature_10m_min °C    Min air temperature at …
-#>  7 AirTemperature.10m.max air_temperature_10m_max °C    Max air temperature at …
-#>  8 RelativeHumidity.avg   relative_humidity_avg   %     Average relative humidi…
-#>  9 RelativeHumidity.max   relative_humidity_max   %     Max relative humidity a…
-#> 10 RelativeHumidity.min   relative_humidity_min   %     Min relative humidity a…
-#> # ℹ 34 more rows
 ```
 
 ## Discover stations
@@ -95,17 +81,6 @@ if (!file.exists(cache_file)) {
 }
 
 glimpse(stations)
-#> Rows: 130
-#> Columns: 9
-#> $ station_name <chr> "Alma 5SE", "Ashland 8S", "Ashland Bottoms", "Belleville …
-#> $ county       <chr> "Waubansee", "Clark", "Riley", "Republic", "Ottawa", "Sed…
-#> $ latitude     <dbl> 38.96615, 37.06476, 39.12577, 39.81409, 39.07380, 37.8538…
-#> $ longitude    <dbl> -96.20630, -99.75109, -96.63653, -97.67509, -97.58620, -9…
-#> $ elevation_m  <dbl> 428.0000, 562.0000, 324.6120, 471.0000, 392.0000, 422.000…
-#> $ network      <chr> "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "…
-#> $ station_id   <chr> "Alma 5SE", "ASUK1", "ASBK1", "BVMK1", NA, NA, NA, "EDCK1…
-#> $ network_name <chr> "Alma 5SE", "Ashland 8S", "Ashland Bottoms", "Belleville …
-#> $ fw13         <chr> "000000", "140201", "142201", "140301", "000000", "000000…
 ```
 
 Filter to find Konza Prairie and confirm the exact station name used by
@@ -117,11 +92,6 @@ konza <- stations |>
   filter(grepl("Konza", station_name, ignore.case = TRUE))
 
 konza
-#> # A tibble: 1 × 9
-#>   station_name  county latitude longitude elevation_m network station_id
-#>   <chr>         <chr>     <dbl>     <dbl>       <dbl> <chr>   <chr>     
-#> 1 Konza Prairie Riley      39.1     -96.5        436. KSRE    <NA>      
-#> # ℹ 2 more variables: network_name <chr>, fw13 <chr>
 ```
 
 The station name recognized by the API is `"Konza Prairie"`.
@@ -146,13 +116,6 @@ if (!file.exists(cache_file)) {
 
 activity |>
   filter(station_name == "Konza Prairie")
-#> # A tibble: 3 × 7
-#>   station_name interval interval_seconds first_observation   last_observation   
-#>   <chr>        <chr>               <dbl> <dttm>              <dttm>             
-#> 1 Konza Prair… 5min                  300 2023-10-06 05:25:00 2026-07-14 11:55:00
-#> 2 Konza Prair… hour                 3600 2023-10-06 07:00:00 2026-07-14 11:00:00
-#> 3 Konza Prair… day                 86400 2023-10-08 00:00:00 2026-07-14 00:00:00
-#> # ℹ 2 more variables: data_span_days <dbl>, is_current <lgl>
 ```
 
 ## Check the most recent observation
@@ -174,10 +137,6 @@ if (!file.exists(cache_file)) {
 
 recent |>
   filter(station_name == "Konza Prairie")
-#> # A tibble: 1 × 2
-#>   station_name  timestamp          
-#>   <chr>         <dttm>             
-#> 1 Konza Prairie 2026-07-14 14:00:00
 ```
 
 ## Retrieve time-series data
@@ -208,17 +167,6 @@ if (!file.exists(cache_file)) {
 }
 
 glimpse(konza_hourly)
-#> Rows: 8,784
-#> Columns: 9
-#> $ station_name <chr> "Konza Prairie", "Konza Prairie", "Konza Prairie", "Konza…
-#> $ station_id   <chr> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-#> $ network      <chr> "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "KSRE", "…
-#> $ network_name <chr> "RL.KonzaPrairie", "RL.KonzaPrairie", "RL.KonzaPrairie", …
-#> $ timestamp    <dttm> 2024-01-01 00:00:00, 2024-01-01 01:00:00, 2024-01-01 02:…
-#> $ pressureavg  <dbl> 97.52, 97.51, 97.51, 97.55, 97.57, 97.55, 97.54, 97.57, 9…
-#> $ temp2_mavg   <dbl> -3.67, -3.84, -3.92, -4.12, -3.97, -3.93, -4.17, -4.41, -…
-#> $ relhum2_mavg <dbl> 87.35, 88.25, 88.72, 84.79, 81.95, 81.69, 81.83, 83.27, 8…
-#> $ precip       <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
 ```
 
 ## Example workflow: monthly precipitation
@@ -247,8 +195,6 @@ ggplot(monthly_precip, aes(month, precip_mm)) +
   ) +
   theme_bw()
 ```
-
-![](ks-mesonet_files/figure-html/monthly-ppt-1.png)
 
 ## FW13 fire weather data
 

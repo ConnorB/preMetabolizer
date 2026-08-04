@@ -96,9 +96,10 @@ french_creek |>
 colored by sensor (REZN and
 TOWN).](french-creek_files/figure-html/check-data-1.png)
 
-The REZN sensor shows a cluster of anomalous negative temperature values
-near the end of its deployment. For the rest of this vignette we filter
-to the TOWN sensor, which has the longer and cleaner record.
+The TOWN sensor shows a cluster of anomalous negative temperature values
+after the sensor swap. For the rest of this vignette we filter to the
+TOWN sensor and remove physically impossible values before calculating
+derived inputs.
 
 ``` r
 
@@ -182,7 +183,7 @@ adjust sea-level pressure to the site elevation with
 
 ``` r
 
-french_elev_m <- 3205
+french_elev_m <- 3115
 
 french_data <- french_creek |>
   mutate(
@@ -252,7 +253,7 @@ french_data <- french_data |>
 
 summary(french_data$DO.sat)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>   7.133   7.624   8.237   8.127   8.622   8.968
+#>   7.212   7.709   8.330   8.218   8.719   9.070
 ```
 
 ## Assemble the final tibble
@@ -276,12 +277,12 @@ head(sm_input)
 #> # A tibble: 6 × 6
 #>   solar.time          DO.obs DO.sat depth temp.water light
 #>   <solar_dt>           <dbl>  <dbl> <dbl>      <dbl> <dbl>
-#> 1 2012-09-18 04:09:33   8.4    8.89  0.16       3.58     0
-#> 2 2012-09-18 04:24:33   8.42   8.90  0.16       3.54     0
-#> 3 2012-09-18 04:39:33   8.42   8.91  0.16       3.5      0
-#> 4 2012-09-18 04:54:33   8.42   8.92  0.16       3.46     0
-#> 5 2012-09-18 05:09:33   8.44   8.93  0.16       3.42     0
-#> 6 2012-09-18 05:24:33   8.47   8.94  0.16       3.37     0
+#> 1 2012-09-18 04:09:33   8.4    8.99  0.16       3.58     0
+#> 2 2012-09-18 04:24:33   8.42   9.00  0.16       3.54     0
+#> 3 2012-09-18 04:39:33   8.42   9.01  0.16       3.5      0
+#> 4 2012-09-18 04:54:33   8.42   9.02  0.16       3.46     0
+#> 5 2012-09-18 05:09:33   8.44   9.03  0.16       3.42     0
+#> 6 2012-09-18 05:24:33   8.47   9.04  0.16       3.37     0
 ```
 
 ``` r

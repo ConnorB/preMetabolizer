@@ -50,7 +50,7 @@ addition reveals distinct fates of newly fixed carbon. *Ecology*, 96,
 
 - **Stream depth**: 0.16 m
 
-- **Elevation**: approximately 3,115 m (10220 ft)
+- **Elevation**: approximately 3,115 m (10,220 ft)
 
 - **Location**: French Creek, Laramie, Wyoming, USA
 

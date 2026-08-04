@@ -84,7 +84,7 @@
 <code><a href="../reference/tex_meso_time_series.html">tex_meso_time_series()</a></code> retrieves recent time-series observations for one station.</li>
 </ul>
 <blockquote>
-<p><strong>Note:</strong> These functions contact the TexMesonet API and require an internet connection. Code chunks that call the API will not run during package installation if the service is unreachable. Run them interactively in your own session.</p>
+<p><strong>Note:</strong> These functions contact the TexMesonet API and require an internet connection. Set <code>PREMETABOLIZER_RUN_VIGNETTES=true</code> to run the API chunks; they are skipped by default during package installation and checks.</p>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -108,21 +108,7 @@
 <span>  <span class="va">stations</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">stations</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 138</span></span>
-<span><span class="co">#&gt; Columns: 12</span></span>
-<span><span class="co">#&gt; $ station_id      &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,…</span></span>
-<span><span class="co">#&gt; $ station_name    &lt;chr&gt; "Blanco Weather Station", "Altwein Rd", "Headwaters Ra…</span></span>
-<span><span class="co">#&gt; $ display_id      &lt;chr&gt; "BCBWS", "BCALT", "KEHEA", "BCHOR", "BCARN", "BNLCP", …</span></span>
-<span><span class="co">#&gt; $ state           &lt;chr&gt; "TX", "TX", "TX", "TX", "TX", "TX", "TX", "TX", "TX", …</span></span>
-<span><span class="co">#&gt; $ county          &lt;chr&gt; "Blanco", "Blanco", "Kendall", "Blanco", "Blanco", "Ba…</span></span>
-<span><span class="co">#&gt; $ latitude        &lt;dbl&gt; 30.08906, 30.14957, 30.08845, 30.01853, 30.11047, 29.8…</span></span>
-<span><span class="co">#&gt; $ longitude       &lt;dbl&gt; -98.41806, -98.54044, -98.69757, -98.45631, -98.30463,…</span></span>
-<span><span class="co">#&gt; $ elevation       &lt;int&gt; 1334, 1730, 1959, 1416, 1316, 2163, 2206, 1881, 166, 3…</span></span>
-<span><span class="co">#&gt; $ active          &lt;lgl&gt; FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,…</span></span>
-<span><span class="co">#&gt; $ station_type    &lt;int&gt; 1, 2, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, …</span></span>
-<span><span class="co">#&gt; $ station_display &lt;lgl&gt; FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE,…</span></span>
-<span><span class="co">#&gt; $ online_date     &lt;date&gt; 2016-04-28, 2016-04-28, 2016-04-28, 2016-04-28, 2016-…</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">stations</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The <code>active</code> and <code>displayed</code> arguments make it easy to focus on stations that are currently operating and shown by TexMesonet.</p>
 <div class="cell">
@@ -137,21 +123,7 @@
 <span></span>
 <span><span class="va">active_stations</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">display_id</span>, <span class="va">county</span>, <span class="va">latitude</span>, <span class="va">longitude</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">county</span>, <span class="va">station_name</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 126 × 6</span></span>
-<span><span class="co">#&gt;    station_id station_name            display_id county  latitude longitude</span></span>
-<span><span class="co">#&gt;         &lt;int&gt; &lt;chr&gt;                   &lt;chr&gt;      &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1          6 Love Creek Preserve     BNLCP      Bandera     29.8     -99.4</span></span>
-<span><span class="co">#&gt;  2         69 Phyllis Thomas Bandera  BNPTB      Bandera     29.7     -99.4</span></span>
-<span><span class="co">#&gt;  3         37 Pecan Grove Farms       BPPGF      Bastrop     30.2     -97.5</span></span>
-<span><span class="co">#&gt;  4        102 Pawnee Ranch            BEPAW      Bee         28.6     -98.0</span></span>
-<span><span class="co">#&gt;  5         34 City of Rogers          BLCOR      Bell        30.9     -97.2</span></span>
-<span><span class="co">#&gt;  6         33 City of Troy            BLCOT      Bell        31.2     -97.3</span></span>
-<span><span class="co">#&gt;  7         35 Doc Curb Pump Station   BLDOC      Bell        31.0     -97.5</span></span>
-<span><span class="co">#&gt;  8         36 River Ridge Ranch       BLRRR      Bell        31.0     -97.8</span></span>
-<span><span class="co">#&gt;  9        107 EAA Field Research Park BXEAA      Bexar       29.7     -98.4</span></span>
-<span><span class="co">#&gt; 10          2 Altwein Rd              BCALT      Blanco      30.1     -98.5</span></span>
-<span><span class="co">#&gt; # ℹ 116 more rows</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">county</span>, <span class="va">station_name</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>For station time-series requests, keep the integer <code>station_id</code>. This example finds stations in Blanco County and selects one station ID for later use.</p>
 <div class="cell">
@@ -161,13 +133,6 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">display_id</span>, <span class="va">latitude</span>, <span class="va">longitude</span>, <span class="va">elevation</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">blanco_stations</span></span>
-<span><span class="co">#&gt; # A tibble: 4 × 6</span></span>
-<span><span class="co">#&gt;   station_id station_name         display_id latitude longitude elevation</span></span>
-<span><span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;                &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1          2 Altwein Rd           BCALT          30.1     -98.5      1730</span></span>
-<span><span class="co">#&gt; 2          4 Holt Oaks Ranch      BCHOR          30.0     -98.5      1416</span></span>
-<span><span class="co">#&gt; 3          5 Arnosky Farms        BCARN          30.1     -98.3      1316</span></span>
-<span><span class="co">#&gt; 4        108 Blanco Middle School BCMID          30.1     -98.4      1395</span></span>
 <span></span>
 <span><span class="va">site_id</span> <span class="op">&lt;-</span> <span class="va">blanco_stations</span><span class="op">$</span><span class="va">station_id</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div>
 </div>
@@ -184,85 +149,12 @@
 <span>  <span class="va">current</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">current</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 125</span></span>
-<span><span class="co">#&gt; Columns: 39</span></span>
-<span><span class="co">#&gt; $ object_id             &lt;int&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, …</span></span>
-<span><span class="co">#&gt; $ station_id            &lt;int&gt; 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 14, 15, 16, 17, …</span></span>
-<span><span class="co">#&gt; $ station_name          &lt;chr&gt; "Altwein Rd", "Headwaters Ranch", "Holt Oaks Ran…</span></span>
-<span><span class="co">#&gt; $ display_id            &lt;chr&gt; "BCALT", "KEHEA", "BCHOR", "BCARN", "BNLCP", "RE…</span></span>
-<span><span class="co">#&gt; $ latitude              &lt;dbl&gt; 30.14957, 30.08845, 30.01853, 30.11047, 29.80180…</span></span>
-<span><span class="co">#&gt; $ longitude             &lt;dbl&gt; -98.54044, -98.69757, -98.45631, -98.30463, -99.…</span></span>
-<span><span class="co">#&gt; $ elevation             &lt;int&gt; 1730, 1959, 1416, 1316, 2163, 2206, 1881, 166, 3…</span></span>
-<span><span class="co">#&gt; $ air_temp              &lt;dbl&gt; 25.45, 24.43, 26.02, 26.49, 20.56, 19.62, 26.27,…</span></span>
-<span><span class="co">#&gt; $ air_temp2_m           &lt;dbl&gt; 25.45, 24.43, 26.02, 26.49, 20.56, 19.62, 26.27,…</span></span>
-<span><span class="co">#&gt; $ humidity              &lt;dbl&gt; 73.98, 80.20, 74.66, 77.09, 83.00, 85.50, 65.40,…</span></span>
-<span><span class="co">#&gt; $ precip                &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, NA, 0, 0, 0, 0, 0, 0, 0, 0,…</span></span>
-<span><span class="co">#&gt; $ precip24_hr           &lt;dbl&gt; 49.784, 24.638, 22.352, 25.146, 73.152, 38.354, …</span></span>
-<span><span class="co">#&gt; $ precip48_hr           &lt;dbl&gt; 49.784, 24.638, 22.352, 25.146, 73.152, 38.354, …</span></span>
-<span><span class="co">#&gt; $ precip72_hr           &lt;dbl&gt; 49.784, 24.892, 23.114, 26.162, 73.660, 38.354, …</span></span>
-<span><span class="co">#&gt; $ wind_speed            &lt;dbl&gt; 0.8579, 0.5620, 1.3887, 1.5194, 2.4944, 0.0072, …</span></span>
-<span><span class="co">#&gt; $ wind_speed2_m         &lt;dbl&gt; 0.8579, 0.5620, 1.3887, 1.5194, 1.7074, 0.0072, …</span></span>
-<span><span class="co">#&gt; $ wind_direction        &lt;dbl&gt; 167, 82, 156, 116, 136, 155, 104, 50, 61, 23, 31…</span></span>
-<span><span class="co">#&gt; $ wind_direction2_m     &lt;dbl&gt; 167, 82, 156, 116, 70, 155, 104, 95, 61, 23, 321…</span></span>
-<span><span class="co">#&gt; $ wind_gust             &lt;dbl&gt; 4.0082, 2.1441, 2.9430, 2.9430, 3.2765, 0.3596, …</span></span>
-<span><span class="co">#&gt; $ wind_gust2_m          &lt;dbl&gt; 4.0082, 2.1441, 2.9430, 2.9430, 2.6767, 0.3596, …</span></span>
-<span><span class="co">#&gt; $ battery_voltage       &lt;dbl&gt; 13.50, 13.62, 13.64, 13.57, 14.25, 13.40, 13.57,…</span></span>
-<span><span class="co">#&gt; $ soil_moisture         &lt;dbl&gt; 0.325, 0.396, 0.201, 0.516, 0.452, 0.561, NA, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_temperature      &lt;dbl&gt; 28.54, 25.42, 27.89, 27.06, 26.77, 26.15, NA, 26…</span></span>
-<span><span class="co">#&gt; $ soil_moisture5_cm     &lt;dbl&gt; 0.354, 0.363, 0.366, 0.422, 0.321, 0.246, NA, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_temperature5_cm  &lt;dbl&gt; 28.30, 26.06, 28.83, 34.71, 24.97, 24.79, NA, 26…</span></span>
-<span><span class="co">#&gt; $ soil_moisture10_cm    &lt;dbl&gt; 0.350, 0.276, 0.419, 0.486, 0.484, 0.375, NA, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_temperature10_cm &lt;dbl&gt; 28.25, 25.55, 28.11, 27.34, 25.55, 25.29, NA, 26…</span></span>
-<span><span class="co">#&gt; $ soil_moisture20_cm    &lt;dbl&gt; 0.325, 0.396, 0.201, 0.516, 0.452, 0.561, NA, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_temperature20_cm &lt;dbl&gt; 28.54, 25.42, 27.89, 27.06, 26.77, 26.15, NA, 26…</span></span>
-<span><span class="co">#&gt; $ soil_moisture50_cm    &lt;dbl&gt; 0.243, NA, 0.235, 0.514, NA, NA, NA, 0.169, NA, …</span></span>
-<span><span class="co">#&gt; $ soil_temperature50_cm &lt;dbl&gt; 28.69, NA, 27.49, NA, NA, NA, NA, 26.54, NA, 28.…</span></span>
-<span><span class="co">#&gt; $ data_interval_minutes &lt;dbl&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, …</span></span>
-<span><span class="co">#&gt; $ recorded_time         &lt;dttm&gt; 2026-07-14 21:05:00, 2026-07-14 21:05:00, 2026-…</span></span>
-<span><span class="co">#&gt; $ air_temp9_m           &lt;dbl&gt; NA, NA, NA, NA, 20.22, NA, 26.04, 25.00, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ wind_speed10_m        &lt;dbl&gt; NA, NA, NA, NA, 2.4944, NA, NA, 0.5284, NA, NA, …</span></span>
-<span><span class="co">#&gt; $ wind_direction10_m    &lt;dbl&gt; NA, NA, NA, NA, 136, NA, NA, 50, NA, NA, 316, 61…</span></span>
-<span><span class="co">#&gt; $ wind_gust10_m         &lt;dbl&gt; NA, NA, NA, NA, 3.2765, NA, NA, 1.6660, NA, NA, …</span></span>
-<span><span class="co">#&gt; $ air_pressure          &lt;dbl&gt; NA, NA, NA, NA, 942.8373, NA, 950.3366, 1012.286…</span></span>
-<span><span class="co">#&gt; $ solar_radiation       &lt;dbl&gt; NA, NA, NA, NA, 216.9576, NA, 492.6425, 179.3345…</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">current</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The TexMesonet API reports units in a separate object. preMetabolizer stores that object as a data-frame attribute.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">current</span>, <span class="st">"units"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $air_pressure</span></span>
-<span><span class="co">#&gt; [1] "Millibars"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $air_temp</span></span>
-<span><span class="co">#&gt; [1] "Celsius"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $battery_voltage</span></span>
-<span><span class="co">#&gt; [1] "Volts"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $data_interval</span></span>
-<span><span class="co">#&gt; [1] "Minutes"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $elevation</span></span>
-<span><span class="co">#&gt; [1] "Feet"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $precipitation</span></span>
-<span><span class="co">#&gt; [1] "Millimeters"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $relative_humidity</span></span>
-<span><span class="co">#&gt; [1] "Percent"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $soil_moisture</span></span>
-<span><span class="co">#&gt; [1] "Centimeters Cubed per Centimeters Cubed"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $soil_temp</span></span>
-<span><span class="co">#&gt; [1] "Celsius"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $solar_radiation</span></span>
-<span><span class="co">#&gt; [1] "Watts per Square Meter"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $wind_speed</span></span>
-<span><span class="co">#&gt; [1] "Meters per Second"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">current</span>, <span class="st">"units"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>For a quick station check, join current observations to station metadata or filter directly by <code>station_id</code>.</p>
 <div class="cell">
@@ -278,12 +170,7 @@
 <span>    <span class="va">precip</span>,</span>
 <span>    <span class="va">wind_speed</span>,</span>
 <span>    <span class="va">air_pressure</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 8</span></span>
-<span><span class="co">#&gt;   station_id station_name recorded_time       air_temp humidity precip</span></span>
-<span><span class="co">#&gt;        &lt;int&gt; &lt;chr&gt;        &lt;dttm&gt;                 &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1          2 Altwein Rd   2026-07-14 21:05:00     25.4     74.0      0</span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: wind_speed &lt;dbl&gt;, air_pressure &lt;dbl&gt;</span></span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="retrieve-recent-time-series">Retrieve recent time series<a class="anchor" aria-label="anchor" href="#retrieve-recent-time-series"></a>
 </h2>
@@ -301,44 +188,13 @@
 <span>  <span class="va">recent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">cache_file</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">recent</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Rows: 97</span></span>
-<span><span class="co">#&gt; Columns: 27</span></span>
-<span><span class="co">#&gt; $ air_temp           &lt;dbl&gt; 25.64, 25.59, 25.53, 25.45, 24.85, 24.96, 24.57, 24…</span></span>
-<span><span class="co">#&gt; $ air_temp9_m        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ humidity           &lt;dbl&gt; 73.50, 71.75, 70.30, 70.03, 74.11, 71.82, 73.37, 70…</span></span>
-<span><span class="co">#&gt; $ precip             &lt;dbl&gt; 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.…</span></span>
-<span><span class="co">#&gt; $ wind_speed         &lt;dbl&gt; 0.5223, 0.9396, 1.8662, 0.0000, 1.6758, 0.7092, 0.4…</span></span>
-<span><span class="co">#&gt; $ wind_speed2_m      &lt;dbl&gt; 0.5223, 0.9396, 1.8662, 0.0000, 1.6758, 0.7092, 0.4…</span></span>
-<span><span class="co">#&gt; $ wind_speed10_m     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ wind_direction     &lt;dbl&gt; 139, 98, 114, 79, 170, 165, 140, 167, 174, 188, 169…</span></span>
-<span><span class="co">#&gt; $ wind_direction2_m  &lt;dbl&gt; 139, 98, 114, 79, 170, 165, 140, 167, 174, 188, 169…</span></span>
-<span><span class="co">#&gt; $ wind_direction10_m &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ wind_gust2_m       &lt;dbl&gt; 2.9430, 3.4756, 4.2745, 0.0000, 3.4756, 3.7419, 2.9…</span></span>
-<span><span class="co">#&gt; $ wind_gust10_m      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ air_pressure       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ solar_radiation    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ soil_moist5        &lt;dbl&gt; 0.354, 0.355, 0.356, 0.357, 0.357, 0.358, 0.358, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_moist10       &lt;dbl&gt; 0.350, 0.351, 0.352, 0.352, 0.353, 0.353, 0.355, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_moist20       &lt;dbl&gt; 0.325, 0.326, 0.326, 0.326, 0.327, 0.327, 0.327, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_moist50       &lt;dbl&gt; 0.243, 0.243, 0.243, 0.243, 0.243, 0.243, 0.243, 0.…</span></span>
-<span><span class="co">#&gt; $ soil_temp5         &lt;dbl&gt; 28.27, 28.21, 28.15, 28.01, 27.95, 27.92, 27.84, 27…</span></span>
-<span><span class="co">#&gt; $ soil_temp10        &lt;dbl&gt; 28.21, 28.16, 28.11, 28.02, 27.98, 27.94, 27.92, 27…</span></span>
-<span><span class="co">#&gt; $ soil_temp20        &lt;dbl&gt; 28.52, 28.52, 28.48, 28.52, 28.53, 28.53, 28.52, 28…</span></span>
-<span><span class="co">#&gt; $ soil_temp50        &lt;dbl&gt; 28.71, 28.71, 28.74, 28.73, 28.71, 28.71, 28.73, 28…</span></span>
-<span><span class="co">#&gt; $ water_level        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ water_temp         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ water_level2       &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ water_temp2        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</span></span>
-<span><span class="co">#&gt; $ date_time          &lt;dttm&gt; 2026-07-14 21:00:00, 2026-07-14 20:45:00, 2026-07-…</span></span></code></pre></div>
+<span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html" class="external-link">glimpse</a></span><span class="op">(</span><span class="va">recent</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The returned <code>date_time</code> column is parsed as UTC.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">recent</span><span class="op">$</span><span class="va">date_time</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "2026-07-13 21:10:00 UTC" "2026-07-14 21:00:00 UTC"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">recent</span><span class="op">$</span><span class="va">date_time</span>, <span class="st">"tzone"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "UTC"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">recent</span><span class="op">$</span><span class="va">date_time</span>, <span class="st">"tzone"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="retrieve-one-variable">Retrieve one variable<a class="anchor" aria-label="anchor" href="#retrieve-one-variable"></a>
 </h2>
@@ -360,18 +216,8 @@
 <span><span class="va">temperature</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date_time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 2</span></span>
-<span><span class="co">#&gt;   value date_time          </span></span>
-<span><span class="co">#&gt;   &lt;dbl&gt; &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt; 1    78 2026-07-14 20:40:00</span></span>
-<span><span class="co">#&gt; 2    78 2026-07-14 20:45:00</span></span>
-<span><span class="co">#&gt; 3    78 2026-07-14 20:50:00</span></span>
-<span><span class="co">#&gt; 4    78 2026-07-14 20:55:00</span></span>
-<span><span class="co">#&gt; 5    78 2026-07-14 21:00:00</span></span>
-<span><span class="co">#&gt; 6    78 2026-07-14 21:05:00</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">temperature</span>, <span class="st">"units"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Fahrenheit"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">temperature</span>, <span class="st">"units"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Available single-variable values are <code>"temperature"</code>, <code>"humidity"</code>, <code>"barometric_pressure"</code>, <code>"precip"</code>, and <code>"wind_speed"</code>.</p>
 </section><section class="level2"><h2 id="example-workflow-station-weather-summary">Example workflow: station weather summary<a class="anchor" aria-label="anchor" href="#example-workflow-station-weather-summary"></a>
@@ -390,21 +236,7 @@
 <span>    .groups <span class="op">=</span> <span class="st">"drop"</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">hourly_weather</span></span>
-<span><span class="co">#&gt; # A tibble: 25 × 5</span></span>
-<span><span class="co">#&gt;    hour                air_temp_C humidity_pct precip_mm wind_speed_m_s</span></span>
-<span><span class="co">#&gt;    &lt;dttm&gt;                   &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;          &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 2026-07-13 21:00:00       31.7         48.4     0            1.15   </span></span>
-<span><span class="co">#&gt;  2 2026-07-13 22:00:00       32.2         43.8     0            1.01   </span></span>
-<span><span class="co">#&gt;  3 2026-07-13 23:00:00       30.3         56.0     0            0.350  </span></span>
-<span><span class="co">#&gt;  4 2026-07-14 00:00:00       24.3         87.7    23.6          1.26   </span></span>
-<span><span class="co">#&gt;  5 2026-07-14 01:00:00       22.2         99.8     9.65         0.0123 </span></span>
-<span><span class="co">#&gt;  6 2026-07-14 02:00:00       22.3         99.9     4.32         0      </span></span>
-<span><span class="co">#&gt;  7 2026-07-14 03:00:00       22.2         99.9     5.33         0      </span></span>
-<span><span class="co">#&gt;  8 2026-07-14 04:00:00       22.4         99.9     2.03         0.00988</span></span>
-<span><span class="co">#&gt;  9 2026-07-14 05:00:00       22.9         99.9     0.508        0.0725 </span></span>
-<span><span class="co">#&gt; 10 2026-07-14 06:00:00       23.2         99.9     0            0      </span></span>
-<span><span class="co">#&gt; # ℹ 15 more rows</span></span></code></pre></div>
+<span><span class="va">hourly_weather</span></span></code></pre></div>
 </div>
 <p>Plotting the recent series can help identify gaps or station behavior before combining meteorological data with stream logger observations.</p>
 <div class="cell">
@@ -418,12 +250,6 @@
 <span>    title <span class="op">=</span> <span class="st">"Recent TexMesonet air temperature"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure><p><img src="tex-mesonet_files/figure-html/plot-temperature-1.png" width="672"></p>
-</figure>
-</div>
-</div>
 </div>
 </section><section class="level2"><h2 id="api-scope">API scope<a class="anchor" aria-label="anchor" href="#api-scope"></a>
 </h2>

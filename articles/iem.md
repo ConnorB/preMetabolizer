@@ -23,9 +23,9 @@ preMetabolizer provides helpers for selected IEM API v1 endpoints:
   retrieves daily summary observations.
 
 > **Note:** These functions contact IEM web services and require an
-> internet connection. Code chunks that call the API will not run during
-> package installation if the service is unreachable. Run them
-> interactively in your own session.
+> internet connection. Set `PREMETABOLIZER_RUN_VIGNETTES=true` to run
+> the API chunks; they are skipped by default during package
+> installation and checks.
 
 ``` r
 
@@ -65,18 +65,6 @@ if (!file.exists(cache_file)) {
 networks |>
   filter(grepl("Iowa", network_name)) |>
   select(network, network_name, tzname)
-#> # A tibble: 9 × 3
-#>   network     network_name                  tzname         
-#>   <chr>       <chr>                         <chr>          
-#> 1 IA_ASOS     Iowa ASOS                     America/Chicago
-#> 2 IACLIMATE   Iowa Long Term Climate Sites  America/Chicago
-#> 3 IA_COCORAHS Iowa CoCoRaHS                 America/Chicago
-#> 4 IA_COOP     Iowa COOP                     America/Chicago
-#> 5 IA_DCP      Iowa DCP                      America/Chicago
-#> 6 IA_HPD      Iowa HPD Sites                America/Chicago
-#> 7 IA_RWIS     Iowa RWIS                     America/Chicago
-#> 8 ISUAG       Iowa State Univ Ag Climate    America/Chicago
-#> 9 ISUSM       Iowa State Univ Soil Moisture America/Chicago
 ```
 
 Station metadata for a network includes station identifiers, names,
@@ -96,20 +84,6 @@ if (!file.exists(cache_file)) {
 ia_asos |>
   select(station_id, station_name, network, tzname, archive_begin, longitude, latitude) |>
   arrange(station_id)
-#> # A tibble: 62 × 7
-#>    station_id station_name network tzname archive_begin       longitude latitude
-#>    <chr>      <chr>        <chr>   <chr>  <dttm>                  <dbl>    <dbl>
-#>  1 ADU        AUDUBON      IA_ASOS Ameri… 1994-12-25 00:00:00     -94.9     41.7
-#>  2 AIO        ATLANTIC     IA_ASOS Ameri… 1995-04-23 00:00:00     -95.0     41.4
-#>  3 ALO        Waterloo     IA_ASOS Ameri… 1949-01-01 00:00:00     -92.4     42.6
-#>  4 AMW        Ames         IA_ASOS Ameri… 1996-09-30 00:00:00     -93.6     42.0
-#>  5 AWG        WASHINGTON   IA_ASOS Ameri… 1994-12-25 00:00:00     -91.7     41.3
-#>  6 AXA        Algona       IA_ASOS Ameri… 1994-12-25 00:00:00     -94.3     43.1
-#>  7 BNW        BOONE MUNI   IA_ASOS Ameri… 1995-03-01 00:00:00     -93.8     42.0
-#>  8 BRL        BURLINGTON   IA_ASOS Ameri… 1931-09-01 00:00:00     -91.1     40.8
-#>  9 CAV        CLARION      IA_ASOS Ameri… 1994-12-25 00:00:00     -93.8     42.7
-#> 10 CBF        COUNCIL BLU… IA_ASOS Ameri… 1994-12-25 00:00:00     -95.8     41.3
-#> # ℹ 52 more rows
 ```
 
 Some station identifiers appear in more than one network. Use
@@ -129,11 +103,6 @@ if (!file.exists(cache_file)) {
 
 amw |>
   select(station_id, station_name, network, tzname, archive_begin)
-#> # A tibble: 2 × 5
-#>   station_id station_name      network tzname          archive_begin      
-#>   <chr>      <chr>             <chr>   <chr>           <dttm>             
-#> 1 AMW        Ames              IA_ASOS America/Chicago 1996-09-30 00:00:00
-#> 2 AMW        AMES MUNICIPAL AP IA_DCP  America/Chicago 2010-12-28 00:00:00
 ```
 
 ## Retrieve current observations
@@ -156,20 +125,6 @@ if (!file.exists(cache_file)) {
 current |>
   select(station_id, station_name, utc_valid, tmpf, dwpf, sknt, drct, mslp) |>
   arrange(station_id)
-#> # A tibble: 61 × 8
-#>    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp
-#>    <chr>      <chr>          <dttm>              <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1 ADU        AUDUBON        2026-07-14 20:55:00  89.6  66.2     4   110   NA 
-#>  2 AIO        ATLANTIC       2026-07-14 20:55:00  89.6  69.8     7   160   NA 
-#>  3 ALO        Waterloo       2026-07-14 20:54:00  90    71       5    NA 1021.
-#>  4 AMW        Ames           2026-07-14 20:53:00  90    71       3    NA 1021 
-#>  5 AWG        WASHINGTON     2026-07-14 20:55:00  NA    NA       4    NA   NA 
-#>  6 AXA        Algona         2026-07-14 20:55:00  87.8  71.6     7   200   NA 
-#>  7 BNW        BOONE MUNI     2026-07-14 20:55:00  86    71.6     5    NA   NA 
-#>  8 BRL        BURLINGTON     2026-07-14 20:53:00  89    73       5   160 1021.
-#>  9 CAV        CLARION        2026-07-14 20:55:00  87.8  73.4     6   220   NA 
-#> 10 CBF        COUNCIL BLUFFS 2026-07-14 20:55:00  87.8  69.8     5   140   NA 
-#> # ℹ 51 more rows
 ```
 
 For station-specific work, include both `network` and `stations` so
@@ -191,10 +146,6 @@ if (!file.exists(cache_file)) {
 
 dsm_current |>
   select(station_id, station_name, utc_valid, tmpf, relh, sknt, pres)
-#> # A tibble: 1 × 7
-#>   station_id station_name utc_valid            tmpf  relh  sknt pres 
-#>   <chr>      <chr>        <dttm>              <dbl> <dbl> <dbl> <lgl>
-#> 1 AMW        Ames         2026-07-14 20:53:00    90  53.8     3 NA
 ```
 
 ## Retrieve one day of observations
@@ -221,20 +172,6 @@ if (!file.exists(cache_file)) {
 
 obs |>
   select(utc_valid, local_valid, tmpf, dwpf, sknt, drct, p01_i)
-#> # A tibble: 297 × 7
-#>    utc_valid           local_valid       tmpf  dwpf  sknt  drct p01_i
-#>    <dttm>              <chr>            <dbl> <dbl> <dbl> <dbl> <dbl>
-#>  1 2024-06-01 05:00:00 2024-06-01T00:00    NA    NA     5   140    NA
-#>  2 2024-06-01 05:05:00 2024-06-01T00:05    NA    NA     5   140    NA
-#>  3 2024-06-01 05:10:00 2024-06-01T00:10    NA    NA     5   140    NA
-#>  4 2024-06-01 05:15:00 2024-06-01T00:15    NA    NA     5   140    NA
-#>  5 2024-06-01 05:20:00 2024-06-01T00:20    NA    NA     5   130    NA
-#>  6 2024-06-01 05:25:00 2024-06-01T00:25    NA    NA     5   130    NA
-#>  7 2024-06-01 05:30:00 2024-06-01T00:30    NA    NA     5   120    NA
-#>  8 2024-06-01 05:35:00 2024-06-01T00:35    NA    NA     5   110    NA
-#>  9 2024-06-01 05:40:00 2024-06-01T00:40    NA    NA     4   100    NA
-#> 10 2024-06-01 05:45:00 2024-06-01T00:45    NA    NA     5   130    NA
-#> # ℹ 287 more rows
 ```
 
 Hourly or sub-hourly records can be plotted directly after selecting the
@@ -251,8 +188,6 @@ obs |>
     y = "Air temperature (deg F)"
   )
 ```
-
-![](iem_files/figure-html/obhistory-plot-1.png)
 
 ## Retrieve daily summaries
 
@@ -279,20 +214,6 @@ if (!file.exists(cache_file)) {
 dsm_daily |>
   select(station_id, date, max_tmpf, min_tmpf, precip) |>
   arrange(date)
-#> # A tibble: 30 × 5
-#>    station_id date       max_tmpf min_tmpf precip
-#>    <chr>      <date>        <dbl>    <dbl>  <dbl>
-#>  1 DSM        2024-06-01       82       63 0     
-#>  2 DSM        2024-06-02       83       63 0     
-#>  3 DSM        2024-06-03       88       71 0     
-#>  4 DSM        2024-06-04       84       63 0.63  
-#>  5 DSM        2024-06-05       85       56 0.0001
-#>  6 DSM        2024-06-06       83       62 0     
-#>  7 DSM        2024-06-07       83       58 0.02  
-#>  8 DSM        2024-06-08       80       59 0     
-#>  9 DSM        2024-06-09       84       56 0     
-#> 10 DSM        2024-06-10       76       52 0     
-#> # ℹ 20 more rows
 ```
 
 For a one-day network request, omit `station` and supply `date`.
@@ -310,20 +231,6 @@ if (!file.exists(cache_file)) {
 ia_day |>
   select(station_id, date, max_tmpf, min_tmpf, precip) |>
   arrange(desc(date))
-#> # A tibble: 61 × 5
-#>    station_id date       max_tmpf min_tmpf precip
-#>    <chr>      <date>        <dbl>    <dbl>  <dbl>
-#>  1 ADU        2024-06-01     77       59     0.05
-#>  2 AIO        2024-06-01     77       62.6   0   
-#>  3 ALO        2024-06-01     78       61     0   
-#>  4 AMW        2024-06-01     81       60     0.13
-#>  5 AWG        2024-06-01     69.8     59    NA   
-#>  6 AXA        2024-06-01     75.2     60.8   0.04
-#>  7 BNW        2024-06-01     77       62.6   0.14
-#>  8 BRL        2024-06-01     71       57     0.47
-#>  9 CAV        2024-06-01     77       60.8  NA   
-#> 10 CBF        2024-06-01     77       59    NA   
-#> # ℹ 51 more rows
 ```
 
 ## Practical notes

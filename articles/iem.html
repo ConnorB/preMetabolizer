@@ -90,7 +90,7 @@
 <code><a href="../reference/iem_daily.html">iem_daily()</a></code> retrieves daily summary observations.</li>
 </ul>
 <blockquote>
-<p><strong>Note:</strong> These functions contact IEM web services and require an internet connection. Code chunks that call the API will not run during package installation if the service is unreachable. Run them interactively in your own session.</p>
+<p><strong>Note:</strong> These functions contact IEM web services and require an internet connection. Set <code>PREMETABOLIZER_RUN_VIGNETTES=true</code> to run the API chunks; they are skipped by default during package installation and checks.</p>
 </blockquote>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
@@ -116,19 +116,7 @@
 <span></span>
 <span><span class="va">networks</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Iowa"</span>, <span class="va">network_name</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">network</span>, <span class="va">network_name</span>, <span class="va">tzname</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 9 × 3</span></span>
-<span><span class="co">#&gt;   network     network_name                  tzname         </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;       &lt;chr&gt;                         &lt;chr&gt;          </span></span>
-<span><span class="co">#&gt; 1 IA_ASOS     Iowa ASOS                     America/Chicago</span></span>
-<span><span class="co">#&gt; 2 IACLIMATE   Iowa Long Term Climate Sites  America/Chicago</span></span>
-<span><span class="co">#&gt; 3 IA_COCORAHS Iowa CoCoRaHS                 America/Chicago</span></span>
-<span><span class="co">#&gt; 4 IA_COOP     Iowa COOP                     America/Chicago</span></span>
-<span><span class="co">#&gt; 5 IA_DCP      Iowa DCP                      America/Chicago</span></span>
-<span><span class="co">#&gt; 6 IA_HPD      Iowa HPD Sites                America/Chicago</span></span>
-<span><span class="co">#&gt; 7 IA_RWIS     Iowa RWIS                     America/Chicago</span></span>
-<span><span class="co">#&gt; 8 ISUAG       Iowa State Univ Ag Climate    America/Chicago</span></span>
-<span><span class="co">#&gt; 9 ISUSM       Iowa State Univ Soil Moisture America/Chicago</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">network</span>, <span class="va">network_name</span>, <span class="va">tzname</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Station metadata for a network includes station identifiers, names, coordinates, archive dates, and the station time zone when IEM provides it.</p>
 <div class="cell">
@@ -143,21 +131,7 @@
 <span></span>
 <span><span class="va">ia_asos</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">network</span>, <span class="va">tzname</span>, <span class="va">archive_begin</span>, <span class="va">longitude</span>, <span class="va">latitude</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">station_id</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 62 × 7</span></span>
-<span><span class="co">#&gt;    station_id station_name network tzname archive_begin       longitude latitude</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;  &lt;dttm&gt;                  &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 ADU        AUDUBON      IA_ASOS Ameri… 1994-12-25 00:00:00     -94.9     41.7</span></span>
-<span><span class="co">#&gt;  2 AIO        ATLANTIC     IA_ASOS Ameri… 1995-04-23 00:00:00     -95.0     41.4</span></span>
-<span><span class="co">#&gt;  3 ALO        Waterloo     IA_ASOS Ameri… 1949-01-01 00:00:00     -92.4     42.6</span></span>
-<span><span class="co">#&gt;  4 AMW        Ames         IA_ASOS Ameri… 1996-09-30 00:00:00     -93.6     42.0</span></span>
-<span><span class="co">#&gt;  5 AWG        WASHINGTON   IA_ASOS Ameri… 1994-12-25 00:00:00     -91.7     41.3</span></span>
-<span><span class="co">#&gt;  6 AXA        Algona       IA_ASOS Ameri… 1994-12-25 00:00:00     -94.3     43.1</span></span>
-<span><span class="co">#&gt;  7 BNW        BOONE MUNI   IA_ASOS Ameri… 1995-03-01 00:00:00     -93.8     42.0</span></span>
-<span><span class="co">#&gt;  8 BRL        BURLINGTON   IA_ASOS Ameri… 1931-09-01 00:00:00     -91.1     40.8</span></span>
-<span><span class="co">#&gt;  9 CAV        CLARION      IA_ASOS Ameri… 1994-12-25 00:00:00     -93.8     42.7</span></span>
-<span><span class="co">#&gt; 10 CBF        COUNCIL BLU… IA_ASOS Ameri… 1994-12-25 00:00:00     -95.8     41.3</span></span>
-<span><span class="co">#&gt; # ℹ 52 more rows</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">station_id</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Some station identifiers appear in more than one network. Use <code><a href="../reference/iem_stations.html">iem_station()</a></code> when you want to check how IEM resolves a station ID before requesting data.</p>
 <div class="cell">
@@ -171,12 +145,7 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">amw</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">network</span>, <span class="va">tzname</span>, <span class="va">archive_begin</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 2 × 5</span></span>
-<span><span class="co">#&gt;   station_id station_name      network tzname          archive_begin      </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;             &lt;chr&gt;   &lt;chr&gt;           &lt;dttm&gt;             </span></span>
-<span><span class="co">#&gt; 1 AMW        Ames              IA_ASOS America/Chicago 1996-09-30 00:00:00</span></span>
-<span><span class="co">#&gt; 2 AMW        AMES MUNICIPAL AP IA_DCP  America/Chicago 2010-12-28 00:00:00</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">network</span>, <span class="va">tzname</span>, <span class="va">archive_begin</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="retrieve-current-observations">Retrieve current observations<a class="anchor" aria-label="anchor" href="#retrieve-current-observations"></a>
 </h2>
@@ -193,21 +162,7 @@
 <span></span>
 <span><span class="va">current</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">utc_valid</span>, <span class="va">tmpf</span>, <span class="va">dwpf</span>, <span class="va">sknt</span>, <span class="va">drct</span>, <span class="va">mslp</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">station_id</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 61 × 8</span></span>
-<span><span class="co">#&gt;    station_id station_name   utc_valid            tmpf  dwpf  sknt  drct  mslp</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;chr&gt;          &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 ADU        AUDUBON        2026-07-14 20:55:00  89.6  66.2     4   110   NA </span></span>
-<span><span class="co">#&gt;  2 AIO        ATLANTIC       2026-07-14 20:55:00  89.6  69.8     7   160   NA </span></span>
-<span><span class="co">#&gt;  3 ALO        Waterloo       2026-07-14 20:54:00  90    71       5    NA 1021.</span></span>
-<span><span class="co">#&gt;  4 AMW        Ames           2026-07-14 20:53:00  90    71       3    NA 1021 </span></span>
-<span><span class="co">#&gt;  5 AWG        WASHINGTON     2026-07-14 20:55:00  NA    NA       4    NA   NA </span></span>
-<span><span class="co">#&gt;  6 AXA        Algona         2026-07-14 20:55:00  87.8  71.6     7   200   NA </span></span>
-<span><span class="co">#&gt;  7 BNW        BOONE MUNI     2026-07-14 20:55:00  86    71.6     5    NA   NA </span></span>
-<span><span class="co">#&gt;  8 BRL        BURLINGTON     2026-07-14 20:53:00  89    73       5   160 1021.</span></span>
-<span><span class="co">#&gt;  9 CAV        CLARION        2026-07-14 20:55:00  87.8  73.4     6   220   NA </span></span>
-<span><span class="co">#&gt; 10 CBF        COUNCIL BLUFFS 2026-07-14 20:55:00  87.8  69.8     5   140   NA </span></span>
-<span><span class="co">#&gt; # ℹ 51 more rows</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">station_id</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>For station-specific work, include both <code>network</code> and <code>stations</code> so shared station identifiers do not surprise you.</p>
 <div class="cell">
@@ -225,11 +180,7 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">dsm_current</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">utc_valid</span>, <span class="va">tmpf</span>, <span class="va">relh</span>, <span class="va">sknt</span>, <span class="va">pres</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 7</span></span>
-<span><span class="co">#&gt;   station_id station_name utc_valid            tmpf  relh  sknt pres </span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;        &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;lgl&gt;</span></span>
-<span><span class="co">#&gt; 1 AMW        Ames         2026-07-14 20:53:00    90  53.8     3 NA</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">station_name</span>, <span class="va">utc_valid</span>, <span class="va">tmpf</span>, <span class="va">relh</span>, <span class="va">sknt</span>, <span class="va">pres</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="retrieve-one-day-of-observations">Retrieve one day of observations<a class="anchor" aria-label="anchor" href="#retrieve-one-day-of-observations"></a>
 </h2>
@@ -249,21 +200,7 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">obs</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">utc_valid</span>, <span class="va">local_valid</span>, <span class="va">tmpf</span>, <span class="va">dwpf</span>, <span class="va">sknt</span>, <span class="va">drct</span>, <span class="va">p01_i</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 297 × 7</span></span>
-<span><span class="co">#&gt;    utc_valid           local_valid       tmpf  dwpf  sknt  drct p01_i</span></span>
-<span><span class="co">#&gt;    &lt;dttm&gt;              &lt;chr&gt;            &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 2024-06-01 05:00:00 2024-06-01T00:00    NA    NA     5   140    NA</span></span>
-<span><span class="co">#&gt;  2 2024-06-01 05:05:00 2024-06-01T00:05    NA    NA     5   140    NA</span></span>
-<span><span class="co">#&gt;  3 2024-06-01 05:10:00 2024-06-01T00:10    NA    NA     5   140    NA</span></span>
-<span><span class="co">#&gt;  4 2024-06-01 05:15:00 2024-06-01T00:15    NA    NA     5   140    NA</span></span>
-<span><span class="co">#&gt;  5 2024-06-01 05:20:00 2024-06-01T00:20    NA    NA     5   130    NA</span></span>
-<span><span class="co">#&gt;  6 2024-06-01 05:25:00 2024-06-01T00:25    NA    NA     5   130    NA</span></span>
-<span><span class="co">#&gt;  7 2024-06-01 05:30:00 2024-06-01T00:30    NA    NA     5   120    NA</span></span>
-<span><span class="co">#&gt;  8 2024-06-01 05:35:00 2024-06-01T00:35    NA    NA     5   110    NA</span></span>
-<span><span class="co">#&gt;  9 2024-06-01 05:40:00 2024-06-01T00:40    NA    NA     4   100    NA</span></span>
-<span><span class="co">#&gt; 10 2024-06-01 05:45:00 2024-06-01T00:45    NA    NA     5   130    NA</span></span>
-<span><span class="co">#&gt; # ℹ 287 more rows</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">utc_valid</span>, <span class="va">local_valid</span>, <span class="va">tmpf</span>, <span class="va">dwpf</span>, <span class="va">sknt</span>, <span class="va">drct</span>, <span class="va">p01_i</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Hourly or sub-hourly records can be plotted directly after selecting the variables you need.</p>
 <div class="cell">
@@ -276,12 +213,6 @@
 <span>    x <span class="op">=</span> <span class="st">"UTC time"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Air temperature (deg F)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure><p><img src="iem_files/figure-html/obhistory-plot-1.png" width="672"></p>
-</figure>
-</div>
-</div>
 </div>
 </section><section class="level2"><h2 id="retrieve-daily-summaries">Retrieve daily summaries<a class="anchor" aria-label="anchor" href="#retrieve-daily-summaries"></a>
 </h2>
@@ -303,21 +234,7 @@
 <span></span>
 <span><span class="va">dsm_daily</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">date</span>, <span class="va">max_tmpf</span>, <span class="va">min_tmpf</span>, <span class="va">precip</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 30 × 5</span></span>
-<span><span class="co">#&gt;    station_id date       max_tmpf min_tmpf precip</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;date&gt;        &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 DSM        2024-06-01       82       63 0     </span></span>
-<span><span class="co">#&gt;  2 DSM        2024-06-02       83       63 0     </span></span>
-<span><span class="co">#&gt;  3 DSM        2024-06-03       88       71 0     </span></span>
-<span><span class="co">#&gt;  4 DSM        2024-06-04       84       63 0.63  </span></span>
-<span><span class="co">#&gt;  5 DSM        2024-06-05       85       56 0.0001</span></span>
-<span><span class="co">#&gt;  6 DSM        2024-06-06       83       62 0     </span></span>
-<span><span class="co">#&gt;  7 DSM        2024-06-07       83       58 0.02  </span></span>
-<span><span class="co">#&gt;  8 DSM        2024-06-08       80       59 0     </span></span>
-<span><span class="co">#&gt;  9 DSM        2024-06-09       84       56 0     </span></span>
-<span><span class="co">#&gt; 10 DSM        2024-06-10       76       52 0     </span></span>
-<span><span class="co">#&gt; # ℹ 20 more rows</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>For a one-day network request, omit <code>station</code> and supply <code>date</code>.</p>
 <div class="cell">
@@ -332,21 +249,7 @@
 <span></span>
 <span><span class="va">ia_day</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">station_id</span>, <span class="va">date</span>, <span class="va">max_tmpf</span>, <span class="va">min_tmpf</span>, <span class="va">precip</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 61 × 5</span></span>
-<span><span class="co">#&gt;    station_id date       max_tmpf min_tmpf precip</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;date&gt;        &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 ADU        2024-06-01     77       59     0.05</span></span>
-<span><span class="co">#&gt;  2 AIO        2024-06-01     77       62.6   0   </span></span>
-<span><span class="co">#&gt;  3 ALO        2024-06-01     78       61     0   </span></span>
-<span><span class="co">#&gt;  4 AMW        2024-06-01     81       60     0.13</span></span>
-<span><span class="co">#&gt;  5 AWG        2024-06-01     69.8     59    NA   </span></span>
-<span><span class="co">#&gt;  6 AXA        2024-06-01     75.2     60.8   0.04</span></span>
-<span><span class="co">#&gt;  7 BNW        2024-06-01     77       62.6   0.14</span></span>
-<span><span class="co">#&gt;  8 BRL        2024-06-01     71       57     0.47</span></span>
-<span><span class="co">#&gt;  9 CAV        2024-06-01     77       60.8  NA   </span></span>
-<span><span class="co">#&gt; 10 CBF        2024-06-01     77       59    NA   </span></span>
-<span><span class="co">#&gt; # ℹ 51 more rows</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="practical-notes">Practical notes<a class="anchor" aria-label="anchor" href="#practical-notes"></a>
 </h2>

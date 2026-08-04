@@ -63,7 +63,7 @@ observations for flow-duration and seasonal summaries.
 
 ## See also
 
-[`streamMetabolizer::metab()`](https://connorb.github.io/streamMetabolizer/reference/metab.html),
+<https://github.com/ConnorB/streamMetabolizer>,
 <https://connorb.github.io/preMetabolizer/>, and
 <https://github.com/ConnorB/preMetabolizer/issues>.
 

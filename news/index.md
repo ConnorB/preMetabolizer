@@ -2,6 +2,25 @@
 
 ## preMetabolizer 0.0.0.9000
 
+- Package vignettes that query live meteorological services now require
+  `PREMETABOLIZER_RUN_VIGNETTES=true`; package checks and installations
+  are offline by default.
+
+- [`calc_cv()`](https://connorb.github.io/preMetabolizer/reference/calc_cv.md)
+  and
+  [`calc_mode()`](https://connorb.github.io/preMetabolizer/reference/calc_mode.md)
+  now validate their logical and tie-handling arguments before doing any
+  calculations (no issue).
+
+- [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md)
+  and
+  [`correct_bp()`](https://connorb.github.io/preMetabolizer/reference/correct_bp.md)
+  now validate numeric inputs and reject incompatible
+  atmospheric-pressure lengths with actionable errors (no issue).
+
+- Kansas Mesonet helpers now use HTTPS and share a bounded retrying
+  request builder (no issue).
+
 - [`calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/calc_exceedance_prob.md)
   and
   [`rcpp_calc_exceedance_prob()`](https://connorb.github.io/preMetabolizer/reference/rcpp_calc_exceedance_prob.md)
@@ -107,11 +126,6 @@
   the MSHR fixed-width archive; it accepts `bbox`, `start_date`,
   `end_date`, `data_types`, and `text` arguments; the `state`, `clean`,
   and `debug` arguments have been removed (no issue).
-
-- [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
-  is faster when querying many points: duplicated coordinate pairs are
-  only queried once, successful results are cached for the rest of the
-  session, and up to 16 requests are performed concurrently (no issue).
 
 - [`get_usgs_elev()`](https://connorb.github.io/preMetabolizer/reference/get_usgs_elev.md)
   now retries transient server and network failures, validates elevation
@@ -339,10 +353,8 @@
 
 - `convert_PAR_to_SW()` and `convert_SW_to_PAR()` are no longer
   re-exported from preMetabolizer. Call
-  [`streamMetabolizer::convert_PAR_to_SW()`](https://connorb.github.io/streamMetabolizer/reference/convert_PAR_to_SW.html)
-  and
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://connorb.github.io/streamMetabolizer/reference/convert_SW_to_PAR.html)
-  directly (no issue).
+  `streamMetabolizer::convert_PAR_to_SW()` and
+  `streamMetabolizer::convert_SW_to_PAR()` directly (no issue).
 
 - [`convert_to_solar_time()`](https://connorb.github.io/preMetabolizer/reference/convert_to_solar_time.md)
   and
@@ -376,21 +388,17 @@
   `to_degrees()` have been removed (no issue).
 
 - `calc_light()` no longer routes PAR through
-  [`streamMetabolizer::convert_PAR_to_SW()`](https://connorb.github.io/streamMetabolizer/reference/convert_PAR_to_SW.html)
-  and
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://connorb.github.io/streamMetabolizer/reference/convert_SW_to_PAR.html).
-  Those wrappers ultimately call
-  [`LakeMetabolizer::par.to.sw.base()`](https://rdrr.io/pkg/LakeMetabolizer/man/par.to.sw.html)
-  and `sw.to.par.base()`, which are constant-factor multiplications by
-  0.473 and 2.114 respectively; because the factors are reciprocals the
-  round-trip cancels exactly, so the conversion has been inlined as
-  `max.PAR * cos(zenith)` (no issue).
+  `streamMetabolizer::convert_PAR_to_SW()` and
+  `streamMetabolizer::convert_SW_to_PAR()`. Those wrappers ultimately
+  call `LakeMetabolizer::par.to.sw.base()` and `sw.to.par.base()`, which
+  are constant-factor multiplications by 0.473 and 2.114 respectively;
+  because the factors are reciprocals the round-trip cancels exactly, so
+  the conversion has been inlined as `max.PAR * cos(zenith)` (no issue).
 
 - [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
   inlines the SW-to-PAR conversion (`SW * 2.114`, Britton and Dodd 1976)
-  instead of calling
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://connorb.github.io/streamMetabolizer/reference/convert_SW_to_PAR.html).
-  Output values are unchanged (no issue).
+  instead of calling `streamMetabolizer::convert_SW_to_PAR()`. Output
+  values are unchanged (no issue).
 
 - `streamMetabolizer` is no longer a hard dependency of preMetabolizer.
   It has been removed from `Imports:` and `Remotes:`, and install it
@@ -401,10 +409,10 @@
 
 - [`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
   replaces `calc_light()` to avoid shadowing
-  [`streamMetabolizer::calc_light()`](https://connorb.github.io/streamMetabolizer/reference/calc_light.html).
-  The function body and behaviour are unchanged; parameters `solar.time`
-  and `max.PAR` were renamed to `solar_time` and `max_par` to use the
-  package’s underscore convention (no issue).
+  `streamMetabolizer::calc_light()`. The function body and behaviour are
+  unchanged; parameters `solar.time` and `max.PAR` were renamed to
+  `solar_time` and `max_par` to use the package’s underscore convention
+  (no issue).
 
 - [`calc_par()`](https://connorb.github.io/preMetabolizer/reference/calc_par.md)
   now accepts vector `latitude` and `longitude` (one site per timestamp)
@@ -484,9 +492,8 @@
   `longitude` arguments or per-site `latitude`, `longitude`, and
   `elev_m` columns, interpolates NASA values to the input timestamps,
   returns `light.obs` by converting `ALLSKY_SFC_SW_DWN` with
-  [`streamMetabolizer::convert_SW_to_PAR()`](https://connorb.github.io/streamMetabolizer/reference/convert_SW_to_PAR.html),
-  and runs quietly by default. The old `lat` and `lon` aliases are
-  deprecated (no issue).
+  `streamMetabolizer::convert_SW_to_PAR()`, and runs quietly by default.
+  The old `lat` and `lon` aliases are deprecated (no issue).
 
 - [`get_nasa_data()`](https://connorb.github.io/preMetabolizer/reference/get_nasa_data.md)
   now detects the date-time column automatically; `datetime_col`
