@@ -43,13 +43,12 @@ ks_meso_fw13 <- function(station, start_date, end_date) {
 
   tryCatch(
     {
-      response <- httr2::request("http://mesonet.k-state.edu/rest/fw13") |>
+      response <- ks_meso_request("fw13") |>
         httr2::req_url_query(
           stn = station,
           t_start = format(dates$start, "%Y%m%d"),
           t_end = format(dates$end, "%Y%m%d")
         ) |>
-        httr2::req_retry(max_tries = 3) |>
         http_req_perform()
 
       strsplit(httr2::resp_body_string(response), "\n", fixed = TRUE)[[1]]

@@ -1,14 +1,3 @@
-metab_plot_data <- function() {
-  tibble::tibble(
-    solar.time = as.POSIXct("2024-06-01", tz = "UTC") + 0:2 * 3600,
-    DO.obs = c(8, 8.2, 8.4),
-    DO.sat = c(9, 0, 9.2),
-    depth = c(0.4, 0.4, 0.4),
-    temp.water = c(18, 18.2, 18.4),
-    light = c(0, 100, 500)
-  )
-}
-
 test_that("plot_metab_data creates a five-panel plot", {
   plot <- plot_metab_data(metab_plot_data())
 

@@ -1,5 +1,9 @@
 # preMetabolizer 0.0.0.9000
 
+* Package vignettes that query live meteorological services now require `PREMETABOLIZER_RUN_VIGNETTES=true`; package checks and installations are offline by default.
+* `calc_cv()` and `calc_mode()` now validate their logical and tie-handling arguments before doing any calculations (no issue).
+* `calc_water_height()` and `correct_bp()` now validate numeric inputs and reject incompatible atmospheric-pressure lengths with actionable errors (no issue).
+* Kansas Mesonet helpers now use HTTPS and share a bounded retrying request builder (no issue).
 * `calc_exceedance_prob()` and `rcpp_calc_exceedance_prob()` now error when `remove_zeros` is not a single `TRUE` or `FALSE`; previously logical vectors and `NA` were accepted (no issue).
 * `calc_exceedance_prob()` and `rcpp_calc_exceedance_prob()` rename the `flow` argument to `values` and the `rm.zero` argument to `remove_zeros`. The `rm.zero` argument is deprecated and will be removed in a future release (no issue).
 * `cdo_data()`, `cdo_datasets()`, `cdo_data_categories()`, `cdo_data_types()`, `cdo_location_categories()`, `cdo_locations()`, and `cdo_stations()` wrap the seven endpoints of the NCEI Climate Data Online (CDO) Web Services v2 API; they auto-paginate, parse date and numeric columns, read the API token from the `API_NCEI_CDO` environment variable, throttle to the per-token limit of 5 requests per second, and abort once the 10,000 requests-per-day limit is reached for the session (use `cdo_request_count()` to inspect and `cdo_reset_request_count()` to clear the session counter) (no issue).
@@ -12,7 +16,6 @@
 * `get_noaa_ghg()` downloads the NOAA Global Monitoring Laboratory globally averaged monthly mean records for CO2, CH4, N2O, and SF6 and returns them stacked long with a `gas` label, a mid-month `date`, and a `unit` column; each gas is reported in its standard NOAA unit by default (CO2 in ppm, CH4 and N2O in ppb, SF6 in ppt), or pass `units` (`"ppm"`, `"ppb"`, or `"ppt"`) to convert every gas to a common unit; `-9.99` uncertainty sentinels are read as `NA` (no issue).
 * `get_nasa_data()` works with newer nasapower versions again: nasapower hourly output replaced the `YYYYMMDD` column with separate `YEAR`, `MO`, and `DY` columns, which caused an error when assembling timestamps after the download completed (no issue).
 * `get_noaa_stations()` now queries the NCEI Search API for GHCND stations instead of parsing the MSHR fixed-width archive; it accepts `bbox`, `start_date`, `end_date`, `data_types`, and `text` arguments; the `state`, `clean`, and `debug` arguments have been removed (no issue).
-* `get_usgs_elev()` is faster when querying many points: duplicated coordinate pairs are only queried once, successful results are cached for the rest of the session, and up to 16 requests are performed concurrently (no issue).
 * `get_usgs_elev()` now retries transient server and network failures, validates elevation responses more strictly, limits queries to four concurrent requests, and can return USGS response metadata with `details = TRUE` (no issue).
 * `ncei_bbox()` computes a bounding box from a centre latitude, longitude, and radius in kilometres (no issue).
 * `ncei_data()` can retrieve data from any NCEI dataset (e.g., `"daily-summaries"`, `"global-hourly"`) via the NCEI Access Data Service API (no issue).

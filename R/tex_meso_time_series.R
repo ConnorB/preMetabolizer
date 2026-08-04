@@ -94,7 +94,9 @@ tex_meso_time_series <- function(
 #' # Old:
 #' # tex_meso_timeseries(2, prior_minutes = 60)
 #' # New:
+#' \dontrun{
 #' tex_meso_time_series(2, prior_minutes = 60)
+#' }
 #'
 #' @keywords internal
 #' @export

@@ -36,7 +36,7 @@
 #' temperature observations for flow-duration and seasonal summaries.
 #'
 #' @seealso
-#' [streamMetabolizer::metab()],
+#' <https://github.com/ConnorB/streamMetabolizer>,
 #' <https://connorb.github.io/preMetabolizer/>, and
 #' <https://github.com/ConnorB/preMetabolizer/issues>.
 #' @docType package
@@ -44,7 +44,6 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom memoise memoise
 #' @importFrom Rcpp sourceCpp
 #' @useDynLib preMetabolizer, .registration = TRUE
 ## usethis namespace: end

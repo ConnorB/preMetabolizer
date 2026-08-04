@@ -29,3 +29,9 @@ test_that("calc_cv robust uses median/MAD", {
   standard <- calc_cv(x, robust = FALSE)
   expect_false(isTRUE(all.equal(robust, standard)))
 })
+
+test_that("calc_cv validates control arguments", {
+  expect_snapshot(error = TRUE, calc_cv(1:3, na.rm = NA))
+  expect_snapshot(error = TRUE, calc_cv(1:3, as_percent = c(TRUE, FALSE)))
+  expect_snapshot(error = TRUE, calc_cv(1:3, robust = "yes"))
+})

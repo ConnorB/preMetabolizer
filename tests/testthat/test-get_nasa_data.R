@@ -1,24 +1,3 @@
-fake_nasa_power <- function(args) {
-  datetimes <- seq(
-    as.POSIXct(args$dates[[1]], tz = "UTC"),
-    as.POSIXct(args$dates[[2]], tz = "UTC") + 23 * 60 * 60,
-    by = "hour"
-  )
-  hours <- as.numeric(difftime(datetimes, datetimes[1], units = "hours"))
-
-  data.frame(
-    YYYYMMDD = format(datetimes, "%Y%m%d", tz = "UTC"),
-    HR = as.integer(format(datetimes, "%H", tz = "UTC")),
-    LON = args$lonlat[[1]],
-    LAT = args$lonlat[[2]],
-    YEAR = lubridate::year(datetimes),
-    PSC = 101 + hours,
-    ALLSKY_SFC_SW_DWN = hours,
-    PRECTOTCORR = 0,
-    T2M = 12
-  )
-}
-
 test_that("get_nasa_data uses single-site coordinates and inferred dates", {
   timeseries <- data.frame(
     time = as.POSIXct(

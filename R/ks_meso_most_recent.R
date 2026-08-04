@@ -35,11 +35,8 @@ ks_meso_most_recent <- function(interval) {
 
   tryCatch(
     {
-      response <- httr2::request(
-        "http://mesonet.k-state.edu/rest/mostrecent"
-      ) |>
+      response <- ks_meso_request("mostrecent") |>
         httr2::req_url_query(int = interval) |>
-        httr2::req_retry(max_tries = 3) |>
         http_req_perform()
       content <- httr2::resp_body_string(response)
 

@@ -67,10 +67,14 @@ data(french_creek)
 
 site_latitude <- 41.329678
 site_longitude <- -106.359058
-site_elev_m <- 3205
+site_elev_m <- 3115
 
 metab_input <- french_creek |>
-  filter(sonde == "TOWN") |>
+  filter(
+    sonde == "TOWN",
+    is.na(temp_C) | temp_C >= 0,
+    is.na(DO_mgL) | DO_mgL > 5
+  ) |>
   select(datetime, DO_mgL, temp_C) |>
   even_timesteps(datetime_col = "datetime") |>
   mutate(
@@ -106,6 +110,9 @@ head(metab_input)
 For a more complete version of this workflow, including observed light from
 NASA POWER, see `vignette("french-creek", package = "preMetabolizer")`.
 
+Network-backed vignettes are skipped during package checks by default. Set
+`PREMETABOLIZER_RUN_VIGNETTES=true` when you want to refresh them interactively.
+
 ## Common tasks
 
 ### Physical and chemical calculations
@@ -115,11 +122,11 @@ library(preMetabolizer)
 
 # Dissolved oxygen saturation at 15°C, standard atmosphere, freshwater
 calc_o2_sat(temp_water = 15, atmo_press = 1, units = "atm")
-#> [1] 10.07807
+#> [1] 10.08393
 
 # Water density (kg/m³) at several temperatures
 calc_water_density(water_temp = c(0, 10, 20, 30))
-#> [1] 999.8395 999.6996 998.2041 995.6473
+#> [1] 999.8428 999.7027 998.2067 995.6488
 
 # Barometric pressure correction from a station at 300 m to a site at 500 m
 correct_bp(station_bp = 101.3, air_temp = 15, station_elev = 300, site_elev = 500)
@@ -172,7 +179,7 @@ flag_z(x, width = 5, threshold = 3)
 
 # Determine meteorological season from a date
 get_season(c("2024-01-15", "2024-04-15", "2024-07-04", "2024-10-15"))
-#> [1] "Winter" "Spring" "Summer" "Fall"
+#> [1] "Winter" "Spring" "Summer" "Autumn"
 ```
 
 ### Public data access
@@ -185,8 +192,7 @@ interactively. Results are cached where possible.
 closest_noaa_stations(
   latitude = 39.1068806,
   longitude = -96.6117151,
-  dist_km = 50,
-  state = "KS"
+  dist_km = 50
 )
 
 # Add NASA POWER pressure, radiation, precipitation, and air temperature

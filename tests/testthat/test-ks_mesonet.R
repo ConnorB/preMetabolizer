@@ -1,24 +1,3 @@
-mesonet_csv_response <- function(body) {
-  httr2::response(
-    200,
-    headers = list(`Content-Type` = "text/csv"),
-    body = charToRaw(body)
-  )
-}
-
-mesonet_vars_response <- function() {
-  httr2::response(
-    200,
-    headers = list(`Content-Type` = "text/html"),
-    body = charToRaw(paste(
-      "<script> jsonSchema = [",
-      '{"TEMP2MAVG": { "var" : "AirTemperature.avg", "units": "°C", "desc": "Average air temperature at 2m" } },',
-      '{"PRECIP": { "var": "Precipitation", "units": "mm", "desc": "Precipitation" } }',
-      "];</script>"
-    ))
-  )
-}
-
 test_that("ks_meso_read_csv normalizes raw CSV data", {
   result <- ks_meso_read_csv(
     I(paste(
@@ -51,6 +30,45 @@ test_that("ks_meso_stations reads station metadata", {
   expect_equal(result$station_id, "MHK")
   expect_equal(result$network, "KSRE")
   expect_equal(result$network_name, "Kansas Mesonet")
+})
+
+test_that("Kansas Mesonet requests use HTTPS", {
+  env <- new.env()
+  httr2::local_mocked_responses(function(req) {
+    env$url <- req$url
+    mesonet_csv_response(
+      paste(
+        "StationName,County,Latitude,Longitude,Elevation_m,Network,Abbreviation,OperatorName,FW13",
+        "Manhattan,Riley,39.18,-96.58,310,KSRE,MHK,Kansas Mesonet,1",
+        sep = "\n"
+      )
+    )
+  })
+
+  ks_meso_stations()
+
+  expect_match(env$url, "^https://mesonet\\.k-state\\.edu/rest/stationnames")
+})
+
+test_that("ks_meso_station_activity parses activity records", {
+  httr2::local_mocked_responses(function(req) {
+    mesonet_csv_response(
+      paste(
+        "STATION,OBS_INTERVAL,START,END",
+        "Manhattan,300,2024-01-01 00:00:00,2024-01-03 00:00:00",
+        "Manhattan,3600,2024-01-01 00:00:00,2024-01-03 00:00:00",
+        sep = "\n"
+      )
+    )
+  })
+
+  result <- ks_meso_station_activity()
+
+  expect_s3_class(result, "ks_meso_station_activity")
+  expect_equal(result$station_name, c("Manhattan", "Manhattan"))
+  expect_equal(result$interval, c("5min", "hour"))
+  expect_equal(result$interval_seconds, c(300, 3600))
+  expect_equal(result$data_span_days, c(2, 2))
 })
 
 test_that("ks_meso_most_recent requests the selected interval", {

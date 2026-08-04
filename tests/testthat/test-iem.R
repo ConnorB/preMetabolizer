@@ -1,11 +1,3 @@
-iem_json_response <- function(body) {
-  httr2::response(
-    200,
-    headers = list(`Content-Type` = "application/json"),
-    body = charToRaw(body)
-  )
-}
-
 test_that("iem_networks reads network metadata", {
   httr2::local_mocked_responses(function(req) {
     iem_json_response(paste0(

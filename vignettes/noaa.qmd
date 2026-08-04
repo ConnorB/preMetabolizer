@@ -16,12 +16,15 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-.run <- tryCatch({
-  httr2::request("https://www.ncei.noaa.gov") |>
-    httr2::req_timeout(5) |>
-    httr2::req_perform()
-  TRUE
-}, error = function(e) FALSE)
+.run <- identical(Sys.getenv("PREMETABOLIZER_RUN_VIGNETTES"), "true")
+if (.run) {
+  .run <- tryCatch({
+    httr2::request("https://www.ncei.noaa.gov") |>
+      httr2::req_timeout(5) |>
+      httr2::req_perform()
+    TRUE
+  }, error = function(e) FALSE)
+}
 
 knitr::opts_chunk$set(eval = .run)
 ```
@@ -36,7 +39,7 @@ preMetabolizer provides three helpers for station discovery:
 - `closest_noaa_stations()` finds stations within a distance of a target coordinate and ranks them by geodesic distance.
 - `ncei_stations()` is the lower-level function underlying both helpers; it can search any NCEI dataset.
 
-> **Note:** All functions in this vignette contact the NCEI API. Code chunks will not run during package installation if NCEI is unreachable.
+> **Note:** All functions in this vignette contact the NCEI API. Set `PREMETABOLIZER_RUN_VIGNETTES=true` to run the API chunks; they are skipped by default during package installation and checks.
 
 ```{r}
 #| label: libraries

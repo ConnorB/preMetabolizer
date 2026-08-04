@@ -48,7 +48,7 @@ temperature observations for flow-duration and seasonal summaries.
 }
 
 \seealso{
-\code{\link[streamMetabolizer:metab]{streamMetabolizer::metab()}},
+\url{https://github.com/ConnorB/streamMetabolizer},
 \url{https://connorb.github.io/preMetabolizer/}, and
 \url{https://github.com/ConnorB/preMetabolizer/issues}.
 }

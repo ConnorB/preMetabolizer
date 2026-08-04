@@ -24,3 +24,20 @@
       Warning:
       The `atmo_kPa` argument of `calc_water_height()` is deprecated as of preMetabolizer 0.0.0.9000.
       i Please use the `atmo_kpa` argument instead.
+
+# calc_water_height validates numeric inputs and lengths
+
+    Code
+      calc_water_height("bad", water_temp = 15)
+    Condition
+      Error in `calc_water_height()`:
+      ! `sensor_kpa` must be numeric.
+
+---
+
+    Code
+      calc_water_height(sensor_kpa = c(120.5, 121), atmo_kpa = c(101.3, 101.4, 101.5),
+      water_temp = c(15, 16), type = "unvented")
+    Condition
+      Error in `calc_water_height()`:
+      ! `atmo_kpa` must have length 1 or match `sensor_kpa`.

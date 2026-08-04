@@ -1,27 +1,3 @@
-ghcnh_psv_response <- function(psv_text) {
-  httr2::response(
-    200,
-    headers = list(`Content-Type` = "text/plain"),
-    body = charToRaw(psv_text)
-  )
-}
-
-psv_header <- paste(
-  c(
-    "Station_name",
-    "Station_ID",
-    "Year",
-    "Month",
-    "Day",
-    "Hour",
-    "Minute",
-    "temperature",
-    "dew_point_temperature",
-    "relative_humidity"
-  ),
-  collapse = "|"
-)
-
 test_that("get_ghcnh downloads and parses PSV files", {
   psv <- paste(
     psv_header,

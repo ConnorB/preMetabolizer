@@ -1,6 +1,3 @@
-set.seed(42)
-x100 <- rnorm(100)
-
 test_that("all methods return a positive numeric scalar", {
   methods <- c("auto", "sturges", "fd", "sqrt", "rice", "scott", "doane")
   for (m in methods) {

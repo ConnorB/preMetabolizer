@@ -1,3 +1,11 @@
+ks_meso_base_url <- "https://mesonet.k-state.edu/rest"
+
+ks_meso_request <- function(path) {
+  httr2::request(ks_meso_base_url) |>
+    httr2::req_url_path_append(path) |>
+    httr2::req_retry(max_tries = 3, max_seconds = 30)
+}
+
 ks_meso_station_data_request <- function(
   name,
   type,
@@ -6,14 +14,13 @@ ks_meso_station_data_request <- function(
   time_end,
   vars
 ) {
-  request <- httr2::request("http://mesonet.k-state.edu/rest/stationdata/") |>
+  request <- ks_meso_request("stationdata") |>
     httr2::req_url_query(
       int = interval,
       t_start = time_start,
       t_end = time_end,
       vars = paste(vars, collapse = ",")
-    ) |>
-    httr2::req_retry(max_tries = 3)
+    )
 
   if (identical(type, "network")) {
     request |>

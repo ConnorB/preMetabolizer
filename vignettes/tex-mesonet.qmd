@@ -19,14 +19,15 @@ knitr::opts_chunk$set(
 cache_dir <- tools::R_user_dir("preMetabolizer", which = "cache")
 dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 
-.run <- tryCatch({
-  httr2::request("https://www.texmesonet.org") |>
-    httr2::req_timeout(5) |>
-    httr2::req_perform()
-  TRUE
-}, error = function(e) {
-  length(list.files(cache_dir, pattern = "^tex_meso_")) > 0
-})
+.run <- identical(Sys.getenv("PREMETABOLIZER_RUN_VIGNETTES"), "true")
+if (.run) {
+  .run <- tryCatch({
+    httr2::request("https://www.texmesonet.org") |>
+      httr2::req_timeout(5) |>
+      httr2::req_perform()
+    TRUE
+  }, error = function(e) FALSE)
+}
 
 knitr::opts_chunk$set(eval = .run)
 ```
@@ -41,7 +42,7 @@ preMetabolizer provides three helpers for the public TexMesonet API:
 - `tex_meso_current()` retrieves the most recent observation from each TWDB station.
 - `tex_meso_time_series()` retrieves recent time-series observations for one station.
 
-> **Note:** These functions contact the TexMesonet API and require an internet connection. Code chunks that call the API will not run during package installation if the service is unreachable. Run them interactively in your own session.
+> **Note:** These functions contact the TexMesonet API and require an internet connection. Set `PREMETABOLIZER_RUN_VIGNETTES=true` to run the API chunks; they are skipped by default during package installation and checks.
 
 ```{r}
 #| label: libraries

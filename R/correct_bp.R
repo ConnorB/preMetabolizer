@@ -31,15 +31,25 @@ correct_bp <- function(
   from_units = "kPa",
   to_units = "kPa"
 ) {
+  check_numeric(station_bp)
+  check_numeric(air_temp)
+  check_numeric(station_elev)
+  check_numeric(site_elev)
+  check_string(from_units, allow_empty = FALSE)
+  check_string(to_units, allow_empty = FALSE)
+
   g <- 9.80665
-  R <- 8.3144598
+  gas_constant <- 8.3144598
   air_molar_mass <- 0.0289644
 
   station_Pa <- convert_pressure(station_bp, from = from_units, to = "Pa")
   temp_K <- air_temp + 273.15
   delta_h <- site_elev - station_elev
 
-  site_Pa <- station_Pa * exp(-(g * air_molar_mass * delta_h) / (R * temp_K))
+  site_Pa <- station_Pa *
+    exp(
+      -(g * air_molar_mass * delta_h) / (gas_constant * temp_K)
+    )
 
   convert_pressure(site_Pa, from = "Pa", to = to_units)
 }

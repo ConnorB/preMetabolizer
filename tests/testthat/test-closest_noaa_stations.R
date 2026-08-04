@@ -1,14 +1,3 @@
-fake_noaa_stations <- function() {
-  tibble::tibble(
-    station_id = c("near", "far"),
-    station_name = c("Near Station", "Far Station"),
-    latitude = c(39.1, 42.0),
-    longitude = c(-96.6, -100.0),
-    start_date = as.Date(c("1990-01-01", "1995-01-01")),
-    end_date = as.Date(c("2024-01-01", "2024-01-01"))
-  )
-}
-
 test_that("closest_noaa_stations finds stations using standard coordinates", {
   local_mocked_bindings(
     get_noaa_stations = function(...) fake_noaa_stations()

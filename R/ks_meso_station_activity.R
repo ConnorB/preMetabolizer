@@ -28,15 +28,9 @@
 #'
 #' @export
 ks_meso_station_activity <- function() {
-  # Define the URL
-  url <- "http://mesonet.k-state.edu/rest/stationactive/"
-
   tryCatch(
     {
-      # Fetch data with retry capability
-      response <- httr2::request(url) |>
-        httr2::req_retry(max_tries = 3) |>
-        http_req_perform()
+      response <- ks_meso_request("stationactive") |> http_req_perform()
       content <- httr2::resp_body_string(response)
 
       interval_map <- c(
@@ -56,7 +50,7 @@ ks_meso_station_activity <- function() {
       ) |>
         dplyr::transmute(
           station_name = .data$STATION,
-          interval = interval_map[as.character(.data$OBS_INTERVAL)],
+          interval = unname(interval_map[as.character(.data$OBS_INTERVAL)]),
           interval_seconds = .data$OBS_INTERVAL,
           first_observation = parse_ks_meso_timestamp(.data$START),
           last_observation = parse_ks_meso_timestamp(.data$END),
@@ -74,7 +68,6 @@ ks_meso_station_activity <- function() {
         ) |>
         dplyr::arrange(.data$station_name, .data$interval_seconds)
 
-      # Add class for potential method dispatch
       class(station_activity) <- c(
         "ks_meso_station_activity",
         "tbl_df",
@@ -82,7 +75,7 @@ ks_meso_station_activity <- function() {
         "data.frame"
       )
 
-      return(station_activity)
+      station_activity
     },
     error = function(e) {
       cli::cli_abort(

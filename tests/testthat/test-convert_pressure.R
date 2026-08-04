@@ -70,3 +70,25 @@ test_that("correct_bp is vectorized over station_bp and air_temp", {
   result <- correct_bp(c(101.3, 100.5), c(15, 10), 300, 500)
   expect_length(result, 2)
 })
+
+test_that("correct_bp validates numeric and unit inputs", {
+  expect_snapshot(
+    error = TRUE,
+    correct_bp(
+      station_bp = "bad",
+      air_temp = 15,
+      station_elev = 0,
+      site_elev = 100
+    )
+  )
+  expect_snapshot(
+    error = TRUE,
+    correct_bp(
+      station_bp = 101.3,
+      air_temp = 15,
+      station_elev = 0,
+      site_elev = 100,
+      from_units = ""
+    )
+  )
+})

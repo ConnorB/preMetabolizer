@@ -1,33 +1,3 @@
-cdo_with_token <- function(value = "test-token") {
-  old <- Sys.getenv("API_NCEI_CDO", unset = NA)
-  Sys.setenv(API_NCEI_CDO = value)
-  if (is.na(old)) {
-    withr::defer(Sys.unsetenv("API_NCEI_CDO"), envir = parent.frame())
-  } else {
-    withr::defer(Sys.setenv(API_NCEI_CDO = old), envir = parent.frame())
-  }
-}
-
-cdo_response <- function(body, status = 200) {
-  httr2::response(
-    status,
-    headers = list(`Content-Type` = "application/json"),
-    body = charToRaw(jsonlite::toJSON(body, auto_unbox = TRUE))
-  )
-}
-
-cdo_page <- function(results, count = NULL, offset = 1, limit = 1000) {
-  if (is.null(count)) {
-    count <- length(results)
-  }
-  list(
-    metadata = list(
-      resultset = list(offset = offset, count = count, limit = limit)
-    ),
-    results = results
-  )
-}
-
 test_that("cdo_token errors when API_NCEI_CDO is unset", {
   old <- Sys.getenv("API_NCEI_CDO", unset = NA)
   Sys.unsetenv("API_NCEI_CDO")

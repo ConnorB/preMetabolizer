@@ -1,5 +1,3 @@
-library(testthat)
-
 test_that("calc_water_height behaves as expected under various conditions", {
   # Vented sensors
   sensor_kpa <- 19.2
@@ -119,5 +117,21 @@ test_that("calc_water_height(atmo_kPa) is deprecated", {
       water_temp = 15,
       type = "unvented"
     ))
+  )
+})
+
+test_that("calc_water_height validates numeric inputs and lengths", {
+  expect_snapshot(
+    error = TRUE,
+    calc_water_height("bad", water_temp = 15)
+  )
+  expect_snapshot(
+    error = TRUE,
+    calc_water_height(
+      sensor_kpa = c(120.5, 121),
+      atmo_kpa = c(101.3, 101.4, 101.5),
+      water_temp = c(15, 16),
+      type = "unvented"
+    )
   )
 })

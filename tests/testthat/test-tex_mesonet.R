@@ -1,11 +1,3 @@
-tex_meso_json_response <- function(body) {
-  httr2::response(
-    200,
-    headers = list(`Content-Type` = "application/json"),
-    body = charToRaw(body)
-  )
-}
-
 test_that("tex_meso_stations reads and filters station metadata", {
   httr2::local_mocked_responses(function(req) {
     tex_meso_json_response(paste0(

@@ -39,7 +39,7 @@ were collected as part of a stream metabolism study.
 \item \strong{Latitude}: 41.33 N
 \item \strong{Longitude}: -106.3 W
 \item \strong{Stream depth}: 0.16 m
-\item \strong{Elevation}: approximately 3,115 m (10220 ft)
+\item \strong{Elevation}: approximately 3,115 m (10,220 ft)
 \item \strong{Location}: French Creek, Laramie, Wyoming, USA
 }
 

@@ -31,3 +31,8 @@ test_that("calc_mode preserves numeric type", {
   result <- calc_mode(c(1.5, 2.5, 2.5))
   expect_type(result, "double")
 })
+
+test_that("calc_mode validates control arguments", {
+  expect_snapshot(error = TRUE, calc_mode(1:3, na.rm = NA))
+  expect_snapshot(error = TRUE, calc_mode(c(1, 1, 2, 2), multi = "bogus"))
+})

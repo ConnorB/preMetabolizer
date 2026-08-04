@@ -1,15 +1,3 @@
-json_response <- function(body, status = 200) {
-  httr2::response(
-    status,
-    headers = list(`Content-Type` = "application/json"),
-    body = charToRaw(body)
-  )
-}
-
-clear_elev_cache <- function() {
-  rm(list = ls(usgs_elev_cache), envir = usgs_elev_cache)
-}
-
 test_that("get_usgs_elev queries USGS elevation for one point", {
   clear_elev_cache()
   env <- new.env()

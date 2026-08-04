@@ -28,7 +28,6 @@
 #'
 #' @export
 ks_meso_stations <- function() {
-  url <- "http://mesonet.k-state.edu/rest/stationnames/"
   col_names <- c(
     "StationName",
     "County",
@@ -42,7 +41,7 @@ ks_meso_stations <- function() {
   )
   tryCatch(
     {
-      response <- httr2::request(url) |> http_req_perform()
+      response <- ks_meso_request("stationnames") |> http_req_perform()
       content <- httr2::resp_body_string(response)
       station_names <- readr::read_csv(I(content), show_col_types = FALSE)
       if (ncol(station_names) == length(col_names)) {

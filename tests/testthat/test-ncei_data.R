@@ -1,19 +1,3 @@
-ncei_csv_response <- function(body) {
-  httr2::response(
-    200,
-    headers = list(`Content-Type` = "text/csv"),
-    body = charToRaw(body)
-  )
-}
-
-ncei_json_response <- function(body) {
-  httr2::response(
-    200,
-    headers = list(`Content-Type` = "application/json"),
-    body = charToRaw(body)
-  )
-}
-
 test_that("ncei_data fetches and parses CSV from the Data Service API", {
   env <- new.env()
   httr2::local_mocked_responses(function(req) {

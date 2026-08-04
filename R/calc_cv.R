@@ -24,6 +24,10 @@
 #'
 #' @export
 calc_cv <- function(x, na.rm = TRUE, as_percent = TRUE, robust = FALSE) {
+  check_bool(na.rm)
+  check_bool(as_percent)
+  check_bool(robust)
+
   if (!is.numeric(x)) {
     cli::cli_warn("{.arg x} must be numeric.")
     return(NA_real_)

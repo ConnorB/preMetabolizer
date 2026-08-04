@@ -35,6 +35,9 @@
 #' @export
 #' @seealso [table()] for frequency tables.
 calc_mode <- function(x, na.rm = TRUE, multi = "first") {
+  check_bool(na.rm)
+  multi <- rlang::arg_match(multi, c("first", "last", "sample", "all"))
+
   if (!is.atomic(x)) {
     cli::cli_abort("{.arg x} must be an atomic vector.")
   }
@@ -57,7 +60,7 @@ calc_mode <- function(x, na.rm = TRUE, multi = "first") {
       "first" = modes[1],
       "last" = modes[length(modes)],
       "sample" = sample(modes, 1),
-      modes
+      "all" = modes
     ) # default returns all
   }
 

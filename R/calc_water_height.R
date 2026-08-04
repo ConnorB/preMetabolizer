@@ -63,8 +63,10 @@ calc_water_height <- function(
     atmo_kpa <- atmo_kPa
   }
 
-  # Input validation
-  type <- match.arg(type, choices = c("vented", "unvented"))
+  check_numeric(sensor_kpa)
+  check_numeric(atmo_kpa, allow_null = TRUE)
+  check_numeric(water_temp)
+  type <- rlang::arg_match(type, c("vented", "unvented"))
 
   if (type == "unvented" && is.null(atmo_kpa)) {
     cli::cli_abort(
@@ -78,18 +80,27 @@ calc_water_height <- function(
     )
   }
 
+  if (
+    identical(type, "unvented") &&
+      length(atmo_kpa) != 1L &&
+      length(atmo_kpa) != length(sensor_kpa)
+  ) {
+    cli::cli_abort(
+      "{.arg atmo_kpa} must have length 1 or match {.arg sensor_kpa}."
+    )
+  }
+
   # Calculate water density
-  waterDensity <- calc_water_density(water_temp)
+  water_density <- calc_water_density(water_temp)
 
   # Calculate pressure difference in Pascals
   if (type == "vented") {
-    delta_Pa <- sensor_kpa * 1000 # Sensor already measures differential pressure
+    delta_pa <- sensor_kpa * 1000
   } else if (type == "unvented") {
-    delta_Pa <- (sensor_kpa - atmo_kpa) * 1000 # Subtract atmospheric pressure
+    delta_pa <- (sensor_kpa - atmo_kpa) * 1000
   }
-  gravity <- 9.80665 # Gravity in m/s^2
-  # Calculate water height in meters
-  waterHeight_m <- delta_Pa / (waterDensity * gravity)
+  gravity <- 9.80665
+  water_height_m <- delta_pa / (water_density * gravity)
 
-  return(waterHeight_m)
+  water_height_m
 }

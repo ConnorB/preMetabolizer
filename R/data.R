@@ -23,7 +23,7 @@
 #' - **Latitude**: 41.33 N
 #' - **Longitude**: -106.3 W
 #' - **Stream depth**: 0.16 m
-#' - **Elevation**: approximately 3,115 m (10220 ft)
+#' - **Elevation**: approximately 3,115 m (10,220 ft)
 #' - **Location**: French Creek, Laramie, Wyoming, USA
 #'
 #' The two `sonde` values indicate a mid-study sensor swap on

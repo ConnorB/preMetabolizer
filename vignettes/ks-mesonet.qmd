@@ -19,14 +19,15 @@ knitr::opts_chunk$set(
 cache_dir <- tools::R_user_dir("preMetabolizer", which = "cache")
 dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
 
-.run <- tryCatch({
-  httr2::request("https://mesonet.k-state.edu") |>
-    httr2::req_timeout(5) |>
-    httr2::req_perform()
-  TRUE
-}, error = function(e) {
-  length(list.files(cache_dir, pattern = "^ks_meso_")) > 0
-})
+.run <- identical(Sys.getenv("PREMETABOLIZER_RUN_VIGNETTES"), "true")
+if (.run) {
+  .run <- tryCatch({
+    httr2::request("https://mesonet.k-state.edu") |>
+      httr2::req_timeout(5) |>
+      httr2::req_perform()
+    TRUE
+  }, error = function(e) FALSE)
+}
 
 knitr::opts_chunk$set(eval = .run)
 ```
@@ -37,7 +38,7 @@ The [Kansas Mesonet](https://mesonet.k-state.edu/) is a statewide network of aut
 
 This vignette walks through the workflow for discovering stations, browsing the variable catalog, downloading data, and reading cached files using the preMetabolizer Mesonet functions. We use **Konza Prairie**, a long-term ecological research (LTER) site in northeastern Kansas, as our example station.
 
-> **Note:** Functions that contact the Mesonet API require an internet connection. Code chunks that call the API will not run during package installation if the service is unreachable. Run them interactively in your own session.
+> **Note:** Functions that contact the Mesonet API require an internet connection. Set `PREMETABOLIZER_RUN_VIGNETTES=true` to run the API chunks; they are skipped by default during package installation and checks.
 
 ```{r}
 #| label: libraries

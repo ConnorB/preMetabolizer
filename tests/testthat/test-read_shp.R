@@ -1,15 +1,6 @@
-skip_if_not_installed("sf")
-skip_if_not_installed("withr")
-
-make_point_sf <- function() {
-  sf::st_as_sf(
-    data.frame(id = 1L, x = -96.6, y = 39.1),
-    coords = c("x", "y"),
-    crs = 4326
-  )
-}
-
 test_that("read_shp reads a .shp file by path", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("withr")
   dir <- withr::local_tempdir()
   shp_path <- file.path(dir, "site.shp")
   sf::st_write(make_point_sf(), shp_path, quiet = TRUE)
@@ -20,6 +11,8 @@ test_that("read_shp reads a .shp file by path", {
 })
 
 test_that("read_shp reads a directory containing a single layer", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("withr")
   dir <- withr::local_tempdir()
   sf::st_write(make_point_sf(), file.path(dir, "site.shp"), quiet = TRUE)
 
@@ -29,6 +22,8 @@ test_that("read_shp reads a directory containing a single layer", {
 })
 
 test_that("read_shp reads a zipped shapefile", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("withr")
   dir <- withr::local_tempdir()
   sf::st_write(make_point_sf(), file.path(dir, "site.shp"), quiet = TRUE)
   zip_path <- file.path(dir, "site.zip")
@@ -42,15 +37,9 @@ test_that("read_shp reads a zipped shapefile", {
   expect_equal(nrow(result), 1L)
 })
 
-scrub_tempdir <- function(x) {
-  gsub(
-    paste0(normalizePath(tempdir(), winslash = "/"), "/[^'\"[:space:]]+"),
-    "<tempdir>",
-    gsub("\\\\", "/", x)
-  )
-}
-
 test_that("read_shp warns when a directory contains multiple layers", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("withr")
   dir <- withr::local_tempdir()
   sf::st_write(make_point_sf(), file.path(dir, "a.shp"), quiet = TRUE)
   sf::st_write(make_point_sf(), file.path(dir, "b.shp"), quiet = TRUE)
@@ -65,6 +54,8 @@ test_that("read_shp warns when a directory contains multiple layers", {
 })
 
 test_that("read_shp errors when no layers are found", {
+  skip_if_not_installed("sf")
+  skip_if_not_installed("withr")
   dir <- withr::local_tempdir()
   expect_snapshot(
     error = TRUE,
