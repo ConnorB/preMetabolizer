@@ -5,7 +5,25 @@ authors:
 template:
   bootstrap: 5
   light-switch: true
+  bslib:
+    base_font: {google: "Roboto"}
+    heading_font: {google: "Roboto Slab"}
+    code_font: {google: "Fira Code"}
+  includes:
+    in_header: |
+      <!-- Google tag (gtag.js) -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-ELB0F4QNPS"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-ELB0F4QNPS');
+      </script>
+deploy:
+  install_metadata: true
 
+development:
+  mode: auto
 reference:
   - title: Package overview
     contents:
