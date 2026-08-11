@@ -16,8 +16,6 @@ template:
 deploy:
   install_metadata: true
 
-development:
-  mode: auto
 reference:
   - title: Package overview
     contents:
