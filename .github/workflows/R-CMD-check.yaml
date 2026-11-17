@@ -44,7 +44,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: any::rcmdcheck, RcppCore/Rcpp
           needs: check
 
       - name: Install package for Quarto vignette rendering
