@@ -353,8 +353,10 @@ related thermodynamic quantities.
 
 ## Physical property calculations
 
-Calculate water density, depth from pressure, and solar radiation.
+Calculate water density, stream depth, and solar radiation.
 
+- [`calc_usgs_depth()`](https://connorb.github.io/preMetabolizer/reference/calc_usgs_depth.md)
+  : Calculate stream depth from USGS channel measurements
 - [`calc_water_density()`](https://connorb.github.io/preMetabolizer/reference/calc_water_density.md)
   : Calculate water density
 - [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md)

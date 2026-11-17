@@ -12,6 +12,11 @@
   now validate their logical and tie-handling arguments before doing any
   calculations (no issue).
 
+- [`calc_usgs_depth()`](https://connorb.github.io/preMetabolizer/reference/calc_usgs_depth.md)
+  estimates mean stream depth from discharge by fitting a site-specific
+  power law to USGS channel measurements retrieved with the current
+  dataRetrieval API (no issue).
+
 - [`calc_water_height()`](https://connorb.github.io/preMetabolizer/reference/calc_water_height.md)
   and
   [`correct_bp()`](https://connorb.github.io/preMetabolizer/reference/correct_bp.md)

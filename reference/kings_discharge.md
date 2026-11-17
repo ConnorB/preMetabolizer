@@ -37,7 +37,7 @@ A tibble with 716 rows and 5 variables:
 ## Source
 
 USGS Water Data API, retrieved with
-`dataRetrieval::read_waterdata_daily()`.
+[`dataRetrieval::read_waterdata_daily()`](https://rdrr.io/pkg/dataRetrieval/man/read_waterdata_daily.html).
 
 ## Details
 
