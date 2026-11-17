@@ -5,3 +5,4 @@
     Condition
       Error in `calc_par()`:
       ! `latitude` must be length 1 or 2, not length 3.
+

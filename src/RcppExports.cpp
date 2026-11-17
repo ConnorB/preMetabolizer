@@ -39,8 +39,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_preMetabolizer_cpp_calc_exceedance_prob", (DL_FUNC) &_preMetabolizer_cpp_calc_exceedance_prob, 3},
-    {"_preMetabolizer_flag_z", (DL_FUNC) &_preMetabolizer_flag_z, 4},
+    {"_preMetabolizer_cpp_calc_exceedance_prob", (DL_FUNC) (RCPP_FUNC) &_preMetabolizer_cpp_calc_exceedance_prob, 3},
+    {"_preMetabolizer_flag_z", (DL_FUNC) (RCPP_FUNC) &_preMetabolizer_flag_z, 4},
     {NULL, NULL, 0}
 };
 

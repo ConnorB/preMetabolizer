@@ -21,3 +21,4 @@
     Condition
       Error in `plot_metab_data()`:
       ! `data` measurement columns must be numeric: light.
+

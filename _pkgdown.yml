@@ -72,8 +72,9 @@ reference:
       - pco2_to_xco2
 
   - title: Physical property calculations
-    desc: Calculate water density, depth from pressure, and solar radiation.
+    desc: Calculate water density, stream depth, and solar radiation.
     contents:
+      - calc_usgs_depth
       - calc_water_density
       - calc_water_height
       - calc_par

@@ -46,3 +46,4 @@
     Condition
       Error in `calc_water_density()`:
       ! `salinity` must be numeric.
+

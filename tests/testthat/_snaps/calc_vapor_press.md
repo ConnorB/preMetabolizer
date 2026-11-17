@@ -15,3 +15,4 @@
     Condition
       Error in `calc_vapor_press()`:
       ! `method` must be one of "Dickson2007" or "MIMSY", not "invalid".
+

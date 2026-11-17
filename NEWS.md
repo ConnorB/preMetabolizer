@@ -2,6 +2,7 @@
 
 * Package vignettes that query live meteorological services now require `PREMETABOLIZER_RUN_VIGNETTES=true`; package checks and installations are offline by default.
 * `calc_cv()` and `calc_mode()` now validate their logical and tie-handling arguments before doing any calculations (no issue).
+* `calc_usgs_depth()` estimates mean stream depth from discharge by fitting a site-specific power law to USGS channel measurements retrieved with the current dataRetrieval API (no issue).
 * `calc_water_height()` and `correct_bp()` now validate numeric inputs and reject incompatible atmospheric-pressure lengths with actionable errors (no issue).
 * Kansas Mesonet helpers now use HTTPS and share a bounded retrying request builder (no issue).
 * `calc_exceedance_prob()` and `rcpp_calc_exceedance_prob()` now error when `remove_zeros` is not a single `TRUE` or `FALSE`; previously logical vectors and `NA` were accepted (no issue).

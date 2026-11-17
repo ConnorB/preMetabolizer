@@ -21,3 +21,4 @@
     Condition
       Error in `closest_noaa_stations()`:
       ! `dist_km` must be a single positive number.
+

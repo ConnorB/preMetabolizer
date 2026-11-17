@@ -41,3 +41,4 @@
     Condition
       Error in `calc_water_height()`:
       ! `atmo_kpa` must have length 1 or match `sensor_kpa`.
+

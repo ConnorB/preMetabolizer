@@ -13,3 +13,4 @@
     Condition
       Error in `calc_mode()`:
       ! `multi` must be one of "first", "last", "sample", or "all", not "bogus".
+

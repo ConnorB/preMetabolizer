@@ -41,3 +41,4 @@
     Condition
       Error in `calc_cv()`:
       ! `robust` must be `TRUE` or `FALSE`.
+

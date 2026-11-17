@@ -15,6 +15,7 @@ BugReports: https://github.com/ConnorB/preMetabolizer/issues
 Depends:
     R (>= 4.1.0)
 Imports:
+    dataRetrieval (>= 2.7.23),
     lubridate,
     dplyr,
     geosphere,
@@ -48,5 +49,4 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 LinkingTo:
     Rcpp
-Config/roxygen2/version: 8.0.0.9000
-RoxygenNote: 8.0.0.9000
+Config/roxygen2/version: 8.1.1.9000

@@ -14,3 +14,4 @@
     Condition
       Error in `convert_to_solar_time()`:
       ! `longitude` must be length 1 or 2, not length 3.
+

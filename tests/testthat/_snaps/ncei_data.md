@@ -40,3 +40,4 @@
     Condition
       Error in `ncei_datasets()`:
       ! `dataset` must be a single string.
+

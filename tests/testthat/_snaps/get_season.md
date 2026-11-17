@@ -23,3 +23,4 @@
     Condition
       Error in `get_season()`:
       ! `labels` must be a named character vector with names from "spring", "summer", "autumn", "winter".
+
